@@ -1,0 +1,332 @@
+<div *ngIf="issLoading" class="overlay">
+  <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+  </mat-progress-spinner>
+</div>
+<div class="main-content" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+  <div class="container-fluid">
+      <div class="row" *ngIf="!Entry_View">
+          <div class="col-md-12">
+              <div class="card">
+                  <div class="card-body" 
+              style="align-items: center;
+             border: 0;
+             border-radius: 6px;
+             margin-left: 2px;
+             color: #333333;
+             background: #fff;
+             width: 100%;padding: 3px;background-color: #f1f1f1;
+             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+         ">
+                      <form>
+                          <div class="row">
+                              
+                              <div class="col-md-3 row mb-1" style="align-items: center;">
+                                  <label
+                                  class="col-md-4 mb-0 " style="text-align: end;">From</label>
+                                  <mat-form-field
+                                  class="col-md-8" style="height: 40px;border: 1px solid #b1b1b1; border-radius: 8px;">
+                                      <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
+                                          [(ngModel)]="Search_FromDate">
+                                      <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                                      <mat-datepicker #dp1></mat-datepicker>
+                                  </mat-form-field>
+                              </div>
+                              <div class="col-md-3 row mb-1" style="align-items: center;">
+                                  <label
+                                  class="col-md-4 mb-0 " style="text-align: end;">TO</label>
+                                  <mat-form-field
+                                  class="col-md-8" style="height: 40px;border: 1px solid #b1b1b1;border-radius: 8px;">
+                                      <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
+                                          [(ngModel)]="Search_ToDate">
+                                      <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                                      <mat-datepicker #dp2></mat-datepicker>
+                                  </mat-form-field>
+                              </div>
+                              <div class="col-md-3 wole-div-margin-to-down-proper">
+                                <label
+                                    class="col-md-4 label-to-crect-all-names-to-div-tre-prt-sles">Currency</label>
+                                <!-- <select [(ngModel)]="Currency_Search" id="Currency_Search" name="Currency_Search"
+                                    required
+                                    class="col-md-6 for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe ng-pristine ng-valid ng-touched">
+                                    <option *ngFor="let item of currencyData" [ngValue]="item">
+                                        {{item.CurrecnyName}}</option>
+                                </select> -->
+
+                                <select [(ngModel)]="Currency_Search" id="Currency_Search" name="Currency_Search" required class="col-md-8" 
+                                style="height: 40px; border: 1px solid #b1b1b1;">
+                                    <option *ngFor="let currency of currencyData" [ngValue]="currency">{{currency.CurrecnyName}}</option>
+                                </select>
+
+                            </div>
+                            <div class="col-md-3 wole-div-margin-to-down-proper">
+                              <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Print Letterhead</label>
+                      
+                              <input type='checkbox' class="form-check-input" name="printLetterhead" [(ngModel)]="printLetterhead" />
+                              <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9="" class="check"></span>
+                              </span>
+                            </div>
+                            <div class="col-md-2 wole-div-margin-to-down-proper">
+                              <label
+                                  class="col-md-6 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Voucher</label>
+                                  <select [(ngModel)]="Voucher" id="Voucher" name="Voucher"
+                                  required
+                                  class="col-md-6 for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe ng-pristine ng-valid ng-touched">
+                                  <option *ngFor="let item of voucherTypeData" [ngValue]="item">
+                                      {{item.Voucher_Type_Name}}</option>
+                              </select>
+                          </div>
+                          <div class="col-md-2 wole-div-margin-to-down-proper">
+                            <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Type</label>
+                            <select  class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" 
+                                    [(ngModel)]="Search_AccountType"  id="Search_AccountType" name="Search_AccountType"
+                                    required
+                                    class="col-md-6 for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe ng-pristine ng-valid ng-touched">>
+                                <option *ngFor="let currency of accountData"[ngValue]="currency">
+                                    {{currency.AccountType_Name}}</option>
+                            </select>
+                          </div>
+                              <div class="col-md-4 tab-wole-div-alyn">
+                                  <label
+                                      class="col-md-3 label-to-crect-all-names-to-divs margin-alghn-label-text pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Account</label><!--align-label-tab-lead-->
+                                  <input type="text" [matAutocomplete]="auto_Customer" [(ngModel)]="Search_Customer"
+                                      name="Customer" (click)="Search_Customer_Typeahead($event)"
+                                      (input)="Search_Customer_Typeahead($event)" (ngModelChange)="selectCustomer()"
+                                      class="col-md-9 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr">
+                                  <mat-autocomplete #auto_Customer="matAutocomplete" [displayWith]="display_Customer">
+                                      <mat-option *ngIf="isLoading"><mat-spinner
+                                              diameter="500"></mat-spinner></mat-option>
+                                      <ng-container *ngIf="!isLoading">
+                                          <mat-option *ngFor="let Customer_T of Customer_Data" (click)="Customer_Change(Customer_T)" [value]="Customer_T">
+                                              <span (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
+                                          </mat-option>
+                                      </ng-container>
+                                  </mat-autocomplete>
+                              </div>
+                              <div class="col-md-2">
+                                  <button mat-raised-button type="submit" class="btn btn-danger pull-right"
+                                      (click)="Print_Click()">
+                                      <i class="fa fa-print" aria-hidden="true"></i></button>
+                                  <button mat-raised-button type="submit" (click)="Search_Quotation()"
+                                      class="btn btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
+                                      <i class="fa fa-search" aria-hidden="true"></i></button>
+                                <button mat-raised-button type="submit" (click)="Export()" 
+                                class="btn btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">Export</button>
+                              </div>
+                          </div>
+                          <!-- <div class="row">
+                            <div class="col-md-12">
+                                <button mat-raised-button type="submit" (click)="search_days15()" 
+                                class="btn btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">15 Days</button>
+                                <button mat-raised-button type="submit" (click)="search_days30()" 
+                                class="btn btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">30 Days</button>
+                                <button mat-raised-button type="submit" (click)="search_days60()" 
+                                class="btn btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">60 Days</button>
+                                <button mat-raised-button type="submit" (click)="search_days90()" 
+                                class="btn btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">90 Days</button>
+                                <button mat-raised-button type="submit" (click)="search_days185()" 
+                                class="btn btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">185 Days</button>
+                                <button mat-raised-button type="submit" (click)="search_days365()" 
+                                class="btn btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">365 Days</button>
+                                
+                            </div>
+                            </div> -->
+                          <div class="clearfix"></div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-12">
+              <div class="card card-plain">
+                  <div class="card-body">
+                      <div class="table-responsive card">
+                          <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90"> -->
+                            <div
+                            class="table-responsive"
+                            [style.height.px]="myInnerHeight"
+                            style="overflow-y: scroll"
+                          >
+                              <table class="table table-hover">
+                                  <thead class="thead">
+                                      <th> No </th>
+                                      <th> Date </th>
+                                      <th> Voucher </th>
+                                      <th> Invoice No </th>
+                                      <th> Description</th>
+                                      <th> Due Date</th>
+                                      <th> Over Due Days</th>
+                                      <th>Currency</th>
+                                      <th>Type</th>
+                                      <th>Receivable</th>
+                                      <th>Payable</th>
+                                  </thead>
+                                      <tr *ngFor="let Sales_Master of Quotation_Master_Data; let i =index">
+                                          <td style="padding-left:5px;">{{ i+1 }}</td>
+                                          <td>{{Sales_Master["E_Date"]}}</td>
+                                          <td>{{Sales_Master["Voucher"]}}</td>
+                                          <td>{{Sales_Master["VoucherNo"]}}</td>
+                                          <td>{{Sales_Master["Narration"]}}</td>
+                                          <td>{{Sales_Master["Terms"]}} </td>
+                                          <td>{{Sales_Master["Date_Dif"]}}</td>
+                                          <td>{{Sales_Master["TransactionCurrency"]}}</td>
+                                          <td>{{Sales_Master["EntryMode"]}}</td>
+                                          <td>{{Sales_Master["Dr"]}}</td>
+                                          <td>{{Sales_Master["Cr"]}} </td>                                         
+                                      </tr>
+                              </table>
+                           </div>
+                      </div>
+                      <div class="table-responsive tble-rspnsv-sls-mstr-tbls">
+                            <div
+                            class="table-responsive"                            
+                            style="overflow-y: scroll"
+                          >
+                              <table class="table table-hover">
+                                  <thead class="thead">
+                                      <th> 0 - 30 Days Overdue </th>
+                                      <th> 30 - 60 Days Overdue</th>
+                                      <th> 60 - 90 Days Overdue</th>
+                                      <th> 90 - 120 Days Overdue</th>
+                                      <th> 120 - 150 Days Overdue</th>
+                                      <th> 150 - 180 Days Overdue</th>
+                                      <th> Above 180 Days Overdue</th>
+                                  </thead>
+                                      <tr>                                       
+                                          <td>{{Quotation_Master_Total_Amount_30days}}</td>
+                                          <td>{{Quotation_Master_Total_Amount_60dyas}}</td>
+                                          <td>{{Quotation_Master_Total_Amount_90days}}</td>
+                                          <td>{{Quotation_Master_Total_Amount_120days}}</td>
+                                          <td>{{Quotation_Master_Total_Amount_150days}}</td>
+                                          <td>{{Quotation_Master_Total_Amount_180days}}</td>
+                                          <td>{{Quotation_Master_Total_Amount_above180days}}</td>                                         
+                                      </tr>
+                              </table>
+                           </div>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <label class="entry-num">Entries : {{Total_Entries}}</label>
+                      &nbsp;&nbsp;&nbsp;&nbsp; <label class="entry-num">Total:
+                          {{Quotation_Master_Total_Amount}}</label>
+                             &nbsp;&nbsp;&nbsp;&nbsp; <label class="entry-num">Total Overdue:
+                          {{Quotation_Master_Total_Overdue1}}</label>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+  </div>
+</div>
+
+
+
+<div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ccc;font-size: 10px;"  
+id="Print_Div1" style="display:none;">
+    <img src='/assets/img/printlogo.png' alt="Perfect Hills Logo" style="height: 100px;width: 100%;" />
+    <h1 style="text-align: center; margin-bottom: 20px;font-family: arial, sans-serif;text-decoration: underline;">Statement of Account</h1>
+    
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+      <div style="width: 50%;">
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">PB 1554 , PC 113 , GHALA,</p>
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">MUSCAT SULTANATE OF OMAN</p>
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Phone: +968 22820150</p>
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Gsm: 97416789, 99751621</p>
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Email: sales&#64;perfecthills.com</p>
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Website: www.perfecthills.com</p>
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">CR Number: 1150753</p>
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">VATIN: OM1100004897</p>
+      </div>
+      <div style="width: 35%;">
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">
+         <span style="text-align: left;float: left;font-size: 12px;font-family: arial, sans-serif;">Date</span>
+         <span style="text-align: right;float: right;font-size: 12px;font-family: arial, sans-serif;"> {{ currentDate | date :'dd-MM-y '}}</span></p><br>
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">
+         <span style="text-align: left;float: left;font-size: 12px;font-family: arial, sans-serif;">From</span>          
+         <span style="text-align: right;float: right;font-size: 12px;font-family: arial, sans-serif;"> {{ FromDate | date :'dd-MM-y '}}</span></p><br>
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">
+          <span style="text-align: left;float: left;font-size: 12px;font-family: arial, sans-serif;">To</span>
+          <span style="text-align: right;float: right;font-size: 12px;font-family: arial, sans-serif;">{{ToDate | date :'dd-MM-y '}}</span></p>
+
+   <h5 style="text-decoration: underline; font-weight: bold;padding-bottom: 3px; margin-top: 20px !important;margin-bottom:0px !important;float: left;text-align: left;font-family: arial, sans-serif;margin-left: -16px;">Customer Details</h5><br>
+   <br><br>
+    <p  style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;padding-bottom: 3px;float: left;text-align: left;font-family: arial, sans-serif;">{{ Customer_.Client_Accounts_Name}}</p><br>
+    <p  style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;padding-bottom: 3px; float: left;text-align: left;font-family: arial, sans-serif;">{{ Customer_.Address1 }}</p><br>
+    <p  style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;padding-bottom: 3px; float: left !important;text-align: left !important;font-family: arial, sans-serif;margin-right:0px !important;">{{ Customer_.Address2 }} &nbsp;&nbsp;  {{ Customer_.Address3}}</p><br>
+    <!-- <p  style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;float: right;text-align: right;font-family: arial, sans-serif;">{{ Customer_.Address2 }}</p><br> -->
+    <!-- <p  style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;padding-bottom: 3px;float: right !important;text-align: right !important;font-family: arial, sans-serif; ">{{ Customer_.Address3}}</p><br>
+    <p  style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;padding-bottom: 3px;float: right;text-align: right;font-family: arial, sans-serif; ">{{ Customer_.Address4}}</p><br>
+    <p  style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;padding-bottom: 3px; float: right;text-align: right;font-family: arial, sans-serif;">{{ Customer_.Mobile}}</p><br>
+    <p  style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;padding-bottom: 3px;float: right;text-align: right;font-family: arial, sans-serif; ">{{ Customer_.PinCode}}</p><br> -->
+    <p  style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;padding-bottom: 3px; float: left !important;text-align: left !important;font-family: arial, sans-serif;margin-right:0px !important;">VAT IN : {{ Customer_.GSTNo}}</p>
+     
+   </div> 
+    </div>  
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+      <thead>
+        <tr>
+          <th style="border: 1px solid #ccc; font-weight: bold; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> No </th>
+          <th style="border: 1px solid #ccc; font-weight: bold; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> Date </th>
+          <th style="border: 1px solid #ccc; font-weight: bold; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> Voucher </th>
+          <th style="border: 1px solid #ccc; font-weight: bold; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> Invoice No </th>
+          <th style="border: 1px solid #ccc; font-weight: bold; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> Description</th>
+          <th style="border: 1px solid #ccc; font-weight: bold; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> Due Date</th>
+          <th style="border: 1px solid #ccc; font-weight: bold; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> Over Due Days</th>
+          <th style="border: 1px solid #ccc; font-weight: bold; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">Currency</th>
+          <th style="border: 1px solid #ccc; font-weight: bold; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">Type</th>
+          <th style="border: 1px solid #ccc; font-weight: bold; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">Receivable</th>
+          <th style="border: 1px solid #ccc; font-weight: bold; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">Payable</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let Sales_Master of Quotation_Master_Data; let i = index">
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{ i + 1 }}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Sales_Master["E_Date"]}}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Sales_Master["Voucher"]}}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Sales_Master["VoucherNo"]}}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Sales_Master["Narration"]}}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Sales_Master["Terms"]}} </td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Sales_Master["Date_Dif"]}}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Sales_Master["TransactionCurrency"]}}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Sales_Master["EntryMode"]}}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Sales_Master["Dr"]}}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; "> {{Sales_Master["Cr"]}} </td>
+        </tr>
+      </tbody>
+    </table>
+ <div class="row">
+    <div class="col-md-12">           
+       
+        <label
+        class="col-md-4 mb-0 mt-4" style="text-align: end;font-size: 20px;float: right;text-align: right;">Total Overdue {{ Quotation_Master_Total_Overdue1 }}</label> 
+      </div>
+    </div>
+<div>
+  <!-- <span *ngIf="agingeport"> -->
+    <table  style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> 0 - 30 Days Overdue </th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> 30 - 60 Days Overdue </th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> 60 - 90 Days Overdue </th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> 90 - 120 Days Overdue </th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> 120 - 150 Days Overdue </th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> 150 - 180 Days Overdue </th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; "> Above 180 Days Overdue </th>
+           
+          </tr>
+        </thead>
+        <tbody>
+          <tr> 
+            <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{ Quotation_Master_Total_Amount_30days }}</td>
+            <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{ Quotation_Master_Total_Amount_60dyas }}</td>
+            <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{ Quotation_Master_Total_Amount_90days }}</td>
+            <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{ Quotation_Master_Total_Amount_120days }}</td>
+            <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{ Quotation_Master_Total_Amount_150days }}</td>
+            <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{ Quotation_Master_Total_Amount_180days }}</td>
+            <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{ Quotation_Master_Total_Amount_above180days }}</td>
+          </tr>
+        </tbody>
+      </table> 
+    <!-- </span> -->
+    </div>   
+    
+  </div>

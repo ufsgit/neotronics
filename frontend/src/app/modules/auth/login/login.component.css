@@ -1,0 +1,21 @@
+.login-title{float: left; margin-top: 60px ; font-weight: bolder;}
+.login-logo-to-corect{float: left; margin-left: 30%; margin-right: 2%;  margin-top: 40px; max-width: 35%;}
+.no-underline .mat-form-field-underline {
+    display: none;
+  }
+  
+  .input-box {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #fff;
+  }
+  
+  .input-box .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+  
+  .input-box .mat-form-field-infix {
+    border-top: none;
+  }

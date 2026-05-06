@@ -1,0 +1,1248 @@
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+</div>
+<div class="main-content" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+    <div class="container-fluid" #topDiv1>
+        <div  class="row col-md-12  mb-0"  *ngIf="!Entry_View">
+            <div  class="row mb-3 card-body" style="align-items: center;
+             border: 0;
+             border-radius: 6px;
+             margin-left: 2px;
+             color: #333333;
+             background: #fff;
+             width: 100%;padding: 3px;background-color: #f1f1f1;
+             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+         ">   
+                               <div class="col-md-1 row mb-1" style="align-items: center;">
+                                    <label
+                                         class="col-md-6 mb-0">Date</label>
+                                    <div _ngcontent-xmy-c9="" class="checkbox-to-crect-sales-search-section">
+                                        <div _ngcontent-xmy-c9="" class="form-check uper-dte-lbel-sales-sctn-new">
+                                            <label _ngcontent-xmy-c9="" class="form-check-label">
+                                                <input type='checkbox' class="form-check-input" name="Date_checks"
+                                                    [(ngModel)]="Date_Check" />
+                                                <span _ngcontent-xmy-c9="" class="form-check-sign"  
+                                                style="left: 15px !important ;  top: -13px !important;" ><span
+                                                        _ngcontent-xmy-c9=""class="check"></span>
+                                                </span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 row mb-1 " style="align-items: center;">
+                                    <label
+                                    class="col-md-4 mb-0 " style="text-align: end;">From</label>
+                                    <mat-form-field
+                                        class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;" >
+                                        <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
+                                            [(ngModel)]="Search_FromDate">
+                                        <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                                        <mat-datepicker #dp1></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3 row mb-1 " style="align-items: center;">
+                                    <label
+                                    class="col-md-4 mb-0 " style="text-align: end;">TO</label>
+                                    <mat-form-field
+                                        class="col-md-8 " 
+                                        style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;">
+                                        <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
+                                            [(ngModel)]="Search_ToDate">
+                                        <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                                        <mat-datepicker #dp2></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                               
+                                <div  class="col-md-3 row mb-1 " style="align-items: center;">
+                                    <label  class="col-md-4 mb-0 " style="text-align: end;">Customer</label>
+                                    <input type="text" [matAutocomplete]="auto_Customer" [(ngModel)]="Search_Customer" name="Customer" 
+                                    (click)="Search_Customer_Typeahead($event)" (input)="Search_Customer_Typeahead($event)" 
+                                    class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;">
+                                    <mat-autocomplete #auto_Customer="matAutocomplete" [displayWith]="display_Customer">
+                                        <mat-option *ngIf="isLoading">
+                                            <mat-spinner diameter="500"></mat-spinner>
+                                        </mat-option>
+                                        <ng-container *ngIf="!isLoading">
+                                            <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
+                                                <span>{{Customer_T.Client_Accounts_Name}}</span>
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-autocomplete>
+                                </div>
+                        
+                                <div  class="col-md-3 row mb-1 " style="align-items: center;">
+                                    <label  class="col-md-4 mb-0 " style="text-align: end;">Packing List No</label>
+                                    <input type="text" class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;"
+                                    [(ngModel)]="QuotNo" [ngModelOptions]="{standalone: true}">
+                                </div>
+                        
+                                <div  class="col-md-3 row mb-3 " style="align-items: center;">
+                                    <label  class="col-md-4 mb-0 " style="text-align: end;">Part No</label>
+                                    <input type="text" class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;"
+                                    [(ngModel)]="partNo" [ngModelOptions]="{standalone: true}">
+                                </div>
+                        
+                                <div class="col-md-3 row mb-1 " style="align-items: center;">
+                                    <label  class="col-md-4 mb-0 " style="text-align: end;">Group</label>
+                                    <select [(ngModel)]="Item_Group_Search" id="Item_Group_Search" name="Item_Group_Search" 
+                                    required class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;">
+                                        <option *ngFor="let itemGroup of itemGroupData" [ngValue]="itemGroup">
+                                            {{itemGroup.Item_Group_Name}}
+                                        </option>
+                                    </select>
+                                </div>
+                        
+                                <div class="col-md-3 row mb-1 " style="align-items: center;">
+                                    <label class="col-md-4 mb-0 " style="text-align: end;">Currency</label>
+                                    <select [(ngModel)]="Currency_Search" id="Currency_Search" name="Currency_Search"
+                                    required class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;">
+                                        <option *ngFor="let currency of currencyData" [ngValue]="currency">
+                                            {{currency.CurrecnyName}}
+                                        </option>
+                                    </select>
+                                </div>
+                                                      
+                                <div class="col-md-3 row mb-1 " style="align-items: center; justify-content: center;">
+                                    <!-- <button mat-raised-button type="button" class="btn mt-0 mb-0 btn-danger pull-right"
+                                        (click)="Print_Search_Click()">
+                                        <i class="fa fa-print" aria-hidden="true"></i></button> -->
+                                        <button mat-raised-button type="button" (click)="Search_PackingDEtails()"style="margin-top: -1px !important;"
+                                        class="btn mb-0 btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
+                                        <i class="fa fa-search" aria-hidden="true"></i></button>
+                                        <button mat-raised-button type="button" (click)="Create_New()"style="margin-top: -1px !important;"
+                                        class="btn btn-danger mb-0 pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
+                                        <i class="fa fa-plus" aria-hidden="true"></i></button>
+                                        <button
+                                        style="background-color: #3e6bdd; color: white"
+                                        (click)="Export()"
+                                        [hidden]="Export_View == true"
+                                        mat-raised-button
+                                        type="button"
+                                        class="mt-0  mb-0  btn btn-danger pull-right"
+                                      >
+                                        Export
+                                      </button>
+                                </div>
+            
+            <div class="clearfix"></div>  
+            </div>
+            <div class="col-md-12">
+                <!-- <div class="card card-plain"> -->
+                    <!-- <div class="card-body"> -->
+                        <div class="table-responsive card">
+                            <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90"> -->
+                                <div
+                                class="table-responsive"
+                                [style.height.px]="myInnerHeight"
+                                style="overflow-y: scroll;background-color: #f1f1f1;">
+                                <table class="table table-hover">
+                                    <thead class="thead">
+                                        <th> Sl No </th>
+                                        <th> Customer Name </th>
+                                        <th> Packing List no </th>
+                                        <th> Date </th>
+                                        <!-- <th> Amount</th> -->
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </thead>
+                                    <!-- <ng-container *cdkVirtualFor="let Sales_Master of packinglist_master_Data; let i =index"> -->
+                                        <tr *ngFor="let Sales_Master of packinglist_master_Data; let i =index">
+                                            <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{ i+1 }}</td>
+                                            <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{Sales_Master["Customer"]}}</td>
+                                            <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{Sales_Master["PackingList_No"]}}</td>
+                                            <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{Sales_Master["Formatted_EntryDate"]}}</td>
+                                            <!-- <td>{{Sales_Master["NetTotal"]}}</td> -->
+                                            <td>
+                                                <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                    [hidden]="Sales_Master_Edit==false"
+                                                    aria-describedby="cdk-describedby-message-0" cdk-describedby-host=""
+                                                    class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                    mat-raised-button="" mattooltip="Edit Task"
+                                                    ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                    type="button"><span class="mat-button-wrapper"><span
+                                                            _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                            <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                class="material-icons"
+                                                                (click)="Edit_PackingMaster(Sales_Master,i)">edit</i></span>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
+                                                            matripple="" ng-reflect-centered="false"
+                                                            ng-reflect-disabled="false"
+                                                            ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                                        </div>
+                                                    </span>
+                                                    <div class="mat-button-ripple mat-ripple" matripple=""
+                                                        ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                        ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button _ngcontent-gdi-c11="" [hidden]="Sales_Master_Delete==false"
+                                                    class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                                    mat-raised-button="" mattooltip="Remove" type="button"
+                                                    aria-describedby="cdk-describedby-message-1" cdk-describedby-host=""
+                                                    ng-reflect-position="above" ng-reflect-message="Remove"><span
+                                                        class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
+                                                            class="material-icons"
+                                                            (click)="Delete_Packing_Master(Sales_Master.PackingList_Master_Id,i)">close</i></span>
+                                                    <div class="mat-button-ripple mat-ripple" matripple=""
+                                                        ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                        ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </td>
+                                            <!-- <td> 
+        <button _ngcontent-gdi-c11="" class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" 
+        mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" 
+        cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper">
+            <i _ngcontent-gdi-c11="" class="material-icons"  
+            (click)="Change_Bill_Status(Sales_Master.Quotation_Master_Id,Sales_Master.BillType,i)" >trending_flat</i></span>
+            <div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" 
+            ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"></div></button>
+        </td> -->
+                                        </tr>
+                                    <!-- </ng-container> -->
+                                </table>
+                                </div>
+                            <!-- </cdk-virtual-scroll-viewport> -->
+                        </div>
+                    <!-- </div> -->
+                    <div class="col-md-4">
+                        <label class="entry-num">Entries : {{Total_Entries}}</label>
+                        &nbsp;&nbsp;&nbsp;&nbsp; 
+                        <!-- <label class="entry-num">Total:
+                            {{Quotation_Master_Total_Amount}}</label> -->
+                    </div>
+                <!-- </div> -->
+            </div>
+        </div>
+        <div class="row" *ngIf="Entry_View">
+            <!-- <div class="container-fluid">
+                <div class="col-md-6 croct-float-purchase-master-section ">
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Packing List Num
+                            </label>
+                        <input type="number" name="PackingList_No" [(ngModel)]="packinglist_master_.PackingList_No" 
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                   
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Craig
+                            PoNumb</label>
+                        <input type="text" name="PO_No" [(ngModel)]="packinglist_master_.PO_No"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                        class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Name
+                        </label>
+                         <input type="text" name="Consignee_Name" [(ngModel)]="packinglist_master_.Consignee_Name"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                  
+                </div>
+                <div class="col-md-6 croct-float-purchase-master-section">
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Packing List Date
+                            <span
+                            style="color:#ef071e; ">*</span></label>
+                        <mat-form-field
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                            style="height: 47px !important">
+                            <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate"
+                                [(ngModel)]="packinglist_master_.EntryDate">
+                            <mat-datepicker-toggle matSuffix [for]="dpdate" ></mat-datepicker-toggle>
+                            <mat-datepicker #dpdate></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">INV
+                            No</label>
+                        <input type="text" name="Invoice_No" [(ngModel)]="packinglist_master_.Invoice_No" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                  
+                    
+                   
+                 
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address</label>
+                        <input type="text" name="Consignee_Address" [(ngModel)]="packinglist_master_.Consignee_Address"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                </div>
+            </div> -->
+           
+            <div class="container-fluid" #topDiv>
+                <div class="col-md-6 croct-float-purchase-master-section ">
+                   
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
+                            <span
+                            style="color:#ef071e; ">*</span></label>
+                        <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer" (ngModelChange)="selectCustomer()"
+                            (click)="Search_Customer_Typeahead($event)" (input)="Search_Customer_Typeahead($event)"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Customer">
+                            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                            <ng-container *ngIf="!isLoading">
+                                <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
+                                    <span
+                                        (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" [(ngModel)]="Address1" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" [(ngModel)]="Address2" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" [(ngModel)]="Address3" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" [(ngModel)]="Address4" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Delivery
+                            Address</label>
+                        <input type="text" name="Delivery_Address1" [(ngModel)]="packinglist_master_.Delivery_Address1"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" name="Delivery_Address1" [(ngModel)]="packinglist_master_.Delivery_Address2"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" name="Delivery_Address3" [(ngModel)]="packinglist_master_.Delivery_Address3"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" name="Delivery_Address4" [(ngModel)]="packinglist_master_.Delivery_Address4"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+
+                    <!-- <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address</label>
+                        <input type="text" name="Consignee_Address" [(ngModel)]="packinglist_master_.Consignee_Address"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div> -->
+                </div>
+                <div class="col-md-6 croct-float-purchase-master-section">
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Packing List Num
+                            </label>
+                        <input disabled type="number" name="PackingList_No" [(ngModel)]="packinglist_master_.PackingList_No" 
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date
+                            <span
+                            style="color:#ef071e; ">*</span></label>
+                        <mat-form-field
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                            style="height: 47px !important">
+                            <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate"
+                                [(ngModel)]="packinglist_master_.EntryDate">
+                            <mat-datepicker-toggle matSuffix [for]="dpdate" ></mat-datepicker-toggle>
+                            <mat-datepicker #dpdate></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                  
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Currency
+                            <span
+                           style="color:#ef071e; ">*</span>
+                        </label>
+                        <select  class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" 
+                        [(ngModel)]="Currency">
+                            <option *ngFor="let currency of currencyData"[ngValue]="currency">{{currency.CurrecnyName}}</option>
+                        </select>
+                        
+                    </div>
+
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">PO Number
+                            </label>
+                          
+                        <input type="text" name="POnumber" [(ngModel)]="packinglist_master_.POnumber"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Invoice No.
+                            </label>
+                          
+                        <input type="number" name="Invoice_No" [(ngModel)]="packinglist_master_.Invoice_No"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Attention
+                            </label>
+                          
+                        <input type="text" name="KindAttend" [(ngModel)]="packinglist_master_.KindAttend"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Employee
+                                                </label>
+                        
+                        <input type="text" name="AttendEmployee" [(ngModel)]="packinglist_master_.AttendEmployee"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Reference</label>
+                        <input type="text" name="Mobile_No" [(ngModel)]="packinglist_master_.Description2"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div
+                                            class="col-md-4 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                            <label
+                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Part Number
+                                                <span
+                                                style="color:#ef071e; ">*</span>
+                                            </label>
+                                            <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto42"
+                                                style="padding-left: 5px !important;" [(ngModel)]="Barcode_"
+                                                (click)="Get_Stock_Item_Code_Typeahead($event)"
+                                                (ngModelChange)="Get_Stock()"
+                                                (input)="Get_Stock_Item_Code_Typeahead($event)" 
+                                                (keyup.enter)="Plus_Quotation_Details($event)"
+                                                class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched" />
+                                            <mat-autocomplete #auto42="matAutocomplete" [displayWith]="display_ItemCode">
+                                                <mat-option *ngIf="isLoading"><mat-spinner
+                                                        diameter="500"></mat-spinner></mat-option>
+                                                <ng-container *ngIf="!isLoading">
+                                                    <mat-option *ngFor="let Item of ItemCodeData; let i = index"
+                                                        [value]="Item">
+                                                        <span>
+                                                            <div (click)="Barcode_Change(Item)">{{Item.Item_Code}} - {{Item.Quantity}} - {{Item.ItemName}}</div></span>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </div>
+                                        <div
+                                            class="col-md-4 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                            <label
+                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item & Description
+                                                <span
+                                                style="color:#ef071e; ">*</span>
+                                                </label>
+                                                <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_" id="Item"
+                                                name="Item" (click)="Search_Item_Typeahead($event)"
+                                                (input)="Search_Item_Typeahead($event)" 
+                                                (ngModelChange)="Get_Stock_Item()"
+                                                (keyup.enter)="Plus_Quotation_Details($event)"
+                                                style="padding-left: 5px !important;"
+                                                class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                            <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
+                                                <mat-option *ngIf="isLoading"><mat-spinner
+                                                        diameter="500"></mat-spinner></mat-option>
+                                                <ng-container *ngIf="!isLoading">
+                                                    <mat-option
+                                                        *ngFor="let Itemstock of Stock_Data; let i = index" 
+                                                        [value]="Itemstock">
+                                                        <span
+                                                            (click)="Item_Name_Change(Itemstock)">{{Itemstock.ItemName}}-{{Itemstock.Item_Code}} - {{Itemstock.Quantity}}</span>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </div>
+                                        <div
+                                            class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                            <label
+                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Uom
+                                                <span
+                                                style="color:#ef071e; "></span></label>
+                                            <input type="text" [(ngModel)]="packinglist_details_.UnitName"
+                                            (keyup.enter)="Plus_Quotation_Details($event)"
+                                                style="padding-left: 5px !important;" id="packinglist_details_.UnitName"
+                                                name="packinglist_details_.UnitName"
+                                                
+                                                class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                        </div>
+
+                                        <div
+                                        class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty
+                                            <span
+                                            style="color:#ef071e; ">*</span></label>
+                                        <input type="number" [(ngModel)]="packinglist_details_.Quantity" 
+                                        (keyup.enter)="Plus_Quotation_Details($event)"
+                                            style="padding-left: 5px !important;" id="packinglist_details_.Quantity"  name="packinglist_details_.Quantity"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                    </div>
+                                        <!-- <div
+                                            class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                            <label
+                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty
+                                                <span
+                                                style="color:#ef071e; ">*</span></label>
+                                            <input type="number" [(ngModel)]="Quantity" (ngModelChange)="Calculate_Total_Amount()"
+                                                style="padding-left: 5px !important;" id="Quantity"  name="Quantity"
+                                                class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                        </div> -->
+                                        <div
+                                            class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                            <label
+                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">HSNCODE
+                                                <span
+                                                style="color:#ef071e; "></span>
+                                                </label>
+                                            <input type="text" [(ngModel)]="packinglist_details_.HSNCODE" 
+                                            (keyup.enter)="Plus_Quotation_Details($event)"
+                                                style="padding-left: 5px !important;" id="packinglist_details_.HSNCODE"  name="packinglist_details_.HSNCODE"
+                                                class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                        </div>                                        
+                                        
+                                        <div
+                                            class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                            <label
+                                                class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Country Of Origin
+                                                <span
+                                                style="color:#ef071e; "></span></label>
+                                            <input type="text" style="padding-left: 5px !important;"
+                                                [(ngModel)]="packinglist_details_.Country_Name"
+                                                (keyup.enter)="Plus_Quotation_Details($event)"
+                                                id="packinglist_details_.Country_Name"
+                                                name="packinglist_details_.Country_Name"
+                                                class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                        </div>
+                                        <div style="margin-top: 39px !important;" 
+                                            class="col-md-1 alighn-right-inputs-sales-grid div-to-down-margin-crect-allighn-wole-scton">
+                                            <button mat-raised-button type="button" (click)="Plus_Quotation_Details($event)"
+                                                class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes" style="border-radius: 5px;">
+                                                Add</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-for-sale-search-section-diary">
+                                                    <thead class="bg-col-stock-add-diary">
+                                                        <th>No </th>
+                                                        <th>Part Number</th>
+                                                        <th>Item & Description </th>
+                                                        <th>Uom</th>
+                                                        <th>Qty</th>
+                                                        <th>HSNCODE</th>
+                                                        <th>Country Of Origin</th>
+
+                                                        <!-- <th>Qty</th> 
+                                                        <th>Unit Price</th>
+                                                        <th>Discount %</th>
+                                                        <th>Unit Discount</th>
+                                                        <th>Total Price</th>
+                                                        <th>Availability</th>-->
+                                                        <th></th>
+                                                    </thead>
+                                                    <tbody class="bk_tb_bg"
+                                                        *ngFor="let Sales_Details of packinglist_details_Data; let i = index">
+                                                        <td>{{i+1}}</td>
+                                                        <td [id]="'cellx' + (i + 1)">{{Sales_Details["Item_Code"]}}</td>
+                                                        <td [id]="'cell' + (i + 1)">{{Sales_Details["ItemName"]}}</td>
+                                                        <td>{{Sales_Details["UnitName"]}}</td>
+                                                        <td>{{Sales_Details["Quantity"]}}</td>
+
+                                                        <td>{{Sales_Details["HSNCODE"]}}</td>
+
+                                                        <td>{{Sales_Details["Country_Name"]}}</td>
+
+                                                        <!-- <td>{{Sales_Details["UnitPrice"]}}</td>
+                                                        <td>{{Sales_Details["Discount"]}}</td>
+                                                        <td>{{Sales_Details["Unit_Discount"]}}</td>
+                                                        <td>{{Sales_Details["Amount"]}}</td>
+                                                        <td>{{Sales_Details["Availability"]}}</td> -->
+                                                        <td>
+                                                            <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                [hidden]="Sales_Master_Edit==false"
+                                                                aria-describedby="cdk-describedby-message-0" cdk-describedby-host=""
+                                                                class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                                mat-raised-button="" mattooltip="Edit Task"
+                                                                ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                                type="button"><span class="mat-button-wrapper"><span
+                                                                        _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                                        <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                            class="material-icons"
+                                                                            (click)="Edit_Quotation_Detail(Sales_Details,i)">edit</i></span>
+                                                                    <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
+                                                                        matripple="" ng-reflect-centered="false"
+                                                                        ng-reflect-disabled="false"
+                                                                        ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                                    <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                                                    </div>
+                                                                </span>
+                                                                <div class="mat-button-ripple mat-ripple" matripple=""
+                                                                    ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                                    ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                                <div class="mat-button-focus-overlay"></div>
+                                                            </button>
+                                                        
+                                                            <button _ngcontent-gdi-c11="" [hidden]="Sales_Master_Delete==false"
+                                                                class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                                                mat-raised-button="" mattooltip="Remove" type="button"
+                                                                aria-describedby="cdk-describedby-message-1" cdk-describedby-host=""
+                                                                ng-reflect-position="above" ng-reflect-message="Remove"><span
+                                                                    class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
+                                                                        class="material-icons"
+                                                                        (click)="Delete_Quotation_Detail(i)">close</i></span>
+                                                                <div class="mat-button-ripple mat-ripple" matripple=""
+                                                                    ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                                    ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                                <div class="mat-button-focus-overlay"></div>
+                                                            </button>
+                                                        </td>
+                                                        
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mt-5">
+                                        <h4 style="font-weight: bold;">Terms & Conditions</h4>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                            <label
+                                                class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Brand</label>
+                                            <input type="text"  [(ngModel)]="packinglist_master_.Brand"
+                                                class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                                >
+                                        </div>
+                                        <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                            <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Price
+                                                Basis</label>
+                                            <input type="text" [(ngModel)]="packinglist_master_.PriceBasis"
+                                                class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                                >
+                                        </div>
+                                        <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                            <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment
+                                                Term</label>
+                                            <input type="number" [(ngModel)]="packinglist_master_.PaymentTermValue" style="width: 12%;border: 1px solid lightgrey;
+                                            border-radius: 5px;padding-left: 5px !important;height: 36px;"
+                                                class="mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                                >
+                                            <!-- <input type="text" [(ngModel)]="Quotation_Master_.Payment_Term_Description" class="mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            style="width: 18%;border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important;height: 36px;"> -->
+                                            <select [(ngModel)]="Payment_Term_Description_" id="Payment_Term_Description_" name="Payment_Term_Description_"  
+                                            class="for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe ng-pristine ng-valid ng-touched" style="width: 18%;border: 1px solid lightgrey;
+                                            border-radius: 5px;padding-left: 5px !important;height: 36px;">
+                                            <option *ngFor="let PaymentTerm of PaymentTermData" [ngValue]="PaymentTerm">
+                                            {{PaymentTerm.Payment_Term_Description}}</option>
+                                    </select>
+                                        </div>
+                                        <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                            <label
+                                                class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Delivery</label>
+                                            <input type="text" [(ngModel)]="packinglist_master_.Delivery "
+                                                class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                                >
+                                        </div>
+                                        <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                            <label
+                                                class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Validity</label>
+                                            <input type="text" [(ngModel)]="packinglist_master_.Validity "
+                                                class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                        </div>
+                                        <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                            <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Notes</label>
+                                            <input type="text" [(ngModel)]="packinglist_master_.Description1"
+                                                class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                        </div>
+                                        <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                            <label
+                                                class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Print Letterhead</label>                                           
+                                                        
+                                            <input type='checkbox' class="form-check-input" name="printLetterhead" [(ngModel)]="printLetterhead"/>
+                                                <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9="" class="check" 
+                                                    ></span>
+                                                </span>                                                  
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                            <label
+                                                class="col-md-3 label-to-crect-all-names-to-div-tre-prt-sles">Total No Of Box</label>
+                                            <input type="text"  [(ngModel)]="packinglist_master_.Total_No_Of_Boxes"
+                                                class="col-md-9 mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                                >
+                                        </div>
+                                        <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                            <label class="col-md-3 label-to-crect-all-names-to-div-tre-prt-sles">Box
+                                                Details</label>
+                                                <textarea
+                                                type="text"
+                                                [(ngModel)]="packinglist_master_.Box_Details"
+                                                name="packinglist_master_.Box_Details"
+                                                class="col-md-9 mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                                rows="4"
+                                                cols="30"
+                                                style="border: 1px solid #ccc; padding: 8px;"
+                                              >
+                                              </textarea>
+                                        </div>                                       
+                                        <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                            <label
+                                                class="col-md-3 label-to-crect-all-names-to-div-tre-prt-sles">Total weight</label>
+                                            <input type="text" [(ngModel)]="packinglist_master_.Total_Weight "
+                                                class="col-md-9 mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                                >
+                                        </div>                            
+                                    </div>                                  
+                                </div>   
+                                <div class="col-md-12">
+                                    <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                    (click)="Close_Click()">Close</button>
+                                    <button mat-raised-button type="button" id="Save_Button"
+                                    [hidden]="Sales_Master_Save==false"
+                                        class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                        (click)="Save_PackingDetails(0)">Save</button>
+                                        <button mat-raised-button type="button" *ngIf="PackingList_Master_Id_Edit > 0"
+                                            class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                           (click)="Duplicate_Click()">Duplicate</button>
+                                           <button mat-raised-button type="button" *ngIf="PackingList_Master_Id_Edit > 0 && SalesQuotationMaster_Id > 0"
+                                            class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                            (click)="Show_Quotation_Click(SalesQuotationMaster_Id)">View Quotation</button>
+                                       <button mat-raised-button type="button"
+                                      class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                     (click)="New_Click()">New</button>
+                                    <button mat-raised-button type="button" [hidden]="Sales_Print"
+                                    *ngIf="PackingList_Master_Id_Edit > 0"
+                                        class="btn btn-danger pull-right" (click)="Print_Click()">
+                                        <i class="fa fa-print" aria-hidden="true"></i></button>
+                                </div>
+                                <div class="clearfix"></div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div id="Print_Div" style="display:none;">
+    <div class="container"
+        style="margin:0 auto;margin-top:-25px;padding:5px;width:840px;height:auto;background-color:#fff;">
+        <table style=" border: none;border-collapse:collapse;width:840px;">
+            <caption>
+                <h4 style="text-align: center;font-size:22px;margin-bottom: 5px;">{{Company_.Company_Name}}</h4>
+                {{Company_.Address1}},{{Company_.Address2}}<br>
+                {{Company_.Address3}},{{Company_.Address4}}<br>
+                Contact: {{Company_.Mobile_Number}},{{Company_.EMail}}<br>
+                <b>IN/UIN:{{Company_.NO}}</b><br>
+                Tax Invoice
+            </caption>
+            <tr style="margin-bottom: 5px;">
+                <td colspan="3" rowspan="3">
+                    <span style="font-size:19px;font-weight: bold;">{{packinglist_master_.Customer_Name}}</span><br>
+                    {{packinglist_master_.Address1}} {{packinglist_master_.Address2}}<br>
+                    {{packinglist_master_.Address3}} {{packinglist_master_.Address4}}-{{packinglist_master_.PinCode}}<br>
+                    <b>IN/UIN:{{packinglist_master_.No}}</b>
+                </td>
+                <td colspan="4" rowspan="3" style="text-align: center;">
+                    Delivery Address<br>
+                    {{packinglist_master_.Delivery_Address1}} {{packinglist_master_.Delivery_Address2}}<br>
+                    {{packinglist_master_.Delivery_Address3}} {{packinglist_master_.Delivery_Address4}}
+                </td>
+                <td rowspan="3">
+                    Invoice No<br>
+                    Dated<br>
+                    Vehicle No<br>
+                    Driver<br>
+                    Mobile
+                </td>
+                <td colspan="2" rowspan="3" style="text-align: right;">
+                    {{packinglist_master_.QuotationNo}}<br>
+                    {{packinglist_master_.EntryDate }}<br>
+                    {{packinglist_master_.Vehicle_No}}<br>
+                    {{packinglist_master_.Driver_Name}}<br>
+                    {{packinglist_master_.Mobile_No}}
+                </td>
+            </tr>
+            <tbody>
+                <tr style="padding:5px;border:1px solid #333;">
+                    <td style="padding:5px;border:1px solid #333;width:25px;">Sl No</td>
+                    <td style="padding:5px;border:1px solid #333;width:350px;">Particulars</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">HSN/SAC</td>
+                    <td style="padding:5px;border:1px solid #333;width:100px;"> %</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">Rate</td>
+                    <td style="padding:5px;border:1px solid #333;width:120px;">Quantity</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">Net Value</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">C</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">S</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">Total</td>
+                </tr>
+                <tr *ngFor="let Quotation_Details_ of Quotation_Details_Data; let i =index">
+                    <td style="padding:5px;border-left:1px solid #333;border-right:1px solid #333;width:25px;">{{i+1}}
+                    </td>
+                    <td style="padding:5px;border-right:1px solid #333;width:350px;">
+                        {{Quotation_Details_.ItemName}}<br>{{Quotation_Details_.Description}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Details_.HSNCODE}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:100px;text-align: center;">
+                        {{Quotation_Details_.SaleTax}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
+                        {{Quotation_Details_.SaleRate}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:120px;text-align: center;">
+                        {{Quotation_Details_.Quantity}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Details_.NetValue}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
+                        {{Quotation_Details_.CAMT}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
+                        {{Quotation_Details_.SAMT}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Details_.TotalAmount}}</td>
+                </tr>
+                <tr style="padding:5px;border:1px solid #333;">
+                    <td colspan="6" style="padding:5px;border:1px solid #333;width:100px;">Total</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">{{Quotation_Master_.NetTotal}}</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">{{Quotation_Master_.TotalC}}</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">{{Quotation_Master_.ToalS}}</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">{{Quotation_Master_.TotalAmount}}</td>
+                </tr>
+                
+                <tr>
+                    <td style="border-left:1px solid #333;"> </td>
+                    <td style="padding:5px;border:none;">
+                        Bank Details<br>
+                        Bank Name <br>
+                        A/c No <br>
+                        Branch<br>
+                        IFS Code
+                    </td>
+                    <td colspan="3" style="padding:5;border-right:1px solid #333;text-align: left;margin-left: 25px;">
+                        <br>
+                        {{Bank_.Client_Accounts_Name}}<br>
+                        {{Bank_.Client_Accounts_No}}<br>
+                        {{Bank_.Address1}}<br>
+                        {{Bank_.Address2}}
+                    </td>
+                    <td colspan="2" style="border-left:1px solid #333;"></td>
+                    <td colspan="3" style="border-right:1px solid #333;">
+                        Transportation Charge <span
+                            style="margin-left: 25px;">{{packinglist_master_.Transportation_Total}}</span><br>
+                        Handling Charge <span style="margin-left: 60px;">{{packinglist_master_.Handling_Total}}</span><br>
+                        Round Off <span style="margin-left: 95px;">{{packinglist_master_.RoundOff}}</span><br>
+                        Total Amount <span style="margin-left: 80px;">{{packinglist_master_.GrandTotal}}</span>
+                    </td>
+                </tr>
+                <tr style="padding:5px;border:1px solid #333;">
+                    <th colspan="10" style="text-align: left;padding:5px;">
+                      Amount Chargeable(in words):{{Amount_In_Words}} 
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">HSN/SAC </td>
+                    <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">Taxable value </td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">C%</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">C</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">S%</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">S</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">%</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;"></td>
+                </tr>
+                <tr *ngFor="let Sales_Details1_ of Quotation_Details_Data1; let n =index">
+                    <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">
+                        {{Sales_Details1_.HSNCODE}}</td>
+                    <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">
+                        {{Sales_Details1_.NetValue}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.C}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.CAMT}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.S}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.SAMT}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.SaleTax}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.TaxAmount}}</td>
+                </tr>
+                <tr *ngFor="let Quotation_Master_1 of Quotation_Master_Data; let n =index">
+                    <td colspan="2" style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Master_1.HSNCODE}}</td>
+                    <td colspan="2" style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Master_1.NetValue}}</td>
+                    <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">{{Quotation_Master_1.C}}
+                    </td>
+                    <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Master_1.CAMT}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Quotation_Master_1.S}}</td>
+                    <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Master_1.SAMT}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Quotation_Master_1.SaleTax}}</td>
+                    <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Master_1.TaxAmount}}</td>
+                </tr>
+                <tr class="border" style="padding:12px;border:1px solid #333;">
+                    <th colspan="6" class="top-none" style="padding:5;border:1px solid #333;width:185px;">
+                        <span
+                            style="text-decoration: underline;padding:5;border:1px solid #333;width:185px;">Declaration</span><br>
+                        We declare that this invoice shows the actual price of the Goods described and all particulars
+                        are true and correct.
+                    </th>
+                    <td colspan="4" class="right" style="padding:5;border:1px solid #333;">
+                        For {{Company_.Company_Name}}<br><br><br><br> Authorised Signatory
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="border" style="padding:5px;border:1px solid #333;">
+                    <th colspan="10" class="border" style="padding:5px;border:1px solid #333;width:185px;">This is a
+                        computer generated invoice</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div> -->
+
+
+<div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; font-size: 10px; display: none;" id="Print_Div1">
+    <!-- Placeholder for the letterhead image to maintain spacing -->
+    <div style="height: 100px; width: 100%; margin-bottom: 10px;">
+        <img *ngIf="printLetterhead" src='/assets/img/printlogo.png' alt="Perfect Hills Logo" style="height: 100%; width: 100%;" />
+    </div>
+
+    <h1 style="text-align: center; margin-bottom: 5px; text-decoration: underline;font-family: arial, sans-serif;">PACKING LIST</h1>
+
+ 
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 60%; display: flex; flex-direction: column; gap: 3px;font-family: arial, sans-serif;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">PB 1554 , PC 113 , GHALA,</p>
+        </div>
+   
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Date:</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ packinglist_master_.PrintDate }}</p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 60%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">MUSCAT SULTANATE OF OMAN</p>
+        </div>
+   
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">Packing List Num: </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">{{ packinglist_master_.PackingList_No }}</p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Phone</p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">+968 22820150</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Currency:</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
+                <span *ngIf="Currency.CurrencyDetails_Id">{{Currency.CurrecnyName}}</span></p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Gsm: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 13px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">97416789, 99751621</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-size: 12px;font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="packinglist_master_.POnumber">PO Number:</span>
+                </span>
+            </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-size: 12px;font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="packinglist_master_.POnumber">{{packinglist_master_.POnumber}}</span>
+                </span>
+            </p>
+        </div>
+        
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Email: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">sales&#64;perfecthills.com</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-size: 12px;font-weight: normal;font-family: arial, sans-serif;">
+                <span *ngIf="packinglist_master_.Invoice_No">Invoice No:</span>
+                </span>
+            </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-size: 12px;font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="packinglist_master_.Invoice_No">
+                        {{packinglist_master_.Invoice_No}}
+                    </span>
+                </span>
+            </p>
+        </div>
+        
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Website: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">www.perfecthills.com</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-size: 12px;font-weight: normal;font-family: arial, sans-serif;">
+                   <span *ngIf="packinglist_master_.KindAttend"> Attention:</span>
+                </span>
+                
+            </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-size: 12px;font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="packinglist_master_.KindAttend">
+                        {{packinglist_master_.KindAttend}}
+                    </span>
+                </span>
+            </p>
+        </div>
+        
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">CR Number: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">1150753</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-size: 12px;font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="packinglist_master_.AttendEmployee">
+                        Employee:
+                    </span>
+                </span>
+                
+            </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-size: 12px;font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="packinglist_master_.AttendEmployee">
+                        {{packinglist_master_.AttendEmployee}}
+                    </span>
+                </span>
+                
+            </p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">VATIN: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">OM1100004897</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="packinglist_master_.Description2">
+                        Reference:
+                    </span>
+                </span>
+                </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="packinglist_master_.Description2">
+                        {{ packinglist_master_.Description2 }}
+                    </span>
+                </span>
+                
+            </p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+        <div style="width: 48%; display: flex; flex-direction: column; gap: 3px;">
+          <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
+            margin-bottom: 3px !important;font-family: arial, sans-serif;">Customer Address</h5>
+          <!-- <p style="font-size: 13px; margin-bottom: 0px;margin-top: 0px;">{{ packinglist_master_.Customer_Name }}</p> -->
+          <p style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ packinglist_master_.Customer_Name }}</p>
+          <p *ngIf="Address1"  style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ Address1 }}</p>
+          <p *ngIf="Address2"  style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ Address2 }}</p>
+          <p *ngIf="Address3"  style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ Address3 }}</p>
+          <p *ngIf="Address4"  style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ Address4 }}</p>
+          <p *ngIf="Vatin" style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">VATIN:{{ Vatin }}</p>
+
+          
+
+        </div>
+        <div style="width: 48%; display: flex; flex-direction: column; gap: 3px; text-align: end;">
+          <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; margin-bottom: 3px !important;font-family: arial, sans-serif;">Delivery Address</h5>
+          <p *ngIf="packinglist_master_.Delivery_Address1" style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ packinglist_master_.Delivery_Address1 }}</p>
+          <p *ngIf="packinglist_master_.Delivery_Address2" style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ packinglist_master_.Delivery_Address2 }}</p>
+          <p *ngIf="packinglist_master_.Delivery_Address3" style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ packinglist_master_.Delivery_Address3 }}</p>
+          <p *ngIf="packinglist_master_.Delivery_Address4" style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ packinglist_master_.Delivery_Address4 }}</p>
+
+        </div>
+      </div>
+  
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+      <thead>
+        <tr>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 11px; background-color: #f2f2f2;font-family:arial, sans-serif; ">SI</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 11px; background-color: #f2f2f2;font-family:arial, sans-serif; ">Part number</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 11px; background-color: #f2f2f2;font-family:arial, sans-serif; ">Item & Description</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 11px; background-color: #f2f2f2;font-family:arial, sans-serif; ">UOM</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 11px; background-color: #f2f2f2;font-family:arial, sans-serif; ">HSNCODE</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 11px; background-color: #f2f2f2;font-family:arial, sans-serif; ">Coutry of Origin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of packinglist_details_Data; let i = index">
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ i + 1 }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.Item_Code }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.ItemName }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.UnitName }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.HSNCODE }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.Country_Name  }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table>
+        <tr *ngFor="let i of blankItems">
+            <td style="border: none; height: 1px !important; padding: 0 !important;"></td>
+        </tr>
+    </table>
+
+        <div [style.margin-top.px]="breakPage ?
+        (packinglist_details_Data.length < 33 ? (marginTopItemNameCount ? 145 : 70) : 
+            (packinglist_details_Data.length < 55 ? (marginTopItemNameCount ? 215 : 150) : 
+                (packinglist_details_Data.length < 75 ? 305 : 365)
+            )
+        ) 
+
+        : 
+    (packinglist_details_Data.length > 11 ? (marginTopItemNameCount ? 0 : -80) :
+     (packinglist_details_Data.length > 4 ? 100 :
+        (packinglist_details_Data.length > 3 ? 150:
+        (packinglist_details_Data.length < 2 ? 180 : 160)
+        ))
+    )
+    ">
+        
+    <h5 style="margin-top: 10px; margin-bottom: 1px; text-decoration: underline;font-family: arial, sans-serif;">Terms & Conditions</h5>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+        <div style="margin-bottom: 1px;width: 48%;" >            
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;"><span style="font-weight: bold;">Brand:</span> {{ packinglist_master_.Brand }}</p>
+            <p style="font-size: 12px;margin-top: 0px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;"><span style="font-weight: bold;">Price Basis:</span> {{ packinglist_master_.PriceBasis }}</p>
+            <p style="font-size: 12px;margin-top: 0px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;"><span style="font-weight: bold;">Delivery:</span> {{ packinglist_master_.Delivery }}</p>
+            <p style="font-size: 12px;margin-top: 0px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;"><span style="font-weight: bold;">Validity:</span> {{ packinglist_master_.Validity }}</p>
+            <p style="font-size: 12px;margin-top: 0px !important; margin-bottom: 0px !important;  width: 100% !important;font-family: arial, sans-serif;"><span style="font-weight: bold;">Payment Term:</span> {{ packinglist_master_.PaymentTermValue }} 
+            <span *ngIf="Payment_Term_Description_.payment_Term_ID > 0">{{ Payment_Term_Description_.Payment_Term_Description}}</span></p>
+            <p style="font-size: 12px;margin-top: 0px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;">
+                <span style="font-weight: bold;">Note:</span> 
+                <span style="font-size:9px;">{{ packinglist_master_.Description1 }}</span></p>
+        </div>
+        <div style="margin-bottom: 5px;width: 48%; text-align: right;" >            
+            <p style="font-size: 12px;font-family: arial, sans-serif;">
+                <span style="font-weight: bold;font-size: 12px;">Total No Of Box:</span> {{ packinglist_master_.Total_No_Of_Boxes }}</p>
+            <p style="font-size: 12px;font-family: arial, sans-serif;"><span style="font-weight: bold;">Box Details:</span>
+                <span style="font-size: 12px;width: 30px;white-space: pre-wrap;">  {{ packinglist_master_.Box_Details }} </span></p>
+            <p style="font-size: 12px;font-family: arial, sans-serif;"><span style="font-weight: bold;">Total weight:</span> {{ packinglist_master_.Total_Weight }}</p>
+        </div>    
+    </div>  
+    <div style="margin-top: 20px;display: flex;justify-content: space-between ;">
+        <div style="width: 48%;">
+            <p style="font-size: 12px;font-family: arial, sans-serif;"><span style="font-weight: bold;">Notes</span> <br>
+                <span style=" font-size: 9px; color: grey; margin-top: 0px; margin-bottom: 0px;">{{ Print_Company_.Note }}</span>
+            </p>   
+        </div>
+      <div style="text-align: right;font-size: 12px;width: 48%;font-family: arial, sans-serif;">
+      <p style="margin-top: 50px;font-size: 12px; display: inline-block; padding-top: 5px;">Authorised Signatory</p>
+        </div>
+    </div>
+    </div>  
+</div> 

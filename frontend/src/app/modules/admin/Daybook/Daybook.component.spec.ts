@@ -1,0 +1,19 @@
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { DaybookComponent } from "./Daybook.component";
+describe("DaybookComponent", () => {
+	let component: DaybookComponent;
+	let fixture: ComponentFixture<DaybookComponent>;
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [DaybookComponent],
+		}).compileComponents();
+	}));
+	beforeEach(() => {
+		fixture = TestBed.createComponent(DaybookComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+	it("should create", () => {
+		expect(component).toBeTruthy();
+	});
+});

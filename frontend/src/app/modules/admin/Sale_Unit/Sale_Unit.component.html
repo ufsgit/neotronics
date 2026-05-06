@@ -1,0 +1,96 @@
+
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+    </div>
+    <div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+    <div class="container-fluid">
+    <div class="col-md-12 row" *ngIf="Entry_View" >
+    <div class="card"  style="background-color: #f1f1f1;" >
+    <div class="card-body">  
+    <div class="col-md-6 ">
+        <label class="col-md-3 ">Sale Unit
+            <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+        <input type="text" class="col-md-9 "  style="border: #d3d3d3 solid 1px !important;"
+        [(ngModel)]="Sale_Unit_.Sale_Unit_Name" name="Sale_Unit_.Sale_Unit_Name" [ngModelOptions]="{standalone: true}">
+    </div>
+    <div class="col-md-6">
+            <div class="col-md-4 down-alighn-label-all ">
+                    <button mat-raised-button type="button" [hidden]="Sale_Unit_Save==false"id="Save_Button"class=" mb-4 btn btn-danger pull-right"(click)="Save_Sale_Unit()">Save</button>
+                    <button mat-raised-button type="button" class="btn btn-danger pull-right mb-4" (click)="Close_Click()">Close</button>
+                </div>      
+    </div> 
+    </div>
+    </div>  
+    <div class="clearfix"></div>
+    </div>
+    <div class="row" *ngIf="!Entry_View">
+    <div class="row col-md-12 mb-3"  
+     style="align-items: center;
+             border: 0;
+             border-radius: 6px;
+             margin-left: 2px;
+             color: #333333;
+             background: #fff;
+             width: 100%;padding: 3px;background-color: #f1f1f1;
+             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+         ">  
+                    <div class="col-md-6 ">                     
+                    <label class="col-md-3 ">Sale Unit</label>
+                   <input type="text" class="col-md-9 "style="border: #d3d3d3 solid 1px !important;background-color: #fff;" 
+                   [(ngModel)]="Search_Name" name="Search_Name" [ngModelOptions]="{standalone: true}">
+                    </div>
+                    <div class="col-md-6">
+                            <div class="col-md-12">
+                                    <button mat-raised-button type="button" (click)="Search_Sale_Unit()" class="btn btn-danger "><i class="fa fa-search" aria-hidden="true"></i></button>      
+                                    <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger "><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                    </div>        
+                    </div>              
+        
+
+                    <div class="clearfix"></div>
+    </div>  
+    <div class="col-md-12">
+    <div class="table-responsive card ">
+    <!-- <div class="table-responsive"> -->
+    <div
+        class="table-responsive"
+        [style.height.px]="myInnerHeight"
+        style="overflow-y: scroll;background-color: #f1f1f1;">
+        <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" > -->
+        <table class="table table-hover">
+        <thead class="thead">
+        <th>
+        Sl No
+        </th>
+        <th>
+        Sale Unit Name
+        </th>
+        <th [hidden]="Sale_Unit_Edit==false">
+        Edit
+        </th>
+        <th [hidden]="Sale_Unit_Delete==false">
+        Delete
+        </th>
+        </thead>
+        <!-- <ng-container *cdkVirtualFor="let Sale_Unit1 of Sale_Unit_Data; let i = index"> -->
+        <tr *ngFor="let Sale_Unit1 of Sale_Unit_Data; let i =index">
+        <td style="padding-left:5px;">{{ i+1 }}</td>
+        <td>{{Sale_Unit1["Sale_Unit_Name"]}}</td>
+        <td>
+        <button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Sale_Unit_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Sale_Unit(Sale_Unit1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
+        </td>
+        <td> 
+        <button _ngcontent-gdi-c11="" [hidden]="Sale_Unit_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Sale_Unit(Sale_Unit1.Sale_Unit_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
+        </td>
+            <!-- </ng-container> -->
+        </table>
+    </div>
+    <!-- </cdk-virtual-scroll-viewport> -->
+    <!-- </div> -->
+        <label class="entry-num">Entries : {{Total_Entries}}</label>
+    </div>
+    </div>
+    </div>
+    </div>
+    

@@ -1,0 +1,23 @@
+.card-header-info {
+  background: #fff !important;
+  color: #333 !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid #eee !important;
+  margin-bottom: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+.kv {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.kv .k {
+  color: #6c757d;
+  display: inline-block;
+  width: 92px;
+}
+.kv .v {
+  color: #333;
+  word-break: break-word;
+}
+

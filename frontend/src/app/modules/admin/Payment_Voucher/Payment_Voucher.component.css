@@ -1,0 +1,18 @@
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+    display: none;
+}
+::ng-deep .mat-input-element{
+    padding-left: 15px !important;
+}
+::ng-deep .mat-form-field-infix {
+    border-bottom: 0.84375em solid transparent;
+}
+input{
+    padding-left: 15px  !important;
+}
+.for-input-selct-tblelst {
+    margin: 10px 0px 25px 0px;
+    padding: 5px 0px !important;
+    border: #d3d3d3 solid 1px !important;
+}

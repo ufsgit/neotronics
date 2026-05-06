@@ -1,0 +1,264 @@
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+    </div>
+    <div class="main-content">
+    <div class="container-fluid">
+    <div class="row" *ngIf="Entry_View">
+    <div class="col-md-12">
+    <div class="card">
+
+     <!-- <div class="card-header card-header-danger">
+    <h4 class="card-title">Journal Entry
+        <button class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button close-for-wole-pge-butun" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons" (click)="Close_Click()" >close</i></span>
+          <div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>  
+          
+    
+    </h4>-->
+    <!--<p class="card-category">Complete your profile</p> -->
+     <!-- </div>-->
+
+    <div class="card-body">
+    <!-- <form> -->
+    <div class="row">
+    <div class="col-md-6">
+      <!-- <div class="col-md-12">
+        <label class="col-md-4"><span>Company</span></label>
+        <select [(ngModel)]="Company_" name="Company" required class="select-qtatn-mstr" class="col-md-8 for-input-selct-tblelst margin-inputs-edit-portion-jouranl-section">
+        <option *ngFor="let Company of Company_Data" [ngValue]="Company">{{Company.Company_Name}}</option>
+        </select>
+        </div> -->
+        <div class="col-md-12">
+            <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt">From <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+            <input type="text" [matAutocomplete]="auto" [(ngModel)]="FromAccount_" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Get_Client_Accounts_Typeahead($event)" class="col-md-8 for-input-selct-tblelst margin-inputs-edit-portion-jouranl-section" />
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_FromAccount">
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <ng-container *ngIf="!isLoading">
+              <mat-option *ngFor="let FromAccount of Client_Accounts_Data" [value]="FromAccount">
+                <span><div  (click)="Address_Change(FromAccount.Address1)" >{{FromAccount.Client_Accounts_Name}}-{{FromAccount.Address1}}-{{FromAccount.Mobile}}</div></span>
+              </mat-option>
+            </ng-container>
+            </mat-autocomplete>
+            </div>
+            <div class="col-md-12">
+              <label class="col-md-4 label-down-alighn-rcpt-vuchr">From Detail  </label>
+              <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox">
+              <input disabled matInput type="text" [(ngModel)]="Journal_Entry_.From_Detail" name="Address1" >
+              </mat-form-field>
+              </div>
+            <div class="col-md-12">
+                <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt">To <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+                <input type="text" [matAutocomplete]="auto1" [(ngModel)]="ToAccount_" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Get_Client_Accounts_Typeahead($event)" class="col-md-8 for-input-selct-tblelst margin-inputs-edit-portion-jouranl-section" />
+                <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_FromAccount">
+                <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                <ng-container *ngIf="!isLoading">
+                  <mat-option *ngFor="let FromAccount of Client_Accounts_Data" [value]="FromAccount">
+                    <span><div  (click)="To_Change(FromAccount.Address1)" >{{FromAccount.Client_Accounts_Name}}-{{FromAccount.Address1}}-{{FromAccount.Mobile}}</div></span>
+                  </mat-option>
+                </ng-container>
+                </mat-autocomplete>
+                </div>
+                <div class="col-md-12">
+                  <label class="col-md-4 label-down-alighn-rcpt-vuchr">To Detail  </label>
+                  <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox">
+                  <input disabled matInput type="text" [(ngModel)]="Journal_Entry_.To_Detail" name="Address2" >
+                  </mat-form-field>
+                  </div>
+                  <div class="col-md-12">
+                    <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt">Amount <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+                    <mat-form-field class="col-md-8 led-srch-sctn-nput-tb margin-lh-rh-to-crect-textbox margin-inputs-edit-portion-jouranl-section">
+                    <input matInput type="number" [(ngModel)]="Journal_Entry_.Amount" name="Journal_Entry_.Amount" >
+                    </mat-form-field>
+                    </div>
+    
+    </div>
+    
+    <div class="col-md-6 mrgn-crect-jornal-edit-section">
+     
+            <div class="col-md-12">
+              <label class="col-md-4 label-down-alighn-rcpt-vuchr">Date</label>
+              <mat-form-field class="col-md-8 margin-down-date-input-box-contra">
+                      <input matInput [matDatepicker]="dp" placeholder="" [(ngModel)]="Journal_Entry_.Date">
+                      <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                      <mat-datepicker #dp></mat-datepicker>
+                    </mat-form-field>
+              </div>
+
+                <div class="col-md-12 crect-align-acunts-slct">
+                    <label class="col-md-4 label-down-alighn-nvce-nmbr-prhse-mstr-br-cde">Mode  <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+                    <select [(ngModel)]="Payment_Mode_" name=""  required class="col-md-8 select-box-style-diary">
+                    <option *ngFor="let Payment_Mode_M of Payment_Mode_Data"[ngValue]="Payment_Mode_M">{{Payment_Mode_M.Payment_Mode_Name}}</option>
+                    </select>
+                    </div>
+
+              <div class="col-md-12 margin-down-wole-div-to-contra-new">
+                  <label class="col-md-4 label-down-alighn-rcpt-vuchr">Voucher No</label>
+                 <mat-form-field class="col-md-8 margin-down-date-input-box-contra led-srch-sctn-nput-tb margin-inputs-edit-portion-jouranl-section">
+                 <input disabled matInput type="number" [(ngModel)]="Journal_Entry_.Voucher_No" name="Journal_Entry_.Voucher_No">
+                 </mat-form-field>
+                 </div>
+
+    <div class="col-md-12 margin-down-wole-div-to-contra-new">
+        <label class="col-md-4 lbel-crect-alghn-pymnt-vchr-dscrptn">Description</label>
+        <mat-form-field class="col-md-8 margin-top-nput-box-scrption led-srch-sctn-nput-tb margin-inputs-edit-portion-jouranl-section">
+        <input matInput type="text" maxlength="1000" [(ngModel)]="Journal_Entry_.Description" name="Journal_Entry_.Description">
+        </mat-form-field>
+        </div>
+        <div class="col-md-12 margin-down-wole-div-to-journalentry-new">
+          <button mat-raised-button type="button"[hidden]="Journal_Entry_Save==false" id="Save_Button"class="btn btn-danger pull-right save-close-new-buttons-to-crect buton-to-move-right-journal"(click)="Save_Journal_Entry()">Save</button>
+          <button mat-raised-button type="button" class="btn btn-danger pull-right save-close-new-buttons-to-crect " (click)="Close_Click()">Close</button>
+          </div>
+          
+        </div>
+   
+
+    </div>
+    <div class="clearfix"></div>
+    <!-- </form> -->
+    </div>
+    </div>
+    </div>
+    
+    
+    </div>
+    <div class="row" *ngIf="!Entry_View">
+           
+    <div _ngcontent-xmy-c9="" class="col-md-1 width-to-crect-check-boxes">
+        <div _ngcontent-xmy-c9="" class="form-check algyn-checkbx-lead-serch-scton div-crct-alghn-dwn-ldgr-vuchr-tpe">
+        <label _ngcontent-xmy-c9="" class="form-check-label">
+        <input type='checkbox'class="form-check-input" placeholder='Search...' [(ngModel)]="Look_In_Date" />
+        <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9="" class="check"></span>
+        </span></label></div>
+        <!-- <label class="for-down-title-tabs-personal-details">Date</label> -->
+        </div>
+        <div class="col-md-3 row mb-3" style="align-items: center;">
+          <label class="col-md-4 mb-0 " style="text-align: end;">From</label>
+          <mat-form-field class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;">
+                  <input matInput [matDatepicker]="dp1" placeholder="" [(ngModel)]="Search_FromDate">
+                  <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                  <mat-datepicker #dp1></mat-datepicker>
+                </mat-form-field>
+          </div>
+
+        <div class="col-md-3 row mb-3" style="align-items: center;">
+          <label class="col-md-4 mb-0 " style="text-align: end;">TO</label>
+          <mat-form-field class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;">
+                  <input matInput [matDatepicker]="dp2" placeholder="" [(ngModel)]="Search_ToDate">
+                  <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                  <mat-datepicker #dp2></mat-datepicker>
+                </mat-form-field>
+          </div>
+
+
+        <div class="col-md-3 row mb-3" style="align-items: center;">
+            <label class="col-md-4 mb-0" style="text-align: end;">Voucher No</label>
+                <mat-form-field  class="col-md-8 " style="height: 40px;
+    border: 1px solid #b1b1b1;">
+                <input matInput type="number" [(ngModel)]="Voucher_No_search" name="Voucher_No_search">
+                </mat-form-field>
+                </div>
+
+        <div class="col-md-3 row mb-3" style="align-items: center;">
+            <label  class="col-md-4 mb-0" style="text-align: end;">From</label>
+            <input type="text" [matAutocomplete]="auto2" [(ngModel)]="FromAccount_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Accounts_Typeahead($event)" class="col-md-9 for-input-selct-tblelst" />
+            <mat-autocomplete #auto2="matAutocomplete" [displayWith]="display_FromAccount">
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <ng-container *ngIf="!isLoading">
+              <mat-option *ngFor="let FromAccount of Client_Accounts_Data" [value]="FromAccount">
+                  <span>{{FromAccount.Client_Accounts_Name}}-{{FromAccount.Address1}}-{{FromAccount.Mobile}}</span>
+              </mat-option>
+            </ng-container>
+            </mat-autocomplete>
+            
+            </div>
+    
+            <div class="col-md-4">
+                <label class="col-md-2 label-down-alighn-stk-ad-mstr-brcde">To </label>
+                <input type="text" [matAutocomplete]="auto3" [(ngModel)]="ToAccount_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Accounts_Typeahead($event)" class="col-md-10 for-input-selct-tblelst" />
+                <mat-autocomplete #auto3="matAutocomplete" [displayWith]="display_FromAccount">
+                <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                <ng-container *ngIf="!isLoading">
+                  <mat-option *ngFor="let FromAccount of Client_Accounts_Data" [value]="FromAccount">
+                      <span>{{FromAccount.Client_Accounts_Name}}-{{FromAccount.Address1}}-{{FromAccount.Mobile}}</span>
+                  </mat-option>
+                </ng-container>
+                </mat-autocomplete>
+                
+                </div> 
+  <div class="col-md-3">  
+  <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger pull-right button-to-crect-margin change-colour-button alighn-butn-user-page"><i class="fa fa-plus" aria-hidden="true"></i></button>
+  <button mat-raised-button type="button" (click)="Search_Journal_Entry()" class="btn btn-danger pull-right button-to-crect-margin change-colour-button"><i class="fa fa-search" aria-hidden="true"></i></button>
+   </div> 
+
+    <div class="col-md-12">
+    <div class="card card-plain">
+    <!--<div class="card-header card-header-danger">
+    <h4 class="card-title mt-0"> Journal Entry</h4>-->
+    <!-- <p class="card-category"> Here is a subtitle for this table</p> -->
+    <!-- </div> -->
+    <div class="card-body">
+    <div class="table-responsive">
+ <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" >
+    <table class="table table-hover">
+    <thead class="thead">
+    <!-- <th>
+    Sl No
+    </th> -->
+    <th>
+     Date
+    </th>
+    <th>
+      From 
+      </th> 
+      <th>
+        From Detail
+        </th> 
+      <th>
+      To 
+      </th>
+      <th>
+        To Detail
+        </th>
+    <th>
+    Amount
+    </th>
+    <th>
+      Voucher No
+      </th>
+    <th [hidden]="Journal_Entry_Edit==false">
+    Edit
+    </th>
+    <th [hidden]="Journal_Entry_Delete==false">
+    Delete
+    </th>
+    </thead>
+    <ng-container *cdkVirtualFor="let Journal_Entry1 of Journal_Entry_Data; let i = index">
+    <tr>
+    <!-- <td style="padding-left:5px;">{{ i+1 }}</td> -->
+    <td>{{Journal_Entry1["Search_Date"]}}</td>
+    <td>{{Journal_Entry1["FromAccount_Name"]}}</td> 
+    <td>{{Journal_Entry1["From_Detail"]}}</td> 
+    <td>{{Journal_Entry1["ToAccount_Name"]}}</td> 
+    <td>{{Journal_Entry1["To_Detail"]}}</td> 
+    <td>{{Journal_Entry1["Amount"]}}</td> 
+    <td>{{Journal_Entry1["Voucher_No"]}}</td> 
+    <td>
+    <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""[hidden]="Journal_Entry_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Journal_Entry(Journal_Entry1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
+    </td>
+    <td> 
+    <button _ngcontent-gdi-c11=""[hidden]="Journal_Entry_Delete==false" class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Journal_Entry(Journal_Entry1.Journal_Entry_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
+    </td>
+   </tr>
+       </ng-container>
+</table>
+</cdk-virtual-scroll-viewport>
+    </div>
+    </div>
+    <label class="entry-num">Entries : {{Total_Entries}}</label>
+    </div>
+    </div>
+    </div>
+    </div>
+    

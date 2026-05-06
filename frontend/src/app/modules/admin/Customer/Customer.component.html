@@ -1,0 +1,303 @@
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+    </div>
+    <div class="main-content mt-0">
+    <div class="container-fluid">
+    <div class="row" *ngIf="Entry_View">
+    <div class="col-md-12">
+   
+    <div class="card-body">
+    <form>
+    <div class="row">
+    <div class="col-md-6">
+
+        <!-- <div class="col-md-12" [hidden]="Group_Edit" >
+
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Group <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+<input disabled type="text" [matAutocomplete]="auto1" [(ngModel)]="Account_Group_" name="Account_Group_" (click)="Get_Account_Group($event)" (keyup)="Get_Account_Group($event)" class="col-md-9 input-allighn-typer-head-all-divs"/>
+<mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item_Group">
+<mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+<ng-container *ngIf="!isLoading">
+<mat-option *ngFor="let Group_M of Account_Group_Data" [value]="Group_M">
+<span>{{Group_M.Group_Name}}</span>
+</mat-option>
+</ng-container>
+</mat-autocomplete>
+</div> -->
+<!-- 
+<div class="col-md-12"  [hidden]="Employee_Edit" >
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Employee <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+<input type="text" [matAutocomplete]="auto" [(ngModel)]="Employee_" name="Employee_" (click)="Get_Employee($event)" (keyup)="Get_Employee($event)" class="col-md-9 input-allighn-typer-head-all-divs"/>
+<mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Employee">
+<mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+<ng-container *ngIf="!isLoading">
+<mat-option *ngFor="let Employee_M of Employee_Details_Data" [value]="Employee_M">
+<span>{{Employee_M.Client_Accounts_Name}}</span>
+</mat-option>
+</ng-container>
+</mat-autocomplete>
+</div>
+         -->
+<div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Name 
+    <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>    
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs" style="border: 1px solid lightgrey !important;
+height: 47px;padding-left: 10px;">
+<input matInput type="text" [(ngModel)]="Client_Accounts_.Client_Accounts_Name" name="Client_Accounts_.Client_Accounts_Name">
+</mat-form-field>
+</div>
+
+<div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Address1</label>
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs" style="border: 1px solid lightgrey !important;
+height: 47px;padding-left: 10px;">
+<input matInput type="text" [(ngModel)]="Client_Accounts_.Address1" name="Client_Accounts_.Address1">
+</mat-form-field>
+</div>
+
+<div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Address 2</label>
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs" style="border: 1px solid lightgrey !important;
+height: 47px;padding-left: 10px;">
+<input matInput type="text"  [(ngModel)]="Client_Accounts_.Address2" name="Client_Accounts_.Address2">
+</mat-form-field>
+</div>
+
+<div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Address 3</label>
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs" style="border: 1px solid lightgrey !important;
+height: 47px;padding-left: 10px;">
+<input matInput type="text" [(ngModel)]="Client_Accounts_.Address3" name="Client_Accounts_.Address3">
+</mat-form-field>
+</div>
+
+<div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Address 4</label>    
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs" style="border: 1px solid lightgrey !important;
+height: 47px;padding-left: 10px;">
+<input matInput type="text" [(ngModel)]="Client_Accounts_.Address4" name="Client_Accounts_.Address4">
+</mat-form-field>
+</div>
+
+<div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Pincode</label>    
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs" style="border: 1px solid lightgrey !important;
+height: 47px;padding-left: 10px;">
+<input matInput type="text" [(ngModel)]="Client_Accounts_.PinCode" name="Client_Accounts_.PinCode">
+</mat-form-field>
+</div>
+
+<!-- Added on 12-02-2024 -->
+
+<div class="col-md-12">
+    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">
+        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span>User Name
+    </label>    
+    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs" style="border: 1px solid lightgrey !important;
+    height: 47px;padding-left: 10px;">
+    <input matInput type="text" [(ngModel)]="Client_Accounts_.User_Details_Name" name="Client_Accounts_.User_Details_Name">
+    </mat-form-field>
+</div>
+
+<div class="col-md-12">
+    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">
+        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span>Password
+    </label>    
+    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs" style="border: 1px solid lightgrey !important;
+    height: 47px;padding-left: 10px;">
+    <input matInput type="text" [(ngModel)]="Client_Accounts_.Password" name="Client_Accounts_.Password">
+    </mat-form-field>
+</div>
+
+<div class="col-md-12">
+    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Email</label>    
+    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs" style="border: 1px solid lightgrey !important;
+    height: 47px;padding-left: 10px;">
+    <input matInput type="text" [(ngModel)]="Client_Accounts_.Email" name="Client_Accounts_.Email">
+    </mat-form-field>
+</div>
+
+<div class="col-md-12">
+    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Mobile</label>    
+    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs" style="border: 1px solid lightgrey !important;
+    height: 47px;padding-left: 10px;">
+    <input matInput type="text" [(ngModel)]="Client_Accounts_.Mobile" name="Client_Accounts_.Mobile">
+    </mat-form-field>
+</div>
+
+<div class="col-md-12">
+    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Phone no.</label>    
+    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs" style="border: 1px solid lightgrey !important;
+    height: 47px;padding-left: 10px;">
+    <input matInput type="text" [(ngModel)]="Client_Accounts_.Phone" name="Client_Accounts_.Phone">
+    </mat-form-field>
+</div>
+
+<!-- ------------- -->
+
+
+<div class="col-md-12">
+    <button mat-raised-button type="button" [hidden]="Item_Save==false"id="Save_Button"class="btn btn-danger pull-right"(click)="Save_Client_Accounts()">Save</button>
+    <button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>
+</div>  
+<!-- <div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">GST No</label>    
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+<input matInput type="text" [(ngModel)]="Client_Accounts_.GSTNo" name="Client_Accounts_.GSTN">
+</mat-form-field>
+</div> -->
+  
+</div>
+ 
+    <!-- <div class="col-md-6">
+            <div class="col-md-12">
+                    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Country</label>    
+                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+                    <input matInput type="text" [(ngModel)]="Client_Accounts_.Country" name="Client_Accounts_.Country">
+                    </mat-form-field>
+                    </div>
+                    
+                    <div class="col-md-12">
+                    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Phone</label>    
+                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+                    <input matInput type="text" [(ngModel)]="Client_Accounts_.Phone" name="Client_Accounts_.PinCode">
+                    </mat-form-field>
+                    </div>
+                    
+                    <div class="col-md-12">
+                    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Mobile</label>    
+                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+                    <input matInput type="text" [(ngModel)]="Client_Accounts_.Mobile" name="Client_Accounts_.Mobile">
+                    </mat-form-field>
+                    </div>
+                    
+                    <div class="col-md-12">
+                    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Email</label>    
+                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+                    <input matInput type="text" [(ngModel)]="Client_Accounts_.Email" name="Client_Accounts_.Email">
+                    </mat-form-field>
+                    </div>
+                    
+                    <div class="col-md-12">
+                    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Opening Balance</label>   
+                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+                    <input matInput type="number" [(ngModel)]="Client_Accounts_.Opening_Balance" name="Client_Accounts_.Opening_Balance">
+                    </mat-form-field>
+                    </div>
+                    
+                    <div class="col-md-12">
+                    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Opening Type</label>
+                    <select  required class="col-md-9 for-input-selct-tblelst ng-valid ng-dirty ng-touched" [(ngModel)]="Client_Accounts_.Opening_Type" name="Client_Accounts_.Opening_Type" >
+                    <option value="0">Credit</option>
+                    <option value="1">Debit</option>
+                    </select>
+                    </div>
+                    
+                    <div class="col-md-12">
+                    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">State Code</label>    
+                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+                    <input matInput type="text" [(ngModel)]="Client_Accounts_.StateCode" name="Client_Accounts_.StateCode">
+                    </mat-form-field>
+                    </div>
+                    
+                    <div class="col-md-12">
+                    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">State</label>    
+                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+                    <input matInput type="text" [(ngModel)]="Client_Accounts_.State" name="Client_Accounts_.State">
+                    </mat-form-field>
+                    </div>
+                    
+                    <div class="col-md-12">
+                    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Pan No</label>    
+                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+                    <input matInput type="text" [(ngModel)]="Client_Accounts_.PanNo" name="Client_Accounts_.PanNo">
+                    </mat-form-field>
+                    </div>   
+
+                      
+    </div> -->
+    </div>
+    <div class="clearfix"></div>
+    </form>
+    </div>
+    <!-- </div> -->
+    </div>
+    </div>
+    <div class="row" *ngIf="!Entry_View">
+        <div class="card" style="    margin: 0 20px;">
+        <div class="col-12 row" style="    padding-top: 17px;">
+<div class="col-md-5" style="display: flex;
+align-items: center;">
+<label class="col-md-4 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name" style="    top: 0;"> Branch Name </label>
+<mat-form-field class="col-md-8 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs " style="border: 1px solid lightgrey !important;
+height: 47px;padding-left: 10px;">
+<input matInput type="text"  [(ngModel)]="Search_Client_Accounts_"  name="Search_Client_Accounts_">  
+</mat-form-field>
+</div>
+
+<!-- 
+<div class="col-md-4"  [hidden]="Employee_Edit" >
+    <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Employee </label>
+    <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Employee_Search" name="Employee_" (click)="Get_Employee($event)" (keyup)="Get_Employee($event)" class="col-md-9 input-allighn-typer-head-all-divs"/>
+    <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Employee">
+    <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+    <ng-container *ngIf="!isLoading">
+    <mat-option *ngFor="let Employee_M of Employee_Details_Data" [value]="Employee_M">
+    <span>{{Employee_M.Client_Accounts_Name}}</span>
+    </mat-option>
+    </ng-container>
+    </mat-autocomplete>
+    </div> -->
+            
+<div class="col-md-4">
+<button mat-raised-button type="button" (click)="Search_Client_Accounts()" class="btn btn-danger button-to-crect-margin ">Search</button> 
+<button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin ">Create New</button> 
+</div>
+</div>
+</div>
+<div class="col-md-12">
+<div class="card-plain card" style="    margin-top: 15px;">
+        <div class="card-body padding-card" >
+    <div class="table-responsive">
+ <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" >
+    <table class="table table-hover">
+    <thead class="thead">
+    <th>
+    Sl No
+    </th>
+    <th>
+Branch Name
+    </th>
+    <th [hidden]="Item_Edit==false">
+    Edit
+    </th>
+    <th [hidden]="Customer_Delete==false">
+    Delete
+    </th>
+    </thead>
+    <ng-container *cdkVirtualFor="let Client_Accounts_1 of Client_Accounts_Data; let i = index">
+    <tr>
+    <td style="padding-left:5px;">{{ i+1 }}</td>
+    <td>{{Client_Accounts_1["Client_Accounts_Name"]}}</td>
+    <td>
+        
+    <button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Client_Accounts_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Client_Accounts(Client_Accounts_1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
+    </td>
+    <td> 
+    <button _ngcontent-gdi-c11="" [hidden]="Client_Accounts_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Client_Accounts(Client_Accounts_1.Client_Accounts_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
+    </td>
+   </tr>
+       </ng-container>
+</table>
+</cdk-virtual-scroll-viewport>
+    </div>
+    </div>
+    
+    <label class="entry-num">Entries : {{Total_Entries}}</label>
+    </div>
+    
+    </div>
+    </div>
+    </div>
+    

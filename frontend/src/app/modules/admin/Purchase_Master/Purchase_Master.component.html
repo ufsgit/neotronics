@@ -1,0 +1,812 @@
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+    </div>
+    <div class="main-content mt-0">
+    <div class="container-fluid">
+    <div class="row" *ngIf="Entry_View">
+    <div class="col-md-12">
+    <div class="card">
+    <div class="card-body">
+    <form>
+<div class="row">
+<div class="col-md-6">
+<div class="col-md-12" >
+    <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Supplier
+        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span>
+    </label>
+    <input style="    border: 1px solid lightgrey;" type="text" [matAutocomplete]="auto_Supplier" [(ngModel)]="Supplier_" name="Supplier" 
+    (click)="Search_Supplier_Typeahead($event)" 
+    (keyup)="Search_Supplier_Typeahead($event)" (ngModelChange)="Supplier_Change()"
+    class="col-md-9  ng-valid ng-touched" /><!-- for-input-selct-tblelst nput-laed-tabs-for-wole nput-laed-tabs-for-cuntry-wole-->
+    <mat-autocomplete #auto_Supplier="matAutocomplete" [displayWith]="display_Supplier">
+        <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+        <ng-container *ngIf="!isLoading">
+            <mat-option *ngFor="let Supplier_T of Supplier_Data" [value]="Supplier_T">
+                <span>{{Supplier_T.Client_Accounts_Name}}</span>
+            </mat-option>
+        </ng-container>
+    </mat-autocomplete>
+    </div>
+
+
+    <div class="col-md-12" >
+        <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Branch
+            <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span>
+        </label>
+        <input style="    border: 1px solid lightgrey;" type="text" [matAutocomplete]="auto_branch" [(ngModel)]="Purchase_Maste_" name="Branch" 
+        (click)="Search_Branch_Typeahead($event)" 
+        (keyup)="Search_Branch_Typeahead($event)" 
+        class="col-md-9  ng-valid ng-touched" />
+        <mat-autocomplete #auto_branch="matAutocomplete" [displayWith]="display_Branch">
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <ng-container *ngIf="!isLoading">
+                <mat-option *ngFor="let Supplier_T of Purchase_Master_Data_Filter" [value]="Supplier_T">
+                    <span>{{Supplier_T.Branch_Name}}</span>
+                </mat-option>
+            </ng-container>
+        </mat-autocomplete>
+        </div>
+
+    
+    <!-- <div class="col-md-12">
+        <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Category</label>
+        <input type="text" [matAutocomplete]="auto_itemGroup" [(ngModel)]="Item_Group_" name="Item_Group_" (click)="Get_Item_Group($event)" 
+        (keyup)="Get_Item_Group($event)" 
+        class="col-md-9 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+        <mat-autocomplete #auto_itemGroup="matAutocomplete" [displayWith]="display_Item_Group">
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <ng-container *ngIf="!isLoading">
+                <mat-option *ngFor="let Itemgroup of Item_Group_Data" [value]="Itemgroup">
+                    <span>{{Itemgroup.Item_Group_Name}}</span>
+                </mat-option>
+            </ng-container>
+        </mat-autocomplete>
+        </div> -->
+
+
+
+<!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margn-aliygn-crect-address-purchase-masters pdng-crct-alghn-non-edtble-sles-mstr-nputbx-one">
+
+<mat-form-field class="col-md-12 padd-right-crect-alighn-wole-div pdng-crect-rspnsv-mrgn-nptbx-txt-lh">
+<input matInput type="text" [(ngModel)]="Purchase_Master_.Address1" disabled  name="Purchase_Master_.Address1" class="input-text-item-group-diary" readonly>
+</mat-form-field>
+</div>
+<div class="col-md-12 background-non-editable-input-box-purchase-master pdng-crct-alghn-non-edtble-prchse-mstr-nputbx-tre">
+
+<mat-form-field class="col-md-12 padd-right-crect-alighn-wole-div pdng-crect-rspnsv-mrgn-nptbx-txt-lh">
+<input matInput type="text" [(ngModel)]="Purchase_Master_.Address2" disabled  name="Purchase_Master_.Address2" class="input-text-item-group-diary" readonly>
+</mat-form-field>
+</div>
+<div class="col-md-12 background-non-editable-input-box-purchase-master pdng-crct-alghn-non-edtble-sles-mstr-nputbx-for">
+
+<mat-form-field class="col-md-12 padd-right-crect-alighn-wole-div pdng-crect-rspnsv-mrgn-nptbx-txt-lh">
+<input matInput type="text" [(ngModel)]="Purchase_Master_.Address3"  disabled  name="Purchase_Master_.Address3" class="input-text-item-group-diary" readonly>
+</mat-form-field>
+</div>             -->
+</div>
+<div class="col-md-6 mrgn-up-wrd-wle-div-rspnsv-prhse-mstr-nw-sctn">
+<div class="col-md-12 div-crct-wdth-crct-date-prhse-mstr-new-sctn">
+    <label class="col-md-3 label-down-alighn-adrs-tre-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Bill Date
+        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span>
+    </label>
+        <mat-form-field class="col-md-9  mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px;">
+            <input matInput [matDatepicker]="dp"  name="Purchase_Master_.Date" placeholder="" [(ngModel)]="Purchase_Master_.PurchaseDate">
+            <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+            <mat-datepicker #dp></mat-datepicker>
+        </mat-form-field>
+</div>
+<div class="col-md-12 mrgn-up-wrd-wle-div-rspnsv-prhse-mstr-nw-sctn i-d">  
+    <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Invoice No
+        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span>
+    </label>
+    <input matInput type="text" name="Purchase_Master_InvoiceNo" [(ngModel)]="Purchase_Master_.InvoiceNo" 
+     class="col-md-9 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="    border: 1px solid lightgrey;">
+    </div> 
+
+    <div class="col-md-12  mrgn-up-wrd-wle-div-rspnsv-prhse-mstr-nw-sctn">
+    <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Bill Type
+        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> 
+    </label>
+    <select id="Bill_Type_" name="Bill_Type" [(ngModel)]="Bill_Type_"  (ngModelChange)="bill_type_chnages()" 
+    required class="col-md-9 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+            <option *ngFor="let Bill_Type_T of Bill_Type_Data" [ngValue]="Bill_Type_T">{{Bill_Type_T.Bill_Type_Name}}</option>
+    </select> 
+    </div>  
+
+    <div class="col-md-12" style="    display: flex;
+    align-items: center;">
+        <label
+            class="col-md-3 label-down-alighn-adrs-tre-prhse-mstr-down"
+            >Document
+        </label>
+        <mat-form-field style="border: 1px solid lightgrey !important;
+        height: 47px;padding-left: 10px;"
+            class="col-md-6 input-allighn-typer-head-all-divs-matinputs"
+        >
+            <input
+                matInput
+                type="text" 
+                [(ngModel)]="Doc_Photo"
+                name="Doc_Photo"
+                disabled
+            />
+        </mat-form-field>
+
+        <button
+            class="btn btn-danger mb-2 pl-2 pr-2 mt-2"
+            type="button"
+           
+            (click)="fileInput1.click()"
+        >
+            <span>Choose File</span>
+            <input
+                #fileInput1
+                type="file"
+                name="ImageFile_Doc"
+                [(ngModel)]="ImageFile_Doc"
+                (change)="File_Change_Vat($event)"
+                style="display: none"
+            />
+        </button>
+    </div>                                                     
+</div>
+
+
+<div class="col-md-12">
+
+    <div class="col-md-4" >
+        <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh fw-600">Item Code 
+            <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span>
+        </label>
+        <input style="    border: 1px solid lightgrey;" type="text" [matAutocomplete]="auto_itemCode" [(ngModel)]="Item1_" name="Item_Code" 
+        (click)="Search_ItemCode_Typeahead($event)" 
+        (keyup)="Search_ItemCode_Typeahead($event)" 
+        class="col-md-7  ng-valid ng-touched" />
+        <mat-autocomplete #auto_itemCode="matAutocomplete" [displayWith]="display_ItemCode" (optionSelected)="onItemSelected($event)">
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <ng-container *ngIf="!isLoading">
+                <mat-option *ngFor="let Item__Data_Filter_T of Item_Data_Filter1" [value]="Item__Data_Filter_T">
+                    <span>{{Item__Data_Filter_T.Item_Code}}</span>
+                </mat-option>
+            </ng-container>
+        </mat-autocomplete>
+        </div>
+
+
+        <div class="col-md-4 alighn-right-inputs-sales-grid">
+            <label class="col-md-3 label-down-alighn-stk-ad-mstr-brcde pdng-crect-rspnsv-mrgn-nptbx-txt-lh fw-600">Item Name
+                <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>        
+            <input type="text"  [(ngModel)]="Purchase_Details_.ItemName" name="Purchase_Details_.ItemName" 
+            class="col-md-9 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+          
+        </div>
+
+        <div class="col-md-12">
+            <label class="col-md-1 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Category
+                <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span>
+            </label>
+            <input type="text" [matAutocomplete]="auto_itemGroup" [(ngModel)]="Item_Group_" name="Item_Group_" (click)="Get_Item_Group($event)" 
+            (keyup)="Get_Item_Group($event)" 
+            class="col-md-2 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+            <mat-autocomplete #auto_itemGroup="matAutocomplete" [displayWith]="display_Item_Group">
+                <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                <ng-container *ngIf="!isLoading">
+                    <mat-option *ngFor="let Itemgroup of Item_Group_Data" [value]="Itemgroup">
+                        <span>{{Itemgroup.Item_Group_Name}}</span>
+                    </mat-option>
+                </ng-container>
+            </mat-autocomplete>
+            </div>
+
+        <!-- <div class="col-md-4" >
+            <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Item Name </label>
+            <input style="    border: 1px solid lightgrey;" type="text" [matAutocomplete]="auto_itemName" [(ngModel)]="ItemName_" name="Item_Name" 
+            (click)="Search_ItemName_Typeahead($event)" 
+            (keyup)="Search_ItemName_Typeahead($event)" 
+            class="col-md-7  ng-valid ng-touched" />
+            <mat-autocomplete #auto_itemName="matAutocomplete" [displayWith]="display_ItemName">
+                <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                <ng-container *ngIf="!isLoading">
+                    <mat-option *ngFor="let ItemName_Data_Filter_T of ItemName_Data_Filter" [value]="ItemName_Data_Filter_T">
+                        <span>{{ItemName_Data_Filter_T.Item_Name}}</span>
+                    </mat-option>
+                </ng-container>
+            </mat-autocomplete>
+            </div> -->
+
+
+
+        <!-- <div class="col-md-4" >
+            <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Item Name </label>
+            <input style="    border: 1px solid lightgrey;" type="text" [matAutocomplete]="auto_itemName" [(ngModel)]="ItemName_" name="Item_Name" 
+            (click)="Search_ItemName_Typeahead($event)" 
+            (keyup)="Search_ItemName_Typeahead($event)" 
+            class="col-md-7  ng-valid ng-touched" />
+            <mat-autocomplete #auto_itemName="matAutocomplete" [displayWith]="display_ItemName">
+                <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                <ng-container *ngIf="!isLoading">
+                    <mat-option *ngFor="let Item__Data_Filter_A of ItemName_Data_Filter" [value]="Item__Data_Filter_A">
+                        <span>{{Item__Data_Filter_A.Item_Name}}</span>
+                    </mat-option>
+                </ng-container>
+            </mat-autocomplete>
+            </div> -->
+</div>
+
+
+
+
+<div class="col-md-12 dv-mve-dwn-prhse-mstr-nw-sctn-snd-blck" style="margin: 0px;">
+<!-- <div class="col-md-3 tab-wole-div-alyn alighn-right-inputs-sales-grid">
+    <label class="col-md-5 mrgin-alghn-label-text-otrs-nxt pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Code</label>
+    <input type="text" id="BARCODE" style="padding-left: 5px !important;" [matAutocomplete]="autobar" [(ngModel)]="Barcode_" name="Barcode" 
+    (click)="Get_Barcode_Purchase($event)" (keyup)="Get_Barcode_Purchase($event)"  
+    class="col-md-7 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+    <mat-autocomplete #autobar="matAutocomplete" [displayWith]="display_Barcode">
+        <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+        <ng-container *ngIf="!isLoading">
+            <mat-option *ngFor="let Item of Barcode_Data" [value]="Item">
+                <span><div (click)="Barcode_Change(Item)" >{{Item.Barcode}}-{{Item.ItemName}}</div></span>
+            </mat-option>
+        </ng-container>
+    </mat-autocomplete>
+ </div> -->
+
+<!-- <div class="col-md-4 alighn-right-inputs-sales-grid">
+    <label class="col-md-3 label-down-alighn-stk-ad-mstr-brcde pdng-crect-rspnsv-mrgn-nptbx-txt-lh fw-600">Item Code
+        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>        
+    <input type="text" 
+    [(ngModel)]="Purchase_Details_.Item_Code" 
+    name="Purchase_Details_.Item_Code" 
+    (ngModelChange)="Get_Item_Name_Get_With_Code()"  
+    class="col-md-7 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+
+    </div>
+    <div class="col-md-4 alighn-right-inputs-sales-grid">
+        <label class="col-md-3 label-down-alighn-stk-ad-mstr-brcde pdng-crect-rspnsv-mrgn-nptbx-txt-lh fw-600">Item Name
+            <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>        
+        <input type="text"  [(ngModel)]="Purchase_Details_.ItemName" name="Purchase_Details_.ItemName" 
+        class="col-md-9 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+      
+    </div>
+
+    <div class="col-md-12">
+        <label class="col-md-1 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Category</label>
+        <input type="text" [matAutocomplete]="auto_itemGroup" [(ngModel)]="Item_Group_" name="Item_Group_" (click)="Get_Item_Group($event)" 
+        (keyup)="Get_Item_Group($event)" 
+        class="col-md-2 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+        <mat-autocomplete #auto_itemGroup="matAutocomplete" [displayWith]="display_Item_Group">
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <ng-container *ngIf="!isLoading">
+                <mat-option *ngFor="let Itemgroup of Item_Group_Data" [value]="Itemgroup">
+                    <span>{{Itemgroup.Item_Group_Name}}</span>
+                </mat-option>
+            </ng-container>
+        </mat-autocomplete>
+        </div> -->
+
+        <!-- (click)="Get_Purchase_Item_Typeahead($event)" (keyup)="Get_Purchase_Item_Typeahead($event)"  -->
+    <!-- <div class="col-md-3 tab-wole-div-alyn alighn-right-inputs-sales-grid">
+        <label class="col-md-5 mrgin-alghn-label-text-otrs-nxt pdng-crect-rspnsv-mrgn-nptbx-txt-lh fw-600">Code
+            <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+        <input type="text"  name="Purchase_Details_.Barcode" [(ngModel)]="Purchase_Details_.Barcode"
+        class="col-md-7 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />  
+     </div> -->
+
+     <!-- <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
+        <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+        <ng-container *ngIf="!isLoading">
+            <mat-option *ngFor="let Item of Item_Data" [value]="Item">
+                <span><div (click)="Item_Name_Change(Item)">{{Item.ItemName}}</div></span>
+            </mat-option>
+        </ng-container>
+    </mat-autocomplete> -->
+<div class="col-md-3 tab-wole-div-alyn alighn-right-inputs-sales-grid">
+    <label class="col-md-5 mrgin-alghn-label-text-otrs-nxt pdng-crect-rspnsv-mrgn-nptbx-txt-lh fw-600">Purchase Rate
+        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+    <input type="text"  name="Purchase_Details_.PurchaseRate" [(ngModel)]="Purchase_Details_.PurchaseRate"(ngModelChange)="Amount_Calculation()" 
+    class="col-md-7 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />  
+ </div>
+ <div class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid">
+    <label class="col-md-7 mrgin-alghn-label-text-otrs-nxt pdng-crect-rspnsv-mrgn-nptbx-txt-lh fw-600">Quantity
+        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+    <input type="text"  name="Purchase_Details_.Quantity" 
+    [(ngModel)]="Purchase_Details_.Quantity" (ngModelChange)="Amount_Calculation()" class="col-md-5 for-input-selct-tblelst ng-pristine ng-valid ng-touched"/>  
+ </div> 
+</div>
+<div class="col-md-12 dv-mve-dwn-prhse-mstr-nw-sctn-snd-blck" style="margin: 0px;"> 
+ <!-- <div class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid">
+    <label class="col-md-7 mrgin-alghn-label-text-otrs-nxt pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Quantity kg</label>
+    <input type="number" style="padding-left: 5px !important;" name="Purchase_Details_Quantity_Kg" [(ngModel)]="Purchase_Details_.Quantity_Kg" 
+    class="col-md-5 for-input-selct-tblelst ng-pristine ng-valid ng-touched"/>  
+ </div>     -->
+ <!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full background-non-editable-input-box mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
+    <label class="col-md-7 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-tx-nt-vle-amnt-cigst-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Amount</label>
+    <mat-form-field class="col-md-5 margin-lh-rh-to-crect-textbox">
+    <input matInput type="text" name="Purchase_Details_.GrossValue" [(ngModel)]="Purchase_Details_.GrossValue" disabled class="input-text-item-sales-section-group-diary" readonly>
+    </mat-form-field>
+    </div>  -->
+<div class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid">
+    <label class="col-md-6 mrgin-alghn-label-text-otrs-nxt pdng-crect-rspnsv-mrgn-nptbx-txt-lh fw-600">Discount</label>
+    <input type="text" name="Purchase_Details_.Discount"  [(ngModel)]="Purchase_Details_.Discount" 
+    (ngModelChange)="Amount_Calculation()" class="col-md-6 for-input-selct-tblelst ng-pristine ng-valid ng-touched"/>  
+ </div>
+<!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
+<label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">CGST %</label>
+<mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="Purchase_Details_.CGST" [(ngModel)]="Purchase_Details_.CGST" disabled class="input-text-item-sales-section-group-diary">
+</mat-form-field>
+</div>                      -->
+<!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
+<label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh"> SGST %  </label>
+<mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="Purchase_Details_.SGST" [(ngModel)]="Purchase_Details_.SGST" disabled class="input-text-item-sales-section-group-diary">
+</mat-form-field>
+</div>      -->
+<!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
+<label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">IGST %</label>
+<mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="Purchase_Details_.IGST" [(ngModel)]="Purchase_Details_.IGST" disabled class="input-text-item-sales-section-group-diary">
+</mat-form-field>
+</div>  -->
+<!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst" >  
+<label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-tx-nt-vle-amnt-cigst-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">GST %</label>
+<mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="Purchase_Details_.SaleTax" [(ngModel)]="Purchase_Details_.SaleTax" disabled class="input-text-item-sales-section-group-diary">
+</mat-form-field>
+</div>   -->
+<!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full background-non-editable-input-box mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
+<label class="col-md-7 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-tx-nt-vle-amnt-cigst-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Tax Include</label>
+<mat-form-field class="col-md-5 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" [(ngModel)]="Purchase_Details_.Include_Tax"  name="Purchase_Details_.Include_Tax"  disabled class="input-text-item-sales-section-group-diary" readonly>
+</mat-form-field>
+</div>    -->
+<!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
+<label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-tx-nt-vle-amnt-cigst-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Net value</label>
+<mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="Purchase_Details_.NetValue" [(ngModel)]="Purchase_Details_.NetValue" disabled class="input-text-item-sales-section-group-diary">
+</mat-form-field>
+</div>                       -->
+<div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
+<label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-tx-nt-vle-amnt-cigst-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">CGST</label>
+<mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="CGST_Amount" [(ngModel)]="CGST_Amount" disabled class="input-text-item-sales-section-group-diary">
+</mat-form-field>
+</div>  
+<div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
+<label class="col-md-7 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-tx-nt-vle-amnt-cigst-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh fw-600">SGST</label>
+<mat-form-field class="col-md-5 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="SGST_Amount" [(ngModel)]="SGST_Amount" disabled class="input-text-item-sales-section-group-diary">
+</mat-form-field>
+</div>  
+<!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
+<label class="col-md-6 padd-lft-crect-alighn-wole-div mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh fw-600">IGST</label>
+<mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="Purchase_Details_.IGST_AMT" [(ngModel)]="Purchase_Details_.IGST_AMT" disabled class="input-text-item-sales-section-group-diary">
+</mat-form-field>
+</div>                             -->
+<!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
+<label class="col-md-6 padd-lft-crect-alighn-wole-div mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel fw-600">GST</label>
+<mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="Purchase_Details_.GST_Amount" [(ngModel)]="Purchase_Details_.GST_Amount" disabled class="input-text-item-sales-section-group-diary">
+</mat-form-field>
+</div>                                               -->
+<div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
+<label class="col-md-7 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh fw-600">Total </label>
+<mat-form-field class="col-md-5 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="Purchase_Details_.TotalAmount" [(ngModel)]="Purchase_Details_.TotalAmount" disabled class="input-text-item-sales-section-group-diary" readonly>
+</mat-form-field>
+</div>  
+<div class="col-md-1 croct-float-purchase-master-section div-crct-algn-up-wrd-to-crect butn-up-alghn-prchse-mstr-nw-sctn">
+    <button _ngcontent-ucu-c5="" class="btn btn-danger button-to-crect-margin change-colour-button mat-raised-button" 
+    (click)="Plus_Purchase_Details()" mat-raised-button="" type="button">ADD
+    <!-- <span class="mat-button-wrapper">
+        <i _ngcontent-ucu-c5="" aria-hidden="true" class="fa fa-plus"></i></span> -->
+    <div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></button>
+    </div>                                              
+<!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full background-non-editable-input-box">  
+<label class="col-md-4 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Unit</label>
+<mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="Purchase_Details_.UnitName" [(ngModel)]="Purchase_Details_.UnitName" disabled class="input-text-item-sales-section-group-diary" readonly>
+</mat-form-field>
+</div>   -->
+<!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full padd-right-crect-alighn-wole-div div-to-down-margin-crect-allighn-wole-scton">  
+        <label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-hsn-cde-label pdng-crect-rspnsv-mrgn-nptbx-txt-lh">HSN Code</label>
+        <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox mrgn-crct-alghyn-prhse-mstr-nw-sctn-hsn-cde-nput">
+        <input matInput type="text" name="Purchase_Details_.HSNCODE" [(ngModel)]="Purchase_Details_.HSNCODE" disabled class="input-text-item-sales-section-total-price-group-diary">
+        </mat-form-field>
+</div>  -->
+<!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full padd-right-crect-alighn-wole-div">  
+<label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Group</label>
+<mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
+<input matInput type="text" name="Purchase_Details_.GroupName" [(ngModel)]="Purchase_Details_.GroupName" disabled class="input-text-item-sales-section-group-diary">
+</mat-form-field>
+</div>  -->
+<!-- <div class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid">
+    <label class="col-md-5 mrgin-alghn-label-text-otrs-nxt pdng-crect-rspnsv-mrgn-nptbx-txt-lh">MRP
+        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+    <input type="text" style="padding-left: 5px !important;" name="Purchase_Details_MRP" [(ngModel)]="Purchase_Details_.MRP" 
+ class="col-md-7 for-input-selct-tblelst ng-pristine ng-valid ng-touched"/>  
+ </div> -->
+ </div>
+ <!-- <div class="col-md-1 croct-float-purchase-master-section div-crct-algn-up-wrd-to-crect butn-up-alghn-prchse-mstr-nw-sctn">
+    <button _ngcontent-ucu-c5="" class="btn btn-danger button-to-crect-margin change-colour-button mat-raised-button" 
+    (click)="Plus_Purchase_Details()" mat-raised-button="" type="button">ADD
+    <span class="mat-button-wrapper">
+        <i _ngcontent-ucu-c5="" aria-hidden="true" class="fa fa-plus"></i></span>
+    <div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></button>
+    </div> -->
+ <!-- <div class="col-md-12 dv-mve-dwn-prhse-mstr-nw-sctn-snd-blck" style="margin-top: 0px;"> -->
+    <!-- <div class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid">
+        <label class="col-md-6 mrgin-alghn-label-text-otrs-nxt pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Salerate</label>
+        <input type="text" style="padding-left: 5px !important;" [(ngModel)]="Purchase_Details_.SaleRate" name="Purchase_Details_SaleRate" 
+        class="col-md-6 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />       
+     </div> -->
+    <!-- <div class="col-md-6 alighn-right-inputs-sales-grid">
+   <label class="col-md-2 mrgin-alghn-label-text-otrs-nxt pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Description</label>
+   <input type="text" name="Purchase_Details_Description"  [(ngModel)]="Purchase_Details_.Description" 
+    class="col-md-9 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />       
+        </div>     -->
+<!--<div class="col-md-2 croct-float-purchase-master-section wdth-crct-prchse-mstr-expry div-crct-algn-up-wrd-to-crect"> 
+    <label class="crecot-alighyn-chck-bx-stck-ad-nw-sctn">Is Expiry</label>
+    <div _ngcontent-xmy-c9="" class="crect-chckbx-updte-stck-add-two">
+    <div _ngcontent-xmy-c9="" class="form-check for-chck-bx-crcktng form-check for-chck-bx-crcktng-led-titl-bx">
+    <label _ngcontent-xmy-c9="" class="form-check-label">
+    <input type='checkbox'class="form-check-input" name="update" placeholder='Update Stock' [(ngModel)]="Purchase_Details_.Is_Expiry"  (ngModelChange)="Is_Expiry_Check()"/>
+    <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9="" class="check"></span>
+    </span></label></div>
+    </div>   
+    </div>-->  
+  <!-- <div class="col-md-2 croct-float-purchase-master-section div-crct-algn-up-wrd-to-crect" [hidden]="Is_Expiry_Show">
+        <label class="col-md-4">Date</label>
+        <mat-form-field class="col-md-8 input-allighn-to-crect-wole-paddings">
+            <input matInput [matDatepicker]="dpdate" placeholder="" name="Purchase_Details_Expiry_Date" [(ngModel)]="Purchase_Details_.Expiry_Date">
+            <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
+            <mat-datepicker #dpdate></mat-datepicker>
+            </mat-form-field>
+        </div>     -->
+<!--<div class="col-md-3 mrgn-up-wrd-wle-div-rspnsv-prhse-mstr-nw-sctn">
+    <label class="col-md-6 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Salerate
+    <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>    
+    <input type="text" [(ngModel)]="Purchase_Details_.SaleRate" name="Purchase_Details_SaleRate" 
+    class="col-md-6 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />    
+    </div>    
+ <div class="col-md-4 tab-wole-div-alyn alighn-right-inputs-sales-grid">
+    <label class="col-md-5 mrgin-alghn-label-text-otrs-nxt pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Description
+        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+    <input type="text" name="Purchase_Details_Description"  [(ngModel)]="Purchase_Details_.Description" 
+    class="col-md-7 for-input-selct-tblelst ng-pristine ng-valid ng-touched"/>  
+    </div>-->
+
+<!-- </div> -->
+<div class="col-md-12">
+<div class="card card-plain">
+<div class="card-body">
+<div class="table-responsive" [style.height.px]="myInnerHeightTwo" style="overflow-y: scroll;">
+ <!-- <cdk-virtual-scroll-viewport [style.height.px]="myHeight" itemSize="90" > -->
+<table class="table table-hover table-for-sale-search-section-diary">
+<thead class="bg-col-stock-add-diary thead">
+<!-- <th>Sl No </th> -->
+<th>Item Code</th>
+<th>Name </th>
+<th>Purchase Rate</th>
+<th>Quantity</th>
+<!-- <th>CGST%</th>
+<th>SGST%</th>
+<th>IGST%</th>
+<th>GST%</th>
+<th>Tax Include</th> -->
+<!-- <th>Amount</th> -->
+<th>Discount</th>
+<!-- <th>Net Value</th> -->
+<th>CGST</th>
+<th>SGST</th>
+<!-- <th>IGST</th> -->
+<!-- <th>GST</th> -->
+<th>Total</th>
+<!-- <th>Group</th>
+<th>HSN</th> -->
+<!-- <th>MRP</th> -->
+<!-- <th>Sales Rate</th> -->
+<!-- <th>To Stock</th> -->
+<th [hidden]="Purchase_Master_Edit==false"> Edit </th>
+<th [hidden]="Purchase_Master_Delete==false"> Delete</th>
+</thead>
+<!-- <ng-container *cdkVirtualFor="let Purchase_Details of Purchase_Details_Data; let i = index"> -->
+<tbody class="bk_tb_bg" *ngFor="let Purchase_Details of Purchase_Details_Data; let i = index">
+<!-- <td style="padding-left:5px;">{{ i+1 }}</td> -->
+<td>{{Purchase_Details["Item_Code"]}}</td>
+<td>{{Purchase_Details["ItemName"]}} </td>
+<td>{{Purchase_Details["PurchaseRate"]}}</td>
+<td>{{Purchase_Details["Quantity"]}}</td>
+<!-- <td>{{Purchase_Details["CGST"]}}</td>
+<td>{{Purchase_Details["SGST"]}}</td>
+<td>{{Purchase_Details["IGST"]}}</td>
+<td>{{Purchase_Details["SaleTax"]}}</td>
+<td>{{Purchase_Details["Include_Tax"]}}</td> -->
+<!-- <td>{{Purchase_Details["GrossValue"]}}</td> -->
+<td>{{Purchase_Details["Discount"]}}</td>
+<!-- <td>{{Purchase_Details["NetValue"]}}</td> -->
+<td>{{Purchase_Details["CGST_AMT"]}}</td>
+<td>{{Purchase_Details["SGST_AMT"]}}</td>
+<!-- <td>{{Purchase_Details["IGST_AMT"]}}</td> -->
+<!-- <td>{{Purchase_Details["GST_Amount"]}}</td> -->
+<td>{{Purchase_Details["TotalAmount"]}}</td>
+<!-- <td>{{Purchase_Details["GroupName"]}}</td>
+<td>{{Purchase_Details["HSNCODE"]}}</td> -->
+<!-- <td>{{Purchase_Details["MRP"]}}</td> -->
+<!-- <td>{{Purchase_Details["SaleRate"]}}</td> -->
+<!-- <td>{{Purchase_Details["To_Stock_Name"]}}</td> -->
+<td>
+<button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Purchase_Master_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Purchase_Details(Purchase_Details,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
+</td>
+<td> 
+<button _ngcontent-gdi-c11="" [hidden]="Purchase_Master_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Purchase_Details(Purchase_Details,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
+</td>
+</tbody>
+<!-- </ng-container> -->
+</table>
+<!-- </cdk-virtual-scroll-viewport> -->
+</div>
+</div>                                                                    
+<!-- <label class="entry-num">Entries : {{Total_Entries}}</label> -->
+</div>
+</div>
+<div class="col-md-12">
+    <div class="col-md-4 croct-float-purchase-master-section">
+        <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Gross Total</label>
+        <input matInput type="number" name="Purchase_Master_.GrossTotal" [(ngModel)]="Purchase_Master_.GrossTotal" class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" readonly>
+        </div>         -->
+        <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total Discount</label>
+        <input matInput type="number" name="Purchase_Master_.TotalDiscount" [(ngModel)]="Purchase_Master_.TotalDiscount" class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" readonly>
+        </div>         -->
+        <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total Taxable Amount</label>
+        <invscode-file://vscode-app/c:/Users/user/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.htmlput matInput type="number" name="Purchase_Master_.TaxableAmount" [(ngModel)]="Purchase_Master_.TaxableAmount" class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" readonly>
+        </div>           -->
+        <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total GST</label>
+        <input matInput type="number" name="Purchase_Master_.TotalGST" [(ngModel)]="Purchase_Master_.TotalGST" class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" readonly>
+        </div>                 -->
+        <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Transportation Charge</label>
+        <input matInput type="number" name="Purchase_Master_.Transportation_Charge" [(ngModel)]="Purchase_Master_.Transportation_Charge"  (ngModelChange)="Final_Amounts()"class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" >
+        </div>  -->
+        <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Handling Charge</label>
+        <input matInput type="number" name="Purchase_Master_.Handling_Charge" [(ngModel)]="Purchase_Master_.Handling_Charge" (ngModelChange)="Final_Amounts()" class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" >
+        </div>          -->
+        </div>
+<div class="col-md-4 croct-float-purchase-master-section">
+<!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+<label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total IGST</label>
+<input matInput type="number" name="Purchase_Master_.TotalIGST" [(ngModel)]="Purchase_Master_.TotalIGST" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+</div> -->
+<!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+  <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total CGST</label>
+  <input matInput type="number" name="Purchase_Master_.TotalCGST" [(ngModel)]="Purchase_Master_.TotalCGST" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+  </div> -->
+  <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+    <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total SGST</label>
+    <input matInput type="number" name="Purchase_Master_.TotalSGST"  [(ngModel)]="Purchase_Master_.TotalSGST" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+    </div> -->
+    <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+      <label class="col-md-4">Total CESS</label>
+      <input matInput type="number" name="Purchase_Master_.CGST" class="input-text-item-group-diary" readonly>
+      </div> -->
+      <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+        <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Net Total</label>
+        <input matInput type="number" name="Purchase_Master_.NetTotal" [(ngModel)]="Purchase_Master_.NetTotal" 
+        class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+        </div>   -->
+        <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+            <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Transportation GST</label>
+            <input matInput type="number"  [(ngModel)]="Purchase_Master_.Transportation_Gst" name="Purchase_Master_.Transportation_GST" (ngModelChange)="Final_Amounts()"class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" >
+            </div>  -->
+        <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
+            <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Handling GST</label>
+            <input matInput type="number"  [(ngModel)]="Purchase_Master_.Handling_Gst" name="Purchase_Master_.Handling_GST"
+            class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" >
+            </div> -->
+</div>
+<div class="col-md-4 croct-float-purchase-master-section">
+    <!-- <div class="col-md-12 margin-to-correct-input-sales-full">
+    <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Other Charge</label>
+    <input matInput type="number" name="Purchase_Master_.Other_Charges" [(ngModel)]="Purchase_Master_.Other_Charges" (ngModelChange)="Final_Amounts()" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary">
+    </div>     -->
+    <!-- <div class="col-md-12 margin-to-correct-input-sales-full">
+      <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Discount</label>
+      <input matInput type="number" [(ngModel)]="Purchase_Master_.Discount" (ngModelChange)="Final_Amounts()" name="Purchase_Master_.Discount" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary">
+    </div>     -->
+      <!-- <div class="col-md-12 margin-to-correct-input-sales-full">
+        <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Round Off</label>
+        <input matInput type="number"  [(ngModel)]="Purchase_Master_.Roundoff" (ngModelChange)="Final_Amounts()" name="Purchase_Master_.Roundoff" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary">
+        </div> -->
+        <!-- <div class="col-md-12 margin-to-correct-input-sales-full" style="margin-bottom: 64px;">
+            <label class="date-label-crect-search-sales-section pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Is Gst</label>
+            <div _ngcontent-xmy-c9="" class="checkbox-to-crect-sales-search-section">
+                <div _ngcontent-xmy-c9="" class="form-check uper-dte-lbel-sales-sctn-new">
+                    <label _ngcontent-xmy-c9="" class="form-check-label">
+                        <input type='checkbox' class="form-check-input"  [(ngModel)]="Purchase_Master_.Isgst"  (change)="checkbox_Click()" name="Is_Gst"/>
+                        <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9="" class="check"></span>
+                        </span></label>
+                </div>
+            </div>
+        </div>         -->
+          <!-- <div class="col-md-12 margin-to-correct-input-sales-full">
+            <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Transportation Total</label>
+            <input matInput type="number"  [(ngModel)]="Purchase_Master_.Transportation_Total" name="Purchase_Master_.Transportation_Total" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+            </div> -->
+            <!-- <div class="col-md-12 margin-to-correct-input-sales-full">
+                <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Handling Total</label>
+                <input matInput type="number"  [(ngModel)]="Purchase_Master_.Handling_Total" name="Purchase_Master_.Handling_Total" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+                </div>  -->
+                <!-- <div class="col-md-12 margin-to-correct-input-sales-full">
+                    <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total Amount</label>
+                    <input matInput type="number"  [(ngModel)]="Purchase_Master_.TotalAmount" name="Purchase_Master_.TotalAmount" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+                    </div>  -->
+    </div>
+</div>
+<div class="col-md-12">
+<!-- <div class="col-md-12 margin-to-correct-input-sales-full wle-dv-input-txt-nw-pymnt-vuchr-mod">
+<label class="col-md-2 label-down-alighn-adrs-tre-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Discription</label>
+<input matInput type="text" name="Purchase_Master_.Description" [(ngModel)]="Purchase_Master_.Description" class="input-allighn-prchse-mstr-nw-sctn-dscrptns-amunt-n-wrds">
+
+</div> -->
+
+<!-- <div class="col-md-12 margin-to-correct-input-sales-full background-non-editable-input-box-purchase-master wle-dv-input-txt-nw-pymnt-vuchr-mod">
+  <label class="col-md-2 label-down-alighn-amnt-wrds-prhse-mstr-down-new-sctn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Amount In Words</label>
+ <label class="input-allighn-prchse-mstr-nw-sctn-dscrptns-amunt-n-wrds">{{Amount_In_Words}}</label>  -->
+  <!-- <div id="word">{{words[Purchase_Master_.TotalAmount]}}</div> -->
+  <!-- <input matInput type="text" name="Purchase_Master_.CGST" class="input-text-full-width-item-group-diary" readonly> -->
+  <!-- </div> -->
+</div>                     
+
+    <div class="col-md-12 margn-aliygn-crect-address-purchase-masters">
+    <button mat-raised-button type="button" [hidden]="Purchase_Master_Save==false"id="Save_Button"class="btn btn-danger pull-right"(click)="Save_Purchase_Master()">Save</button>
+   <button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>
+    </div>
+    </div>
+    <div class="clearfix"></div>
+    </form>
+    </div>
+    </div>
+    </div>
+    </div>
+<div class="row" *ngIf="!Entry_View">
+<div class="col-md-12">
+<div class="card" style="margin-bottom: 20px;">
+<div class="card-body" style="    padding: 23px 20px;">
+<form>
+<div class="row col-md-12">
+<div class="col-md-0 wole-div-margin-to-down-proper" style="margin-top: 2px;"> 
+    <label class="date-label-crect-search-sales-section pdng-crect-rspnsv-mrgn-nptbx-txt-lh" style="    margin-top: 15px !important;">Date</label>
+    <div _ngcontent-xmy-c9="" class="checkbox-to-crect-sales-search-section">
+    <div _ngcontent-xmy-c9="" class="form-check uper-dte-lbel-sales-sctn-new" style="    margin-top: 2px !important;">
+    <label _ngcontent-xmy-c9="" class="form-check-label">
+    <input type='checkbox' class="form-check-input" name="Look_In_Date" [(ngModel)]="Look_In_Date"  />
+    <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9="" class="check"></span>
+    </span></label></div>
+    </div>   
+    </div>  
+<div class="col-md-3 " style="margin-top: 2px;">
+    <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections">From</label>
+    <mat-form-field class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px;">
+    <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate" [(ngModel)]="Search_FromDate">
+    <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+    <mat-datepicker #dp1></mat-datepicker>
+    </mat-form-field>
+    </div> 
+    <div class="col-md-3 " style="margin-top: 2px;">
+        <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections">To</label>
+        <mat-form-field class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" 
+        style="height: 40px;">
+        <input matInput [matDatepicker]="dp2" placeholder="" name="Search_ToDate" [(ngModel)]="Search_ToDate">
+        <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+        <mat-datepicker #dp2></mat-datepicker>
+        </mat-form-field>
+        </div> 
+    <div class="col-md-3 tab-wole-div-alyn"  style="margin-top: 2px;">
+        <label class="col-md-4 label-to-crect-all-names-to-divs margin-alghn-label-text pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Supplier
+        </label><!--align-label-tab-lead-->
+        <input style=" border-radius: 5px;   border: 1px solid lightgrey;" type="text" [matAutocomplete]="auto_cus" [(ngModel)]="Search_Customer" name="Search_Customer" 
+        (click)="Search_Supplier_Typeahead($event)" (input)="Search_Supplier_Typeahead($event)"
+        (ngModelChange)="Supplier_Change()" class="col-md-7 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr">           
+        <mat-autocomplete #auto_cus="matAutocomplete" [displayWith]="display_Supplier">
+        <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+        <ng-container *ngIf="!isLoading">
+        <mat-option *ngFor="let Supplier_T of Supplier_Data" [value]="Supplier_T">
+        <span>{{Supplier_T.Client_Accounts_Name}}</span>
+        </mat-option>
+        </ng-container>
+        </mat-autocomplete>
+    </div>
+    <div class="col-md-4 wole-div-margin-to-down-proper" style="margin-top: 2px;">  
+    <label class="col-md-4 label-to-crect-all-names-to-div-tre-prt-sles">Invoice No</label>
+    <input style="    border: 1px solid lightgrey;    border: 1px solid lightgrey;" matInput type="text" name="Voucher_Number" [(ngModel)]="Voucher_Number" 
+     class="col-md-5 mrgn-crct-input-text-div-tre-prt-sles" >
+    </div> 
+
+    <!-- Added on 09-05-2024 -->
+    <div class="col-md-3" >
+        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Branch</label>
+        <input style="  border-radius: 5px; height: 40px;  border: 1px solid lightgrey;" type="text" [matAutocomplete]="auto_branch" [(ngModel)]="Purchase_Maste_Search_" name="Branch" 
+        (click)="Search_Branch_Typeahead($event)" 
+        (keyup)="Search_Branch_Typeahead($event)" 
+        class="col-md-7  ng-valid ng-touched" />
+        <mat-autocomplete #auto_branch="matAutocomplete" [displayWith]="display_Branch">
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <ng-container *ngIf="!isLoading">
+                <mat-option *ngFor="let Supplier_T of Purchase_Master_Data_Filter" [value]="Supplier_T">
+                    <span>{{Supplier_T.Branch_Name}}</span>
+                </mat-option>
+            </ng-container>
+        </mat-autocomplete>
+        </div>
+
+
+<div class="col-md-3">
+<button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger pull-right change-colour-button" style="padding: 7px 9px 7px 9px;">Create New</button>
+<button mat-raised-button type="button" (click)="Search_Purchase_Master()" class="btn btn-danger pull-right change-colour-button" style="padding: 7px 9px 7px 9px;">Search</button>
+</div>
+</div>        
+<div class="clearfix"></div>
+</form>
+</div>
+</div>
+</div> 
+    <div class="col-md-12">
+    <div class="card card-plain"> 
+    <div class="card-body">
+    <div class="table-responsive" [style.height.px]="myInnerHeight" style="overflow-y: scroll;"> 
+    <table class="table table-hover">
+    <thead class="thead">
+    <th>Sl No</th>
+    <th>Supplier</th>
+    <th>Purchase Date</th>
+  <th> Purchase Invoice No</th> 
+  <th> Total</th>
+  <th> Branch </th> 
+  <th>Document Name</th>
+  <th>Download</th>
+  <th [hidden]="Purchase_Master_Edit==false">Edit</th>
+  <th [hidden]="Purchase_Master_Delete==false">Delete</th>
+  </thead>
+<tbody class="bk_tb_bg" *ngFor="let Purchase_Master1 of Purchase_Master_Data; let i = index">
+<td style="padding-left:5px;">{{ i+1 }}</td>
+<td>{{Purchase_Master1["Customer"]}}</td>
+<td>{{Purchase_Master1["Search_Date"]}}</td>
+<td>{{Purchase_Master1["InvoiceNo"]}}</td>
+<td>{{Purchase_Master1["NetTotal"]}}</td>
+<td>{{Purchase_Master1["Branch_Name"]}}</td>
+<td>{{Purchase_Master1["Document_Name"]}}</td>
+<td style="width:20px;">
+    <button mat-raised-button type="button" 
+    id="Save_Button" class="btn btn-danger pull-right" (click)="Download_Documents(Purchase_Master1.File_Name,
+    i)">
+    Download
+    </button>
+</td>
+<td>
+<button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Purchase_Master_Edit==false"aria-describedby="cdk-describedby-message-0" 
+cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" 
+mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper">
+    <span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" 
+        (click)="Edit_Purchase_Master(Purchase_Master1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
+</td>
+<td> 
+<button _ngcontent-gdi-c11="" [hidden]="Purchase_Master_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Purchase_Master(Purchase_Master1.Purchase_Master_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
+</td>
+</tbody>
+</table>
+</div>
+</div>    
+<label class="entry-num">Entries : {{Total_Entries}}</label>
+</div>
+</div>
+</div>
+</div>
+</div>    

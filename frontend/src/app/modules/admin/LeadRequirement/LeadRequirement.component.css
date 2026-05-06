@@ -1,0 +1,32 @@
+.card-header-info {
+  background: #fff !important;
+  color: #333 !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid #eee !important;
+  margin-bottom: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+.lead-card {
+  background: #f8fbff;
+  border: 1px solid #e3f2fd;
+}
+
+.person-line {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.person-line .k {
+  color: #6c757d;
+  display: inline-block;
+  width: 92px;
+}
+.person-line .v {
+  color: #333;
+  word-break: break-word;
+}
+
+::ng-deep .mat-form-field {
+  width: 100%;
+}
+

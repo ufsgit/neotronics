@@ -1,0 +1,174 @@
+.dash-board .card{
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
+    border-radius: 10px;
+    padding: 10px;
+    position: relative;
+    margin-top: 10px;
+    transition: all .5s ease-in-out;
+}
+.dash-board .card:hover{
+    transform: translateY(-15px);
+}
+.dash-board .card:hover i{
+    color: #fff !important;
+}
+.dash-board .card-category {
+    font-weight: 600;
+}
+.dash-board .card-header{
+    background-color: transparent;
+}
+.dash-board .card:hover .card-category{
+    color: #fff;
+}
+.dash-board .card:hover  h3{
+    color: #fff;
+}
+.dash-board .card:hover button{
+    background-color: #fff !important;
+}
+/* card hover */
+.dash-board .card:hover .card-category{
+    
+        color: #fff !important;
+    
+}
+.dash-board .card-1:hover{
+    background-color: #8a85bc;
+}
+.dash-board .card-1:hover button{
+    color: #8a85bc;
+}
+.dash-board .card-2:hover{
+    background-color: #98d2cc;
+}
+.dash-board .card-2:hover button{
+    color: #98d2cc;
+}
+.dash-board .card-3:hover{
+    background-color: #CA9C95;
+}
+.dash-board .card-3:hover button{
+    color: #CA9C95;
+}
+.dash-board .card-4:hover{
+    background-color: #7C98AB;
+}
+.dash-board .card-4:hover button{
+    color: #7C98AB;
+}
+.dash-board .card-5:hover{
+    background-color: #E6A57E
+}
+.dash-board .card-5:hover button{
+    color: #E6A57E;
+}
+.dash-board .card-6:hover{
+    background-color: #F27348
+}
+.dash-board .card-6:hover button{
+    color: #F27348;
+}
+.dash-board .card-7:hover{
+    background-color: #8DA47E;
+}
+.dash-board .card-7:hover button{
+    color: #8DA47E;
+}
+.dash-board .card-8:hover{
+    background-color: #AF8C72;
+}
+.dash-board .card-8:hover button{
+    color: #AF8C72;
+}
+/*  */
+.dash-board .dash-icon{
+    border-radius: 50%;
+    
+    position: absolute;
+    /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
+    background: #fff;
+    margin-top: 0;
+
+}
+.dash-board .dash-icon i{
+    /* color: #282828 !important; */
+    font-size: 30px !important;
+}
+.dash-board .card-header h3{
+    font-weight: 600;
+    /* color: #9e9f9f; */
+    color: #ffffff;
+    font-size: 30px;
+    margin: 10px 0 10px;
+}
+.dash-board .card-category{
+    color: #ffffff !important;
+}
+.dash-board .card-footer h3{
+    background-color: #000;
+    padding: 5px 20px;
+}
+.dash-board .card-footer {
+    margin-top: 0;
+    border-top: none;
+}
+.dash-board .card-footer button {
+    /* background-color: #282828 !important; */
+    padding: 4px 20px;
+}
+.dash-board .card-footer{
+    justify-content: end;
+}
+.card-headernew h4{
+    font-weight: 800;
+}
+.dash-board .g-scroll{
+    /* margin: 20px; */
+    border-radius: 15px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.dash-board .cardnew{
+    padding: 10px;
+}
+.stats button{display: none;}
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+    display: none;
+}
+::ng-deep .mat-input-element{
+    padding-left: 15px !important;
+}
+::ng-deep .mat-form-field-infix {
+    border-bottom: 0.84375em solid transparent;
+    padding: 0 !important;
+}
+input{
+    padding-left: 15px !important;
+}
+
+.dash-board .card-1{
+    background-color: #8a85bc;
+}
+.dash-board .card-2{
+    background-color: #98d2cc;
+}
+.dash-board .card-3{
+    background-color: #ca9c95;
+}
+.dash-board .card-4{
+    background-color: #7c98ab;
+}
+.dash-board .card-5{
+    background-color: #e5a47d;
+}
+.dashboard-card label{
+    text-align: right !important;
+}
+
+
+@media(max-width:1400px){
+    .dash-board .card{
+        padding: 10px 0;
+}
+}

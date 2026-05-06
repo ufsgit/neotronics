@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-md-12">
+    <img src="assets/img/ADAT.png" class="img-fluid login-logo-to-corect" alt="Responsive image">
+    <!-- <h3 class="login-title">TRACK BOX</h3> -->
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <label class="name-login-version">Version 5</label>
+  </div>
+</div>
+
+<form [formGroup]="loginForm" (ngSubmit)="login()">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="input-box"> <!-- Box for login name -->
+        <input style="border: none !important;" type="text" placeholder="Login Name" formControlName="userName"  />
+      </div>
+
+     
+    </div>
+    <div class="col-md-12">
+      <div class="input-box"> <!-- Box for password -->
+        <input style="border: none !important; " type="password" placeholder="Password " formControlName="password"  />
+      </div>
+     
+    </div>
+    <div class="col-md-12 for-leads-chckbx login-remember-chckbox">
+      <div class="form-check for-chck-bx-crcktng-login form-check for-chck-bx-crcktng-led-titl-bx">
+        <label class="form-check-label">
+          <input checked class="form-check-input" type="checkbox" value="">
+          <span class="form-check-sign lead-title-box-check">
+            <span class="check"></span>
+          </span>
+        </label>
+      </div>
+      <label class="name-login-remember">Remember Me</label>
+    </div>
+    <div class="col-md-12">
+      <button [disabled]="loginForm.invalid" mat-raised-button type="submit" class="btn btn-danger pull-right">
+        Login
+      </button>
+    </div>
+  </div>
+</form>

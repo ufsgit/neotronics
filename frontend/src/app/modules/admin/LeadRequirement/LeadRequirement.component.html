@@ -1,0 +1,164 @@
+<div *ngIf="issLoading" class="overlay">
+  <mat-progress-spinner class="spinner" [color]="'primary'" [mode]="'indeterminate'" [value]="50"></mat-progress-spinner>
+</div>
+
+<div class="main-content">
+  <div class="container-fluid">
+
+    <!-- List View -->
+    <div class="row" *ngIf="!Entry_View">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-info d-flex justify-content-between align-items-center">
+            <div>
+              <h4 class="card-title">Quotation List</h4>
+              <p class="card-category">Lead requirement quotations</p>
+            </div>
+            <button mat-raised-button (click)="Create_New()" class="btn-new">
+              <i class="material-icons">add</i> Add
+            </button>
+          </div>
+
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-sm">
+                <thead class="text-secondary">
+                  <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Lead Name</th>
+                    <th>Contact Person</th>
+                    <th>Contact Number</th>
+                    <th class="text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let q of Quotation_List; let i = index">
+                    <td>{{i + 1}}</td>
+                    <td>{{q.Requirement_Date | date:'mediumDate'}}</td>
+                    <td>{{q.Lead_Name}}</td>
+                    <td>{{q.Contact_Person}}</td>
+                    <td>{{q.Contact_Number}}</td>
+                    <td class="text-right">
+                      <button mat-button color="primary" (click)="Open_Transaction(q.LeadRequirementMaster_Id)">
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="Quotation_List.length === 0">
+                    <td colspan="6" class="text-center text-muted">No quotations found.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Entry View -->
+    <div class="row" *ngIf="Entry_View">
+      <div class="col-md-12">
+        <div class="card p-2">
+          <div class="card-header-info d-flex justify-content-between align-items-center">
+            <h4 class="card-title">Add Requirement</h4>
+            <button type="button" class="close" (click)="Close_Click()">&times;</button>
+          </div>
+
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-8">
+                <h6 class="text-info" style="cursor: default;">Requirement Master</h6>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <mat-form-field floatLabel="never">
+                      <input matInput [matDatepicker]="dp1" placeholder="Requirement Date" name="Requirement_Date"
+                        [(ngModel)]="Requirement_Date">
+                      <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                      <mat-datepicker #dp1></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6">
+                    <mat-form-field floatLabel="never">
+                      <input matInput placeholder="Notes" name="Requirement_Notes" [(ngModel)]="Requirement_Notes">
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <h6 class="text-info mt-3" style="cursor: default;">Requirement Details</h6>
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered">
+                    <thead>
+                      <tr>
+                        <th style="width: 45%;">Item</th>
+                        <th style="width: 15%;">Qty</th>
+                        <th style="width: 30%;">Remarks</th>
+                        <th style="width: 10%;" class="text-center">#</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let d of Requirement_Details; let i = index">
+                        <td>
+                          <input class="form-control" [(ngModel)]="d.Item" name="Item_{{i}}" placeholder="Item">
+                        </td>
+                        <td>
+                          <input class="form-control" type="number" min="0" [(ngModel)]="d.Quantity"
+                            name="Quantity_{{i}}">
+                        </td>
+                        <td>
+                          <input class="form-control" [(ngModel)]="d.Remarks" name="Remarks_{{i}}"
+                            placeholder="Remarks">
+                        </td>
+                        <td class="text-center">
+                          <button mat-icon-button color="primary" (click)="addDetailRow()" matTooltip="Add row">
+                            <i class="material-icons">add</i>
+                          </button>
+                          <button mat-icon-button color="warn" (click)="removeDetailRow(i)" matTooltip="Remove row">
+                            <i class="material-icons">remove</i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="card p-2 lead-card">
+                  <h6 class="text-info" style="cursor: default;">Person Details</h6>
+
+                  <mat-form-field floatLabel="never">
+                    <input matInput placeholder="Lead Name" [matAutocomplete]="autoLead" name="Lead_Name_Search"
+                      [(ngModel)]="Lead_Search_Text">
+                  </mat-form-field>
+                  <mat-autocomplete #autoLead="matAutocomplete" [displayWith]="displayLead.bind(this)"
+                    (optionSelected)="onLeadSelected($event.option.value)">
+                    <mat-option *ngFor="let l of Lead_Data" [value]="l">{{l.Lead_Name}}</mat-option>
+                  </mat-autocomplete>
+
+                  <div class="mt-2" *ngIf="Selected_Lead">
+                    <div class="person-line"><span class="k">Mobile:</span> <span class="v">{{Selected_Lead.Phone}}</span></div>
+                    <div class="person-line"><span class="k">Contact:</span> <span class="v">{{Selected_Lead.Contact_Person}}</span></div>
+                    <div class="person-line"><span class="k">Contact No:</span> <span class="v">{{Selected_Lead.Contact_Number}}</span></div>
+                    <div class="person-line"><span class="k">Email:</span> <span class="v">{{Selected_Lead.Email}}</span></div>
+                    <div class="person-line"><span class="k">Address:</span> <span class="v">{{Selected_Lead.Address}}</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-md-12 text-right">
+                <button mat-button type="button" class="btn-cancel" (click)="Close_Click()">Cancel</button>
+                <button mat-raised-button type="button" class="btn-save" (click)="Add_Requirement()">Add Requirement</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

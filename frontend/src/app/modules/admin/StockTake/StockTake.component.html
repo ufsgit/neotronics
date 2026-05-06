@@ -1,0 +1,390 @@
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+</div>
+<div class="main-content">
+    <div class="container-fluid" #topDiv1>
+        <div class="row col-md-12  mb-2" *ngIf="!Entry_View">
+            <div class="row mb-3 card-body" style="align-items: center;border: 0;border-radius: 6px;margin-left: 2px;color: #333333; 
+            background: #fff;width: 100%;box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); ">
+            <div class="col-md-2 row  " style="align-items: center;">
+                                    <label
+                                        class=" col-md-6 mb-0 ">Date</label>
+                                    <div _ngcontent-xmy-c9="" class=" col-md-6 checkbox-to-crect-sales-search-section">
+                                        <div _ngcontent-xmy-c9="" class="form-check ">
+                                            <label _ngcontent-xmy-c9="" class="form-check-label" >
+                                                <input type='checkbox' class="form-check-input" name="Date_checks"
+                                                    [(ngModel)]="Date_Check" />
+                                                <span _ngcontent-xmy-c9="" class="form-check-sign" 
+                                                style="left: -23px !important;top: -7px !important;">
+                                                <span _ngcontent-xmy-c9="" class="check"></span>
+                                                </span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 row" style="align-items: center;">
+                                    <label
+                                        class="col-md-4  mb-0 " style="text-align: end;">From</label>
+                                    <mat-form-field
+                                        class="col-md-8 "
+                                        style="height: 40px;border: 1px solid #d3c4c4; border-radius: 8px;">
+                                        <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
+                                            [(ngModel)]="Search_FromDate">
+                                        <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                                        <mat-datepicker #dp1></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3 row" style="align-items: center;">
+                                    <label
+                                        class="col-md-4  mb-0 " style="text-align: end;" >TO</label>
+                                    <mat-form-field
+                                        class="col-md-8 "
+                                        style="height: 40px;border: 1px solid #d3c4c4; border-radius: 8px;">
+                                        <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
+                                            [(ngModel)]="Search_ToDate">
+                                        <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                                        <mat-datepicker #dp2></mat-datepicker>
+                                    </mat-form-field>
+                                </div> 
+                                <div class="col-md-3" style="align-items: center;">    
+                                    <label class="col-md-6  " style="text-align: end;">Stock Take Name</label>
+                                      <select [(ngModel)]="Search_Stock_Take_Name_" name="Search_Stock_Take_Name_" 
+                                      style="border: 1px solid lightgrey;height: 40px; " 
+                                       required class="col-md-6 select-box-style-diary">
+                                       <option *ngFor="let item of Stock_Take_Name_Data" [ngValue]="item">{{item.Stocktakename}}</option>
+                                      </select>
+                                </div>     
+                                <div class="col-md-6">
+                                    <button mat-raised-button type="button" [hidden]="Item_Save==false" id="Save_Button"
+                                    class="btn btn-danger pull-right save-close-new-buttons-to-crect"(click)="Search_Stock_Take_Master()">Search</button>
+                                    <button mat-raised-button type="button" class="btn btn-danger pull-right save-close-new-buttons-to-crect" (click)="Create_New()">Create New</button>
+                                   </div>                           
+                                
+                                <!-- <div class="col-md-2 row" style="align-items: center; justify-content: center;">
+                                  
+                                        <i class="fa fa-print" aria-hidden="true"></i></button>
+                                    <button mat-raised-button type="button" (click)="Create_New()"
+                                        class="btn btn-danger mt-0  mb-0 pull-right change-colour-button button-to-crect-margin ">
+                                        <i class="fa fa-plus" aria-hidden="true"></i></button>
+                                    <button mat-raised-button type="button" (click)="Search_Stock_Add()"
+                                        class="btn btn-danger mt-0  mb-0 pull-right change-colour-button button-to-crect-margin ">
+                                        <i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div> -->
+                          
+                            <div class="clearfix"></div>
+                 
+                 
+               
+            </div>
+            <div class="col-md-12">
+                <div class="card card-plain">
+                    <div class="card-body">
+                        <div class="table-responsive tble-rspnsv-sls-mstr-tbls">
+                            <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90">
+                                <table class="table table-hover">
+                                    <thead class="thead">
+                                        <th> Sl No </th>
+                                        <th> Stock Take Name</th>  
+                                        <th> Date </th> 
+                                        <th>Staff</th>                                       
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </thead>
+                                    <ng-container
+                                        *cdkVirtualFor="let Sales_Master of Stock_Add_Master_Data; let i =index">
+                                        <tr>
+                                            <td style="padding-left:5px;">{{ i+1 }}</td>
+                                            <td>{{Sales_Master["Stocktakename"]}}</td>
+                                            <td>{{Sales_Master["Search_Date"]}}</td>
+                                            <td>{{Sales_Master["User_Name"]}}</td>
+                                            <td>
+                                                <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                    [hidden]="StockAdd_Edit==false"
+                                                    aria-describedby="cdk-describedby-message-0" cdk-describedby-host=""
+                                                    class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                    mat-raised-button="" mattooltip="Edit Task"
+                                                    ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                    type="button"><span class="mat-button-wrapper"><span
+                                                            _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                            <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                class="material-icons"
+                                                                (click)="Edit_Stock_Take_Master(Sales_Master,i)">edit</i></span>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
+                                                            matripple="" ng-reflect-centered="false"
+                                                            ng-reflect-disabled="false"
+                                                            ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                                        </div>
+                                                    </span>
+                                                    <div class="mat-button-ripple mat-ripple" matripple=""
+                                                        ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                        ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button _ngcontent-gdi-c11="" [hidden]="StockAdd_Delete==false"
+                                                    class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                                    mat-raised-button="" mattooltip="Remove" type="button"
+                                                    aria-describedby="cdk-describedby-message-1" cdk-describedby-host=""
+                                                    ng-reflect-position="above" ng-reflect-message="Remove"><span
+                                                        class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
+                                                            class="material-icons"
+                                                            (click)="Delete_Stock_Take_Master(Sales_Master.Stock_Add_Master_Id,i)">close</i></span>
+                                                    <div class="mat-button-ripple mat-ripple" matripple=""
+                                                        ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                        ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </td>
+                                            
+                                        </tr>
+                                    </ng-container>
+                                </table>
+                            </cdk-virtual-scroll-viewport>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="entry-num">Entries : {{Total_Entries}}</label>
+                        &nbsp;&nbsp;&nbsp;&nbsp; <label class="entry-num">Total:
+                            {{Quotation_Master_Total_Amount}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="Entry_View">
+            <div class="container-fluid" #topDiv>
+                <div class="col-md-4 croct-float-purchase-master-section ">
+                  
+                    
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Description
+                            </label>
+                        <input type="text" name="Description" [(ngModel)]="Stock_Add_Master_.Description"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                  
+                </div>
+                <div class="col-md-4 croct-float-purchase-master-section">
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date
+                            <span
+                            style="color:#ef071e; ">*</span></label>
+                        <mat-form-field
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                            style="height: 47px !important">
+                            <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate"
+                                [(ngModel)]="Stock_Add_Master_.EntryDate">
+                            <mat-datepicker-toggle matSuffix [for]="dpdate" ></mat-datepicker-toggle>
+                            <mat-datepicker #dpdate></mat-datepicker>
+                        </mat-form-field>
+                    </div>                    
+               
+                </div>
+                <div class="col-md-3" style="align-items: center;">    
+                    <label class="col-md-6  " style="text-align: end;">Stock Take Name</label>
+                      <select [(ngModel)]="Stock_Take_Name_" name="Stock_Take_Name_" 
+                      style="border: 1px solid lightgrey;height: 40px; " 
+                       required class="col-md-6 select-box-style-diary">
+                       <option *ngFor="let item of Stock_Take_Name_Data" [ngValue]="item">{{item.Stocktakename}}</option>
+                      </select>
+                </div>       
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div
+                                            class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                            <label
+                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Part Number
+                                                <span
+                                                style="color:#ef071e; ">*</span>
+                                            </label>
+                                            <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto42"
+                                                style="padding-left: 5px !important;" [(ngModel)]="Barcode_"
+                                                (click)="Get_Stock_Item_Code_Typeahead($event)"
+                                                (input)="Get_Stock_Item_Code_Typeahead($event)" 
+                                                (keyup.enter)="Plus_Stock_Add_Details($event)"
+                                                class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched" />
+                                            <mat-autocomplete #auto42="matAutocomplete" [displayWith]="display_ItemCode" >
+                                                <mat-option *ngIf="isLoading"><mat-spinner
+                                                        diameter="500"></mat-spinner></mat-option>
+                                                <ng-container *ngIf="!isLoading">
+                                                    <mat-option *ngFor="let Item of ItemCodeData; let i = index"
+                                                        [value]="Item">
+                                                        <span> <div (click)="Barcode_Change(Item)">{{Item.Item_Code}} - {{Item.ItemName}} </div></span>
+                                                  </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </div>
+                                        <div
+                                            class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                            <label
+                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Description  
+                                                </label>
+                                            <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_"
+                                            (keyup.enter)="Plus_Stock_Add_Details($event)"
+                                                name="Item" (click)="Search_PurchaseItem_Typeahead($event)"
+                                                (input)="Search_PurchaseItem_Typeahead($event)" 
+                                                style="padding-left: 5px !important;"
+                                                class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                            <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
+                                                <mat-option *ngIf="isLoading"><mat-spinner
+                                                        diameter="500"></mat-spinner></mat-option>
+                                                <ng-container *ngIf="!isLoading">
+                                                    <mat-option 
+                                                        *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
+                                                        <span
+                                                            (click)="Item_Name_Change(Itemstock)">{{Itemstock.ItemName}}-{{Itemstock.Quantity}}</span>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </div>
+                                        <div
+                                            class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                            <label
+                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Uom</label>
+                                            <input type="text" [(ngModel)]="Stock_Add_Details_.UnitName"
+                                            (keyup.enter)="Plus_Stock_Add_Details($event)"
+                                                style="padding-left: 5px !important;" id="Stock_Add_Details_.UnitName"
+                                                name="Stock_Add_Details_.UnitName"
+                                                
+                                                class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                        </div>
+                                        <div
+                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt"> Purchase
+                                            Rate</label>
+                                        <input type="number" [(ngModel)]="Stock_Add_Details_.PurchaseRate" 
+                                        id="Stock_Add_Details_.PurchaseRate" name="Stock_Add_Details_.PurchaseRate"
+                                        (ngModelChange)="Calculate_Total_Amount()" (keyup.enter)="Plus_Stock_Add_Details($event)"
+                                            style="padding-left: 5px !important;"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                    </div>
+
+                                        <div
+                                            class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                            <label
+                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Sales Rate
+                                               
+                                                <span
+                                                style="color:#ef071e; ">*</span></label>
+                                            <input type="number" [(ngModel)]="Stock_Add_Details_.SaleRate"
+                                            (keyup.enter)="Plus_Stock_Add_Details($event)"
+                                                style="padding-left: 5px !important;" id="Stock_Add_Details_.SaleRate"  name="Stock_Add_Details_.SaleRate"
+                                                class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                        </div>  
+                                        <div
+                                            class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                            <label
+                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty
+                                                <span
+                                                style="color:#ef071e; ">*</span></label>
+                                            <input type="number" [(ngModel)]="Stock_Add_Details_.Quantity" (ngModelChange)="Calculate_Total_Amount()"
+                                            (keyup.enter)="Plus_Stock_Add_Details($event)"
+                                                style="padding-left: 5px !important;" id="Stock_Add_Details_.Quantity"  name="Stock_Add_Details_.Quantity"
+                                                class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                        </div>                                                                      
+                                        
+                                        <div
+                                        class="col-md-12 alighn-right-inputs-sales-grid div-to-down-margin-crect-allighn-wole-scton" style="display: flex; justify-content: end; align-items: end;">
+                                        <button mat-raised-button type="button" (click)="Plus_Stock_Add_Details($event)"
+                                            class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes" style="border-radius: 5px; margin-top: 16px !important;">
+                                            Add</button>
+                                    </div>                                       
+                                        
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-for-sale-search-section-diary">
+                                                    <thead class="bg-col-stock-add-diary">
+                                                        <th>No </th>
+                                                        <th>Part Number</th>
+                                                        <th>Item & Description </th>
+                                                        <th>Uom</th>
+                                                        <th>Qty</th>
+                                                        <th>Purchase Rate</th>
+                                                        <th>Sales Rate</th>
+                                                       
+                                                        <th></th>
+                                                    </thead>
+                                                    <tbody class="bk_tb_bg"
+                                                        *ngFor="let Sales_Details of Stock_Add_Details_Data; let i = index">
+                                                        <td>{{i+1}}</td>
+                                                        <td>{{Sales_Details["Item_Code"]}}</td>
+                                                        <td>{{Sales_Details["ItemName"]}}</td>
+                                                        <td>{{Sales_Details["UnitName"]}}</td>
+                                                        <td>{{Sales_Details["Quantity"]  | number: '1.3-3'}}</td>
+                                                        <td>{{Sales_Details["PurchaseRate"]  | number: '1.3-3'}}</td>
+                                                        <td>{{Sales_Details["SaleRate"]  | number: '1.3-3' }}</td>
+                                                        
+                                                        <td>
+                                                            <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                [hidden]="StockAdd_Edit==false"
+                                                                aria-describedby="cdk-describedby-message-0" cdk-describedby-host=""
+                                                                class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                                mat-raised-button="" mattooltip="Edit Task"
+                                                                ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                                type="button"><span class="mat-button-wrapper"><span
+                                                                        _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                                        <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                            class="material-icons"
+                                                                            (click)="Edit_Stock_Take_Details(Sales_Details,i)">edit</i></span>
+                                                                    <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
+                                                                        matripple="" ng-reflect-centered="false"
+                                                                        ng-reflect-disabled="false"
+                                                                        ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                                    <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                                                    </div>
+                                                                </span>
+                                                                <div class="mat-button-ripple mat-ripple" matripple=""
+                                                                    ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                                    ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                                <div class="mat-button-focus-overlay"></div>
+                                                            </button>
+                                                        
+                                                            <button _ngcontent-gdi-c11="" [hidden]="StockAdd_Delete==false"
+                                                                class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                                                mat-raised-button="" mattooltip="Remove" type="button"
+                                                                aria-describedby="cdk-describedby-message-1" cdk-describedby-host=""
+                                                                ng-reflect-position="above" ng-reflect-message="Remove"><span
+                                                                    class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
+                                                                        class="material-icons"
+                                                                        (click)="Delete_AddStock_Detail(i)">close</i></span>
+                                                                <div class="mat-button-ripple mat-ripple" matripple=""
+                                                                    ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                                    ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                                <div class="mat-button-focus-overlay"></div>
+                                                            </button>
+                                                        </td>                                                        
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-12">                                   
+                                    <button mat-raised-button type="button" id="Save_Button" [hidden]="StockAdd_Save==false"
+                                        class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                        (click)="Save_Stock_Take_Master(0)">Save</button>
+                                    <button mat-raised-button type="button"
+                                        class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                        (click)="Close_Click();">Close</button>
+                                   </div>                                
+                                <div class="clearfix"></div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>       
+        </div>
+    </div>
+</div>
+

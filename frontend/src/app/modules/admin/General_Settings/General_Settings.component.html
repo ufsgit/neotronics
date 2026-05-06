@@ -1,0 +1,182 @@
+
+
+
+
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+    </div>
+    <div class="main-content">
+    <div class="container-fluid">
+    <div class="row" *ngIf="Entry_View">
+    <div class="col-md-12">
+
+    
+
+    </div>
+    </div>
+    <div class="row" *ngIf="!Entry_View">
+            <div class="col-md-12">
+
+                    <form>
+                    <div class="row">
+                    
+                        <div class="col-md-6">
+                            <label class="col-md-3 name-label-margin-down-employer-details-name">Invoice No  </label>
+                            <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">      
+                            <input matInput type="number" [(ngModel)]="General_Settings_.Invoice_No"  name="General_Settings_.Invoice_No" class="input-text-item-group-diary">
+                           </mat-form-field> 
+                        </div>
+                          
+                               
+                                <div class="col-md-6">
+                                    <label class="col-md-3 name-label-margin-down-employer-details-name">Purchase Retrun No </label>
+                                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">     
+                                    <input matInput type="number" [(ngModel)]="General_Settings_.Purchase_Retrun_No" name="General_Settings_.Purchase_Retrun_No" class="input-text-item-group-diary">
+                                  </mat-form-field> 
+                                </div> 
+
+
+                                <div class="col-md-6">
+                                    <label class="col-md-3 name-label-margin-down-employer-details-name">Sales Return No</label>
+                                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">      
+                                    <input matInput type="number" [(ngModel)]="General_Settings_.Sales_Return_No"  name="General_Settings_.Sales_Return_No" class="input-text-item-group-diary">
+                                   </mat-form-field> 
+                                </div>
+                                  
+                                       
+                                        <div class="col-md-6">
+                                            <label class="col-md-3 name-label-margin-down-employer-details-name">Damage_No </label>
+                                            <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">     
+                                            <input matInput type="number" [(ngModel)]="General_Settings_.Damage_No" name="General_Settings_.Damage_No" class="input-text-item-group-diary">
+                                          </mat-form-field> 
+                                        </div>
+
+
+                                        <div class="col-md-6">
+                                            <label class="col-md-3 name-label-margin-down-employer-details-name">Contra Voucher No</label>
+                                            <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">      
+                                            <input matInput type="number" [(ngModel)]="General_Settings_.Contra_Voucher_No"  name="General_Settings_.Contra_Voucher_No" class="input-text-item-group-diary">
+                                           </mat-form-field> 
+                                        </div>
+                                          
+                                               
+                                                <div class="col-md-6">
+                                                    <label class="col-md-3 name-label-margin-down-employer-details-name">Journal Voucher No </label>
+                                                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">     
+                                                    <input matInput type="number" [(ngModel)]="General_Settings_.Journal_Voucher_No" name="General_Settings_.Journal_Voucher_No" class="input-text-item-group-diary">
+                                                  </mat-form-field> 
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label class="col-md-3 name-label-margin-down-employer-details-name">Receipt Voucher No </label>
+                                                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">     
+                                                    <input matInput type="number" [(ngModel)]="General_Settings_.Receipt_Voucher_No" name="General_Settings_.Receipt_Voucher_No" class="input-text-item-group-diary">
+                                                  </mat-form-field> 
+                                                </div> 
+                
+                
+                                                <div class="col-md-6">
+                                                    <label class="col-md-3 name-label-margin-down-employer-details-name">Payment Voucher No</label>
+                                                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">      
+                                                    <input matInput type="number" [(ngModel)]="General_Settings_.Payment_Voucher_No"  name="General_Settings_.Payment_Voucher_No" class="input-text-item-group-diary">
+                                                   </mat-form-field> 
+                                                </div>
+                                                  
+                                                       
+                                                        <div class="col-md-6">
+                                                            <label class="col-md-3 name-label-margin-down-employer-details-name">Cess </label>
+                                                            <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">     
+                                                            <input matInput type="number" [(ngModel)]="General_Settings_.Cess" name="General_Settings_.Cess" class="input-text-item-group-diary">
+                                                          </mat-form-field> 
+                                                        </div>
+                
+                
+                                                        <div class="col-md-6">
+                                                            <label class="col-md-3 name-label-margin-down-employer-details-name">Voucher No</label>
+                                                            <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">      
+                                                            <input matInput type="number" [(ngModel)]="General_Settings_.Voucher_No"  name="General_Settings_.Voucher_No" class="input-text-item-group-diary">
+                                                           </mat-form-field> 
+                                                        </div>
+                                                          
+                                                               
+                                                                <!-- <div class="col-md-6">
+                                                                    <label class="col-md-3 name-label-margin-down-employer-details-name">Barcode</label>
+                                                                    <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">     
+                                                                    <input matInput type="number" [(ngModel)]="General_Settings_.Barcode" name="General_Settings_.Barcode" class="input-text-item-group-diary">
+                                                                  </mat-form-field> 
+                                                                </div> -->
+
+                                   
+                    <div class="col-md-2">
+                    <!-- <button mat-raised-button type="button" (click)="Search_HSN()" class="btn btn-danger button-to-crect-margin change-colour-button"><i class="fa fa-search" aria-hidden="true"></i></button>    
+                    <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin change-colour-button"><i class="fa fa-plus" aria-hidden="true"></i></button> -->
+                    <button mat-raised-button type="button" [hidden]="Account_Years_Save==false"id="Save_Button"class="btn btn-danger pull-right"(click)="Save_General_Settings()">Save</button>
+               
+                    </div>
+                    </div>
+        
+                    <div class="clearfix"></div>
+                    </form>
+
+
+                 
+                        <!-- <div class="card-plain">
+                    
+                        <div class="table-responsive">
+                     <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" >
+                        <table class="table table-hover">
+                        <thead class="thead">
+                        <th>
+                        Sl No
+                        </th>
+                        <th>
+                       Account Year
+                        </th>
+                        <th>
+                           From
+                            </th>
+                            <th>
+                                To
+                                </th>
+                                
+                        <th [hidden]="HSN_Edit==false">
+                        Edit
+                        </th>
+                        <th [hidden]="HSN_Delete==false">
+                        Delete
+                        </th>
+                        </thead>
+                        <ng-container *cdkVirtualFor="let Account_Years_Data_1 of Account_Years_Data; let i = index">
+                        <tr>
+                        <td style="padding-left:5px;">{{ i+1 }}</td>
+                        <td>{{Account_Years_Data_1["Account_Year"]}}</td>
+                        <td>{{Account_Years_Data_1["YearFrom"]}}</td>
+                        <td>{{Account_Years_Data_1["YearTo"]}}</td>
+                        <td>
+                        <button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="HSN_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Account_Years(Account_Years_Data_1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
+                        </td>
+                        <td> 
+                        <button _ngcontent-gdi-c11="" [hidden]="HSN_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Account_Years(Account_Years_Data_1.Account_Years_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
+                        </td>
+                       </tr>
+                           </ng-container>
+                    </table>
+                    </cdk-virtual-scroll-viewport>
+                        </div>
+                    
+                        
+                        <label class="entry-num">Entries : {{Total_Entries}}</label>
+                        </div> -->
+                   
+
+
+
+
+                    </div>
+    
+    
+</div> 
+    </div>
+    </div>
+    

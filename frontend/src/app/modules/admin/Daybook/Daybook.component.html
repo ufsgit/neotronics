@@ -1,0 +1,927 @@
+<div *ngIf="issLoading" class="overlay">
+	<mat-progress-spinner
+		class="spinner"
+		[color]="color"
+		[mode]="mode"
+		[value]="value"
+	>
+	</mat-progress-spinner>
+</div>
+<div class="main-content mt-0">
+	<div class="container-fluid">
+		<div class="row" *ngIf="Entry_View">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-body">
+						<!-- <form> -->
+						<div class="row">
+							<div class="col-md-6">
+								
+									<div class="col-md-12 div-crct-alghn-dwn-ldgr-vuchr-tpe">
+										<label class="col-md-3 label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt"
+											>Branch
+											<span
+												style="
+													color: #ef071e;
+													font-size: 22px;
+													vertical-align: -webkit-baseline-middle;
+												"
+												>*</span
+											>
+										</label>
+										<input
+											type="text" style="border: 1px solid lightgrey !important;
+											height: 47px;padding-left: 10px;"
+											[matAutocomplete]="auto1"
+											[(ngModel)]="ToAccount_"
+											(click)="Accounts_Typeahead($event)"
+											(keyup)="Accounts_Typeahead($event)"
+											class="col-md-9 for-input-selct-tblelst margin-inputs-edit-portion-jouranl-section margin-lh-rh-to-crect-textbox"
+										/>
+										<mat-autocomplete
+											#auto1="matAutocomplete"
+											[displayWith]="display_FromAccount"
+										>
+											<mat-option *ngIf="issLoading"
+												><mat-spinner diameter="500"></mat-spinner
+											></mat-option>
+											<ng-container *ngIf="!issLoading">
+												<mat-option
+													*ngFor="let ToAccount of Client_Accounts_Data"
+													[value]="ToAccount"
+												>
+													<span
+														><div (click)="Address_Change(ToAccount)">
+															{{ ToAccount.Client_Accounts_Name }}-{{
+																ToAccount.Address1
+															}}-{{ ToAccount.Mobile }}
+														</div></span
+													>
+												</mat-option>
+											</ng-container>
+										</mat-autocomplete>
+									</div>
+							
+								<div class="col-md-12 div-crct-alghn-dwn-ldgr-vuchr-tpe">
+									<label
+										class="col-md-3 label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt"
+										>Item Code
+										<span
+											style="
+												color: #ef071e;
+												font-size: 22px;
+												vertical-align: -webkit-baseline-middle;
+											"
+											>*</span
+										></label>
+
+									<!-- [matAutocomplete]="autoItem_" -->
+									<!-- (click)="Search_Item_Typeahead($event)"
+									(input)="Search_Item_Typeahead($event)" -->
+									<!-- <mat-autocomplete
+									#autoItem_="matAutocomplete"
+									[displayWith]="display_Item"
+								>
+									<mat-option *ngIf="isLoading"
+										><mat-spinner diameter="500"></mat-spinner
+									></mat-option>
+									<ng-container *ngIf="!isLoading">
+										<mat-option *ngFor="let Item of Item_Data" [value]="Item">
+											<span
+												><div>{{ Item.Item_Name }}</div></span
+											>
+										</mat-option>
+									</ng-container>
+								</mat-autocomplete> -->
+									<!-- <input
+										type="text" style="border: 1px solid lightgrey !important;
+										height: 47px;padding-left: 10px;"
+										
+										[(ngModel)]="Waste_Management_.Item_Code"
+										name="Waste_Management_.Item_Code"
+										(ngModelChange)="Get_Item_Name_With_Code_Waste_Management()"  
+
+										
+										class="col-md-7 for-input-selct-tblelst ng-pristine ng-valid ng-touched"
+									/> -->
+									<input style="    border: 1px solid lightgrey;" type="text" [matAutocomplete]="auto_itemCode" [(ngModel)]="Item1_" name="Item_Code" 
+									(click)="Search_ItemCode_Typeahead($event)" 
+									(keyup)="Search_ItemCode_Typeahead($event)" 
+									class="col-md-7  ng-valid ng-touched" />
+									<mat-autocomplete #auto_itemCode="matAutocomplete" [displayWith]="display_ItemCode" (optionSelected)="onItemSelected($event)">
+										<mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+										<ng-container *ngIf="!isLoading">
+											<mat-option *ngFor="let Item__Data_Filter_T of Item_Data_Filter1" [value]="Item__Data_Filter_T">
+												<span>{{Item__Data_Filter_T.Item_Code}}</span>
+											</mat-option>
+										</ng-container>
+									</mat-autocomplete>
+								
+								</div>
+
+								<div class="col-md-12 div-crct-alghn-dwn-ldgr-vuchr-tpe">
+									<label
+										class="col-md-3 label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt"
+										>Item
+										<span
+											style="
+												color: #ef071e;
+												font-size: 22px;
+												vertical-align: -webkit-baseline-middle;
+											"
+											>*</span
+										></label>
+										<!-- [matAutocomplete]="autoItem_"
+										(click)="Search_Item_Typeahead($event)"
+										(input)="Search_Item_Typeahead($event)" -->
+										<!-- <mat-autocomplete
+										#autoItem_="matAutocomplete"
+										[displayWith]="display_Item"
+									>
+										<mat-option *ngIf="isLoading"
+											><mat-spinner diameter="500"></mat-spinner
+										></mat-option>
+										<ng-container *ngIf="!isLoading">
+											<mat-option *ngFor="let Item of Item_Data" [value]="Item">
+												<span
+													><div>{{ Item.Item_Name }}</div></span
+												>
+											</mat-option>
+										</ng-container>
+									</mat-autocomplete> -->
+
+
+									<input
+										disabled
+										type="text" style="border: 1px solid lightgrey !important;
+										height: 47px;padding-left: 10px;"
+										[(ngModel)]="Waste_Management_.Item_Name"
+										id="Waste_Management_.Item_Name"
+										name="Waste_Management_.Item_Name"
+										class="col-md-9 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+									/>
+							
+								</div>
+
+								<!--- Sub Category Field Start -->
+
+								<div class="col-md-12 div-crct-alghn-dwn-ldgr-vuchr-tpe">
+									<label class="col-md-3 label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt"
+										>Sub Category
+										<span
+											style="
+												color: #ef071e;
+												font-size: 22px;
+												vertical-align: -webkit-baseline-middle;
+											"
+											>*</span
+										>
+									</label>
+									<input
+										type="text" style="border: 1px solid lightgrey !important;
+										height: 47px;padding-left: 10px;"
+										[matAutocomplete]="auto12"
+										[(ngModel)]="Item_Group1_"
+										(click)="Item_Group_Typeahead($event)"
+										(keyup)="Item_Group_Typeahead($event)"
+										class="col-md-9 for-input-selct-tblelst margin-inputs-edit-portion-jouranl-section margin-lh-rh-to-crect-textbox"
+									/>
+									<mat-autocomplete
+										#auto12="matAutocomplete"
+										[displayWith]="display_ItemGroup"
+									>
+										<mat-option *ngIf="issLoading"
+											><mat-spinner diameter="500"></mat-spinner
+										></mat-option>
+										<ng-container *ngIf="!issLoading">
+											<mat-option
+												*ngFor="let ToAccount of Item_Group_Data_Filter1"
+												[value]="ToAccount"
+											>
+												<span
+													><div>
+														<!-- (click)="Address_Change(ToAccount)" -->
+														{{ ToAccount.Item_Group_Name }}
+													</div></span>
+											</mat-option>
+										</ng-container>
+									</mat-autocomplete>
+								</div>
+
+								<!--- Sub Category Field End -->
+
+
+								<!--- Master Category Field Start -->
+
+								<div class="col-md-12 div-crct-alghn-dwn-ldgr-vuchr-tpe">
+									<label class="col-md-3 label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt"
+										>Category
+										<span
+											style="
+												color: #ef071e;
+												font-size: 22px;
+												vertical-align: -webkit-baseline-middle;
+											"
+											>*</span
+										>
+									</label>
+									<input
+										type="text" style="border: 1px solid lightgrey !important;
+										height: 47px;padding-left: 10px;"
+										[matAutocomplete]="auto13"
+										[(ngModel)]="Master_Category1_"
+										(click)="Master_Category_Typeahead($event)"
+										(keyup)="Master_Category_Typeahead($event)"
+										class="col-md-9 for-input-selct-tblelst margin-inputs-edit-portion-jouranl-section margin-lh-rh-to-crect-textbox"
+									/>
+									<mat-autocomplete
+										#auto13="matAutocomplete"
+										[displayWith]="display_MasterCategory"
+									>
+										<mat-option *ngIf="issLoading"
+											><mat-spinner diameter="500"></mat-spinner
+										></mat-option>
+										<ng-container *ngIf="!issLoading">
+											<mat-option
+												*ngFor="let ToAccount of Master_Category_Data_Filter1"
+												[value]="ToAccount"
+											>
+												<span
+													><div>
+														<!-- (click)="Address_Change(ToAccount)" -->
+														{{ ToAccount.Master_Category_Name }}
+													</div></span>
+											</mat-option>
+										</ng-container>
+									</mat-autocomplete>
+								</div>
+
+								<!--- Master Category Field End -->
+
+
+								<!--- Remarks Field Start -->
+								<div class="col-md-12 wle-dv-input-txt-nw-pymnt-vuchr-mod">
+									<label class="col-md-3 lbel-crect-alghn-pymnt-vchr-dscrptn" style="padding-left: 0;"
+										>Remarks</label
+									>
+									<mat-form-field style="border: 1px solid lightgrey !important;
+									height: 41px;padding-left: 10px;"
+										class="col-md-9 margin-lh-rh-to-crect-textbox led-srch-sctn-nput-tb margin-inputs-edit-portion-jouranl-section"
+									>
+										<input
+											matInput
+											type="text"
+											maxlength="1000"
+											[(ngModel)]="Waste_Management_.Remarks"
+											name="Waste_Management_.Remarks"
+										/>
+									</mat-form-field>
+								</div>
+								<!--- Remarks Field End -->
+							</div>
+
+							<div class="col-md-6 mrgn-crect-jornal-edit-section">
+								<div class="col-md-12">
+									<label
+										class="col-md-4 label-down-alighn-adrs-tre-prhse-mstr-down"
+										>Date</label
+									>
+									<mat-form-field style="border: 1px solid lightgrey !important;
+									height: 41px;padding-left: 10px;"
+										class="col-md-8 margin-lh-rh-to-crect-textbox"
+									>
+										<input
+											disabled
+											matInput
+											[matDatepicker]="dp"
+											placeholder=""
+											[(ngModel)]="Waste_Management_.Date"
+										/>
+										<!-- <mat-datepicker-toggle
+											matSuffix
+											[for]="dp"
+										></mat-datepicker-toggle> -->
+										<mat-datepicker #dp></mat-datepicker>
+									</mat-form-field>
+								</div>
+								<div class="col-md-12 wle-dv-input-txt-nw-pymnt-vuchr-mod">
+									<label class="col-md-4 lbel-crect-alghn-pymnt-vchr-dscrptn"
+										>Quantity<span
+										style="
+											color: #ef071e;
+											font-size: 22px;
+											vertical-align: -webkit-baseline-middle;
+										"
+										>*</span
+									>
+										</label
+									>
+									<mat-form-field style="border: 1px solid lightgrey !important;
+									height: 41px;padding-left: 10px;"
+										class="col-md-8 margin-lh-rh-to-crect-textbox led-srch-sctn-nput-tb margin-inputs-edit-portion-jouranl-section"
+									>
+										<input
+											matInput
+											type="int"
+											[(ngModel)]="Waste_Management_.Quantity"
+											name="Waste_Management_.Quantity"
+										/>
+									</mat-form-field>
+								</div>
+
+								<div class="col-md-12 wle-dv-input-txt-nw-pymnt-vuchr-mod">
+									<label class="col-md-4 lbel-crect-alghn-pymnt-vchr-dscrptn"
+										>Amount
+										<!-- <span
+										style="
+											color: #ef071e;
+											font-size: 22px;
+											vertical-align: -webkit-baseline-middle;
+										"
+										>*</span> -->
+										</label
+									>
+									<mat-form-field style="border: 1px solid lightgrey !important;
+									height: 41px;padding-left: 10px;"
+										class="col-md-8 margin-lh-rh-to-crect-textbox led-srch-sctn-nput-tb margin-inputs-edit-portion-jouranl-section"
+									>
+										<input
+											matInput
+											type="int"
+											[(ngModel)]="Waste_Management_.Amount"
+											name="Waste_Management_.Amount"
+										/>
+									</mat-form-field>
+								</div>
+
+
+								<div class="col-md-12 wle-dv-input-txt-nw-pymnt-vuchr-mod">
+									<!-- <label class="col-md-4 lbel-crect-alghn-pymnt-vchr-dscrptn"
+										>Description</label
+									> -->
+									<!-- <mat-form-field style="border: 1px solid lightgrey !important;
+									height: 41px;padding-left: 10px;"
+										class="col-md-8 margin-lh-rh-to-crect-textbox led-srch-sctn-nput-tb margin-inputs-edit-portion-jouranl-section"
+									>
+										<input
+											matInput
+											type="text"
+											maxlength="1000"
+											[(ngModel)]="Waste_Management_.Description"
+											name="Waste_Management_.Description"
+										/>
+									</mat-form-field> -->
+									
+									  <label
+										class="col-md-4 label-down-alighn-adrs-tre-prhse-mstr-down"
+										>Document
+									</label>
+									<mat-form-field style="border: 1px solid lightgrey !important;
+									height: 47px;padding-left: 10px;"
+										class="col-md-5 input-allighn-typer-head-all-divs-matinputs"
+									>
+										<input
+											matInput
+											type="text" 
+											[(ngModel)]="Doc_Photo"
+											name="Doc_Photo"
+											disabled
+										/>
+									</mat-form-field>
+									<button
+										class="btn btn-danger mb-2 pl-2 pr-2 mt-2 ml-1" style="margin-top: 0 !important;"
+										type="button"
+										
+										(click)="fileInput1.click()"
+									>
+										<span>Choose File</span>
+										<input
+											#fileInput1
+											type="file"
+											name="ImageFile_Doc"
+											[(ngModel)]="ImageFile_Doc"
+											(change)="File_Change_Vat($event)"
+											style="display: none"
+										/>
+									</button>  
+								</div>
+
+								<div class="row full-box-contents-select-status-department">
+									<div
+										class="col-md-5 mve-up-wrd-crct-alghn-sls-mstr-nw-sctn-brcde-rspnsv"
+									></div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<button
+									mat-raised-button
+									type="button"
+									[hidden]="Waste_Management_Save == false"
+									id="Save_Button"
+									class="btn btn-danger pull-right"
+									(click)="Save_Waste_Management()"
+								>
+									Save
+								</button>
+								<button
+									mat-raised-button
+									type="button"
+									class="btn btn-danger pull-right"
+									(click)="Close_Click()"
+								>
+									Close
+								</button>
+								<!-- <button
+									mat-raised-button
+									type="button"
+									[hidden]="Payment_Voucher_Print == false"
+									class="btn btn-danger pull-right"
+									(click)="Print_Click()"
+								>
+									<i class="fa fa-print" aria-hidden="true"></i>
+								</button> -->
+							</div>
+						</div>
+						<div class="clearfix"></div>
+						<!-- </form> -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" *ngIf="!Entry_View">
+			<div class="card" style="    padding-top: 20px;
+			margin-bottom: 20px;
+			margin-left: 20px;
+			margin-right: 15px;">
+				<div class="row col-12">
+			<div _ngcontent-xmy-c9="" class="col-md-0">
+				<div
+					_ngcontent-xmy-c9=""
+					class="form-check algyn-checkbx-lead-serch-scton chck-bxes-dwn-alyn-pymnt-vcher"
+				>
+					<label _ngcontent-xmy-c9="" class="form-check-label">
+						<input 
+							type="checkbox" style="border: 1px solid lightgrey !important;
+							height: 41px;padding-left: 10px;"
+							class="form-check-input"
+							placeholder="Search..."
+							[(ngModel)]="Look_In_Date" />
+						<span _ngcontent-xmy-c9="" class="form-check-sign"
+							><span _ngcontent-xmy-c9="" class="check"></span> </span
+					></label>
+				</div>
+			</div>
+
+			<div class="col-md-2" style="margin-top: 12px; ">
+				<label class="col-md-4 label-down-alighn-supler-prhse-mstr-down" style="top: 0px !important;"
+					>From</label
+				>
+				<mat-form-field class="col-md-8" style="border: 1px solid lightgrey !important;
+				height: 47px;padding-left: 10px;">
+					<input
+						matInput
+						[matDatepicker]="dp1"
+						placeholder=""
+						[(ngModel)]="Search_FromDate"
+					/>
+					<mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+					<mat-datepicker #dp1></mat-datepicker>
+				</mat-form-field>
+			</div>
+
+			<div class="col-md-2" style="margin-top: 12px; ">
+				<label class="col-md-4 label-down-alighn-supler-prhse-mstr-down" style="top: 0px !important;"
+					>TO</label
+				>
+				<mat-form-field class="col-md-8" style="border: 1px solid lightgrey !important;
+				height: 47px;padding-left: 10px;">
+					<input
+						matInput
+						[matDatepicker]="dp2"
+						placeholder=""
+						[(ngModel)]="Search_ToDate"
+					/>
+					<mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+					<mat-datepicker #dp2></mat-datepicker>
+				</mat-form-field>
+			</div>
+
+			<div class="col-md-3" style="margin-top: 2px;"> 
+				<label
+					class="col-md-3 label-alighn-supler-prhse-mstr-down"
+					>Category
+				</label>
+				<input
+					type="text" style="border: 1px solid lightgrey !important;
+					height: 47px;padding-left: 10px;"
+					[matAutocomplete]="autoItem_1"
+					[(ngModel)]="Item_Search"
+					id="Item_Search"
+					name="Item_Search"
+					(click)="Master_Category_Typeahead1($event)"
+					(input)="Master_Category_Typeahead1($event)"
+					class="col-md-9 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+				/>
+				<mat-autocomplete
+					#autoItem_1="matAutocomplete"
+					[displayWith]="display_MasterCategory1"
+				>
+					<mat-option *ngIf="isLoading"
+						><mat-spinner diameter="500"></mat-spinner
+					></mat-option>
+					<ng-container *ngIf="!isLoading">
+						<mat-option *ngFor="let Item of Master_Category_Data" [value]="Item">
+							<span
+								><div>{{ Item.Master_Category_Name }}</div></span
+							>
+						</mat-option>
+					</ng-container>
+				</mat-autocomplete>
+			</div>
+
+			<div class="col-md-3" style="margin-top: 2px;">
+				<label class="col-md-3 label-alighn-supler-prhse-mstr-down"
+					>Branch
+				</label>
+				<input
+					type="text" style="border: 1px solid lightgrey !important;
+					height: 47px;padding-left: 10px;"
+					[matAutocomplete]="auto3"
+					[(ngModel)]="ToAccount_Search"
+					(click)="Accounts_Typeahead($event)"
+					(keyup)="Accounts_Typeahead($event)"
+					class="col-md-9 for-input-selct-tblelst"
+				/>
+				<mat-autocomplete
+					#auto3="matAutocomplete"
+					[displayWith]="display_FromAccount"
+				>
+					<mat-option *ngIf="issLoading"
+						><mat-spinner diameter="500"></mat-spinner
+					></mat-option>
+					<ng-container *ngIf="!issLoading">
+						<mat-option
+							*ngFor="let FromAccount1 of Client_Accounts_Data"
+							[value]="FromAccount1"
+						>
+							<span
+								>{{ FromAccount1.Client_Accounts_Name }}-{{
+									FromAccount1.Address1
+								}}-{{ FromAccount1.Mobile }}</span
+							>
+						</mat-option>
+					</ng-container>
+				</mat-autocomplete>
+			</div>
+
+			<div class="col-md-2" style="margin-top: 10px;">
+				<button
+					mat-raised-button
+					type="button"
+					(click)="Create_New()"
+					class="btn btn-danger pull-right button-to-crect-margin change-colour-button alighn-butn-user-page"
+				>
+					Create New
+				</button>
+				<button
+					mat-raised-button
+					type="button"
+					(click)="Search_Waste_Management()"
+					class="btn btn-danger button-to-crect-margin pull-right change-colour-button"
+				>
+					Search
+				</button>
+			</div>
+			</div>
+			</div>
+			<div class="col-md-12">
+				<div class="card card-plain">
+					<div class="card-body">
+						<div class="table-responsive" [style.height.px]="myInnerHeight" style="overflow-y: scroll; height: 700px;">
+							<table class="table table-hover">
+								<thead class="thead">
+									<th>Sl No.</th>
+									<th>Date</th>
+									<th>Item</th>
+									<th>Branch</th>
+									<th>Sub Category</th>
+									<th>Category</th>
+									<th>Quantity</th>
+									<th>Amount</th>
+									<th>Document Name</th>
+									<th>Download </th>
+
+									<th
+										[hidden]="Waste_Management_Edit == false"
+										class="crect-margin-width-table-header-title"
+									>
+										Edit
+									</th>
+									<th [hidden]="Waste_Management_Delete == false">Delete</th>
+								</thead>
+								<tbody
+									class="bk_tb_bg"
+									*ngFor="let wasteD of Waste_Management_Data; let i = index"
+								>
+									<td>{{ i + 1 }}</td>
+									<td>{{ wasteD["Search_Date"] }}</td>
+									<td>{{ wasteD["Item_Name"] }}</td>
+									<td>{{ wasteD["Client_Accounts_Name"] }}</td>
+									<td>{{ wasteD["Item_Group_Name"] }}</td>
+									<td>{{ wasteD["Master_Category_Name"] }}</td>
+									<td>{{ wasteD["Quantity"] }}</td>
+									<td>{{ wasteD["Amount"] }}</td>
+									<td>{{ wasteD["File_Name"] }}</td>
+									<td>
+										<button mat-raised-button type="button" 
+										id="Save_Button" class="btn btn-danger pull-right" (click)="Download_Documents(wasteD.File_Path,
+										i)">
+										Download
+										</button>
+									</td>
+									 
+									<td>
+										<button
+											_ngcontent-jry-c5=""
+											_ngcontent-gxp-c5=""
+											[hidden]="Waste_Management_Edit == false"
+											aria-describedby="cdk-describedby-message-0"
+											cdk-describedby-host=""
+											class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+											mat-raised-button=""
+											mattooltip="Edit Task"
+											ng-reflect-message="Edit Task"
+											ng-reflect-position="above"
+											type="button"
+										>
+											<span class="mat-button-wrapper"
+												><span _ngcontent-jry-c5="" class="mat-button-wrapper"
+													><i
+														_ngcontent-jry-c5=""
+														_ngcontent-gxp-c5=""
+														class="material-icons"
+														(click)="Edit_Waste_Management(wasteD, i)"
+														>edit</i
+													></span
+												>
+												<div
+													_ngcontent-jry-c5=""
+													class="mat-button-ripple mat-ripple"
+													matripple=""
+													ng-reflect-centered="false"
+													ng-reflect-disabled="false"
+													ng-reflect-trigger="[object HTMLButtonElement]"
+												></div>
+												<div
+													_ngcontent-jry-c5=""
+													class="mat-button-focus-overlay"
+												></div
+											></span>
+											<div
+												class="mat-button-ripple mat-ripple"
+												matripple=""
+												ng-reflect-centered="false"
+												ng-reflect-disabled="false"
+												ng-reflect-trigger="[object HTMLButtonElement]"
+											></div>
+											<div class="mat-button-focus-overlay"></div>
+										</button>
+									</td>
+									<td>
+										<button
+											_ngcontent-gdi-c11=""
+											[hidden]="Waste_Management_Delete == false"
+											class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+											mat-raised-button=""
+											mattooltip="Remove"
+											type="button"
+											aria-describedby="cdk-describedby-message-1"
+											cdk-describedby-host=""
+											ng-reflect-position="above"
+											ng-reflect-message="Remove"
+										>
+											<span class="mat-button-wrapper"
+												><i
+													_ngcontent-gdi-c11=""
+													class="material-icons"
+													(click)="
+														Delete_Waste_Management(
+															wasteD.Daybook_Id,
+															i
+														)
+													"
+													>close</i
+												></span
+											>
+											<div
+												class="mat-button-ripple mat-ripple"
+												matripple=""
+												ng-reflect-centered="false"
+												ng-reflect-disabled="false"
+												ng-reflect-trigger="[object HTMLButtonElement]"
+											></div>
+											<div class="mat-button-focus-overlay"></div>
+										</button>
+									</td>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<label class="entry-num">Entries : {{ Total_Entries }}</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="Print_Div" style="display: none">
+		<div class="printz">
+			<table>
+				<tr>
+					<td
+						class="company-title-print-portion"
+						name="company_Name"
+						style="width: 93%"
+					>
+						<h1>
+							<b>{{ Print_Company_.Company_Name }}</b>
+						</h1>
+					</td>
+					<td class="printLogo center-block">
+						<!-- <img class="" src='{{Image_Url}}'/> -->
+						<img style="width: 90px; height: 90px" src="{{ Image_Url }}" />
+						<!--<img src="" id="profile-img-tag" style="width:100%" />-->
+					</td>
+				</tr>
+				<tr>
+					<td>{{ Print_Company_.EMail }}</td>
+					<td>{{ Print_Company_.Website }}</td>
+				</tr>
+				<tr>
+					<td>{{ Print_Company_.GSTNO }}</td>
+				</tr>
+			</table>
+			<hr />
+
+			<table class="inBox" style="width: 100%">
+				<tr>
+					<td style="width: 50%">{{ Print_Company_.Address1 }}</td>
+					<td></td>
+					<td></td>
+					<td>Date :</td>
+					<td>{{ Print_Date_ }}</td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td></td>
+					<td>Customer:</td>
+					<td>{{ Payment_Voucher_.FromAccount_Name }}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td>Address:</td>
+					<td>{{ Print_Client_.Address1 }}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td>{{ Print_Client_.Address2 }}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td></td>
+					<td>:</td>
+					<td>{{ Print_Client_.Address3 }}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td></td>
+					<td>Mobile:</td>
+					<td>{{ Print_Client_.Mobile }}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td></td>
+					<td>Receipt No :</td>
+					<td>{{ Payment_Voucher_.Voucher_No }}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+			<!-- <table style="width: 100%; margin-top:30px;"> -->
+			<!-- <tr>
+                 
+                  <td><h5>{{Receipt_Voucher_.Date}}</h5></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td style="width: 50%;"><h5> Receipt No :{{Print_Company_.Code}}/{{Receipt_Voucher_.Voucher_No}}</h5></td>
+                  
+              </tr> -->
+			<!-- <tr style="margin-top: 30px;">
+                      <td><h3>{{Receipt_Voucher_.FromAccount_Name}}</h3></td>
+                      <td></td>
+                      <td></td>
+                      <td></td> -->
+			<!-- <td><h5><b>{{Payment_Mode_.Payment_Mode_Name}}</b></h5></td> -->
+			<!-- </tr> -->
+			<!-- <tr>
+                      <td><h3>{{Print_Company_.Code}}</h3></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>     
+                  
+              </tr> -->
+			<!-- </table> -->
+
+			<table
+				style="width: 100%; border: 1px solid gray; border-collapse: collapse"
+			>
+				<tr>
+					<h4
+						style="
+							width: 100%;
+							text-align: center;
+							background-color: gray;
+							padding: 5px 0px;
+							margin-top: 0px;
+							margin-bottom: 0px;
+						"
+					>
+						<b> Account </b>
+					</h4>
+				</tr>
+
+				<tr>
+					<td style="width: 75%; border-: gray solid 1px">
+						{{ Payment_Voucher_.Description }}
+					</td>
+					<!-- <td style="border: gray solid 1px; padding-left: 5px;">{{Currency_.Currency_Name}} {{RecieptVoucher_.Amount}}</td> -->
+				</tr>
+
+				<tr>
+					<td>
+						<h3>{{ Payment_Voucher_.Amount }}</h3>
+					</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<!-- <tr>
+                      <td style="width:75%; border: gray solid 1px;">{{Tax_Type}}  {{RecieptVoucher_.Tax_Percent}} % </td>
+                      <td style="border: gray solid 1px; padding-left: 5px;">{{Currency_.Currency_Name}} {{RecieptVoucher_.Tax_Amount}}</td>
+               </tr> -->
+				<!-- <tr>
+                      <td style="width:75%; border:gray solid 1px;"> <b>Total Amount Received </b></td>
+                      <td style="border: gray solid 1px; padding-left: 5px;">{{Currency_.Currency_Name}} {{RecieptVoucher_.Total_Amount}}</td>
+               </tr> -->
+			</table>
+			<!-- <div class="col-md-12">
+<label>With Compliments :</label> </div> -->
+			<!-- <div class="col-md-12">
+<label>We have received this amount to our NAB -Dollar Account </label></div> -->
+			<!-- <div class="col-md-12" style="margin-top:20px; margin-bottom:20px;">
+<label><b>For Australian Immigration Services</b></label></div> -->
+			<!-- <div class="row">
+<img src='{{Company_Sign}}' style="width: 50px; Height:50px;"> </div> -->
+			<!-- <div class="row" style="margin-top: 25px;">
+<img src='{{Company_Seal}}' style="width: 80px; Height:80px;"></div> -->
+			<!-- <div class="row" style="text-align: center;">
+<label style="color:green"><b>Member of the Migration Institute of Australia</b></label></div> -->
+			<!-- <div class="row" style="text-align: center;">
+<label style="color: olivedrab"><b>Knowledge   professionalism  ethics </b></label></div> -->
+
+			<br />
+			<br />
+		</div>
+	</div>
+</div>

@@ -1,0 +1,310 @@
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+    </div>
+<div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+<div class="container-fluid">
+<div class="row mb-0" *ngIf="Entry_View" style="background-color: #f1f1f1;">
+<div class="row mb-1 card-body" >
+<div class="card">
+<div class="card-body" style="background-color: #f1f1f1;">
+<div class="row">
+<div class="col-md-6 section-user-block-ne other-department-user-block">
+        <div class="col-md-12 mb-2">
+        <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">User Name <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+        <mat-form-field class="col-md-9  margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey !important;
+        height: 47px;padding-left: 10px;">
+        <input matInput type="text"   maxlength="50" [(ngModel)]="User_Details_.User_Details_Name" name="User_Details_.User_Details_Name" 
+        class="for-input-selct-tblelst">
+      </mat-form-field>  
+    </div>
+        <div class="col-md-12 mb-2">
+        <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">Password <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+        <mat-form-field class="col-md-9 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey !important;
+        height: 47px;padding-left: 10px;">
+        <input matInput type="text" maxlength="50" [(ngModel)]="User_Details_.Password" name="User_Details_.Password" class="for-input-selct-tblelst">
+        </mat-form-field>
+    </div>
+        <div class="col-md-12 mb-2">
+        <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">User Type <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+        <select [(ngModel)]="User_Type_" name="User_Type_" style="border: 1px solid lightgrey !important;
+        height: 47px;padding-left: 10px;" required class="col-md-9 margin-lh-rh-to-crect-textbox select-user-block">
+        <option *ngFor="let User_Type_T of User_Type_Data" [ngValue]="User_Type_T">{{User_Type_T.User_Type_Name}}</option>
+        </select>
+        </div>
+
+        <div class="col-md-12 mb-2">
+            <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">Working Status <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+            <select [(ngModel)]="Working_Status_" name="Working_Status_" style="border: 1px solid lightgrey !important;
+            height: 47px;padding-left: 10px;" required class="col-md-9 margin-lh-rh-to-crect-textbox select-user-block">
+            <option *ngFor="let Working_Status_T of Working_Status_Data" [ngValue]="Working_Status_T">{{Working_Status_T.Working_Status_Name}}</option>
+            </select>
+            </div>
+
+        <!-- <div class="col-md-12">
+
+            <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">Branch
+                <span style="
+                            color: #ef071e;
+                            font-size: 22px;
+                            vertical-align: -webkit-baseline-middle;
+                        ">*</span>
+            </label>
+            <input type="text" style="border: 1px solid lightgrey !important;
+                    height: 47px;padding-left: 10px;" [matAutocomplete]="auto1" [(ngModel)]="ToAccount_"
+                (click)="Accounts_Typeahead($event)" (keyup)="Accounts_Typeahead($event)"
+                class="col-md-9 margin-lh-rh-to-crect-textbox select-user-block" />
+
+            <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_FromAccount">
+                <mat-option *ngIf="issLoading"><mat-spinner
+                        diameter="500"></mat-spinner></mat-option>
+                <ng-container *ngIf="!issLoading">
+                    <mat-option *ngFor="let ToAccount of Client_Accounts_Data"
+                        [value]="ToAccount">
+                        <span>
+                            <div (click)="Address_Change(ToAccount)">
+                                {{ ToAccount.Client_Accounts_Name }}
+                            </div>
+                        </span>
+                    </mat-option>
+                </ng-container>
+            </mat-autocomplete>
+
+        </div> -->
+
+        <!-- <div class="col-md-12 margn-crct-sales-buton-serch">
+                <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">Employee <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+                <input type="text" [matAutocomplete]="auto" [(ngModel)]="Employee_" name="Employee" (click)="Employee_Typeahead($event)" (keyup)="Employee_Typeahead($event)" class="col-md-9 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Employee">
+                    <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                    <ng-container *ngIf="!isLoading">
+                        <mat-option *ngFor="let Employee of Employee_Data" [value]="Employee">
+                            <span>{{Employee.Client_Accounts_Name}}</span>
+                        </mat-option>
+                    </ng-container>
+                </mat-autocomplete>
+                </div> -->
+        <div class="col-md-12">
+            <button mat-raised-button type="button" [hidden]="User_Details_Save==false" id="Save_Button" class="btn btn-danger pull-right " (click)="Save_User_Details()">Save</button>
+            <button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>
+        </div>
+
+</div>
+<div class="col-md-6 section-user-block-ne other-department-user-block">
+
+    <div class="col-md-12" style="background-color: #f1f1f1;">
+    <table _ngcontent-xmy-c9="" class="table"  style="background-color:#f1f1f1">
+        <tbody _ngcontent-xmy-c9="">
+        <tr _ngcontent-xmy-c9="">
+                    <th class="crect-margin-width-table-header-title" style="border-top: none;"></th>
+                    <th style="border-top: none;"></th>
+                    <th style="border-top: none;"> <label class="slct-chck-al-bx-usr-nw-sctn">Select All</label> </th>
+                   
+                    <th class="crect-margin-width-table-header-title" style="border-top: none;">
+                        <div _ngcontent-xmy-c9="" class="form-check">
+                            <label _ngcontent-xmy-c9="" class="form-check-label">
+                            <input _ngcontent-xmy-c9="" checked="" class="form-check-input"
+                            [(ngModel)]="Select_View" (click)="View_Click()" type="checkbox" name="Select_View"
+                            [checked]="Select_View_Check" value="">
+                            <span _ngcontent-xmy-c9="" class="form-check-sign">
+                            <span _ngcontent-xmy-c9="" class="check"></span>
+                            </span>
+                            </label>
+                            </div>   
+                    </th>
+                    <th class="crect-margin-width-table-header-title" style="border-top: none;">
+                        <div _ngcontent-xmy-c9="" class="form-check">
+                            <label _ngcontent-xmy-c9="" class="form-check-label">
+                            <input _ngcontent-xmy-c9="" checked="" class="form-check-input"
+                            [(ngModel)]="Select_Save" (click)="Save_Click()"  type="checkbox" name="Select_Save"
+                            [checked]="Select_Save_Check" value="">
+                            <span _ngcontent-xmy-c9="" class="form-check-sign">
+                            <span _ngcontent-xmy-c9="" class="check"></span>
+                            </span>
+                            </label>
+                            </div>
+                    </th>
+                    <th class="crect-margin-width-table-header-title" style="border-top: none;">
+                        <div _ngcontent-xmy-c9="" class="form-check">
+                            <label _ngcontent-xmy-c9="" class="form-check-label">
+                            <input _ngcontent-xmy-c9="" checked="" class="form-check-input"
+                            [(ngModel)]="Select_Edit" (click)="Edit_Click()"  type="checkbox" name= "Select_Edit"
+                            [checked]="Select_Edit_Check" value="">
+                            <span _ngcontent-xmy-c9="" class="form-check-sign">
+                            <span _ngcontent-xmy-c9="" class="check"></span>
+                            </span>
+                            </label>
+                            </div>  
+                    </th>
+                    <th class="crect-margin-width-table-header-title" style="border-top: none;">
+                        <div _ngcontent-xmy-c9="" class="form-check">
+                            <label _ngcontent-xmy-c9="" class="form-check-label">
+                            <input _ngcontent-xmy-c9="" checked="" class="form-check-input"
+                            [(ngModel)]="Select_Delete" (click)="Delete_Click()"  type="checkbox" name= "Select_Delete"
+                            [checked]="Select_Delete_Check" value="">
+                            <span _ngcontent-xmy-c9="" class="form-check-sign">
+                            <span _ngcontent-xmy-c9="" class="check"></span>
+                            </span>
+                            </label>
+                            </div>    
+                    </th>
+        </tr>
+        </tbody>
+</table>
+</div>
+
+<div _ngcontent-xmy-c9="" class="card margin-corect-card margin-corect-card-fr-menu-sctn">
+<div _ngcontent-xmy-c9="" class="nav-tabs-navigation"  style="background-color:#f1f1f1">
+<table _ngcontent-xmy-c9="" class="table"  style="background-color:#f1f1f1">
+<tbody _ngcontent-xmy-c9="" style="background-color:#f1f1f1">
+<tr _ngcontent-xmy-c9="">
+            <th class="crect-margin-width-table-header-title">Sl.No</th>
+            <th>Menu</th>
+            <th class="crect-margin-width-table-header-title">View</th>
+            <th class="crect-margin-width-table-header-title">Save</th>
+            <th class="crect-margin-width-table-header-title">Edit</th>
+            <th class="crect-margin-width-table-header-title">Delete</th>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div _ngcontent-xmy-c9="" class="card-body " [style.height.px]="myInnerHeightTwo" style="overflow-y: scroll;">
+<div _ngcontent-xmy-c9="" class="tab-content">
+<div _ngcontent-xmy-c9="" class="tab-pane active" id="profile">
+<table _ngcontent-xmy-c9="" class="table">
+<tbody _ngcontent-xmy-c9="" *ngFor="let User_Menu_Selection1 of User_Menu_Selection_Data; let i = index">
+<tr _ngcontent-xmy-c9="">
+<td class="crect-margin-width-table-header-title">{{ i+1 }}</td>
+<td>{{User_Menu_Selection1["Menu_Name"]}}</td>
+<td _ngcontent-xmy-c9="" class="crect-margin-width-table-header-title"><!--class="crect-margin-width-table-header-title"-->
+<div _ngcontent-xmy-c9="" class="form-check">
+<label _ngcontent-xmy-c9="" class="form-check-label">
+<input _ngcontent-xmy-c9="" checked="" class="form-check-input"
+[(ngModel)]="User_Menu_Selection1.IsView" type="checkbox" name={{User_Menu_Selection1.Menu_Id}}{{User_Menu_Selection1.IsView}} 
+[checked]="User_Menu_Selection1.IsView" value="">
+<span _ngcontent-xmy-c9="" class="form-check-sign">
+<span _ngcontent-xmy-c9="" class="check"></span>
+</span>
+</label>
+</div>
+</td>
+<td _ngcontent-xmy-c9="" class="crect-margin-width-table-header-title">
+<div _ngcontent-xmy-c9="" class="form-check" [hidden]="User_Menu_Selection1.Save_Check==false">
+<label _ngcontent-xmy-c9="" class="form-check-label">
+<input type="checkbox"  name={{User_Menu_Selection1.Menu_Id}}{{User_Menu_Selection1.IsSave}} 
+class="form-check-input"  [(ngModel)]="User_Menu_Selection1.IsSave" 
+[checked]="User_Menu_Selection1.IsSave" >
+<span _ngcontent-xmy-c9="" class="form-check-sign">
+<span _ngcontent-xmy-c9="" class="check"></span>
+</span>
+</label>
+</div>
+</td>
+<td _ngcontent-xmy-c9="" class="crect-margin-width-table-header-title">
+<div _ngcontent-xmy-c9="" class="form-check"[hidden]="User_Menu_Selection1.Edit_Check==false" >
+<label _ngcontent-xmy-c9="" class="form-check-label">
+
+<input type="checkbox" name={{User_Menu_Selection1.Menu_Id}}{{User_Menu_Selection1.IsEdit}} 
+class="form-check-input"  [(ngModel)]="User_Menu_Selection1.IsEdit" 
+[checked]="User_Menu_Selection1.IsEdit">
+<span _ngcontent-xmy-c9="" class="form-check-sign">
+<span _ngcontent-xmy-c9="" class="check"></span>
+</span>
+</label>
+</div>
+</td>
+<td _ngcontent-xmy-c9="" class="crect-margin-width-table-header-title">
+<div _ngcontent-xmy-c9="" class="form-check" [hidden]="User_Menu_Selection1.Delete_Check==false" >
+<label _ngcontent-xmy-c9="" class="form-check-label">
+<input type="checkbox" name={{User_Menu_Selection1.Menu_Id}}{{User_Menu_Selection1.IsDelete}} 
+class="form-check-input"  [(ngModel)]="User_Menu_Selection1.IsDelete" 
+[checked]="User_Menu_Selection1.IsDelete">
+<span _ngcontent-xmy-c9="" class="form-check-sign">
+<span _ngcontent-xmy-c9="" class="check"></span>
+</span>
+</label>
+</div>
+</td>
+</tr>
+</tbody>
+</table> 
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="clearfix"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="row col-md-12  mb-0" *ngIf="!Entry_View">
+    <div class="row mb-1 card-body" 
+   style="align-items: center;
+             border: 0;
+             border-radius: 6px;
+             margin-left: 2px;
+             color: #333333;
+             background: #fff;
+             width: 100%;padding: 3px;background-color: #f1f1f1;
+             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+         ">
+<!-- <div class="col-md-12">       -->
+<div class="col-md-3">
+<!-- <div class="col-md-12 crect-allighyn-tdiv-one-by-one-div padd-lft-crect-alighn-wole-div" 
+style="display: flex;align-items: center;"> -->
+  <label class="col-md-4  padd-lft-crect-alighn-wole-div">User Name</label>
+  <mat-form-field class="col-md-9 mb-1 margin-lh-rh-to-crect-textbox" 
+  style="border: 1px solid lightgrey !important;background-color: #fff;
+  height: 37px;padding-left: 10px;">
+  <input matInput type="text" [(ngModel)]="Search_User_Name_" name="Search_User_Name_" 
+  class="margin-lh-rh-to-crect-textbox input-text-item-group-diary">
+  </mat-form-field>
+<!-- </div> -->
+</div>
+
+<div class="col-md-2">
+<button mat-raised-button type="button" class="btn btn-danger buton-for-color button-to-crect-margin mt-0" (click)="Search_User_Details()">Search</button>
+<button mat-raised-button type="button" class="btn btn-danger alighn-butn-user-page buton-for-color button-to-crect-margin mt-0" (click)="Create_New()">Create New</button>
+</div>
+<!-- </div> -->
+</div>
+<div class="col-md-12">
+<!-- <div class="card card-plain"> -->
+<div class="table-responsive card">
+<div class="table-responsive"
+[style.height.px]="myInnerHeight"
+ style="overflow-y: scroll;background-color: #f1f1f1;">
+ <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" style="overflow-y: scroll;" > -->
+    <table class="table table-hover">
+        <thead class="thead">
+        <th>Sl No</th>
+        <th>User Name</th>
+        <th [hidden]="Users_Edit==false">Edit</th>
+        <th [hidden]="Users_Delete==false">Delete</th>
+        </thead>
+        <!-- <ng-container *cdkVirtualFor="let User_Menu1 of User_Details_Data; let i = index"> -->
+        <tr *ngFor="let User_Menu1 of User_Details_Data; let i =index">
+            <td style="padding-left:5px;">{{ i+1 }}</td>
+            <td>{{User_Menu1["User_Details_Name"]}}</td>
+            <td><button _ngcontent-jry-c5=""[hidden]="User_Details_Edit==false" _ngcontent-gxp-c5="" aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button mt-0" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_User_Details(User_Menu1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button></td>
+            <td> 
+            <button _ngcontent-gdi-c11="" [hidden]="User_Details_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button mt-0" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_User_Details(User_Menu1.User_Details_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
+            </td>
+        </tr>
+        <!-- </ng-container> -->
+    </table>
+<!-- </cdk-virtual-scroll-viewport> -->
+</div>
+</div>
+
+<label class="entry-num">Entries : {{Total_Entries}}</label>
+
+<!-- </div> -->
+</div>
+</div>
+</div>
+

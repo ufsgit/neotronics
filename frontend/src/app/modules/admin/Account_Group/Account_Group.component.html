@@ -1,0 +1,131 @@
+
+
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+    </div>
+    <div class="main-content">
+    <div class="container-fluid">
+    <div class="row" *ngIf="Entry_View">
+    <div class="col-md-12">
+    <div class="card">
+    <!-- <div class="card-header card-header-danger">
+    <h4 class="card-title"> Account Group Name
+    <button class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button close-for-wole-pge-butun" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons" (click)="Close_Click()" >close</i></span>
+    <div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>  
+    </h4>
+    </div> -->
+    <div class="card-body">
+    <form>
+    <div class="row">
+    <div class="col-md-6">
+    <div class="col-md-12">
+    <label class="col-md-3 label-down-alighn-adrs-tre-prhse-mstr-down">Account Group <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+    <mat-form-field class="col-md-9">
+    <input matInput type="text" [(ngModel)]="Account_Group_.Group_Name" name="Account_Group_.Group_Name" class=" input-text-item-group-diary">
+   </mat-form-field>
+</div>
+   
+    </div>
+    <div class="col-md-6">
+
+        <div class="col-md-12 div-crct-alghn-dwn-acnt-grp-udr-grp">
+            <label class="col-md-3 margin-crect-labl-name-txt-wle-div">Under Group <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+                        <input type="text" [matAutocomplete]="auto" [(ngModel)]="Under_Group_" name="Under_Group_" (click)="Load_Account_Group($event)" (keyup)="Load_Account_Group($event)" class="col-md-9 select-box-style-diary" />
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Under_Group">
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <ng-container *ngIf="!isLoading">
+            <mat-option *ngFor="let Account_Group_ of Account_Group_Typeahead_Data" [value]="Account_Group_">
+            <span>{{Account_Group_.Group_Name}}</span>
+            </mat-option>
+            </ng-container>
+            </mat-autocomplete> 
+            </div>  
+            <div class="col-md-12 margin-to-corect-search-sections">
+                    <button mat-raised-button type="button" [hidden]="Account_Group_Save==false"id="Save_Button"class="btn btn-danger pull-right"(click)="Save_Account_Group()">Save</button>
+                    <button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>
+                    </div>
+
+    </div>
+   
+    </div>
+    <div class="clearfix"></div>
+    </form>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="row" *ngIf="!Entry_View">
+        <div class="col-md-12">
+            <div class="card">
+           
+            <div class="card-body">
+            <form>
+            <div class="row">
+            <div class="col-md-6">
+            <div class="col-md-12 padding-allighn-corect-label-bank-reconcilation">
+            <label class="col-md-3 padding-allighn-corect-label-bank-reconcilation mrgin-alghn-label-text-otrs-nxt-one">Account Group</label>
+            <mat-form-field class="col-md-9 margin-lh-rh-to-crect-textbox ">
+            <input matInput type="text" [(ngModel)]="Search_Account_Group_" name="Search_Account_Group_" class="input-text-item-group-diary">
+           </mat-form-field>
+        </div>
+           
+            </div>
+    <div class="col-md-6">
+    <button mat-raised-button type="button" (click)="Search_Account_Group()" class="btn btn-danger button-to-crect-margin "><i class="fa fa-search" aria-hidden="true"></i></button>    
+    <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin"><i class="fa fa-plus" aria-hidden="true"></i></button>
+    </div>
+
+            </div>
+            <div class="clearfix"></div>
+            </form>
+            </div>
+            </div>
+            </div>
+    <div class="col-md-12">
+    <div class="card card-plain">
+    <!-- <div class="card-header card-header-danger">
+    <h4 class="card-title mt-0">Account Group</h4>
+    </div> -->
+    <div class="card-body">
+    <div class="table-responsive">
+ <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" >
+    <table class="table table-hover">
+    <thead class="thead">
+    <th>
+    Sl No
+    </th>
+    <th>
+  Item Group
+    </th>
+    <th [hidden]="Account_Group_Edit==false">
+    Edit
+    </th>
+    <th [hidden]="Account_Group_Delete==false">
+    Delete
+    </th>
+    </thead>
+    <ng-container *cdkVirtualFor="let Account_Group_1 of Account_Group_Data; let i = index">
+    <tr>
+    <td style="padding-left:5px;">{{ i+1 }}</td>
+    <td>{{Account_Group_1["Group_Name"]}}</td>
+    <td>
+    <button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Account_Group_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Account_Group(Account_Group_1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
+    </td>
+    <td> 
+    <button _ngcontent-gdi-c11="" [hidden]="Account_Group_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Account_Group(Account_Group_1.Account_Group_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
+    </td>
+    </tr>
+     
+       </ng-container>
+</table>
+</cdk-virtual-scroll-viewport>
+    </div>
+    </div>
+    
+    <label class="entry-num">Entries : {{Total_Entries}}</label>
+    </div>
+    </div>
+    </div>
+    </div>
+    

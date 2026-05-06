@@ -1,0 +1,1255 @@
+<div *ngIf="issLoading" class="overlay">
+  <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+  </mat-progress-spinner>
+</div>
+<div class="main-content" style="padding: 0px 0px !important;background-color: #f1f1f1 !important;">
+  <div class="container-fluid" #topDiv1>
+      <div class="row col-md-12  mb-0" *ngIf="!Entry_View" >
+          <div class="row mb-1 card-body"
+            style="align-items: center;
+             border: 0;
+             border-radius: 6px;
+             margin-left: 2px;
+             color: #333333;
+             background: #fff;
+             width: 100%;padding: 3px;background-color: #f1f1f1;
+             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+         ">
+            <div class="col-md-1 row mb-1" style="align-items: center;">
+                                  <label
+                                  class="col-md-6 mb-0">Date</label>
+                                  <div _ngcontent-xmy-c9="" class="checkbox-to-crect-sales-search-section">
+                                      <div _ngcontent-xmy-c9="" class="form-check uper-dte-lbel-sales-sctn-new">
+                                          <label _ngcontent-xmy-c9="" class="form-check-label">
+                                              <input type='checkbox' class="form-check-input" name="Date_checks"
+                                                  [(ngModel)]="Date_Check" />
+                                              <span _ngcontent-xmy-c9="" class="form-check-sign"><span
+                                                      _ngcontent-xmy-c9="" class="check" style="left: 15px !important ;
+    top: -13px !important;"></span>
+                                              </span></label>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-md-3 row mb-1 " style="align-items: center;">
+                                  <label
+                                  class="col-md-4 mb-0 " style="text-align: end;">From</label>
+                                  <mat-form-field
+                                  class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;">
+                                      <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
+                                          [(ngModel)]="Search_FromDate">
+                                      <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                                      <mat-datepicker #dp1></mat-datepicker>
+                                  </mat-form-field>
+                              </div>
+                              <div class="col-md-3 row mb-1 " style="align-items: center;">
+                                  <label
+                                  class="col-md-4 mb-0 " style="text-align: end;">TO</label>
+                                  <mat-form-field
+                                  class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;">
+                                      <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
+                                          [(ngModel)]="Search_ToDate">
+                                      <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                                      <mat-datepicker #dp2></mat-datepicker>
+                                  </mat-form-field>
+                              </div>
+                 
+                                    <!-- Customer Search Filter-->
+
+                              <div class="col-md-3 row mb-1 " style="align-items: center;">
+                                  <label
+                                  class="col-md-4 mb-0 " style="text-align: end;" >Supplier</label>
+                                  <input type="text" [matAutocomplete]="auto_Customer" [(ngModel)]="Search_Customer"
+                                      name="Customer" (click)="Search_Customer_Typeahead($event)"
+                                      (input)="Search_Customer_Typeahead($event)"
+                                      class="col-md-8 " style="height: 40px;
+    border: 1px solid #b1b1b1;">
+                                  <mat-autocomplete #auto_Customer="matAutocomplete" [displayWith]="display_Customer">
+                                      <mat-option *ngIf="isLoading"><mat-spinner
+                                              diameter="500"></mat-spinner></mat-option>
+                                      <ng-container *ngIf="!isLoading">
+                                          <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
+                                              <span>{{Customer_T.Client_Accounts_Name}}</span>
+                                          </mat-option>
+                                      </ng-container>
+                                  </mat-autocomplete>
+                              </div>
+                              <!-- Invoice No. Search Filter-->
+
+                              <div class="col-md-3 row mb-1" style="align-items: center;">
+                                <label
+                                class="col-md-6 mb-0" style="text-align: end;">Invoice No</label>
+                                <input type="text" [matAutocomplete]="auto22" [(ngModel)]="InvoiceNo" 
+                                name="InvoiceNo" 
+                                (click)="Search_Invoice_By_Supplier_Typeahead($event)" (input)="Search_Invoice_By_Supplier_Typeahead($event)"
+                                class="col-md-6" />
+                            <mat-autocomplete #auto22="matAutocomplete" [displayWith]="display_Invoice">
+                                <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                                <ng-container *ngIf="!isLoading">
+                                    <mat-option *ngFor="let Invoice of Invoice_Data" [value]="Invoice">
+                                        <span>{{Invoice.InvoiceNo}}</span>
+                                    </mat-option>
+                                </ng-container>
+                            </mat-autocomplete>
+
+                                <!-- <input type="text"
+                                class="col-md-6 " style="height: 40px; border: 1px solid #b1b1b1;" 
+                                  [(ngModel)]="InvoiceNo"  [ngModelOptions]="{standalone: true}"> -->
+                            </div>
+
+                              <div class="col-md-3 row mb-1 " style="align-items: center;">
+                                <label
+                                     class="col-md-6 mb-0 " style="text-align: end;" >Invoice Type</label>
+                                <select [(ngModel)]="accounttype_search" id="accounttype_search" name="accounttype_search"
+                                    required
+                                   class="col-md-6 " style="height: 40px; border: 1px solid #b1b1b1;">
+                                    <option *ngFor="let Accounttype of AccounttypeData" [ngValue]="Accounttype">
+                                        {{Accounttype.AccountType_Name}}</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3 row mb-1 " style="align-items: center;">
+                                <label
+                                     class="col-md-6 mb-0 " style="text-align: end;" >Currency</label>
+                                <select [(ngModel)]="Currency_Search" id="Currency_Search" name="Currency_Search"
+                                    required
+                                   class="col-md-6 " style="height: 40px;
+    border: 1px solid #b1b1b1;">
+                                    <option *ngFor="let currency of currencyData" [ngValue]="currency">
+                                        {{currency.CurrecnyName}}</option>
+                                </select>
+                            </div>
+                            <!-- <div class="col-md-3 row mb-3 " style="align-items: center;">
+                                <label
+                                     class="col-md-4 mb-0 " style="text-align: end;" >Employee</label>
+                                <select [(ngModel)]="Employee_Search" id="Employee_Search" name="Employee_Search"
+                                    required
+                                   class="col-md-8 " style="height: 40px;
+    border: 1px solid #b1b1b1;">
+                                    <option *ngFor="let Employee of EmployeeData" [ngValue]="Employee">
+                                        {{Employee.User_Details_Name}}</option>
+                                </select>
+                            </div> -->
+                              <div class="col-md-3 row mb-1 " style="align-items: center;">
+                                  <label  class="col-md-4 mb-0 " style="text-align: end;" >Part No</label>
+                                  <input type="text" class="col-md-8 " style="height: 40px;
+    border: 1px solid #b1b1b1;" [(ngModel)]="partNo"  [ngModelOptions]="{standalone: true}">
+                              </div>
+                              <div class="col-md-3 row mb-3 " style="align-items: center;">
+                                  <label  class="col-md-4 mb-0 " style="text-align: end;" >Group</label>
+                                  <select [(ngModel)]="Item_Group_Search" id="Item_Group_Search" name="Item_Group_Search"
+                                      required
+                                     class="col-md-8 " style="height: 40px;
+    border: 1px solid #b1b1b1;">
+                                      <option *ngFor="let itemGroup of itemGroupData" [ngValue]="itemGroup">
+                                          {{itemGroup.Item_Group_Name}}</option>
+                                  </select>
+                              </div>
+                              
+                              
+                              
+                              <div class="col-md-3 row mb-1"  style="align-items: center; justify-content: center;">
+                                  <!-- <button mat-raised-button type="button" class="btn mt-0 mb-0 btn-danger pull-right"
+                                      (click)="Print_Search_Click()">
+                                      <i class="fa fa-print" aria-hidden="true"></i></button> -->
+
+                                      <button
+                                      style="background-color: #3e6bdd; color: white"
+                                      (click)="Export()"
+                                      [hidden]="Export_View == true"
+                                      mat-raised-button
+                                      type="button"
+                                      class="mt-0  mb-0  btn btn-danger pull-right">
+                                      Export
+                                    </button>
+                                  <button mat-raised-button type="button" (click)="Create_New()" style="margin-top: -1px !important;"
+                                      class="btn mb-0 btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
+                                      <i class="fa fa-plus" aria-hidden="true"></i></button>
+                                  <button mat-raised-button type="button" (click)="Search_Purtchase_Return()" style="margin-top: -1px !important;"
+                                      class="btn mb-0 btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
+                                      <i class="fa fa-search" aria-hidden="true"></i></button>
+                              </div>                  
+                          <div class="clearfix"></div>            
+          </div>
+          <div class="col-md-12">
+              <!-- <div class="card card-plain">
+                  <div class="card-body"> -->
+                      <div class="table-responsive card">
+                          <div
+                                class="table-responsive"
+                                [style.height.px]="myInnerHeight"
+                                style="overflow-y: scroll;background-color: #f1f1f1;"
+                              >
+                          <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90"> -->
+                              <table class="table table-hover">
+                                  <thead class="thead">
+                                      <th>Sl No</th>
+                                      <th>Customer Name</th>
+                                      <th>Invoice No</th>
+                                      <th>Date</th>
+                                      <th>Amount</th>
+                                      <th>Edit</th>
+                                      <th>Delete</th>
+                                  </thead>
+                                  <!-- <ng-container *cdkVirtualFor="let Sales_Master of purchase_return_master_Data; let i =index"> -->
+                                      <tr *ngFor="let Sales_Master of purchase_return_master_Data; let i =index">
+                                          <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{ i+1 }}</td>
+                                          <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{Sales_Master["Customer"]}}</td>
+                                          <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{Sales_Master["Purchase_Return_No"]}}</td>
+                                          <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{Sales_Master["FormattedPurchaseDate"]}}</td>
+                                          <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{Sales_Master["NetTotal"]}}</td>
+                                          <td>
+                                              <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                  [hidden]="Sales_Master_Edit==false"
+                                                  aria-describedby="cdk-describedby-message-0" cdk-describedby-host=""
+                                                  class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                  mat-raised-button="" mattooltip="Edit Task"
+                                                  ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                  type="button"><span class="mat-button-wrapper"><span
+                                                          _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                          <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                              class="material-icons"
+                                                              (click)="Edit_purchase_return_master(Sales_Master,i)">edit</i></span>
+                                                      <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
+                                                          matripple="" ng-reflect-centered="false"
+                                                          ng-reflect-disabled="false"
+                                                          ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                      <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                                      </div>
+                                                  </span>
+                                                  <div class="mat-button-ripple mat-ripple" matripple=""
+                                                      ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                      ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                  <div class="mat-button-focus-overlay"></div>
+                                              </button>
+                                          </td>
+                                          <td>
+                                              <button _ngcontent-gdi-c11="" [hidden]="Sales_Master_Delete==false"
+                                                  class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                                  mat-raised-button="" mattooltip="Remove" type="button"
+                                                  aria-describedby="cdk-describedby-message-1" cdk-describedby-host=""
+                                                  ng-reflect-position="above" ng-reflect-message="Remove"><span
+                                                      class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
+                                                          class="material-icons"
+                                                          (click)="Delete_purchase_return_master(Sales_Master.Purchase_Return_Master_Id,i)">close</i></span>
+                                                  <div class="mat-button-ripple mat-ripple" matripple=""
+                                                      ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                      ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                  <div class="mat-button-focus-overlay"></div>
+                                              </button>
+                                          </td> 
+ 
+                                      </tr>
+                                  <!-- </ng-container> -->
+                              </table>
+                          <!-- </cdk-virtual-scroll-viewport> -->
+                      </div>
+                       </div>
+                  <!-- </div> -->
+                  <div class="col-md-4">
+                      <label class="entry-num">Entries : {{Total_Entries}}</label>
+                      &nbsp;&nbsp;&nbsp;&nbsp; <label class="entry-num">Total:
+                          {{Sales_Master_Total_Amount | number:'1.3-3'}}</label>
+                  </div>
+              <!-- </div> -->
+          </div>
+      </div>
+      <div class="row" *ngIf="Entry_View" style="background-color: #f1f1f1 !important;">
+          <div class="container-fluid" #topDiv>
+              <div class="col-md-6 croct-float-purchase-master-section ">
+                  <div class="col-md-12 mb-1">
+                      <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Supplier</label>
+                      <!--align-label-tab-lead-->
+                      <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer" (ngModelChange)="selectCustomer()"
+                          (click)="Search_Customer_Typeahead($event)" (input)="Search_Customer_Typeahead($event)"
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                      <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Customer">
+                          <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                          <ng-container *ngIf="!isLoading">
+                              <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
+                                  <span>{{Customer_T.Client_Accounts_Name}}</span>
+                              </mat-option>
+                          </ng-container>
+                      </mat-autocomplete>
+                  </div>
+                  <div class="col-md-12 mb-1">
+                      <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                      <input type="text" [(ngModel)]="Address1" readonly
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                  </div>
+                  <div class="col-md-12 mb-1">
+                      <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                      <input type="text" [(ngModel)]="Address2" readonly
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                  </div>
+                  <div class="col-md-12 mb-1">
+                    <label
+                        class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                    <input type="text" [(ngModel)]="Address3" readonly
+                        class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                </div>
+                <div class="col-md-12 mb-1">
+                    <label
+                        class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                    <input type="text" [(ngModel)]="Address4" readonly
+                        class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                </div>
+                <!-- <div class="col-md-12 mb-1">
+                    <label
+                        class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                    <input type="text" [(ngModel)]="Address4" readonly 
+                        class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                </div> -->
+                  <div class="col-md-12 mb-1">
+                      <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">PO Number</label>
+                      <input type="text" [(ngModel)]="purchase_return_master_.Ponumber" id="purchase_return_master_.Ponumber"
+                      name="purchase_return_master_.Ponumber"
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                  </div>                
+              </div>
+              <div class="col-md-6 croct-float-purchase-master-section">
+                <div class="col-md-12 mb-1">
+                    <label
+                        class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date</label>
+                    <!-- <mat-form-field
+                        class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                        style="height: 47px !important">
+                        <input matInput [matDatepicker]="dpdate1" placeholder="" name="purchase_return_master_.Entry_Date"
+                            [(ngModel)]="purchase_return_master_.Entry_Date">
+                        <mat-datepicker-toggle matSuffix [for]="dpdate1" ></mat-datepicker-toggle>
+                        <mat-datepicker #dpdate1></mat-datepicker>
+                    </mat-form-field> -->
+
+                    <mat-form-field  class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                    style="height: 47px !important">
+                    <input matInput [matDatepicker]="dp2" name="purchase_return_master_.Entry_Date" placeholder="" 
+                    id="purchase_return_master_.Entry_Date" [(ngModel)]="purchase_return_master_.Entry_Date">
+                    <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                    <mat-datepicker #dp2></mat-datepicker>
+                </mat-form-field>
+
+                </div>
+
+                  <div class="col-md-12 mb-1">
+                      <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Purchase Date</label>
+                      <mat-form-field
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                          style="height: 47px !important">
+                          <input matInput [matDatepicker]="dpdate" placeholder="" name="purchase_return_master_.PurchaseDate"
+                              [(ngModel)]="purchase_return_master_.PurchaseDate">
+                          <mat-datepicker-toggle matSuffix [for]="dpdate" ></mat-datepicker-toggle>
+                          <mat-datepicker #dpdate></mat-datepicker>
+                      </mat-form-field>
+                  </div>
+                  <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                      <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Invoice Number
+                          </label>
+
+                      <input type="text" [matAutocomplete]="auto12" [(ngModel)]="InvoiceNo_" name="purchase_return_master_.InvoiceNo" 
+                          (click)="Search_Invoice_By_Supplier_Typeahead($event)" (input)="Search_Invoice_By_Supplier_Typeahead($event)"
+                          (ngModelChange)="Clr_Purchase_Return_Details()"
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                      <mat-autocomplete #auto12="matAutocomplete" [displayWith]="display_Invoice">
+                          <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                          <ng-container *ngIf="!isLoading">
+                              <mat-option *ngFor="let Invoice of Invoice_Data" [value]="Invoice">
+                                  <span>
+                                    <div (click)="Invoice_Change(Invoice)">{{Invoice.InvoiceNo}}</div>
+                                </span>
+                              </mat-option>
+                          </ng-container>
+                      </mat-autocomplete>
+                  </div>
+                  <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                    <label
+                        class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Purchase Return No</label>
+                    <input type="text" [(ngModel)]="purchase_return_master_.Purchase_Return_No" 
+                        class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly>
+                </div>
+                  <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Invoice Type</label>
+
+
+                        <select  class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" 
+                        [(ngModel)]="Accounttype">
+                            <option *ngFor="let Accounttype of AccounttypeData"
+                            [ngValue]="Accounttype">{{Accounttype.AccountType_Name}}</option>
+                        </select>
+                </div>
+              
+                  <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                      <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Currency
+                      </label>
+                      <select  class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" 
+                      [(ngModel)]="Currency" 
+                      (ngModelChange)="Final_Amounts()">
+                          <option *ngFor="let currency of currencyData"[ngValue]="currency">{{currency.CurrecnyName}}</option>
+                      </select>                      
+                  </div>                 
+
+                  <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                      <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Conversion Rate</label>
+                          <input type="number" name="purchase_return_master_.Conversion" [(ngModel)]="purchase_return_master_.Conversion"  
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                  </div>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="card">
+                      <div class="card-body">
+                          
+                              <div class="row">
+                                  <!--<div class="col-md-12 mve-up-wrd-crct-alghn-sls-mstr-nw-sctn-brcde-rspnsv"></div>-->
+                                <div class="col-md-12">
+                                      <div class="col-md-4 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Part Number</label>
+                                          <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto42"
+                                              style="padding-left: 5px !important;" [(ngModel)]="Barcode_"
+                                              (click)="Get_Stock_Item_Code_Typeahead($event)"
+                                              (input)="Get_Stock_Item_Code_Typeahead($event)" 
+                                              (ngModelChange)="Get_Stock()"
+                                              (keyup.enter)="Plus_Purchase_Return_Details($event)"
+                                              class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched" />
+                                          <mat-autocomplete #auto42="matAutocomplete" [displayWith]="display_ItemCode">
+                                              <mat-option *ngIf="isLoading"><mat-spinner
+                                                      diameter="500"></mat-spinner></mat-option>
+                                              <ng-container *ngIf="!isLoading">
+                                                  <mat-option *ngFor="let Item of ItemCodeData; let i = index" 
+                                                      [value]="Item">
+                                                      <span>
+                                                        <div (click)="Barcode_Change(Item)">{{Item.Item_Code}} - {{Item.ItemName}}</div></span>
+                                                  </mat-option>
+                                              </ng-container>
+                                          </mat-autocomplete>
+                                      </div>
+                                      <div class="col-md-5 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item & Description
+                                              <span
+                                                  style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+                                          <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_"
+                                              name="Item" 
+                                              (click)="Search_Item_Typeahead($event)"
+                                              (input)="Search_Item_Typeahead($event)"
+                                              (keyup.enter)="Plus_Purchase_Return_Details($event)" 
+                                              (ngModelChange)="Get_Stock_Item()"
+                                              style="padding-left: 5px !important;"
+                                              class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                          <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
+                                              <mat-option *ngIf="isLoading"><mat-spinner
+                                                      diameter="500"></mat-spinner></mat-option>
+                                              <ng-container *ngIf="!isLoading">
+                                                  <mat-option 
+                                                      *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
+                                                      <span
+                                                          (click)="Item_Name_Change(Itemstock)">{{Itemstock.ItemName}}-{{Itemstock.Quantity}}</span>
+                                                  </mat-option>
+                                              </ng-container>
+                                          </mat-autocomplete>
+                                      </div>
+                                      <div class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Uom</label>
+                                          <input type="text" [(ngModel)]="Purchase_Return_Details_.UnitName"
+                                          (keyup.enter)="Plus_Purchase_Return_Details($event)"
+                                              style="padding-left: 5px !important;" id="UnitName"
+                                              name="UnitName"
+                                              class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                      </div>
+                                      <!-- (ngModelChange)="Calculate_Purchase_Details_Amount()" -->
+                                      <div class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty</label>
+                                          <input type="number" [(ngModel)]="Purchase_Return_Details_.Quantity" 
+                                          (ngModelChange)="Calculate_Purchase_Return_Details_Amount()"
+                                          (keyup.enter)="Plus_Purchase_Return_Details($event)"
+                                              style="padding-left: 5px !important;" id="Quantity"  name="Quantity"
+                                              class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                      </div>
+                                </div>
+                                    <div class="col-md-12">
+                                    <div class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Purchase Rate</label>
+                                        <input type="number" [(ngModel)]="Purchase_Return_Details_.UnitPrice" 
+                                        (ngModelChange)="Calculate_Purchase_Return_Details_Amount()"
+                                        (keyup.enter)="Plus_Purchase_Return_Details($event)"
+                                            style="padding-left: 5px !important;" id="UnitPrice"  name="UnitPrice"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                    </div>
+                                    <div class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                    <label
+                                        class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Total Price</label>
+                                    <input type="number" [(ngModel)]="Purchase_Return_Details_.NetValue"
+                                        style="padding-left: 5px !important;"
+                                        class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched"
+                                        readonly />
+                                        </div>
+                                    <!-- <div
+                                    class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                    <label
+                                        class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Sale Rate</label>
+                                    <input type="number" [(ngModel)]="Purchase_Return_Details_.SaleRate" 
+                                    (ngModelChange)="Calculate_Purchase_Return_Details_Amount()"
+                                    (keyup.enter)="Plus_Purchase_Return_Details($event)"
+                                        style="padding-left: 5px !important;" id="SaleRate"  name="SaleRate"
+                                        class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                </div> -->
+                                                                
+                                        <div  class="col-md-1 alighn-right-inputs-sales-grid div-to-down-margin-crect-allighn-wole-scton">
+                                        <button mat-raised-button type="button" (click)="Plus_Purchase_Return_Details($event)"
+                                            class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes" 
+                                            style="border-radius: 5px; margin-top: 16px !important; ">
+                                            Add</button>
+                                        </div>
+                                </div>                              
+                                  <div class="col-md-12">
+                                      <div class="card-body">
+                                          <div class="table-responsive">
+                                              <table class="table table-hover table-for-sale-search-section-diary">
+                                                  <thead class="bg-col-stock-add-diary">
+                                                      <th>No /th>
+                                                      <th>Part Number</th>
+                                                      <th>Description</th>
+                                                      <th>Uom</th>
+                                                      <th>Qty</th>
+                                                      <th>Purchase Rate</th>
+                                                      <!-- <th>Cost</th>
+                                                      <th>Sale Rate</th> -->
+                                                      <th>Total Price</th>
+                                                      <th></th>
+                                                  </thead>
+                                                  <tbody class="bk_tb_bg"
+                                                      *ngFor="let Sales_Details of Purchase_Return_DetailsData; let i = index">
+                                                      <td>{{i+1}}</td>
+                                                      <td>{{Sales_Details["Item_Code"]}}</td>
+                                                      <td [id]="'cell' + (i + 1)">{{Sales_Details["ItemName"]}}</td>
+                                                      <td>{{Sales_Details["UnitName"]}}</td>
+                                                      <td>{{Sales_Details["Quantity"] | number: '1.3-3'}}</td>
+                                                      <td>{{Sales_Details["UnitPrice"] | number: '1.3-3'}}</td>
+                                                      <!-- <td>0</td>
+                                                      <td>{{Sales_Details["SaleRate"] | number: '1.3-3'}}</td> -->
+                                                      <td>{{Sales_Details["NetValue"] | number: '1.3-3'}}</td>
+                                                      <td>
+                                                        <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                            [hidden]="Quotation_Master_Edit==false"
+                                                            aria-describedby="cdk-describedby-message-0" cdk-describedby-host=""
+                                                            class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                            mat-raised-button="" mattooltip="Edit Task"
+                                                            ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                            type="button"><span class="mat-button-wrapper"><span
+                                                                    _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                                    <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                        class="material-icons"
+                                                                        (click)="Edit_Quotation_Detail(Sales_Details,i)">edit</i></span>
+                                                                <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
+                                                                    matripple="" ng-reflect-centered="false"
+                                                                    ng-reflect-disabled="false"
+                                                                    ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                                <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                                                </div>
+                                                            </span>
+                                                            <div class="mat-button-ripple mat-ripple" matripple=""
+                                                                ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                            <div class="mat-button-focus-overlay"></div>
+                                                        </button>
+                                                    
+                                                        <button _ngcontent-gdi-c11="" [hidden]="Quotation_Master_Delete==false"
+                                                            class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                                            mat-raised-button="" mattooltip="Remove" type="button"
+                                                            aria-describedby="cdk-describedby-message-1" cdk-describedby-host=""
+                                                            ng-reflect-position="above" ng-reflect-message="Remove"><span
+                                                                class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
+                                                                    class="material-icons"
+                                                                    (click)="Delete_Quotation_Detail(i)">close</i></span>
+                                                            <div class="mat-button-ripple mat-ripple" matripple=""
+                                                                ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                            <div class="mat-button-focus-overlay"></div>
+                                                        </button>
+                                                    </td>
+                                                      
+                                                  </tbody>
+                                              </table>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="col-md-12 mt-5">
+                                      <h4 style="font-weight: bold;">Terms & Conditions</h4>
+                                  </div>
+                                  <div class="col-md-4">
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label
+                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Make</label>
+                                          <input type="text"  [(ngModel)]="purchase_return_master_.Brand"
+                                          id="purchase_return_master_.Brand" name="purchase_return_master_.Brand"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                              >
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Price Basis</label>
+                                          <input type="text" [(ngModel)]="purchase_return_master_.PriceBasis"
+                                          id="purchase_return_master_.PriceBasis" name="purchase_return_master_.PriceBasis"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                              >
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment Term</label>
+                                          <input type="number" [(ngModel)]="purchase_return_master_.PaymentTermValue" style="width: 12%;border: 1px solid lightgrey;
+                                          border-radius: 5px;padding-left: 5px !important;height: 36px;"
+                                              class="mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                              >
+                                          <select [(ngModel)]="Payment_Term_Description_" id="Payment_Term_Description_" name="Payment_Term_Description_"  
+                                          class="for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe ng-pristine ng-valid ng-touched" style="width: 32%;border: 1px solid lightgrey;
+                                          border-radius: 5px;padding-left: 5px !important;height: 36px;">
+                                          <option *ngFor="let PaymentTerm of PaymentTermData" [ngValue]="PaymentTerm">
+                                          {{PaymentTerm.Payment_Term_Description}}</option>
+                                  </select>
+                                      </div>
+                                      <div class="col-md-12 mb-1">
+                                        <label
+                                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Print Letterhead</label>
+                                        <input type='checkbox' class="form-check-input ml-2" name="printLetterhead" [(ngModel)]="printLetterhead"/>
+                                            <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9="" class="check"></span>
+                                            </span>                                              
+                                    </div>                                      
+                                  </div>
+                                  <div class="col-md-4" >   
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label
+                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Description</label>
+                                              <input type="text" [(ngModel)]="purchase_return_master_.Charge1"
+                                              name="purchase_return_master_.Charge1" name="purchase_return_master_.Charge1"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                              >
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label
+                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Description</label>
+                                          <input type="text" [(ngModel)]="purchase_return_master_.Charge2"
+                                              name="purchase_return_master_.Charge2" id="purchase_return_master_.Charge2"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                              >
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Discount</label>
+                                        <input type="number" name="purchase_return_master_.Discount_Description"
+                                        id="purchase_return_master_.Discount_Description"
+                                            [(ngModel)]="purchase_return_master_.Discount_Description" (ngModelChange)="Final_Amounts()"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            >
+                                    </div>
+                                      
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1" style="visibility: hidden;">
+                                          <label
+                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles"></label>
+                                          <input type="number" class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                          >
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1" style="visibility: hidden;">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles"></label>
+                                        <input type="number" class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                        >
+                                    </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">VAT-Details</label>
+                                          <input type="text" [(ngModel)]="purchase_return_master_.VAT_Description" 
+                                              name="purchase_return_master_.VAT_Description" 
+                                              id="purchase_return_master_.VAT_Description" style="width: 20%;border: 1px solid lightgrey;
+                                              border-radius: 5px;padding-left: 5px !important;height: 36px;"  class="mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                              >
+                                          <input type="number" [(ngModel)]="purchase_return_master_.VAT_Percentage" style="width: 10%;border: 1px solid lightgrey;
+                                              border-radius: 5px;padding-left: 5px !important;height: 36px;" (ngModelChange)="Final_Amounts()"
+                                                  class="mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                      </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                      
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label
+                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amount</label>
+                                          <input type="number" [(ngModel)]="purchase_return_master_.charge1_Amount"
+                                         id="purchase_return_master_.charge1_Amount"
+                                          name="purchase_return_master_.charge1_Amount"
+                                           (ngModelChange)="Final_Amounts()"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label
+                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amount</label>
+                                          <input type="number" [(ngModel)]="purchase_return_master_.charge2_Amount" 
+                                          name="purchase_return_master_.charge2_Amount" id="purchase_return_master_.charge2_Amount" 
+                                          (ngModelChange)="Final_Amounts()"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" >
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label
+                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amount</label>
+                                          <input type="number"  [(ngModel)]="purchase_return_master_.Additional_Discount " 
+                                          name="purchase_return_master_.Additional_Discount "  id="purchase_return_master_.Additional_Discount " 
+                                          (ngModelChange)="Calculate_Discount_Percent()"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                              >
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total
+                                              Discount</label>
+                                          <input type="text"  [ngModel]="purchase_return_master_.TotalDiscount | number:'1.3-3'"
+                                          name ="purchase_return_master_.TotalDiscount"  id ="purchase_return_master_.TotalDiscount"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly>
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label
+                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total</label>
+                                          <input type="text"  [ngModel]="purchase_return_master_.TotalAmount | number:'1.3-3'"
+                                          name="purchase_return_master_.TotalAmount" id="purchase_return_master_.TotalAmount"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly>
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">VAT Amount</label>
+                                          <input type="text"  [ngModel]="purchase_return_master_.VAT_Amount | number:'1.3-3'" 
+                                          name="purchase_return_master_.VAT_Amount" id="purchase_return_master_.VAT_Amount"
+                                          (ngModelChange)="Final_Amounts()" readonly
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly>
+                                      </div>
+                                      
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Roundoff</label>
+                                            <input type="number" name="purchase_return_master_.Roundoff" 
+                                            [(ngModel)]="purchase_return_master_.Roundoff"   id="purchase_return_master_.Roundoff" 
+                                            (ngModelChange)="Final_Amounts()"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">NET
+                                              Amount</label>
+                                          <input type="text"    [ngModel]="purchase_return_master_.NetTotal | number:'1.3-3'"
+                                          name="purchase_return_master_.NetTotal" id="purchase_return_master_.NetTotal"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly>
+                                      </div>   
+                                  </div>
+                              </div>
+                              <div class="col-md-12" style="display: flex;justify-content: flex-end;">
+                                  <div class="col-md-4">
+
+                                  </div>
+                                  <div class="col-md-8">
+                                      <label class=" col-md-2 label-to-crect-all-names-to-div-tre-prt-sles">In words</label>
+                                      <input type="text" style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important; height: 36px;"
+                                          class=" col-md-10 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" [(ngModel)]="purchase_return_master_.Amount_In_Words" readonly>
+                                  
+                                  </div>
+                                      
+                              </div>
+
+                              <div class="col-md-12">
+                                  <!-- <button mat-raised-button type="button" id="Tab_Edit" (click)="Edit_Button_Click()" class="btn btn-danger pull-right">Edit</button> -->
+                                  <button mat-raised-button type="button" id="Save_Button"
+                                      class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                      [hidden]="Sales_Master_Save==false"
+                                      (click)="Save_Purchase_Return(0)">Save</button>
+                                      <button mat-raised-button type="button"
+                                       class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
+                                        (click)="newQuotation()">New</button>
+                                  <button mat-raised-button type="button"
+                                      class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                      (click)="Close_Click()">Close</button>
+                                  <button mat-raised-button type="button" [hidden]="Sales_Print"
+                                  *ngIf="Purchase_Return_Master_Id_Edit>0"
+                                      class="btn btn-danger pull-right" (click)="Print_Click()">
+                                      <i class="fa fa-print" aria-hidden="true"></i></button>
+                              </div>
+                              <div class="clearfix"></div>
+                          
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- <div id="Print_Div" style="display:none;">
+  <div class="container"
+      style="margin:0 auto;margin-top:-25px;padding:5px;width:840px;height:auto;background-color:#fff;">
+      <table style=" border: none;border-collapse:collapse;width:840px;">
+          <caption>
+              <h4 style="text-align: center;font-size:22px;margin-bottom: 5px;">{{Company_.Company_Name}}</h4>
+              {{Company_.Address1}},{{Company_.Address2}}<br>
+              {{Company_.Address3}},{{Company_.Address4}}<br>
+              Contact: {{Company_.Mobile_Number}},{{Company_.EMail}}<br>
+              <b>IN/UIN:{{Company_.NO}}</b><br>
+              Tax Invoice
+          </caption>
+          <tr style="margin-bottom: 5px;">
+              <td colspan="3" rowspan="3">
+                  <span style="font-size:19px;font-weight: bold;">{{purchase_return_master_.Customer_Name}}</span><br>
+                  {{purchase_return_master_.Address1}} {{purchase_return_master_.Address2}}<br>
+                  {{purchase_return_master_.Address3}} {{purchase_return_master_.Address4}}-{{purchase_return_master_.PinCode}}<br>
+                  <b>IN/UIN:{{purchase_return_master_.No}}</b>
+              </td>
+              <td colspan="4" rowspan="3" style="text-align: center;">
+                  Delivery Address<br>
+                  {{purchase_return_master_.Delivery_Address1}} {{purchase_return_master_.Delivery_Address2}}<br>
+                  {{purchase_return_master_.Delivery_Address3}} {{purchase_return_master_.Delivery_Address4}}
+              </td>
+              <td rowspan="3">
+                  Invoice No<br>
+                  Dated<br>
+                  Vehicle No<br>
+                  Driver<br>
+                  Mobile
+              </td>
+              <td colspan="2" rowspan="3" style="text-align: right;">
+                  {{purchase_return_master_.PurchaseNo}}<br>
+                  {{purchase_return_master_.EntryDate }}<br>
+                  {{purchase_return_master_.Vehicle_No}}<br>
+                  {{purchase_return_master_.Driver_Name}}<br>
+                  {{purchase_return_master_.Mobile_No}}
+              </td>
+          </tr>
+          <tbody>
+              <tr style="padding:5px;border:1px solid #333;">
+                  <td style="padding:5px;border:1px solid #333;width:25px;">Sl No</td>
+                  <td style="padding:5px;border:1px solid #333;width:350px;">Particulars</td>
+                  <td style="padding:5px;border:1px solid #333;width:185px;">HSN/SAC</td>
+                  <td style="padding:5px;border:1px solid #333;width:100px;"> %</td>
+                  <td style="padding:5px;border:1px solid #333;width:150px;">Rate</td>
+                  <td style="padding:5px;border:1px solid #333;width:120px;">Quantity</td>
+                  <td style="padding:5px;border:1px solid #333;width:185px;">Net Value</td>
+                  <td style="padding:5px;border:1px solid #333;width:150px;">C</td>
+                  <td style="padding:5px;border:1px solid #333;width:150px;">S</td>
+                  <td style="padding:5px;border:1px solid #333;width:185px;">Total</td>
+              </tr>
+              <tr *ngFor="let Purchase_Details_ of performainvoicedetails_Data; let i =index">
+                  <td style="padding:5px;border-left:1px solid #333;border-right:1px solid #333;width:25px;">{{i+1}}
+                  </td>
+                  <td style="padding:5px;border-right:1px solid #333;width:350px;">
+                      {{Purchase_Details_.ItemName}}<br>{{Purchase_Details_.Description}}</td>
+                  <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
+                      {{Purchase_Details_.HSNCODE}}</td>
+                  <td style="padding:5px;border-right:1px solid #333;width:100px;text-align: center;">
+                      {{Purchase_Details_.SaleTax}}</td>
+                  <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
+                      {{Purchase_Details_.SaleRate}}</td>
+                  <td style="padding:5px;border-right:1px solid #333;width:120px;text-align: center;">
+                      {{Purchase_Details_.Quantity}}</td>
+                  <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
+                      {{Purchase_Details_.NetValue}}</td>
+                  <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
+                      {{Purchase_Details_.CAMT}}</td>
+                  <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
+                      {{Purchase_Details_.SAMT}}</td>
+                  <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
+                      {{Purchase_Details_.TotalAmount}}</td>
+              </tr>
+              <tr style="padding:5px;border:1px solid #333;">
+                  <td colspan="6" style="padding:5px;border:1px solid #333;width:100px;">Total</td>
+                  <td style="padding:5px;border:1px solid #333;width:185px;">{{purchase_return_master_.NetTotal}}</td>
+                  <td style="padding:5px;border:1px solid #333;width:150px;">{{purchase_return_master_.TotalC}}</td>
+                  <td style="padding:5px;border:1px solid #333;width:150px;">{{purchase_return_master_.ToalS}}</td>
+                  <td style="padding:5px;border:1px solid #333;width:185px;">{{purchase_return_master_.TotalAmount}}</td>
+              </tr>
+              
+              <tr>
+                  <td style="border-left:1px solid #333;"> </td>
+                  <td style="padding:5px;border:none;">
+                      Bank Details<br>
+                      Bank Name <br>
+                      A/c No <br>
+                      Branch<br>
+                      IFS Code
+                  </td>
+                  <td colspan="3" style="padding:5;border-right:1px solid #333;text-align: left;margin-left: 25px;">
+                      <br>
+                      {{Bank_.Client_Accounts_Name}}<br>
+                      {{Bank_.Client_Accounts_No}}<br>
+                      {{Bank_.Address1}}<br>
+                      {{Bank_.Address2}}
+                  </td>
+                  <td colspan="2" style="border-left:1px solid #333;"></td>
+                  <td colspan="3" style="border-right:1px solid #333;">
+                      Transportation Charge <span
+                          style="margin-left: 25px;">{{purchase_return_master_.Transportation_Total}}</span><br>
+                      Handling Charge <span style="margin-left: 60px;">{{purchase_return_master_.Handling_Total}}</span><br>
+                      Round Off <span style="margin-left: 95px;">{{purchase_return_master_.RoundOff}}</span><br>
+                      Total Amount <span style="margin-left: 80px;">{{purchase_return_master_.GrandTotal}}</span>
+                  </td>
+              </tr>
+              <tr style="padding:5px;border:1px solid #333;">
+                  <th colspan="10" style="text-align: left;padding:5px;">
+                  </th>
+              </tr>
+              <tr>
+                  <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">HSN/SAC </td>
+                  <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">Taxable value </td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">C%</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">C</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">S%</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">S</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">%</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;"></td>
+              </tr>
+              <tr *ngFor="let Sales_Details1_ of Purchase_Details_Data1; let n =index">
+                  <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">
+                      {{Sales_Details1_.HSNCODE}}</td>
+                  <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">
+                      {{Sales_Details1_.NetValue}}</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.C}}</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.CAMT}}</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.S}}</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.SAMT}}</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.SaleTax}}</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.TaxAmount}}</td>
+              </tr>
+              <tr *ngFor="let purchase_return_master_1 of performainvoice_Data; let n =index">
+                  <td colspan="2" style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                      {{purchase_return_master_1.HSNCODE}}</td>
+                  <td colspan="2" style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                      {{purchase_return_master_1.NetValue}}</td>
+                  <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">{{purchase_return_master_1.C}}
+                  </td>
+                  <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                      {{purchase_return_master_1.CAMT}}</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">{{purchase_return_master_1.S}}</td>
+                  <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                      {{purchase_return_master_1.SAMT}}</td>
+                  <td style="padding:5;border:1px solid #333;text-align: center;">{{purchase_return_master_1.SaleTax}}</td>
+                  <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                      {{purchase_return_master_1.TaxAmount}}</td>
+              </tr>
+              <tr class="border" style="padding:12px;border:1px solid #333;">
+                  <th colspan="6" class="top-none" style="padding:5;border:1px solid #333;width:185px;">
+                      <span
+                          style="text-decoration: underline;padding:5;border:1px solid #333;width:185px;">Declaration</span><br>
+                      We declare that this invoice shows the actual price of the Goods described and all particulars
+                      are true and correct.
+                  </th>
+                  <td colspan="4" class="right" style="padding:5;border:1px solid #333;">
+                      For {{Company_.Company_Name}}<br><br><br><br> Authorised Signatory
+                  </td>
+              </tr>
+          </tbody>
+          <tfoot>
+              <tr class="border" style="padding:5px;border:1px solid #333;">
+                  <th colspan="10" class="border" style="padding:5px;border:1px solid #333;width:185px;">This is a
+                      computer generated invoice</th>
+              </tr>
+          </tfoot>
+      </table>
+  </div>
+</div> -->
+
+<div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ccc;font-size: 10px;"  id="Print_Div1" style="display:none;">
+      <!-- Placeholder for the letterhead image to maintain spacing -->
+  <div style="height: 100px; width: 100%; margin-bottom: 10px;">
+    <img *ngIf="printLetterhead" src='/assets/img/printlogo.png' alt="Perfect Hills Logo" style="height: 100%; width: 100%;" />
+</div>
+    <h1 style="text-align: center; margin-bottom: 5px; margin-top: -5px; text-decoration: underline;font-family: arial, sans-serif;">Purchase Return</h1>
+
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 60%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">PB 1554 , PC 113 , GHALA,</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Date:</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ purchase_return_master_.PrintDate }}</p>
+        </div>
+    </div>
+
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 60%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">MUSCAT SULTANATE OF OMAN</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Invoice Number: </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ purchase_return_master_.InvoiceNo }}</p>
+        </div>
+    </div>
+
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width:100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Phone</p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">+968 22820150</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Currency:</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;" 
+            *ngIf="Currency.CurrencyDetails_Id >0">{{Currency.CurrecnyName}}</p>
+        </div>
+    </div>
+
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width:100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Gsm: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">97416789, 99751621</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Type:</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;" 
+            *ngIf="Accounttype.AccountType_Id >0">{{Accounttype.AccountType_Name}}</p>
+        </div>
+    </div>
+
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width:100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Email: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">sales&#64;perfecthills.com</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Payment Term:</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <!-- <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;"> {{ purchase_return_master_.PaymentTermValue }} {{ Payment_Term_Description_.Payment_Term_Description }}</p> -->
+            <p style="font-size: 12px; text-align: right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
+                <span *ngIf="purchase_return_master_.PaymentTermValue>0">{{ purchase_return_master_.PaymentTermValue }}  </span>
+                <span *ngIf="Payment_Term_Description_.payment_Term_ID>0">{{ Payment_Term_Description_.Payment_Term_Description }}</span>
+            </p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;
+            ">Website: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">www.perfecthills.com</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;"></p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;"></p>
+        </div>
+    </div>
+
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
+                CR Number: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">1150753</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;"></p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;"></p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">VATIN: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">OM1100004897</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;"></p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;"></p>
+        </div>
+    </div>
+  
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px;">
+      <div style="width: 48%; display: flex; flex-direction: column; gap: 3px;">
+        <h5 style="font-size: 12px;text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
+  margin-bottom: 3px !important;font-family: arial, sans-serif;">Customer Address</h5>
+        <!-- <p style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;">{{ purchase_return_master_.Customer}}</p> -->
+        <p style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ Customer_Name}}</p>
+        <p *ngIf="Address1" style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ Address1 }}</p>
+        <p *ngIf="Address2"  style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ Address2 }}</p>
+        <p *ngIf="Address3"  style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ Address3 }}</p>
+        <p *ngIf="Address4"  style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{ Address4 }}</p>
+        <p *ngIf="Vatin"  style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">VATIN: {{ Vatin }}</p>
+
+        <!-- <p>Attention: {{ purchase_return_master_.KindAttend }}</p> -->
+      </div>
+    
+    </div>
+  
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+      <thead>
+        <tr>
+          <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">SI</th>
+          <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">Part number</th>
+          <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">Description</th>
+          <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">UOM</th>
+          <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">QTY</th>
+          <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">PurchaseRate</th>
+          <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">SaleRate</th>
+          <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style=" page-break-inside: avoid;" *ngFor="let item of Purchase_Return_DetailsData; let i = index">
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ i + 1 }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.ItemCode }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.ItemName }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.UnitName }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.Quantity | number:'1.3-3'}}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.UnitPrice | number:'1.3-3'  }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.SaleRate  | number:'1.3-3'}}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.Amount  | number:'1.3-3'}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table>
+        <tr *ngFor="let i of blankItems">
+            <td style="border: none; height: 1px !important; padding: 0 !important;"></td>
+        </tr>
+    </table>
+
+    <!-- <div [style.margin-top.px]="breakPage ? (Purchase_Return_DetailsData.length < 20 && Purchase_Return_DetailsData.length > 7 ? 225 : 225) : (Purchase_Return_DetailsData.length < 4 ? 80 : 40)"> -->
+        <div style="page-break-inside: avoid;" [style.margin-top.px]="breakPage ?
+            (Purchase_Return_DetailsData.length < 40 ? 265 : 
+                (Purchase_Return_DetailsData.length < 56 ? 265 : 
+                    (Purchase_Return_DetailsData.length < 61 ? 130 : 
+                        (Purchase_Return_DetailsData.length < 102 ? 285 : 
+                            (Purchase_Return_DetailsData.length < 115 ? 65 : 135)
+                        )
+                    ) 
+                )
+            )  
+        
+        : 
+    (Purchase_Return_DetailsData.length > 7 ? 10:
+        (Purchase_Return_DetailsData.length > 3 ? 50:
+            (Purchase_Return_DetailsData.length < 2 ? 100 : 80)
+        )
+    )">
+        <h5 style="margin-bottom: 1px;font-size: 12px; text-decoration: underline; margin-top:10px;font-family: arial, sans-serif;">Terms & Conditions</h5>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+        <div style="margin-bottom: 0px;width: 48%;" >
+            <p style="font-size: 12px; margin-top: 3px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;"><span style="font-weight: bold;">Price Basis:</span> {{ purchase_return_master_.PriceBasis }}</p>
+            <p style="font-size: 12px; margin-top: 3px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;"><span style="font-weight: bold;" >Brand:</span> {{ purchase_return_master_.Brand }}</p>
+
+            <p style="font-size: 12px;margin-top: 3px !important; margin-top: 40px !important; font-family: arial, sans-serif;">
+                <span *ngIf="purchase_return_master_.VAT_Description">
+                  {{ purchase_return_master_.VAT_Description }}
+                </span>
+                <!-- <ng-template #noDesc>
+                  <span style="margin-top:40px;  display: inline-block;"></span>
+                </ng-template> -->
+              
+            </p>
+
+            <p style="font-size: 12px; margin-top: 3px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;">
+                <span style="font-weight: bold;font-family: arial, sans-serif;">Notes</span> <br>
+                <span style=" font-size: 9px; color: grey;font-family: arial, sans-serif;">{{ Print_Company_.Note }}</span>
+              </p>
+            
+        </div>
+    
+        <div style=" margin-bottom: 0px;width: 35%; text-align: end;">
+
+            <!-- <p style="font-size: 12px;" *ngIf="purchase_return_master_.charge1_Amount > 0"><span style="font-weight: bold;">{{purchase_return_master_.Charge1}}</span>:{{purchase_return_master_.charge1_Amount}} </p>
+            <p style="font-size: 12px;" *ngIf="purchase_return_master_.charge2_Amount > 0"><span style="font-weight: bold;">{{purchase_return_master_.Charge2}}</span>:{{purchase_return_master_.charge2_Amount}} </p>
+            <p style="font-size: 12px;" *ngIf="purchase_return_master_.Discount_Description > 0"><span style="font-weight: bold;">Discount {{purchase_return_master_.Discount_Description}} %</span> {{purchase_return_master_.Additional_Discount}}</p>
+            <p style="font-size: 12px;" *ngIf="purchase_return_master_.TotalAmount > 0"><span style="font-weight: bold;">Total:</span> {{ purchase_return_master_.TotalAmount}}</p>
+            <p style="font-size: 12px;" *ngIf="purchase_return_master_.VAT_Percentage > 0"><span style="font-weight: bold;">Vat {{purchase_return_master_.VAT_Percentage}} %</span> {{ purchase_return_master_.VAT_Amount}}</p>
+             -->
+
+             <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;">
+                <span style="font-weight: bold;font-family: arial, sans-serif;">
+                    <span *ngIf="purchase_return_master_.Charge1">{{ purchase_return_master_.Charge1 }}</span> 
+                </span> 
+                <span *ngIf="printChargeAmount1">{{ purchase_return_master_.charge1_Amount | number:'1.3-3'}}</span>
+                <!-- <ng-template #noAmount1>
+                    <span style="width: 60px;  display: inline-block;font-family: arial, sans-serif;"></span>
+                  </ng-template> -->
+            </p>
+            
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;">
+                <span style="font-weight: bold;font-family: arial, sans-serif;" *ngIf="purchase_return_master_.Charge2">{{ purchase_return_master_.Charge2 }} :</span>
+                <span *ngIf="printChargeAmount2">
+                  {{ purchase_return_master_.charge2_Amount | number:'1.3-3' }}
+                </span>
+                <!-- <ng-template #noAmount2>
+                  <span style="width: 50px;  display: inline-block;"></span>
+                </ng-template> -->
+              </p>
+              
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;">
+                <span *ngIf="printAdditional_Discount" style="font-weight: bold;font-family: arial, sans-serif;">Discount {{ purchase_return_master_.Discount_Description | number:'1.3-3'  }}% :</span> 
+                <span *ngIf="printAdditional_Discount">{{ purchase_return_master_.Additional_Discount  | number:'1.3-3' }}</span>
+            </p>
+
+            <p style="font-size: 12px; margin-top: 3px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;" 
+            *ngIf="purchase_return_master_.TotalAmount > 0">
+            <span style="font-weight: bold;">Total:</span> {{ purchase_return_master_.TotalAmount | number:'1.3-3'}}</p>
+
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;">
+                <span *ngIf="purchase_return_master_.VAT_Percentage > 0" 
+                    style="font-weight: bold;">Vat {{ purchase_return_master_.VAT_Percentage}}% :</span> 
+                <span *ngIf="printVAT_Amount">{{ purchase_return_master_.VAT_Amount  | number:'1.3-3' }}</span>
+            </p>
+
+            <p style="font-size: 12px; margin-top: 3px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;" 
+            *ngIf="purchase_return_master_.NetTotal > 0"><span style="font-weight: bold;">Net Total:</span> {{ purchase_return_master_.NetTotal | number:'1.3-3' }}</p>
+        </div>
+    </div>
+  
+    <div style="margin-top: 20px;display: flex;justify-content: space-between ;font-family: arial, sans-serif;">
+        <div>
+      <p style="font-size: 12px; margin-top:0px;"><span style="font-weight: bold;">Amount in Words:</span> {{ purchase_return_master_.Amount_In_Words }}</p>
+      <p style="font-size: 12px;"><span style="font-weight: bold;">Prepared By:</span> </p>
+        </div>
+      <div style="font-size: 12px;text-align: right;font-family: arial, sans-serif;">
+      <p style="margin-top: 24px; display: inline-block; padding-top: 5px;">Authorised Signatory</p>
+        </div>
+    </div>
+    </div>
+  </div>
+

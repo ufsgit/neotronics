@@ -1,0 +1,73 @@
+<div *ngIf="issLoading" class="overlay">
+  <mat-progress-spinner class="spinner" [color]="'primary'" [mode]="'indeterminate'" [value]="50"></mat-progress-spinner>
+</div>
+
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card p-2">
+          <div class="card-header-info d-flex justify-content-between align-items-center">
+            <h4 class="card-title">Transaction</h4>
+            <button mat-button color="primary" (click)="router.navigateByUrl('/LeadRequirement')">Back</button>
+          </div>
+
+          <div class="card-body" *ngIf="Master">
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="text-info" style="cursor: default;">Auto-filled Fields</h6>
+                <div class="kv"><span class="k">Lead:</span> <span class="v">{{Master.Lead_Name}}</span></div>
+                <div class="kv"><span class="k">Mobile:</span> <span class="v">{{Master.Phone}}</span></div>
+                <div class="kv"><span class="k">Contact:</span> <span class="v">{{Master.Contact_Person}}</span></div>
+                <div class="kv"><span class="k">Contact No:</span> <span class="v">{{Master.Contact_Number}}</span></div>
+                <div class="kv"><span class="k">Email:</span> <span class="v">{{Master.Email}}</span></div>
+                <div class="kv"><span class="k">Address:</span> <span class="v">{{Master.Address}}</span></div>
+                <div class="kv"><span class="k">Date:</span> <span class="v">{{Master.Requirement_Date | date:'mediumDate'}}</span></div>
+              </div>
+
+              <div class="col-md-6">
+                <h6 class="text-info" style="cursor: default;">Requirement</h6>
+                <div class="kv"><span class="k">Notes:</span> <span class="v">{{Master.Notes}}</span></div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <h6 class="text-info" style="cursor: default;">Requirement Details</h6>
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th>Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let d of Details; let i = index">
+                        <td>{{i + 1}}</td>
+                        <td>{{d.Item}}</td>
+                        <td>{{d.Quantity}}</td>
+                        <td>{{d.Remarks}}</td>
+                      </tr>
+                      <tr *ngIf="Details.length === 0">
+                        <td colspan="4" class="text-center text-muted">No details.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="card-body" *ngIf="!Master && !issLoading">
+            <div class="text-center text-muted">Transaction not found.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,350 @@
+var express = require('express');
+var router = express.Router();
+var Company=require('../models/Company');
+const upload = require('../helpers/multer-helper');
+
+
+//  router.post('/Save_Company/',upload.array('myFile'), (req, res, next) =>
+//  { 
+//  try 
+//  {
+//   const file = req.files
+//   var Photo_ = [];
+//   if (!file)
+//   {
+
+//   }
+//   else
+//   {
+//     for (var i = 0; i < file.length; i++)
+//     {
+//       Photo_.push({  File_name: file[i].filename })
+//     }
+//   }
+
+//   var Logo="";
+//   if (Photo_.length>0)
+//   {
+//     Logo=Photo_[0].File_name;
+//   }
+
+//   var Photo_json = JSON.stringify(Photo_)
+//   var Company_ = 
+//   {
+//     "Company_Id": req.body.Company_Id,
+//     "Company_Name": req.body.Company_Name,
+//     "Phone1": req.body.Phone1,
+//     "Phone2": req.body.Phone2,
+//     "Mobile": req.body.Mobile,
+//     "Email": req.body.Email,
+//     "Website": req.body.Website,
+//     "Address1": req.body.Address1,
+//     "Address2": req.body.Address2,
+//     "Address3": req.body.Address3,
+//     "Logo": Logo,
+//     "Code": req.body.Code,
+//     "RegNo": req.body.RegNo,
+//     "Sponser_Name": req.body.Sponser_Name,
+//   };
+//   Company.Save_Company(Company_, function(err, rows)
+//   {
+//     if (err)
+//     {
+//       return 1;
+//     }
+//     else
+//     {
+//       return res.json(rows);
+//     }
+//   });
+
+// }
+//  catch (err) 
+//  {
+//    const error = new Error('Please upload a file')
+//    error.httpStatusCode = 400
+//    return next(error)
+//  }
+//  finally 
+//  {
+   
+//  }
+//   });
+
+
+router.post('/Save_Company/',upload.array('myFile'), (req, res, next) =>
+{ 
+try 
+{
+ const file = req.files
+ var Photo_ = [];
+ if (!file)
+ {
+
+ }
+ else
+ {
+   for (var i = 0; i < file.length; i++)
+   {
+     Photo_.push({  File_name: file[i].filename })
+   }
+ }
+
+ var Logo="";
+ if (Photo_.length>0)
+ {
+   Logo=Photo_[0].File_name;
+ }
+
+ var Photo_json = JSON.stringify(Photo_)
+ var Company_ = 
+ {
+   "Company_Id": req.body.Company_Id,
+   "Company_Name": req.body.Company_Name,
+   "Address1": req.body.Address1,
+   "Address2": req.body.Address2,
+   "Address3": req.body.Address3,
+   "Address4": req.body.Address4,
+   "Phone_Number": req.body.Phone_Number,
+   "Mobile_Number": req.body.Mobile_Number,
+   "EMail": req.body.EMail,
+   "Website": req.body.Website, 
+   "Logo": Logo,
+   "Code": req.body.Code,
+   "RegNo": req.body.RegNo,
+   "Sponser_Name": req.body.Sponser_Name,
+   "VAT_No":req.body.VAT_No,
+ };
+ console.log(Company_)
+ Company.Save_Company(Company_, function(err, rows)
+ {
+   if (err)
+   {
+     return 1;
+   }
+   else
+   {
+     return res.json(rows);
+   }
+ });
+
+}
+catch (err) 
+{
+  
+  const error = new Error('Please upload a file')
+  error.httpStatusCode = 400
+  return next(error)
+}
+finally 
+{
+  
+}
+ });
+
+   router.get("/Get_Company",async (req, res, next) =>
+   {
+   try
+   {
+   const result = await Company.Get_Company();
+   res.json(result);
+   } 
+   catch (e) 
+   {
+  
+   res.send(e);
+   
+
+   } 
+   finally 
+   {
+   }
+   });
+   router.get('/Delete_Company/:Company_Id_?',function(req,res,next)
+   { 
+   try 
+   {
+    Company.Delete_Company(req.params.Company_Id_, function (err, rows) 
+   {
+    if (err) 
+    {
+    res.json(err);
+    }
+    else 
+    {
+      res.json(rows);
+    }
+    });
+    }
+   catch (e) 
+   {
+   }
+   finally 
+   {
+   }
+    });
+
+
+ module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// var express = require('express');
+// var router = express.Router();
+// var Company=require('../models/Company');
+// const upload = require('../helpers/multer-helper');
+
+
+//  router.post('/Save_Company/',upload.array('myFile'), (req, res, next) =>
+//  { 
+//  try 
+//  {
+//   const file = req.files
+//   var Photo_ = [];
+//   if (file)
+//   {
+
+//   }
+//   else
+//   {
+//     for (var i = 0; i < file.length; i++)
+//     {
+//       Photo_.push({  File_name: file[i].filename })
+//     }
+//   }
+
+//   var Logo="";
+//   if (Photo_.length>0)
+//   {
+//     Logo=Photo_[0].File_name;
+//   }
+
+//   var Photo_json = JSON.stringify(Photo_)
+//   var Company_ = 
+//   {
+//     "Company_Id": req.body.Company_Id,
+//     "companyname": req.body.companyname,
+//     "Phone1": req.body.Phone1,
+//     "Phone2": req.body.Phone2,
+//     "Mobile": req.body.Mobile,
+//     "Email": req.body.Email,
+//     "Website": req.body.Website,
+//     "Address1": req.body.Address1,
+//     "Address2": req.body.Address2,
+//     "Address3": req.body.Address3,
+//     "Logo": Logo,
+
+
+//   };
+//   Company.Save_Company(Company_, function(err, rows)
+//   {
+//     if (err)
+//     {
+//       return 1;
+//     }
+//     else
+//     {
+//       return res.json(rows);
+//     }
+//   });
+
+// }
+//  catch (err) 
+//  {
+
+//    const error = new Error('Please upload a file')
+//    error.httpStatusCode = 400
+//    return next(error)
+//  }
+//  finally 
+//  {
+   
+//  }
+//   });
+
+  
+
+//    router.get("/Get_Company",async (req, res, next) =>
+//    {
+//    try
+//    {
+//    const result = await Company.Get_Company();
+//    res.json(result);
+//    } 
+//    catch (e) 
+//    {
+  
+//    res.send(e);
+
+
+//    } 
+//    finally 
+//    {
+//    }
+//    });
+
+//    router.get('/Delete_Company/:Company_Id_?',function(req,res,next)
+//    { 
+//    try 
+//    {
+//     Company.Delete_Company(req.params.Company_Id_, function (err, rows) 
+//    {
+//     if (err) 
+//     {
+//     res.json(err);
+//     }
+//     else 
+//     {
+//       res.json(rows);
+//     }
+//     });
+//     }
+//    catch (e) 
+//    {
+//    }
+//    finally 
+//    {
+//    }
+//     });
+
+    
+
+
+
+//  module.exports = router;
+
+

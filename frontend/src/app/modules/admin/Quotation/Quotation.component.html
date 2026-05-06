@@ -1,0 +1,2670 @@
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+</div>
+<div class="main-content" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+    <div class="container-fluid" #topDiv1>
+        <div class="row col-md-12  mb-0" *ngIf="!Entry_View">
+            <div class="row mb-1 card-body" style="align-items: center;
+             border: 0;
+             border-radius: 6px;
+             margin-left: 2px;
+             color: #333333;
+             background: #fff;
+             width: 100%;padding: 3px;background-color: #f1f1f1;
+             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+         ">
+                <div class="col-md-1 row mb-1" style="align-items: center;">
+
+                    <label class="col-md-6 mb-0">Date</label>
+                    <div class="checkbox-to-crect-sales-search-section">
+                        <div class="form-check uper-dte-lbel-sales-sctn-new">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" name="Date_checks"
+                                    [(ngModel)]="Date_Check" />
+                                <span class="form-check-sign"
+                                    style="left: 15px !important ; top: -13px !important;"><span
+                                        class="check"></span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-3 row mb-1 " style="align-items: center;">
+                    <label class="col-md-4 mb-0 " style="text-align: end;">From</label>
+                    <mat-form-field class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;">
+                        <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
+                            [(ngModel)]="Search_FromDate">
+                        <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                        <mat-datepicker #dp1></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3 row mb-1" style="align-items: center;">
+
+                    <label class="col-md-4 mb-0 " style="text-align: end;">To</label>
+                    <mat-form-field class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px;">
+                        <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
+                            [(ngModel)]="Search_ToDate">
+                        <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                        <mat-datepicker #dp2></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-5 row mb-1" style="align-items: center;">
+                    <label class="col-md-3 mb-0" style="text-align: end;">Customer</label>
+                    <input type="text" [matAutocomplete]="auto_Customer" [(ngModel)]="Search_Customer" name="Customer"
+                        (click)="Search_Customer_Typeahead($event)" (input)="Search_Customer_Typeahead($event)"
+                        class="col-md-9 " style="height: 40px;border: 1px solid #b1b1b1;">
+                    <mat-autocomplete #auto_Customer="matAutocomplete" [displayWith]="display_Customer">
+                        <mat-option *ngIf="isLoading">
+                            <mat-spinner diameter="500"></mat-spinner>
+                        </mat-option>
+                        <ng-container *ngIf="!isLoading">
+                            <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
+                                <span>{{Customer_T.Client_Accounts_Name}}</span>
+                            </mat-option>
+                        </ng-container>
+                    </mat-autocomplete>
+                </div>
+
+                <div class="col-md-3 row  mb-1" style="align-items: center;">
+                    <label class="col-md-6 mb-0" style="text-align: end;">Quotation No</label>
+                    <input type="text" class="col-md-6 " [(ngModel)]="QuotNo" [ngModelOptions]="{standalone: true}"
+                        style="height: 40px;border: 1px solid #b1b1b1;">
+                </div>
+
+                <div class="col-md-2 row mb-1" style="align-items: center;">
+                    <label class="col-md-6 mb-0  " style="text-align: end;">Part No</label>
+                    <input type="text" class="col-md-6 " style="height: 40px;border: 1px solid #b1b1b1;"
+                        [(ngModel)]="partNo" [ngModelOptions]="{standalone: true}">
+                </div>
+
+                <div class="col-md-3 row  mb-1" style="align-items: center;">
+                    <label class="col-md-4 mb-0 " style="text-align: end;">Group</label>
+                    <select [(ngModel)]="Item_Group_Search" id="Item_Group_Search" name="Item_Group_Search" required
+                        class="col-md-8 " style="height: 40px;border: 1px solid #b1b1b1;">
+                        <option *ngFor="let itemGroup of itemGroupData" [ngValue]="itemGroup">
+                            {{itemGroup.Item_Group_Name}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 row  mb-1" style="align-items: center;">
+                    <label class="col-md-5 mb-0 " style="text-align: end;">Currency</label>
+                    <select [(ngModel)]="Currency_Search" id="Currency_Search" name="Currency_Search" required
+                        class="col-md-7 " style="height: 40px;border: 1px solid #b1b1b1;">
+                        <option *ngFor="let currency of currencyData" [ngValue]="currency">
+                            {{currency.CurrecnyName}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 row mb-1" style="align-items: center; justify-content: center;">
+                    <!-- <button mat-raised-button type="button" class="btn btn-danger pull-right mt-0 mb-0"  (click)="Print_Search_Click()">
+                                        <i class="fa fa-print" aria-hidden="true"></i>
+                                    </button> -->
+                    <button mat-raised-button type="button" (click)="Search_Quotation()"
+                        style="margin-top: -1px !important;"
+                        class="btn btn-danger mb-0 pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                    <button mat-raised-button type="button" (click)="Create_New()" style="margin-top: -1px !important;"
+                        class="btn btn-danger  mb-0 pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+
+                    <button style="background-color: #3e6bdd; color: white" (click)="Export()"
+                        [hidden]="Export_View == true" mat-raised-button type="button"
+                        class="mt-0  mb-0  btn btn-danger pull-right">
+                        Export
+                    </button>
+
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+            <div class="col-md-12">
+                <!-- <div class="card card-plain"> -->
+                <!-- <div class="card-body"> -->
+                <div class="table-responsive card ">
+                    <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90"> -->
+                    <div class="table-responsive" [style.height.px]="myInnerHeight"
+                        style="overflow-y: scroll;background-color: #f1f1f1;">
+                        <table class="table table-hover">
+                            <thead class="thead">
+                                <th>Sl No</th>
+                                <th>Customer Name</th>
+                                <th>Quotation No</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </thead>
+                            <!-- <ng-container
+                                        *cdkVirtualFor="let Sales_Master of Quotation_Master_Data; let i =index"> -->
+                            <tr *ngFor="let Sales_Master of Quotation_Master_Data; let i =index">
+                                <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{ i+1 }}</td>
+                                <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{Sales_Master["Customer"]}}</td>
+                                <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{Sales_Master["QuotationNo"]}}</td>
+                                <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{Sales_Master["FormattedEntryDate"]}}</td>
+                                <td style="    padding: 0px;
+                                            padding-left: 5px;
+                                            vertical-align: middle;">{{Sales_Master["NetTotal"]}}</td>
+                                <td>
+                                    <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                        [hidden]="Sales_Master_Edit==false" aria-describedby="cdk-describedby-message-0"
+                                        cdk-describedby-host=""
+                                        class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                        mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task"
+                                        ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span
+                                                _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                <i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons"
+                                                    (click)="Edit_Quotation_Master(Sales_Master,i)">edit</i></span>
+                                            <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple=""
+                                                ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                            <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                            </div>
+                                        </span>
+                                        <div class="mat-button-ripple mat-ripple" matripple=""
+                                            ng-reflect-centered="false" ng-reflect-disabled="false"
+                                            ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button _ngcontent-gdi-c11="" [hidden]="Sales_Master_Delete==false"
+                                        class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                        mat-raised-button="" mattooltip="Remove" type="button"
+                                        aria-describedby="cdk-describedby-message-1" cdk-describedby-host=""
+                                        ng-reflect-position="above" ng-reflect-message="Remove"><span
+                                            class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"
+                                                (click)="Delete_Quotation_Master(Sales_Master.SalesQuotationMaster_Id,i)">close</i></span>
+                                        <div class="mat-button-ripple mat-ripple" matripple=""
+                                            ng-reflect-centered="false" ng-reflect-disabled="false"
+                                            ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+                                </td>
+                                <!-- <td> 
+        <button _ngcontent-gdi-c11="" class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" 
+        mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" 
+        cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper">
+            <i _ngcontent-gdi-c11="" class="material-icons"  
+            (click)="Change_Bill_Status(Sales_Master.Quotation_Master_Id,Sales_Master.BillType,i)" >trending_flat</i></span>
+            <div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" 
+            ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"></div></button>
+        </td> -->
+                            </tr>
+                            <!-- </ng-container> -->
+                        </table>
+                    </div>
+                    <!-- </cdk-virtual-scroll-viewport> -->
+                </div>
+            </div>
+            <div class="col-md-4 no-print">
+                <label class="entry-num">Entries : {{Total_Entries}}</label>
+                &nbsp;&nbsp;&nbsp;&nbsp; <label class="entry-num">Total:
+                    {{Sales_Master_Total_Amount | number:'1.3-3'}}</label>
+            </div>
+            <!-- </div> -->
+            <!-- </div> -->
+        </div>
+
+        <div class="row mt-2" *ngIf="Entry_View" style="background-color: #f1f1f1;">
+            <div class="container-fluid" #topDiv>
+                <div class="col-md-6 croct-float-purchase-master-section ">
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
+                            <span style="color:#ef071e; ">*</span></label>
+                        <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer"
+                            (ngModelChange)="selectCustomer()" (click)="Search_Customer_Typeahead($event)"
+                            (input)="Search_Customer_Typeahead($event)"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Customer">
+                            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                            <ng-container *ngIf="!isLoading">
+                                <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
+                                    <span
+                                        (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" [(ngModel)]="Address1" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" [(ngModel)]="Address2" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" [(ngModel)]="Address3" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" [(ngModel)]="Address4" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Delivery
+                            Address</label>
+                        <input type="text" name="Delivery_Address1" [(ngModel)]="Quotation_Master_.Delivery_Address1"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" name="Delivery_Address1" [(ngModel)]="Quotation_Master_.Delivery_Address2"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" name="Delivery_Address3" [(ngModel)]="Quotation_Master_.Delivery_Address3"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                        <input type="text" name="Delivery_Address4" [(ngModel)]="Quotation_Master_.Delivery_Address4"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                </div>
+                <div class="col-md-6 croct-float-purchase-master-section">
+                    <div class="col-md-12 mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date
+                            <span style="color:#ef071e; ">*</span></label>
+                        <mat-form-field
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                            style="height: 47px !important">
+                            <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate"
+                                [(ngModel)]="Quotation_Master_.EntryDate">
+                            <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
+                            <mat-datepicker #dpdate></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Quotation
+                            No</label>
+                        <input type="text" name="QuotationNo" [(ngModel)]="Quotation_Master_.QuotationNo" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Currency
+                            <span style="color:#ef071e; ">*</span>
+                        </label>
+                        <select
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                            name="currency" id="currency" [(ngModel)]="currency" (ngModelChange)="Final_Amounts()">
+                            <option *ngFor="let curr of currencyData" [ngValue]="curr">
+                                {{curr.CurrecnyName}}</option>
+                        </select>
+
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">PO
+                            Number
+                        </label>
+                        <input type="text" name="POnumber" [(ngModel)]="Quotation_Master_.POnumber"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
+                            Ref No
+                        </label>
+                        <input type="text" name="Supplier_Ref_No" [(ngModel)]="Quotation_Master_.Supplier_Ref_No"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Attention
+                        </label>
+
+                        <input type="text" name="KindAttend" [(ngModel)]="Quotation_Master_.KindAttend"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Employee
+                        </label>
+
+                        <input type="text" name="AttendEmployee" [(ngModel)]="Quotation_Master_.AttendEmployee"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Reference</label>
+                        <input type="text" name="Mobile_No" [(ngModel)]="Quotation_Master_.Description2"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="background-color: #f1f1f1;">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body" style="background-color: #f1f1f1;">
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div
+                                        class="col-md-4 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Part
+                                            Number
+                                            <span style="color:#ef071e; ">*</span>
+                                        </label>
+                                        <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto42"
+                                            style="padding-left: 5px !important;" [(ngModel)]="Barcode_"
+                                            (click)="Get_Stock_Item_Code_Typeahead($event)"
+                                            (input)="Get_Stock_Item_Code_Typeahead($event)"
+                                            (ngModelChange)="Get_Stock()" (keyup.enter)="Plus_Quotation_Details($event)"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched" />
+                                        <mat-autocomplete #auto42="matAutocomplete" [displayWith]="display_ItemCode">
+                                            <mat-option *ngIf="isLoading"><mat-spinner
+                                                    diameter="500"></mat-spinner></mat-option>
+                                            <ng-container *ngIf="!isLoading">
+                                                <mat-option *ngFor="let Item of ItemCodeData; let i = index"
+                                                    [value]="Item">
+                                                    <span>
+                                                        <div (click)="Barcode_Change(Item)">{{Item.Item_Code}} -
+                                                            {{Item.Quantity}} - {{Item.ItemName}} </div>
+                                                    </span>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-autocomplete>
+                                    </div>
+                                    <div
+                                        class="col-md-5 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item
+                                            & Description
+                                            <span style="color:#ef071e; "></span>
+                                        </label>
+
+                                        <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_" name="Item"
+                                            (input)="Search_Item_Typeahead($event)"
+                                            (click)="Search_Item_Typeahead($event)" (ngModelChange)="Get_Stock_Item()"
+                                            (keyup.enter)="Plus_Quotation_Details($event)"
+                                            style="padding-left: 5px !important;"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                        <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
+                                            <mat-option *ngIf="isLoading"><mat-spinner
+                                                    diameter="500"></mat-spinner></mat-option>
+                                            <ng-container *ngIf="!isLoading">
+                                                <mat-option *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
+                                                    <span
+                                                        (click)="Item_Name_Change(Itemstock)">{{Itemstock.ItemName}}-{{Itemstock.Item_Code}}
+                                                        - {{Itemstock.Quantity}}</span>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-autocomplete>
+                                    </div>
+                                    <div
+                                        class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Uom
+                                            <span style="color:#ef071e; "></span></label>
+                                        <input type="text" [(ngModel)]="Quotation_Details_.UnitName"
+                                            style="padding-left: 5px !important;" id="Quotation_Details_.UnitName"
+                                            name="Quotation_Details_.UnitName"
+                                            (keyup.enter)="Plus_Quotation_Details($event)"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                    </div>
+                                    <div
+                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty
+                                            <span style="color:#ef071e; ">*</span></label>
+                                        <input type="number" [(ngModel)]="Quotation_Details_.Quantity"
+                                            style="padding-left: 5px !important;" id="Quotation_Details_.Quantity"
+                                            name="Quotation_Details_.Quantity"
+                                            (ngModelChange)="Calculate_Quotation_Details_Amount()"
+                                            (keyup.enter)="Plus_Quotation_Details($event)"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                    </div>
+                                    <div
+                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Unit
+                                            Price
+                                            <span style="color:#ef071e; ">*</span></label>
+                                        <input type="number" [(ngModel)]="Quotation_Details_.UnitPrice"
+                                            style="padding-left: 5px !important;" id="Quotation_Details_.UnitPrice"
+                                            name="Quotation_Details_.UnitPrice"
+                                            (ngModelChange)="Calculate_Quotation_Details_Amount()"
+                                            (keyup.enter)="Plus_Quotation_Details($event)"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                    </div>
+
+                                    <div
+                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Discount
+                                            %
+                                            <span style="color:#ef071e; "></span></label>
+                                        <input type="number" [(ngModel)]="Quotation_Details_.Discount"
+                                            style="padding-left: 5px !important;" id="Quotation_Details_.Discount"
+                                            name="Quotation_Details_.Discount"
+                                            (ngModelChange)="Calculate_Quotation_Details_Amount()"
+                                            (keyup.enter)="Plus_Quotation_Details($event)"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                    </div>
+                                    <div
+                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Unit
+                                            Discount
+                                            <span style="color:#ef071e; "></span></label>
+                                        <input type="number" [(ngModel)]="Quotation_Details_.Unit_Discount"
+                                            style="padding-left: 5px !important;" id="Quotation_Details_.Unit_Discount"
+                                            name="Quotation_Details_.Unit_Discount"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid"
+                                            readonly />
+                                    </div>
+                                    <div
+                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Total
+                                            Price <span style="color:#ef071e; "></span></label>
+                                        <input type="number" [(ngModel)]="Quotation_Details_.NetValue"
+                                            id="Quotation_Details_.NetValue" name="Quotation_Details_.NetValue"
+                                            style="padding-left: 5px !important;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched"
+                                            readonly />
+                                    </div>
+                                    <div
+                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                        <label
+                                            class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Availability
+                                            <span style="color:#ef071e; "></span></label>
+                                        <input type="text" style="padding-left: 5px !important;"
+                                            [(ngModel)]="Quotation_Details_.Availability"
+                                            (keyup.enter)="Plus_Quotation_Details($event)"
+                                            id="Quotation_Details_.Availability" name="Quotation_Details_.Availability"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                    </div>
+                                    <div style="margin-top: 39px !important;"
+                                        class="col-md-1 alighn-right-inputs-sales-grid div-to-down-margin-crect-allighn-wole-scton">
+                                        <button mat-raised-button type="button" (click)="Plus_Quotation_Details($event)"
+                                            class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes"
+                                            style="border-radius: 5px !important;">
+                                            Add</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-for-sale-search-section-diary">
+                                                <thead class="bg-col-stock-add-diary">
+                                                    <th>No </th>
+                                                    <th>Part Number</th>
+                                                    <th>Item & Description </th>
+                                                    <th>Uom</th>
+                                                    <th>Qty</th>
+                                                    <th>Unit Price</th>
+                                                    <th>Discount %</th>
+                                                    <th>Unit Discount</th>
+                                                    <th>Total Price</th>
+                                                    <th>Availability</th>
+                                                    <th></th>
+                                                </thead>
+                                                <tbody class="bk_tb_bg"
+                                                    *ngFor="let Sales_Details of Quotation_Details_Data; let i = index">
+                                                    <td>{{i+1}}</td>
+                                                    <td>{{Sales_Details["Item_Code"]}}</td>
+                                                    <td [id]="'cell' + (i + 1)">
+                                                        {{ Sales_Details["ItemName"] }}
+                                                    </td>
+                                                    <td>{{Sales_Details["UnitName"]}}</td>
+                                                    <td>{{Sales_Details["Quantity"]}}</td>
+                                                    <td>{{Sales_Details["UnitPrice"] | number: '1.3-3'}}</td>
+                                                    <td>{{Sales_Details["Discount"] | number: '1.3-3'}}</td>
+                                                    <td>{{Sales_Details["Unit_Discount"] | number: '1.3-3'}}</td>
+                                                    <td>{{Sales_Details["NetValue"] | number: '1.3-3'}}</td>
+                                                    <td>{{Sales_Details["Availability"]}}</td>
+                                                    <td style="width:75px;">
+                                                        <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                            [hidden]="Sales_Master_Edit==false"
+                                                            aria-describedby="cdk-describedby-message-0"
+                                                            cdk-describedby-host=""
+                                                            class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                            mat-raised-button="" mattooltip="Edit Task"
+                                                            ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                            type="button"><span class="mat-button-wrapper"><span
+                                                                    _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                                    <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                        class="material-icons"
+                                                                        (click)="Edit_Quotation_Detail(Sales_Details,i)">edit</i></span>
+                                                                <div _ngcontent-jry-c5=""
+                                                                    class="mat-button-ripple mat-ripple" matripple=""
+                                                                    ng-reflect-centered="false"
+                                                                    ng-reflect-disabled="false"
+                                                                    ng-reflect-trigger="[object HTMLButtonElement]">
+                                                                </div>
+                                                                <div _ngcontent-jry-c5=""
+                                                                    class="mat-button-focus-overlay">
+                                                                </div>
+                                                            </span>
+                                                            <div class="mat-button-ripple mat-ripple" matripple=""
+                                                                ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                            <div class="mat-button-focus-overlay"></div>
+                                                        </button>
+
+                                                        <button _ngcontent-gdi-c11=""
+                                                            [hidden]="Sales_Master_Delete==false"
+                                                            class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                                            mat-raised-button="" mattooltip="Remove" type="button"
+                                                            aria-describedby="cdk-describedby-message-1"
+                                                            cdk-describedby-host="" ng-reflect-position="above"
+                                                            ng-reflect-message="Remove"><span
+                                                                class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
+                                                                    class="material-icons"
+                                                                    (click)="Delete_Quotation_Detail(i)">close</i></span>
+                                                            <div class="mat-button-ripple mat-ripple" matripple=""
+                                                                ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                            <div class="mat-button-focus-overlay"></div>
+                                                        </button>
+                                                    </td>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-5">
+                                    <h4 style="font-weight: bold;">Terms & Conditions</h4>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Brand</label>
+                                        <input type="text" [(ngModel)]="Quotation_Master_.Brand"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Price
+                                            Basis</label>
+                                        <input type="text" [(ngModel)]="Quotation_Master_.PriceBasis"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment
+                                            Term</label>
+                                        <input type="number" [(ngModel)]="Quotation_Master_.PaymentTermValue" style="width: 12%;border: 1px solid lightgrey;
+                                            border-radius: 5px;padding-left: 5px !important;height: 36px;"
+                                            class="mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                        <select [(ngModel)]="Payment_Term" id="Payment_Term" name="Payment_Term"
+                                            class="for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe ng-pristine ng-valid ng-touched"
+                                            style="width: 37%;border: 1px solid lightgrey;
+                                            border-radius: 5px;padding-left: 5px !important;height: 36px;">
+                                            <option *ngFor="let PaymentTerm of PaymentTermData" [ngValue]="PaymentTerm">
+                                                {{PaymentTerm.Payment_Term_Description}}</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Delivery</label>
+                                        <input type="text" [(ngModel)]="Quotation_Master_.Delivery "
+                                            id="Quotation_Master_.Delivery" name="Quotation_Master_.Delivery"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Validity</label>
+                                        <input type="text" [(ngModel)]="Quotation_Master_.Validity "
+                                            id="Quotation_Master_.Validity" name="Quotation_Master_.Validity"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Notes</label>
+                                        <input type="text" [(ngModel)]="Quotation_Master_.Description1"
+                                            id="Quotation_Master_.Description1" name="Quotation_Master_.Description1"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class=" label-to-crect-all-names-to-div-tre-prt-sles">Print
+                                            Letterhead</label>
+
+
+                                        <input style="margin-left: 4%;" type='checkbox' class="form-check-input"
+                                            id="Quotation_Master_.printLetterhead"
+                                            name="Quotation_Master_.printLetterhead" [(ngModel)]="printLetterhead" />
+                                        <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9=""
+                                                class="check"></span>
+                                        </span>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1"
+                                        style="visibility: hidden;">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles"></label>
+                                        <input type="number"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Discount
+                                            %</label>
+                                        <input type="number" id="Quotation_Master_.Discount_Description"
+                                            name="Quotation_Master_.Discount_Description"
+                                            [(ngModel)]="Quotation_Master_.Discount_Description"
+                                            (ngModelChange)="Final_Amounts()"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+
+                                    </div>
+
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Description
+                                            %</label>
+                                        <input type="text" name="Description1" [(ngModel)]="Quotation_Master_.Charge1"
+                                            class="col-md-3"
+                                            style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important;height: 36px;">
+                                        <input type="number" class="col-md-3"
+                                            style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important;height: 36px;"
+                                            [(ngModel)]="Quotation_Master_.Charge1per" id="Quotation_Master_.Charge1per"
+                                            name="Quotation_Master_.Charge1per" (ngModelChange)="Final_Amounts()">
+                                    </div>
+
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Description</label>
+                                        <input type="text" [(ngModel)]="Quotation_Master_.Charge2"
+                                            id="Quotation_Master_.Charge2" name="Quotation_Master_.Charge2"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Prepared
+                                            By</label>
+                                        <input type="text" [(ngModel)]="Quotation_Master_.PreparedBy"
+                                            id="Quotation_Master_.PreparedBy" name="Quotation_Master_.PreparedBy"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1"
+                                        style="visibility: hidden;">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles"></label>
+                                        <input type="number"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Vat
+                                            %</label>
+                                        <input type="number" [(ngModel)]="Quotation_Master_.VAT_Percentage"
+                                            id="Quotation_Master_.VAT_Percentage"
+                                            name="Quotation_Master_.VAT_Percentage" (ngModelChange)="Final_Amounts()"
+                                            name="Quotation_Master_.Handling_"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <!-- Sub Total -->
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Sub
+                                            Total</label>
+                                        <input type="text" [ngModel]="Quotation_Master_.TotalAmount | number:'1.3-3'"
+                                            id="Quotation_Master_.TotalAmount" name="Quotation_Master_.TotalAmount"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            readonly>
+                                    </div>
+
+                                    <!-- Additional Discount -->
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amounts</label>
+                                        <input type="number" [(ngModel)]="Quotation_Master_.Additional_Discount"
+                                            id="Quotation_Master_.Additional_Discount"
+                                            name="Quotation_Master_.Additional_Discount"
+                                            (ngModelChange)="Calculate_Discount_Percent();"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+
+                                    <!-- Charge 1 Amount -->
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amount</label>
+                                        <input type="text" [ngModel]="Quotation_Master_.charge1_Amount | number:'1.3-3'"
+                                            id="Quotation_Master_.charge1_Amount"
+                                            name="Quotation_Master_.charge1_Amount" (ngModelChange)="Final_Amounts()"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            readonly>
+                                    </div>
+
+                                    <!-- Charge 2 Amount -->
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amount</label>
+                                        <input type="number" [(ngModel)]="Quotation_Master_.charge2_Amount"
+                                            id="Quotation_Master_.charge2_Amount"
+                                            name="Quotation_Master_.charge2_Amount" (ngModelChange)="Final_Amounts()"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+
+                                    <!-- Total Discount -->
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total
+                                            Discount</label>
+                                        <input type="text" [ngModel]="Quotation_Master_.TotalDiscount | number:'1.3-3'"
+                                            id="Quotation_Master_.TotalDiscount" name="Quotation_Master_.TotalDiscount"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            readonly>
+                                    </div>
+
+                                    <!-- Total -->
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label
+                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total</label>
+                                        <input type="text" [ngModel]="Total | number:'1.3-3'"
+                                            id="Quotation_Master_.Total" name="Quotation_Master_.Total"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            readonly>
+                                    </div>
+
+                                    <!-- VAT Amount -->
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">VAT
+                                            Amount</label>
+                                        <input type="text" [ngModel]="Quotation_Master_.VAT_Amount | number:'1.3-3'"
+                                            id="Quotation_Master_.VAT_Amount" name="Quotation_Master_.VAT_Amount"
+                                            (ngModelChange)="Final_Amounts()" readonly
+                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+
+                                    <!-- Total Amount -->
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total
+                                            Amount</label>
+                                        <input type="text" [ngModel]="Quotation_Master_.Total_Amount | number:'1.3-3'"
+                                            id="Quotation_Master_.Total_Amount" name="Quotation_Master_.Total_Amount"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            readonly>
+                                    </div>
+
+                                    <!-- Roundoff Amount -->
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Additional
+                                            Discount</label>
+                                        <input type="number" [(ngModel)]="Quotation_Master_.Roundoff_Amt"
+                                            id="Quotation_Master_.Roundoff_Amt" name="Quotation_Master_.Roundoff_Amt"
+                                            (ngModelChange)="Final_Amounts()"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+
+                                    <!-- NET Amount -->
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">NET
+                                            Amount</label>
+                                        <input type="text" [ngModel]="Quotation_Master_.NetTotal | number:'1.3-3'"
+                                            id="Quotation_Master_.NetTotal" name="Quotation_Master_.NetTotal"
+                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12" style="display: flex;justify-content: flex-end;">
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-8">
+                                    <label class=" col-md-2 label-to-crect-all-names-to-div-tre-prt-sles">In
+                                        words</label>
+                                    <input type="text"
+                                        style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important; height: 36px;"
+                                        class="col-md-10 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                        [(ngModel)]="Quotation_Master_.Amount_In_Words" id="Quotation_Master_.Delivery"
+                                        name="Quotation_Master_.Amount_In_Words">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <!-- <button mat-raised-button type="button" id="Tab_Edit" (click)="Edit_Button_Click()" class="btn btn-danger pull-right">Edit</button> -->
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print"
+                                    (click)="Close_Click();">Close</button>
+                                <button mat-raised-button type="button" id="Save_Button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print"
+                                    [hidden]="Sales_Master_Save==false" (click)="Save_Quotation(0)">Save</button>
+                                <button mat-raised-button type="button" [hidden]="Sales_Print"
+                                    class="btn btn-danger pull-right no-print" (click)="Print_Click()">
+                                    <i class="fa fa-print" aria-hidden="true"></i></button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    (click)="printAcknowledgment()">ACKNOWLEDGEMENT</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    (click)="newQuotation()">New</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    (click)="duplicate()">Duplicate</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    (click)="PackingList_Click()">Packing List</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    (click)="PO_Click()">PO</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    (click)="DO_Click()">DO</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    [disabled]="!HasPurchaseOrder"
+                                    (click)="Invoice_Click()">Invoice</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    (click)="Proforma_Click(SalesQuotationMaster_Id_Edit)">Proforma</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    (click)="Purchase_Pending_Click()">PO Pending</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    (click)="Delivery_Pending_Click()">Delivery Pending</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    [disabled]="!HasPurchaseOrder"
+                                    (click)="Invoice_Pending_Click()">Invoice Pending</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    (click)="Proforma_Pending_Click()">Proforma Pending</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
+                                    (click)="PackingList_Pending_Click()">Packing List Pending</button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid mt-1" *ngIf="proformaListView" #bottomDiv>
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #f1f1f1;">
+                        <div class="card-body" style="overflow: scroll; height: 40em;">
+                            <div class=" mt-1">
+                                <h4 style="font-weight: bold;">Proforma List</h4>
+                            </div>
+                            <div class=" mt-1">
+                                <div class=" table-responsive">
+                                    <table class="table table-hover table-for-sale-search-section-diary">
+                                        <thead class="bg-col-stock-add-diary">
+                                            <th style="text-align: center;">No </th>
+                                            <th style="text-align: center;">Proforma Date</th>
+                                            <th style="text-align: center;">Proforma Amount</th>
+                                            <th></th>
+
+
+                                        </thead>
+                                        <tbody class="bk_tb_bg"
+                                            *ngFor="let item of performainvoice_Data; let i = index">
+                                            <td style="text-align: center;">{{i+1}}</td>
+                                            <td style="text-align: center;">{{item["FormattedEntryDate"]}}</td>
+                                            <td style="text-align: center;">{{item["NetTotal"]}}</td>
+                                            <td>
+                                                <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                    [hidden]="Sales_Master_Edit==false"
+                                                    aria-describedby="cdk-describedby-message-0" cdk-describedby-host=""
+                                                    class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                    mat-raised-button="" mattooltip="Edit Task"
+                                                    ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                    type="button"><span class="mat-button-wrapper"><span
+                                                            _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                            <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                class="material-icons"
+                                                                (click)="Edit_Quotation_Proforma(item.PerformaInvoiceMaster_Id,i)">edit</i></span>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
+                                                            matripple="" ng-reflect-centered="false"
+                                                            ng-reflect-disabled="false"
+                                                            ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                                        </div>
+                                                    </span>
+                                                    <div class="mat-button-ripple mat-ripple" matripple=""
+                                                        ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                        ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </td>
+
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12">
+                            <button mat-raised-button type="button"
+                                class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                (click)="makeProforma()">Make Proforma</button>
+                            <!-- <button mat-raised-button type="button" class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="proformaListView=false;">Close</button> -->
+                            <button mat-raised-button type="button"
+                                class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                (click)="closeproformaListView()">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid mt-1" *ngIf="invoiceListView" #bottomDiv1>
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #f1f1f1;">
+                        <div class="card-body" style="overflow: scroll; height: 40em">
+                            <div class=" mt-1">
+                                <h4 style="font-weight: bold;">Invoice List</h4>
+                            </div>
+                            <div class=" mt-1">
+                                <div class=" table-responsive">
+                                    <table class="table table-hover table-for-sale-search-section-diary">
+                                        <thead class="bg-col-stock-add-diary">
+                                            <th style="text-align: center;">No </th>
+                                            <th style="text-align: center;">Invoice Date</th>
+                                            <th style="text-align: center;">Invoice Amount</th>
+
+
+                                        </thead>
+                                        <tbody class="bk_tb_bg" *ngFor="let item of Sales_Master_Data; let i = index">
+                                            <td style="text-align: center;">{{i+1}}</td>
+                                            <td style="text-align: center;">{{item["FormattedEntryDate"]}}</td>
+                                            <td style="text-align: center;">{{item["NetTotal"]}}</td>
+                                            <td>
+                                                <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                    [hidden]="Sales_Master_Edit==false"
+                                                    aria-describedby="cdk-describedby-message-0" cdk-describedby-host=""
+                                                    class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                    mat-raised-button="" mattooltip="Edit Task"
+                                                    ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                    type="button"><span class="mat-button-wrapper"><span
+                                                            _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                            <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                class="material-icons"
+                                                                (click)="Edit_Quotation_SalesMaster(item.Sales_Master_Id,i)">edit</i></span>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
+                                                            matripple="" ng-reflect-centered="false"
+                                                            ng-reflect-disabled="false"
+                                                            ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                                        </div>
+                                                    </span>
+                                                    <div class="mat-button-ripple mat-ripple" matripple=""
+                                                        ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                        ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </td>
+
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12">
+                            <button mat-raised-button type="button"
+                                class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                (click)="makeInvoice()">Make Invoice</button>
+                            <!-- <button mat-raised-button type="button" class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="invoiceListView=false;">Close</button> -->
+                            <button mat-raised-button type="button"
+                                class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                (click)="closeInvoiceListView()">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid mt-1" *ngIf="doListView" #bottomDiv2>
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #f1f1f1;">
+                        <div class="card-body" style="overflow: scroll; height: 40em">
+                            <div class=" mt-1">
+                                <h4 style="font-weight: bold;">Delivery Order List</h4>
+                            </div>
+                            <div class=" mt-1">
+                                <div class=" table-responsive">
+                                    <table class="table table-hover table-for-sale-search-section-diary">
+                                        <thead class="bg-col-stock-add-diary">
+                                            <th style="text-align: center;">No </th>
+                                            <th style="text-align: center;">Delivery Order Date</th>
+                                            <th style="text-align: center;">Delivery Order Amount</th>
+                                            <th></th>
+
+
+                                        </thead>
+                                        <tbody class="bk_tb_bg" *ngFor="let item of DO_Data; let i = index">
+                                            <td style="text-align: center;">{{i+1}}</td>
+                                            <td style="text-align: center;">{{item["FormattedEntryDate"]}}</td>
+                                            <td style="text-align: center;">{{item["NetTotal"]}}</td>
+                                            <td>
+                                                <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                    [hidden]="Sales_Master_Edit==false"
+                                                    aria-describedby="cdk-describedby-message-0" cdk-describedby-host=""
+                                                    class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                    mat-raised-button="" mattooltip="Edit Task"
+                                                    ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                    type="button"><span class="mat-button-wrapper"><span
+                                                            _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                            <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                class="material-icons"
+                                                                (click)="Edit_Quotation_DeliveryOrder(item.DeliveryOrderMaster_Id,i)">edit</i></span>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
+                                                            matripple="" ng-reflect-centered="false"
+                                                            ng-reflect-disabled="false"
+                                                            ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                                        </div>
+                                                    </span>
+                                                    <div class="mat-button-ripple mat-ripple" matripple=""
+                                                        ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                        ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </td>
+
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12">
+                            <button mat-raised-button type="button"
+                                class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="makeDO()">Make
+                                Delivery Order</button>
+                            <!-- <button mat-raised-button type="button" class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="doListView=false;">Close</button> -->
+                            <button mat-raised-button type="button"
+                                class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                (click)="closeDoListView()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid mt-1" *ngIf="poListView" #bottomDiv3>
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #f1f1f1;">
+                        <div class="card-body" style="overflow: scroll; height: 40em">
+                            <div class=" mt-1">
+                                <h4 style="font-weight: bold;">Purchase Order List</h4>
+                            </div>
+                            <div class=" mt-1">
+                                <div class=" table-responsive">
+                                    <table class="table table-hover table-for-sale-search-section-diary">
+                                        <thead class="bg-col-stock-add-diary">
+                                            <th style="text-align: center;">No </th>
+                                            <th style="text-align: center;">Purchase Order Date</th>
+                                            <th style="text-align: center;">Purchase Order Amount</th>
+
+
+                                        </thead>
+                                        <tbody class="bk_tb_bg"
+                                            *ngFor="let item of Purchase_Orderdetails_Data; let i = index">
+                                            <td style="text-align: center;">{{i+1}}</td>
+                                            <td style="text-align: center;">{{item["FormattedEntryDate"]}}</td>
+                                            <td style="text-align: center;">{{item["NetTotal"]}}</td>
+                                            <td>
+                                                <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                    [hidden]="Sales_Master_Edit==false"
+                                                    aria-describedby="cdk-describedby-message-0" cdk-describedby-host=""
+                                                    class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                    mat-raised-button="" mattooltip="Edit Task"
+                                                    ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                    type="button"><span class="mat-button-wrapper"><span
+                                                            _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                            <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                class="material-icons"
+                                                                (click)="Edit_Quotation_PurchaseOrder(item.PurchaseOrderMaster_Id,i)">edit</i></span>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
+                                                            matripple="" ng-reflect-centered="false"
+                                                            ng-reflect-disabled="false"
+                                                            ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                                        </div>
+                                                    </span>
+                                                    <div class="mat-button-ripple mat-ripple" matripple=""
+                                                        ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                        ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </td>
+
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12">
+                            <button mat-raised-button type="button"
+                                class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="makePO()">Make
+                                Purchase Order</button>
+                            <!-- <button mat-raised-button type="button" class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="poListView=false;">Close</button> -->
+                            <button mat-raised-button type="button"
+                                class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                (click)="closePoListView()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid mt-1" *ngIf="packingListView" #bottomDiv4>
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #f1f1f1;">
+                        <div class="card-body" style="overflow: scroll; height: 40em">
+                            <div class=" mt-1">
+                                <h4 style="font-weight: bold;">Packing List</h4>
+                            </div>
+                            <div class=" mt-1">
+                                <div class=" table-responsive">
+                                    <table class="table table-hover table-for-sale-search-section-diary">
+                                        <thead class="bg-col-stock-add-diary">
+                                            <th style="text-align: center;">No </th>
+                                            <th style="text-align: center;">Date</th>
+                                            <th style="text-align: center;">No of boxes</th>
+                                            <th></th>
+
+
+                                        </thead>
+                                        <tbody class="bk_tb_bg"
+                                            *ngFor="let item of packinglist_details_Data; let i = index">
+                                            <td style="text-align: center;">{{i+1}}</td>
+                                            <td style="text-align: center;">{{item["FormattedEntryDate"]}}</td>
+                                            <td style="text-align: center;">{{item["Total_No_Of_Boxes1"]}}</td>
+                                            <td>
+                                                <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                    [hidden]="Sales_Master_Edit==false"
+                                                    aria-describedby="cdk-describedby-message-0" cdk-describedby-host=""
+                                                    class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                    mat-raised-button="" mattooltip="Edit Task"
+                                                    ng-reflect-message="Edit Task" ng-reflect-position="above"
+                                                    type="button"><span class="mat-button-wrapper"><span
+                                                            _ngcontent-jry-c5="" class="mat-button-wrapper">
+                                                            <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
+                                                                class="material-icons"
+                                                                (click)="Edit_Quotation_PackingList(item.PackingList_Master_Id,i)">edit</i></span>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
+                                                            matripple="" ng-reflect-centered="false"
+                                                            ng-reflect-disabled="false"
+                                                            ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                        <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
+                                                        </div>
+                                                    </span>
+                                                    <div class="mat-button-ripple mat-ripple" matripple=""
+                                                        ng-reflect-centered="false" ng-reflect-disabled="false"
+                                                        ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </td>
+
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12">
+                            <button mat-raised-button type="button"
+                                class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                (click)="makePackingList()">Make Packing List</button>
+                            <!-- <button mat-raised-button type="button" class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="packingListView=false;">Close</button> -->
+                            <button mat-raised-button type="button"
+                                class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                (click)="closePackingListView()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid mt-1" *ngIf="performaPendingView" #bottomDiv5>
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #f1f1f1;">
+                        <div class="card-body" style="overflow: scroll; height: 40em">
+                            <div class=" mt-1">
+                                <h4 style="font-weight: bold;">Proforma Item Pending List</h4>
+                            </div>
+                            <div class=" mt-1">
+                                <div class=" table-responsive">
+                                    <table class="table table-hover table-for-sale-search-section-diary">
+                                        <thead class="bg-col-stock-add-diary">
+                                            <th style="text-align: center;">Item Code</th>
+                                            <th style="text-align: center;">Item Name</th>
+                                            <th style="text-align: center;">Group Name</th>
+                                            <th style="text-align: center;">Unit Price</th>
+                                            <th style="text-align: center;">Balance Quantity</th>
+
+                                        </thead>
+                                        <tbody class="bk_tb_bg" *ngFor="let item of performaPendingData; let i = index">
+
+                                            <td style="text-align: center;">{{item["ItemCode"]}}</td>
+                                            <td style="text-align: center;">{{item["ItemName"]}}</td>
+                                            <td style="text-align: center;">{{item["GroupName"]}}</td>
+                                            <td style="text-align: center;">{{item["UnitPrice"]}}</td>
+                                            <td style="text-align: center;">{{item["Quantity"]}}</td>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+
+                                <!-- <button mat-raised-button type="button" class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                (click)="performaPendingView=false;">Close</button> -->
+                                <button mat-raised-button type="button"
+                                    class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                    (click)="closePackingListView()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid mt-1" *ngIf="invoicePendingView" #bottomDiv6>
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #f1f1f1;">
+                        <div class="card-body" style="overflow: scroll; height: 40em">
+                            <div class=" mt-1">
+                                <h4 style="font-weight: bold;">Invoice Item Pending List</h4>
+                            </div>
+                            <div class=" mt-1">
+                                <div class=" table-responsive">
+                                    <table class="table table-hover table-for-sale-search-section-diary">
+                                        <thead class="bg-col-stock-add-diary">
+                                            <th style="text-align: center;">Item Code</th>
+                                            <th style="text-align: center;">Item Name</th>
+                                            <th style="text-align: center;">Group Name</th>
+                                            <th style="text-align: center;">Unit Price</th>
+                                            <th style="text-align: center;">Balance Quantity</th>
+
+                                        </thead>
+                                        <tbody class="bk_tb_bg" *ngFor="let item of invoicePendingData; let i = index">
+
+                                            <td style="text-align: center;">{{item["ItemCode"]}}</td>
+                                            <td style="text-align: center;">{{item["ItemName"]}}</td>
+                                            <td style="text-align: center;">{{item["GroupName"]}}</td>
+                                            <td style="text-align: center;">{{item["UnitPrice"]}}</td>
+                                            <td style="text-align: center;">{{item["Quantity"]}}</td>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+
+                                <!-- <button mat-raised-button type="button" class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr" 
+                                (click)="invoicePendingView=false;">Close</button> -->
+                                <button mat-raised-button type="button"
+                                    class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                    (click)="closeInvoicePendingView()">Close</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid mt-1" *ngIf="deliveryPendingView" #bottomDiv7>
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #f1f1f1;">
+                        <div class="card-body" style="overflow: scroll; height: 40em">
+                            <div class=" mt-1">
+                                <h4 style="font-weight: bold;">Delivery Item Pending List</h4>
+                            </div>
+                            <div class=" mt-1">
+                                <div class=" table-responsive">
+                                    <table class="table table-hover table-for-sale-search-section-diary">
+                                        <thead class="bg-col-stock-add-diary">
+                                            <th style="text-align: center;">Item Code</th>
+                                            <th style="text-align: center;">Item Name</th>
+                                            <th style="text-align: center;">Group Name</th>
+                                            <th style="text-align: center;">Unit Price</th>
+                                            <th style="text-align: center;">Balance Quantity</th>
+
+                                        </thead>
+                                        <tbody class="bk_tb_bg" *ngFor="let item of deliveryPendingData; let i = index">
+
+                                            <td style="text-align: center;">{{item["ItemCode"]}}</td>
+                                            <td style="text-align: center;">{{item["ItemName"]}}</td>
+                                            <td style="text-align: center;">{{item["GroupName"]}}</td>
+                                            <td style="text-align: center;">{{item["UnitPrice"]}}</td>
+                                            <td style="text-align: center;">{{item["Quantity"]}}</td>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+
+                                <!-- <button mat-raised-button type="button" class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr" 
+                                (click)="deliveryPendingView=false;">Close</button> -->
+                                <button mat-raised-button type="button"
+                                    class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                    (click)="closeDeliveryPendingView()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid mt-1" *ngIf="purchasePendingView" #bottomDiv8>
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #f1f1f1;">
+                        <div class="card-body" style="overflow: scroll; height: 40em">
+                            <div class=" mt-1">
+                                <h4 style="font-weight: bold;">Purchase Order Item Pending List</h4>
+                            </div>
+                            <div class=" mt-1">
+                                <div class=" table-responsive">
+                                    <table class="table table-hover table-for-sale-search-section-diary">
+                                        <thead class="bg-col-stock-add-diary">
+                                            <th style="text-align: center;">Item Code</th>
+                                            <th style="text-align: center;">Item Name</th>
+                                            <th style="text-align: center;">Group Name</th>
+                                            <th style="text-align: center;">Unit Price</th>
+                                            <th style="text-align: center;">Balance Quantity</th>
+
+                                        </thead>
+                                        <tbody class="bk_tb_bg" *ngFor="let item of purchasePendingData; let i = index">
+
+                                            <td style="text-align: center;">{{item["ItemCode"]}}</td>
+                                            <td style="text-align: center;">{{item["ItemName"]}}</td>
+                                            <td style="text-align: center;">{{item["GroupName"]}}</td>
+                                            <td style="text-align: center;">{{item["UnitPrice"] }}</td>
+                                            <td style="text-align: center;">{{item["Quantity"]}}</td>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+
+                                <!-- <button mat-raised-button type="button" class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr" 
+                                (click)="purchasePendingView=false;">Close</button> -->
+                                <button mat-raised-button type="button"
+                                    class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                    (click)="closePurchasePendingView()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid mt-1" *ngIf="packingListPendingView" #bottomDiv7>
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #f1f1f1;">
+                        <div class="card-body" style="overflow: scroll; height: 40em">
+                            <div class=" mt-1">
+                                <h4 style="font-weight: bold;">Packing List Item Pending List</h4>
+                            </div>
+                            <div class=" mt-1">
+                                <div class=" table-responsive">
+                                    <table class="table table-hover table-for-sale-search-section-diary">
+                                        <thead class="bg-col-stock-add-diary">
+                                            <th style="text-align: center;">Item Code</th>
+                                            <th style="text-align: center;">Item Name</th>
+                                            <th style="text-align: center;">Group Name</th>
+                                            <!-- <th>Unit Price</th> -->
+                                            <th style="text-align: center;">Balance Quantity</th>
+
+                                        </thead>
+                                        <tbody class="bk_tb_bg"
+                                            *ngFor="let item of packinglistPendingData; let i = index">
+
+                                            <td style="text-align: center;">{{item["ItemCode"]}}</td>
+                                            <td style="text-align: center;">{{item["ItemName"]}}</td>
+                                            <td style="text-align: center;">{{item["GroupName"]}}</td>
+                                            <!-- <td>{{item["UnitPrice"]}}</td> -->
+                                            <td style="text-align: center;">{{item["Quantity"]}}</td>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+
+                                <!-- <button mat-raised-button type="button" class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr" 
+                                (click)="packingListPendingView=false;">Close</button> -->
+                                <button mat-raised-button type="button"
+                                    class="btn pull-left btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                    (click)="closePackingListPendingView()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="Print_Div" style="display:none;">
+    <div class="container"
+        style="margin:0 auto;margin-top:-25px;padding:5px;width:840px;height:auto;background-color:#fff;">
+        <table style=" border: none;border-collapse:collapse;width:840px;">
+            <caption>
+                <h4 style="text-align: center;font-size:22px;margin-bottom: 1px;">{{Company_.Company_Name}}</h4>
+                {{Company_.Address1}},{{Company_.Address2}}<br>
+                {{Company_.Address3}},{{Company_.Address4}}<br>
+                Contact: {{Company_.Mobile_Number}},{{Company_.EMail}}<br>
+                <b>IN/UIN:{{Company_.NO}}</b><br>
+                Tax Invoice
+            </caption>
+            <tr style="margin-bottom: 1px;">
+                <td colspan="3" rowspan="3">
+                    <span style="font-size:19px;font-weight: bold;">{{Quotation_Master_.Customer_Name}}</span><br>
+                    {{Quotation_Master_.Address1}} {{Quotation_Master_.Address2}}<br>
+                    {{Quotation_Master_.Address3}} {{Quotation_Master_.Address4}}-{{Quotation_Master_.PinCode}}<br>
+                    <b>IN/UIN:{{Quotation_Master_.No}}</b>
+                </td>
+                <td colspan="4" rowspan="3" style="text-align: center;">
+                    Delivery Address<br>
+                    {{Quotation_Master_.Delivery_Address1}} {{Quotation_Master_.Delivery_Address2}}<br>
+                    {{Quotation_Master_.Delivery_Address3}} {{Quotation_Master_.Delivery_Address4}}
+                </td>
+                <td rowspan="3">
+                    Invoice No<br>
+                    Dated<br>
+                    Vehicle No<br>
+                    Driver<br>
+                    Mobile
+                </td>
+                <td colspan="2" rowspan="3" style="text-align: right;">
+                    {{Quotation_Master_.QuotationNo}}<br>
+                    {{Quotation_Master_.EntryDate }}<br>
+                    {{Quotation_Master_.Vehicle_No}}<br>
+                    {{Quotation_Master_.Driver_Name}}<br>
+                    {{Quotation_Master_.Mobile_No}}
+                </td>
+            </tr>
+            <tbody>
+                <tr style="padding:5px;border:1px solid #333;">
+                    <td style="padding:5px;border:1px solid #333;width:25px;">Sl No</td>
+                    <td style="padding:5px;border:1px solid #333;width:350px;">Particulars</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">HSN/SAC</td>
+                    <td style="padding:5px;border:1px solid #333;width:100px;"> %</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">Rate</td>
+                    <td style="padding:5px;border:1px solid #333;width:120px;">Quantity</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">Net Value</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">C</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">S</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">Total</td>
+                </tr>
+                <tr *ngFor="let Quotation_Details_ of Quotation_Details_Data; let i =index">
+                    <td style="padding:5px;border-left:1px solid #333;border-right:1px solid #333;width:25px;">{{i+1}}
+                    </td>
+                    <td style="padding:5px;border-right:1px solid #333;width:350px;">
+                        {{Quotation_Details_.ItemName}}<br>{{Quotation_Details_.Description}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Details_.HSNCODE}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:100px;text-align: center;">
+                        {{Quotation_Details_.SaleTax}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
+                        {{Quotation_Details_.SaleRate}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:120px;text-align: center;">
+                        {{Quotation_Details_.Quantity}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Details_.NetValue}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
+                        {{Quotation_Details_.CAMT}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
+                        {{Quotation_Details_.SAMT}}</td>
+                    <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Details_.TotalAmount}}</td>
+                </tr>
+                <tr style="padding:5px;border:1px solid #333;">
+                    <td colspan="6" style="padding:5px;border:1px solid #333;width:100px;">Total</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">{{Quotation_Master_.NetTotal}}</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">{{Quotation_Master_.TotalC}}</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">{{Quotation_Master_.ToalS}}</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">{{Quotation_Master_.TotalAmount}}</td>
+                </tr>
+
+                <tr>
+                    <td style="border-left:1px solid #333;"> </td>
+                    <td style="padding:5px;border:none;">
+                        Bank Details<br>
+                        Bank Name <br>
+                        A/c No <br>
+                        Branch<br>
+                        IFS Code
+                    </td>
+                    <td colspan="3" style="padding:5;border-right:1px solid #333;text-align: left;margin-left: 25px;">
+                        <br>
+                        {{Bank_.Client_Accounts_Name}}<br>
+                        {{Bank_.Client_Accounts_No}}<br>
+                        {{Bank_.Address1}}<br>
+                        {{Bank_.Address2}}
+                    </td>
+                    <td colspan="2" style="border-left:1px solid #333;"></td>
+                    <td colspan="3" style="border-right:1px solid #333;">
+                        Transportation Charge <span
+                            style="margin-left: 25px;">{{Quotation_Master_.Transportation_Total}}</span><br>
+                        Handling Charge <span style="margin-left: 60px;">{{Quotation_Master_.Handling_Total}}</span><br>
+                        Round Off <span style="margin-left: 95px;">{{Quotation_Master_.RoundOff}}</span><br>
+                        Total Amount <span style="margin-left: 80px;">{{Quotation_Master_.GrandTotal}}</span>
+                    </td>
+                </tr>
+                <tr style="padding:5px;border:1px solid #333;">
+                    <th colspan="10" style="text-align: left;padding:5px;">
+                        <!-- Amount Chargeable(in words):{{Amount_In_Words}} -->
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">HSN/SAC </td>
+                    <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">Taxable value </td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">C%</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">C</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">S%</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">S</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">%</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;"></td>
+                </tr>
+                <tr *ngFor="let Sales_Details1_ of Quotation_Details_Data1; let n =index">
+                    <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">
+                        {{Sales_Details1_.HSNCODE}}</td>
+                    <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">
+                        {{Sales_Details1_.NetValue}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.C}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.CAMT}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.S}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.SAMT}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.SaleTax}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.TaxAmount}}</td>
+                </tr>
+                <tr *ngFor="let Quotation_Master_1 of Quotation_Master_Data; let n =index">
+                    <td colspan="2" style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Master_1.HSNCODE}}</td>
+                    <td colspan="2" style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Master_1.NetValue}}</td>
+                    <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">{{Quotation_Master_1.C}}
+                    </td>
+                    <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Master_1.CAMT}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Quotation_Master_1.S}}</td>
+                    <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Master_1.SAMT}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Quotation_Master_1.SaleTax}}</td>
+                    <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
+                        {{Quotation_Master_1.TaxAmount}}</td>
+                </tr>
+                <tr class="border" style="padding:12px;border:1px solid #333;">
+                    <th colspan="6" class="top-none" style="padding:5;border:1px solid #333;width:185px;">
+                        <span
+                            style="text-decoration: underline;padding:5;border:1px solid #333;width:185px;">Declaration</span><br>
+                        We declare that this invoice shows the actual price of the Goods described and all particulars
+                        are true and correct.
+                    </th>
+                    <td colspan="4" class="right" style="padding:5;border:1px solid #333;">
+                        For {{Company_.Company_Name}}<br><br><br><br> Authorised Signatory
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="border" style="padding:5px;border:1px solid #333;">
+                    <th colspan="10" class="border" style="padding:5px;border:1px solid #333;width:185px;">This is a
+                        computer generated invoice</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<div id="Print_Div1" class="print-container" style="display: none;">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">NEOTR<span>⚡</span>NICS</div>
+        <div class="company-details">
+            <b>{{Print_Company_?.Company_Name || 'NEOTRONICS'}}</b><br>
+            {{Print_Company_?.Address1}}<br>
+            {{Print_Company_?.Address2}}, {{Print_Company_?.Address3}}<br>
+            Phone: {{Print_Company_?.Mobile}} {{Print_Company_?.Phone}}<br>
+            {{Print_Company_?.Email}}<br>
+            GSTIN: {{Print_Company_?.GSTNo}}
+        </div>
+    </div>
+
+    <h2 class="print-title">Quotation</h2>
+
+    <!-- CUSTOMER + DETAILS -->
+    <div class="section">
+        <div>
+            <b>Estimate For</b>
+            {{Customer_?.Client_Accounts_Name}}<br>
+            {{Customer_?.Address1}}<br>
+            {{Customer_?.Address2}}<br>
+            {{Customer_?.Address3}}<br>
+            Ph: {{Customer_?.Mobile}}
+        </div>
+        <div class="right" style="text-align: right;">
+            <b>Estimate Details</b>
+            Estimate No: {{Quotation_Master_?.QuotationNo}}<br>
+            Date: {{Quotation_Master_?.PrintDate}}
+        </div>
+    </div>
+
+    <!-- ITEMS TABLE -->
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th style="width: 40px;">#</th>
+                <th>Item Name</th>
+                <th style="width: 70px;">Quantity</th>
+                <th style="width: 60px;">Unit</th>
+                <th style="width: 100px;">Price / Unit</th>
+                <th style="width: 120px;">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of Quotation_Details_Data; let i = index">
+                <td class="center">{{i + 1}}</td>
+                <td>
+                    <div class="bold">{{item.ItemName}}</div>
+                    <span class="item-description" *ngIf="item.Description">{{item.Description}}</span>
+                </td>
+                <td class="center">{{item.Quantity}}</td>
+                <td class="center">{{item.UnitName}}</td>
+                <td class="right">₹ {{item.UnitPrice | number:'1.2-2'}}</td>
+                <td class="right">₹ {{item.Amount | number:'1.2-2'}}</td>
+            </tr>
+            <tr class="bold">
+                <td></td>
+                <td class="right">Total</td>
+                <td class="center">
+                    {{Quotation_Master_?.Total_Quantity}}
+                </td>
+                <td></td>
+                <td></td>
+                <td class="right">₹ {{Quotation_Master_?.TotalAmount | number:'1.2-2'}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- FOOTER SECTION -->
+    <div class="section" style="margin-top: 20px;">
+        <div style="width: 60%;">
+            <b>Estimate Amount In Words</b>
+            {{Quotation_Master_?.Amount_In_Words}}
+        </div>
+        <div style="width: 35%;">
+            <div class="summary-box">
+                <div class="summary-line">
+                    <span>Sub Total</span>
+                    <span>₹ {{Quotation_Master_?.TotalAmount | number:'1.2-2'}}</span>
+                </div>
+                <div class="summary-line" *ngIf="Quotation_Master_?.TotalDiscount > 0">
+                    <span>Discount</span>
+                    <span>- ₹ {{Quotation_Master_?.TotalDiscount | number:'1.2-2'}}</span>
+                </div>
+                <div class="summary-line" *ngIf="Quotation_Master_?.charge1_Amount > 0">
+                    <span>{{Quotation_Master_?.Charge1 || 'Additional Charges'}}</span>
+                    <span>₹ {{Quotation_Master_?.charge1_Amount | number:'1.2-2'}}</span>
+                </div>
+                <div class="summary-line" *ngIf="Quotation_Master_?.VAT_Amount > 0">
+                    <span>VAT ({{Quotation_Master_?.VAT_Percentage}}%)</span>
+                    <span>₹ {{Quotation_Master_?.VAT_Amount | number:'1.2-2'}}</span>
+                </div>
+                <div class="summary-line total">
+                    <span>Total</span>
+                    <span>₹ {{Quotation_Master_?.NetTotal | number:'1.2-2'}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-grid">
+        <!-- TERMS -->
+        <div class="terms-section">
+            <b>Terms and Conditions</b>
+            <ul class="terms-list">
+                <li *ngIf="Quotation_Master_?.VAT_Percentage > 0">GST: {{Quotation_Master_?.VAT_Percentage}}% Extra</li>
+                <li *ngIf="Quotation_Master_?.Brand">Brand: {{Quotation_Master_?.Brand}}</li>
+                <li *ngIf="Quotation_Master_?.PriceBasis">Price Basis: {{Quotation_Master_?.PriceBasis}}</li>
+                <li *ngIf="Quotation_Master_?.Delivery">Delivery: {{Quotation_Master_?.Delivery}}</li>
+                <li *ngIf="Payment_Term?.Payment_Term_Description && Payment_Term?.Payment_Term_Description !== 'Select'">
+                    Payment: {{Payment_Term?.Payment_Term_Description}}
+                </li>
+                <li *ngIf="Quotation_Master_?.Validity">Warranty: {{Quotation_Master_?.Validity}}</li>
+                <li *ngIf="Quotation_Master_?.Description1">Note: {{Quotation_Master_?.Description1}}</li>
+            </ul>
+        </div>
+
+        <!-- BANK -->
+        <div class="bank-section">
+            <b>Bank Details</b>
+            <div class="bank-details">
+                <p><b>Bank Name:</b> {{Bank_?.Client_Accounts_Name}}</p>
+                <p><b>Account No:</b> {{Bank_?.Client_Accounts_No}}</p>
+                <p><b>IFSC Code:</b> {{Bank_?.Address3}}</p>
+                <p *ngIf="Bank_?.Address1"><b>Branch:</b> {{Bank_?.Address1}}</p>
+                <p><b>Account Holder:</b> {{Print_Company_?.Company_Name || 'NEOTRONICS'}}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIGNATURE -->
+    <div class="signature-area">
+        For: {{Print_Company_?.Company_Name || 'NEOTRONICS'}}<br><br>
+        <div class="signature-box">
+            <img *ngIf="Print_Company_?.Company_Sign" [src]="Print_Company_?.Company_Sign" alt="Signature">
+        </div>
+        <b>Authorized Signatory</b>
+    </div>
+</div>
+
+<div id="Print_Div2" style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 10px; border: 1px solid #ccc;font-size: 10px; display:none;">
+    <ng-container *ngIf="printLetterhead; else placeholderLogo">
+        <img src="/assets/img/printlogo.png" alt="Perfect Hills Logo" style="height: 100px; width: 100%;" />
+    </ng-container>
+    <ng-template #placeholderLogo>
+        <div style="height: 100px; width: 100%;"></div>
+    </ng-template>
+    <h1 style="text-align: center; margin-bottom: 5px; margin-top: -5px; ">
+        <span style="border-bottom: 2px solid black;">ACKNOWLEDGEMENT</span>
+    </h1>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; 
+          width: 100%;">
+        <div style="width:60%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">PB 1554 , PC
+                113 , GHALA,</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Date:</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p
+                style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
+                {{ Quotation_Master_.PrintDate }}</p>
+        </div>
+    </div>
+
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+        <div style="width: 60%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">MUSCAT
+                SULTANATE OF OMAN</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Quotation
+                Number: </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p
+                style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
+                {{ Quotation_Master_.QuotationNo }}</p>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; 
+          margin-bottom: 0px; width: 100%;">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Phone</p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
+                +968 22820150</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Currency:</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p
+                style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
+                <span *ngIf="currency.CurrencyDetails_Id > 0">{{currency.CurrecnyName}}</span>
+            </p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Gsm: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">97416789,
+                99751621</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="Quotation_Master_.POnumber"> Po Number :</span>
+                </span>
+            </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px; ">
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="Quotation_Master_.POnumber">{{ Quotation_Master_.POnumber }}</span>
+                </span>
+            </p>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Email: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
+                sales&#64;perfecthills.com</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="Quotation_Master_.KindAttend"> Attention :</span>
+                </span>
+            </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="Quotation_Master_.KindAttend">{{ Quotation_Master_.KindAttend }}</span>
+                </span>
+            </p>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Website: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
+                www.perfecthills.com</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="Quotation_Master_.AttendEmployee"> Employee :</span>
+                </span>
+            </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="Quotation_Master_.AttendEmployee">{{ Quotation_Master_.AttendEmployee }}</span>
+                </span>
+            </p>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">CR Number:
+            </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">1150753</p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="Quotation_Master_.Description2"> Reference :</span>
+                </span>
+            </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                <span style="font-weight: normal;font-family: arial, sans-serif;">
+                    <span *ngIf="Quotation_Master_.Description2">{{ Quotation_Master_.Description2 }}</span>
+                </span>
+            </p>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+        <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">VATIN: </p>
+        </div>
+        <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">OM1100004897
+            </p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;"></p>
+        </div>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;"></p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 1px;">
+        <div style="width: 65%; display: flex; flex-direction: column; ">
+            <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
+              margin-bottom: 3px !important;font-family: arial, sans-serif;">Customer Address</h5>
+            <p style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{
+                Quotation_Master_.Customer_Name }}</p>
+            <p *ngIf="Address1"
+                style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Address1
+                }}</p>
+            <p *ngIf="Address2"
+                style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Address2
+                }}</p>
+            <p *ngIf="Address3"
+                style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Address3
+                }}</p>
+            <p *ngIf="Address4"
+                style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Address4
+                }}</p>
+            <p *ngIf="Vatin"
+                style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">VATIN {{
+                Vatin }}</p>
+            <p style="margin-top: 0px !important;font-family: arial, sans-serif;">
+                <span
+                    style="text-decoration: underline; font-weight: bold;font-family: arial, sans-serif;">Attention:</span>
+                {{ Quotation_Master_.KindAttend }}
+            </p>
+        </div>
+        <div style="width: 35%; display: flex; flex-direction: column; gap: 3px; text-align: end;">
+            <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
+              margin-bottom: 3px !important;font-family: arial, sans-serif;">Delivery Address</h5>
+            <p *ngIf="Quotation_Master_.Delivery_Address1"
+                style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
+                Quotation_Master_.Delivery_Address1 }}</p>
+            <p *ngIf="Quotation_Master_.Delivery_Address2"
+                style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
+                Quotation_Master_.Delivery_Address2 }}</p>
+            <p *ngIf="Quotation_Master_.Delivery_Address3"
+                style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
+                Quotation_Master_.Delivery_Address3 }}</p>
+            <p *ngIf="Quotation_Master_.Delivery_Address4"
+                style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
+                Quotation_Master_.Delivery_Address4 }}</p>
+
+        </div>
+    </div>
+
+
+
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 1px; margin-left:auto; margin-right:auto;">
+        <thead>
+            <tr>
+                <th
+                    style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">
+                    SI</th>
+                <th
+                    style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">
+                    Part number</th>
+                <th
+                    style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">
+                    Item & Description</th>
+                <th
+                    style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">
+                    UOM</th>
+                <th
+                    style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">
+                    QTY</th>
+                <th
+                    style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">
+                    Rate</th>
+                <th
+                    style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">
+                    Discount</th>
+                <th
+                    style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">
+                    Unit Discount</th>
+                <th
+                    style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">
+                    Total</th>
+                <th
+                    style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif; ">
+                    Availability</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr style=" page-break-inside: avoid;" *ngFor="let item of Quotation_Details_Data; let i = index">
+                <td
+                    style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px; height: auto;font-family:arial, sans-serif; ">
+                    {{ i + 1 }}</td>
+                <td
+                    style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;  height: auto;font-family:arial, sans-serif; ">
+                    {{ item.Item_Code }}</td>
+                <td
+                    style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;  height: auto;font-family:arial, sans-serif; ">
+                    {{ item.ItemName }}</td>
+                <td
+                    style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;  height: auto;font-family:arial, sans-serif; ">
+                    {{ item.UnitName }}</td>
+                <td
+                    style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;  height: auto;font-family:arial, sans-serif; ">
+                    {{ item.Quantity}}</td>
+                <td
+                    style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;  height: auto;font-family:arial, sans-serif; ">
+                    {{ item.UnitPrice | number:'1.3-3' }}</td>
+                <td
+                    style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;  height: auto;font-family:arial, sans-serif; ">
+                    {{ item.Discount | number:'1.3-3' }}</td>
+                <td
+                    style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;  height: auto;font-family:arial, sans-serif; ">
+                    {{ item.Unit_Discount | number:'1.3-3' }}</td>
+                <td
+                    style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;  height: auto;font-family:arial, sans-serif; ">
+                    {{ item.NetValue | number:'1.3-3' }}</td>
+                <td
+                    style="padding: 1px; text-align: left; font-size: 12px; border: 1px solid #ccc  !important;white-space: nowrap;  height: auto;font-family:arial, sans-serif; ">
+                    {{ item.Availability }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+    <table>
+        <tr *ngFor="let i of blankItems">
+            <td style="border: none; height: 1px !important; padding: 0 !important;"></td>
+        </tr>
+    </table>
+    <!-- (Quotation_Details_Data.length > 3 ? 0:
+      (Quotation_Details_Data.length < 2 ? 40 : 10)
+    ) -->
+
+    <table style="font-size: 12px !important; page-break-inside: avoid;width:100% !important" [style.margin-top.px]="breakPage ?
+ 
+                                       (Quotation_Details_Data.length < 33 ? (marginTopItemNameCount ? 145 : 70) : 
+                                  (Quotation_Details_Data.length < 55 ? (marginTopItemNameCount ? 215 : 150) : 
+                                      (Quotation_Details_Data.length < 75 ? 305 : 365)
+                                  )
+                              )                                
+                                  : 
+                                
+                                  (Quotation_Details_Data.length > 15 ? (marginTopItemNameCount ? -30 : -100) :
+                                  (Quotation_Details_Data.length > 11 ? (marginTopItemNameCount ? -10 : -80) :
+                                  (Quotation_Details_Data.length > 4 ? (marginTopItemNameCount ? 50 : -20) :
+                                     (Quotation_Details_Data.length > 3 ? (marginTopItemNameCount ? 90 : 70) :
+                                     (Quotation_Details_Data.length < 2 ? (marginTopItemNameCount ? 100 : 80) : (marginTopItemNameCount ? 100 : 80) 
+                                     )
+                                     ))
+                                 ))
+                                  ">
+        <tr>
+            <td>
+                <b
+                    style=" text-decoration: underline;line-height: 27px;font-family: arial, sans-serif;font-size: 12px;">
+                    Terms & Conditions
+                </b>
+            </td>
+        </tr>
+
+        <!-- <tr>
+          <td><b></b></td>
+      </tr> -->
+
+        <tr>
+            <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;"><b>Brand:</b>{{
+                Quotation_Master_.Brand }}</td>
+            <td style="width:35%;font-family: arial, sans-serif;font-size: 12px;">
+                <b>Sub Total</b>
+            </td>
+            <td
+                style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
+                {{ Quotation_Master_.TotalAmount | number:'1.3-3'}}
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;"><b>Price Basis </b> {{
+                Quotation_Master_.PriceBasis }}</td>
+            <td style="width: 35%;">
+                <b><span *ngIf="Quotation_Master_.Charge1" style="font-family: arial, sans-serif;font-size: 12px;">{{
+                        Quotation_Master_.Charge1 }}</span>
+                    <span *ngIf="printAcknowledgeCharge1per"
+                        style="font-family: arial, sans-serif;font-size: 12px;">({{Quotation_Master_.Charge1per}})%:</span></b>
+            </td>
+            <td style="width:15%;padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;">
+                <span *ngIf="printAcknowledgeChargeAmount1;" style="font-family: arial, sans-serif;font-size: 12px;">{{
+                    Quotation_Master_.charge1_Amount | number:'1.3-3'}}</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;"><b>Delivery </b> {{
+                Quotation_Master_.Delivery }}</td>
+            <td style="width:35%;font-family: arial, sans-serif;">
+                <span *ngIf="Quotation_Master_.Charge2" style="font-family: arial, sans-serif;font-size: 12px;">{{
+                    Quotation_Master_.Charge2 }} :</span>
+            </td>
+            <td style="width:15%;padding-right:10px; text-align: right !important;font-family: arial, sans-serif;">
+                <span *ngIf="printAcknowledgeChargeAmount2;"
+                    style="font-family: arial, sans-serif;font-size: 12px;">{{Quotation_Master_.charge2_Amount |
+                    number:'1.3-3'}}</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 50%;font-family: arial, sans-serif;"><b>Validity </b> {{Quotation_Master_.Validity}}</td>
+            <td style="width:35%;font-family: arial, sans-serif;"><b>
+                    <span *ngIf="printAcknowledgeAdditional_Discount"
+                        style="font-family: arial, sans-serif;font-size: 12px;">
+                        Discount {{ Quotation_Master_.Discount_Description }}% :
+                    </span></b>
+            </td>
+            <td style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;">
+                <span *ngIf="printAcknowledgeAdditional_Discount"
+                    style="font-family: arial, sans-serif;font-size: 12px;">{{ Quotation_Master_.Additional_Discount |
+                    number:'1.3-3' }}</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;">
+                <b>Payment Term: </b> {{ Quotation_Master_.PaymentTermValue }}
+                <span *ngIf="Payment_Term.payment_Term_ID > 0" style="font-family: arial, sans-serif;font-size: 12px;">
+                    {{ Payment_Term.Payment_Term_Description}}</span>
+            </td>
+            <td style="width:35%;font-family: arial, sans-serif;font-size: 12px;">
+                <b><span *ngIf="printAcknowledgeTotalDiscount">Total Discount :</span></b>
+            </td>
+            <td style="width:15%; padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;">
+                <span *ngIf="printAcknowledgeTotalDiscount" style="font-family: arial, sans-serif;font-size: 12px;"> {{
+                    Quotation_Master_.TotalDiscount | number:'1.3-3' }} </span>
+            </td>
+        </tr>
+        <!--   
+       <tr>
+        <td style="width: 85%;">
+            <b>Payment Term: </b>  {{ Quotation_Master_.PaymentTermValue }} 
+            <span *ngIf="Payment_Term.payment_Term_ID > 0"> {{ Payment_Term.Payment_Term_Description}}</span>
+        </td>
+       <td style="width:31%;">
+            <b><span *ngIf="printAcknowledgeTotalDiscount">Total Discount :</span></b>
+        </td>
+        <td style="width:15%; padding-right: 10px; text-align: right !important;">
+            <b><span *ngIf="printAcknowledgeTotalDiscount"> {{ Quotation_Master_.TotalDiscount | number:'1.3-3' }} </span></b>
+        </td> 
+    </tr> -->
+        <tr>
+            <td style="width: 50%;"><b></b></td>
+            <td style="width: 35%;font-family: arial, sans-serif;font-size: 12px;"><b>Total</b>
+            </td>
+            <td
+                style="width:15%; padding-right: 10px; text-align:right !important;font-family: arial, sans-serif;font-size: 12px;">
+                {{ Total | number:'1.3-3'}}
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 50%;font-family: arial, sans-serif;"><b><span style="font-size: 12px;"> Notes </span></b>
+                <span style="font-size: 9px;">{{ Quotation_Master_.Description1 }}</span>
+            </td>
+            <td style="width: 35%;font-family: arial, sans-serif;font-size: 12px;">
+                <b><span *ngIf="Quotation_Master_.VAT_Percentage"> Vat {{ Quotation_Master_.VAT_Percentage }}% :
+                    </span></b>
+
+            </td>
+            <td
+                style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
+                <span *ngIf="printAcknowledgeVAT_Amount">{{ Quotation_Master_.VAT_Amount | number:'1.3-3' }}</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 50%;"><b></b> </td>
+            <td style="width:35%;font-family: arial, sans-serif;font-size: 12px;">
+                <b>Total Amount</b>
+            </td>
+            <td
+                style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
+                {{ Quotation_Master_.Total_Amount | number:'1.3-3' }}
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 50%;"><b></b> </td>
+            <td style="width:35%;font-family: arial, sans-serif;font-size: 12px;">
+                <b><span *ngIf="printAcknowledgeRoundoff_Amt">Additional Discount :</span></b>
+            </td>
+            <td
+                style="width:15%; padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
+                <span *ngIf="printAcknowledgeRoundoff_Amt"> {{ Quotation_Master_.Roundoff_Amt | number:'1.3-3' }}
+                </span>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 50%;"><b></b> </td>
+            <td style="width:35%;font-family: arial, sans-serif;font-size: 12px;">
+                <b>Net Amount </b>
+            </td>
+            <td
+                style="width:15%; padding-right: 10px; font-size: 12px; text-align:right !important;font-family: arial, sans-serif;">
+                {{ Quotation_Master_.NetTotal | number:'1.3-3' }}
+            </td>
+        </tr>
+
+        <tr>
+            <td style="font-size: 12px; font-weight: normal; color:grey;font-family: arial, sans-serif;">
+                <span>*</span>{{ Print_Company_.Note }}</td>
+        </tr>
+
+        <tr>
+            <td style="font-family: arial, sans-serif;font-size: 12px;"><b>Amount In Words </b> {{
+                Quotation_Master_.Amount_In_Words }}</td>
+        </tr>
+        <!-- <tr style="height:5px">
+          <td>
+          </td>
+      </tr> -->
+
+        <tr style="padding-top:50px;">
+            <td style="width: 75%;font-size: 12px;font-family: arial, sans-serif;"><b>Prepared By </b> {{
+                Quotation_Master_.PreparedBy }} </td>
+            <td
+                style="width:20%;white-space:nowrap; font-size: 12px;float: right;text-align: right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;margin-right: 40px; ">
+                <b>Authorised Signatory</b> </td>
+        </tr>
+    </table>
+    <!-- <table style="font-size: 12px !important; page-break-inside: avoid;width:100% !important;position:absolute;bottom: 0px !important;font-family: arial, sans-serif;" >
+      <tr>
+
+        <td style="width: 50%;position:absolute;bottom: 0px !important;font-family: arial, sans-serif;"><b>Prepared By </b> {{ Quotation_Master_.PreparedBy }}  </td>
+        <td colspan="2" style="width:50%; padding-right: 10px; text-align:right !important;position:sticky;bottom: 0px !important;font-family: arial, sans-serif;">
+            <b>Authorised Signatory</b>
+        </td>
+       
+    </tr>
+<!-- </table>  -->
+    <!-- <table>
+          <tr>
+              <td style="margin:0 auto; display: -webkit-box"></td>
+          </tr>
+      </table> -->
+
+</div>
+<!-- <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 10px; border: 1px solid #ccc;font-size: 10px;"  id="Print_Div2" style="display:none;">
+   <ng-container *ngIf="printLetterhead; else placeholderLogo">
+        <img
+          src="/assets/img/printlogo.png"
+          alt="Perfect Hills Logo"
+          style="height: 100px; width: 100%;"
+        />
+      </ng-container>
+      <ng-template #placeholderLogo>
+        <div style="height: 100px; width: 100%;"></div>
+      </ng-template>
+    <h1 style="text-align: center; margin-bottom: 5px; margin-top: -5px; 
+    text-decoration: underline;">
+        ACKNOWLEDGEMENT</h1>    
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0px; 
+        width: 100%;font-family: arial, sans-serif;">
+            <div style="width:60%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family:Arial,sans-serif;padding-bottom: 3px;">PB 1554 , PC 113 , GHALA,</p>
+            </div>       
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Date:</p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Quotation_Master_.PrintDate }}</p>
+            </div>
+        </div>            
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+            <div style="width: 60%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">MUSCAT SULTANATE OF OMAN</p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Quotation Number: </p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Quotation_Master_.QuotationNo }}</p>
+            </div>
+        </div>    
+        <div style="display: flex; justify-content: space-between; 
+        margin-bottom: 0px; width: 100%;">
+            <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Phone</p>
+            </div>
+            <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;"> 
+                    +968 22820150</p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Currency:</p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;"><span *ngIf="currency.CurrencyDetails_Id > 0">{{currency.CurrecnyName}}</span></p>
+            </div>
+        </div>    
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+            <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Gsm: </p>
+            </div>
+            <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">97416789, 99751621</p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">                   
+                    <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
+                        <span *ngIf="Quotation_Master_.POnumber"> Po Number :</span>
+                    </span> 
+                </p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px; " >
+                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                    <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
+                        <span *ngIf="Quotation_Master_.POnumber">{{ Quotation_Master_.POnumber }}</span> 
+                    </span>                 
+                </p>
+            </div>
+        </div>    
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+            <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Email: </p>
+            </div>
+            <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">sales&#64;perfecthills.com</p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">                   
+                    <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
+                        <span *ngIf="Quotation_Master_.KindAttend"> Attention :</span>
+                    </span> 
+                </p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                    <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
+                        <span *ngIf="Quotation_Master_.KindAttend">{{ Quotation_Master_.KindAttend }}</span> 
+                    </span>                 
+                </p>
+            </div>
+        </div>    
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+            <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Website: </p>
+            </div>
+            <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">www.perfecthills.com</p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">                   
+                    <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
+                        <span *ngIf="Quotation_Master_.AttendEmployee"> Employee :</span>
+                    </span> 
+                </p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                    <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
+                        <span *ngIf="Quotation_Master_.AttendEmployee">{{ Quotation_Master_.AttendEmployee }}</span> 
+                    </span>                 
+                </p>
+            </div>
+        </div>  
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+            <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">CR Number: </p>
+            </div>
+            <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">1150753</p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">                   
+                    <span style="font-weight: normal;">
+                        <span *ngIf="Quotation_Master_.Description2"> Reference :</span>
+                    </span> 
+                </p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
+                    <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
+                        <span *ngIf="Quotation_Master_.Description2">{{ Quotation_Master_.Description2 }}</span> 
+                    </span>                 
+                </p>
+            </div>
+        </div>    
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
+            <div style="width: 15%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">VATIN: </p>
+            </div>
+            <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">OM1100004897</p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
+                <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;"></p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
+                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;"></p>
+            </div>
+        </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 1px;">
+      <div style="width: 65%; display: flex; flex-direction: column; ">
+        <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
+            margin-bottom: 3px !important;font-family: arial, sans-serif;padding-bottom: 3px;">Customer Address</h5>
+        <p style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Quotation_Master_.Customer_Name }}</p>
+        <p *ngIf="Address1" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Address1 }}</p>
+        <p *ngIf="Address2" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Address2 }}</p>
+        <p *ngIf="Address3" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Address3 }}</p>
+        <p *ngIf="Address4" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Address4 }}</p>
+        <p *ngIf="Vatin" style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">VATIN {{ Vatin }}</p>
+        <p style="margin-top: 0px !important;font-family: arial, sans-serif;">
+            <span style="text-decoration: underline; font-weight: bold;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">Attention:</span> {{ Quotation_Master_.KindAttend }}</p>
+      </div>
+      <div style="width: 35%; display: flex; flex-direction: column; gap: 3px; text-align: end;">
+        <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
+            margin-bottom: 3px !important;font-family: arial, sans-serif;padding-bottom: 3px;">Delivery Address</h5>
+        <p *ngIf="Quotation_Master_.Delivery_Address1" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Quotation_Master_.Delivery_Address1 }}</p>
+        <p  *ngIf="Quotation_Master_.Delivery_Address2" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Quotation_Master_.Delivery_Address2 }}</p>
+        <p  *ngIf="Quotation_Master_.Delivery_Address3" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Quotation_Master_.Delivery_Address3 }}</p>
+        <p  *ngIf="Quotation_Master_.Delivery_Address4" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Quotation_Master_.Delivery_Address4 }}</p>
+     
+      </div>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 1px; margin-left:auto; margin-right:auto;">
+      <thead>
+        <tr>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif;">SI</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif;">Part number</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif;">Item & Description</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif;">UOM</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif;">QTY</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif;">Rate</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif;">Discount</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif;">Unit Discount</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif;">Total</th>
+          <th style="border: 1px solid #ccc; padding: 5px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:arial, sans-serif;">Availability</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style=" page-break-inside: avoid;" *ngFor="let item of Quotation_Details_Data; let i = index">
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ i + 1 }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px; font-family:arial, sans-serif; ">{{ item.Item_Code }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif;  ">{{ item.ItemName }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px; font-family:arial, sans-serif; ">{{ item.UnitName }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px; font-family:arial, sans-serif; ">{{ item.Quantity }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px; font-family:arial, sans-serif; ">{{ item.UnitPrice | number:'1.3-3' }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px; font-family:arial, sans-serif; ">{{ item.Discount | number:'1.3-3'  }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px; font-family:arial, sans-serif; ">{{ item.Unit_Discount | number:'1.3-3' }}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px; font-family:arial, sans-serif; ">{{ item.NetValue | number:'1.3-3'  }}</td>
+          <td style="padding: 1px; text-align: left; font-size: 12px; border: 1px solid #ccc  !important;white-space: nowrap; font-family:arial, sans-serif; ">{{ item.Availability }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <table>
+        <tr *ngFor="let i of blankItems">
+            <td style="border: none; height: 1px !important; padding: 0 !important;"></td>
+        </tr>
+    </table>
+
+    <table style="font-size: 12px !important; page-break-inside: avoid;width: 100% !important;" 
+           [style.margin-top.px]="breakPage ? 
+                                  (Quotation_Details_Data.length < 33 ? (marginTopItemNameCount ? 140 : 65) : 
+                                  (Quotation_Details_Data.length < 55 ? (marginTopItemNameCount ? 210 : 145) : 
+                                      (Quotation_Details_Data.length < 75 ? 300 : 360)
+                                  )
+                              )                                
+                                  : 
+                                
+                                  (Quotation_Details_Data.length > 15 ? (marginTopItemNameCount ? -30 : -100) :
+                                  (Quotation_Details_Data.length > 11 ? (marginTopItemNameCount ? -10 : -80) :
+                                  (Quotation_Details_Data.length > 4 ? (marginTopItemNameCount ? 50 : -20) :
+                                     (Quotation_Details_Data.length > 3 ? (marginTopItemNameCount ? 90 : 70) :
+                                     (Quotation_Details_Data.length < 2 ? (marginTopItemNameCount ? 100 : 80) : (marginTopItemNameCount ? 100 : 80) 
+                                     )
+                                     ))
+                                 ))
+                                  " > 
+        <tr>
+            <td>
+                <b style="font-size: 12px; text-decoration: underline;line-height: 27px;font-family: arial, sans-serif;"
+                >
+                    Terms & Conditions
+                </b>
+            </td>
+        </tr>
+    <tr>
+        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Brand:</b>{{ Quotation_Master_.Brand }}</td>
+        <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <b>Sub Total</b>
+        </td>
+        <td style="width:15%;font-size: 12px; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
+            {{ Quotation_Master_.TotalAmount | number:'1.3-3'}}
+        </td>
+    </tr>
+
+    <tr>
+        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Price Basis </b> {{ Quotation_Master_.PriceBasis }}</td>
+        <td style="width: 31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <b><span *ngIf="Quotation_Master_.Charge1">{{ Quotation_Master_.Charge1 }}</span>
+                <span *ngIf="printAcknowledgeCharge1per">({{Quotation_Master_.Charge1per}})%:</span></b>
+        </td>
+        <td style="width:15%;font-size: 12px;padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <span *ngIf="printAcknowledgeChargeAmount1">{{ Quotation_Master_.charge1_Amount | number:'1.3-3'}}</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Delivery </b> {{ Quotation_Master_.Delivery }}</td>
+        <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <b><span *ngIf="Quotation_Master_.Charge2">{{ Quotation_Master_.Charge2 }} :</span></b>
+        </td>
+        <td style="width:15%;font-size: 12px;padding-right:10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <span  *ngIf="printAcknowledgeChargeAmount2;">{{Quotation_Master_.charge2_Amount | number:'1.3-3'}}</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Validity </b> {{Quotation_Master_.Validity}}</td>
+        <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b><span *ngIf="printAcknowledgeAdditional_Discount">
+            Discount  {{ Quotation_Master_.Discount_Description }}% :
+        </span></b></td>
+        <td style="width:15%;font-size: 12px; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <span *ngIf="printAcknowledgeAdditional_Discount">{{ Quotation_Master_.Additional_Discount  | number:'1.3-3' }}</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <b>Payment Term: </b>  {{ Quotation_Master_.PaymentTermValue }} 
+            <span *ngIf="Payment_Term.payment_Term_ID > 0"> {{ Payment_Term.Payment_Term_Description}}</span>
+        </td>
+        <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <b><span *ngIf="printAcknowledgeTotalDiscount">Total Discount :</span></b>
+        </td>
+        <td style="width:15%;font-size: 12px; padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
+        <span *ngIf="printAcknowledgeTotalDiscount"> {{ Quotation_Master_.TotalDiscount | number:'1.3-3' }} </span>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td style="width: 85%;"><b></b></td>
+        <td style="width: 31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Total</b>
+        </td>
+        <td style="width:15%;font-size: 12px; padding-right: 10px; text-align:right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
+            {{ Total | number:'1.3-3'}}
+        </td>
+    </tr>
+
+    <tr>
+        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Notes </b> {{ Quotation_Master_.Description1 }}</td>
+        <td style="width: 31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <b><span *ngIf="Quotation_Master_.VAT_Percentage"> Vat {{ Quotation_Master_.VAT_Percentage }}% : </span></b>
+        </td>
+        <td style="width:15%;font-size: 12px; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;">
+        <span  *ngIf="printAcknowledgeVAT_Amount">{{ Quotation_Master_.VAT_Amount  | number:'1.3-3' }}</span>
+        </td>
+    </tr>
+    
+    <tr>
+        <td style="width: 85%;"><b></b> </td>
+        <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <b>Total Amount</b>
+        </td>
+        <td style="width:15%;font-size: 12px; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
+             {{ Quotation_Master_.Total_Amount | number:'1.3-3' }}
+        </td>
+    </tr>
+
+    <tr>
+        <td style="width: 85%;"><b></b> </td>
+        <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <b><span *ngIf="printAcknowledgeRoundoff_Amt">Additional Discount :</span></b>
+        </td>
+        <td style="width:15%;font-size: 12px; padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <span *ngIf="printAcknowledgeRoundoff_Amt">{{ Quotation_Master_.Roundoff_Amt | number:'1.3-3' }}</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="width: 85%;"><b></b> </td>
+        <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
+            <b>Net Amount </b>
+        </td>
+        <td style="width:15%;font-size: 12px; padding-right: 10px; text-align:right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
+         {{ Quotation_Master_.NetTotal | number:'1.3-3' }}
+        </td>
+    </tr>
+
+    <tr>
+        <td style="font-size: 12px; font-weight: normal; color:grey;font-family: arial, sans-serif;padding-bottom: 3px;"><span>*</span>{{ Print_Company_.Note }}</td>
+    </tr>
+
+    <tr>
+        <td style="font-family: arial, sans-serif;padding-bottom: 3px;"><b>Amount In Words </b> {{ Quotation_Master_.Amount_In_Words }}</td>
+    </tr>
+    <tr style="height:5px">
+        <td>
+        </td>
+    </tr>
+
+    <tr style="padding-top:50px;padding-bottom: 3px;">
+        <td style="width: 85%;font-size: 12px;"><b>Prepared By </b> {{ Quotation_Master_.PreparedBy }} </td>
+        
+        <td style="text-align: right;font-size: 12px;padding-top:20px;width:15%;padding-bottom: 3px; "><b>AuthorisedSignatory</b> </td>
+    </tr>
+</table>
+
+    </div> -->

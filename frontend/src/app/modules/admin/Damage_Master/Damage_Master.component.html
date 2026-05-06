@@ -1,0 +1,261 @@
+
+<div *ngIf="issLoading" class="overlay">
+<mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+</mat-progress-spinner>
+</div>
+<div class="main-content">
+<div class="container-fluid">
+<div class="row" *ngIf="Entry_View">
+
+<div class="row">
+    <div class="col-md-12">
+            <div class="card">
+          
+            <div class="card-body">
+            <form>
+            <div class="row">
+<div class="col-md-12">
+                <div class="col-md-4">
+                    <label class="col-md-4 label-to-crect-all-names-to-divs label-down-alighn-stk-ad-mstr-prhse-rte">Date</label>
+                    <mat-form-field class="col-md-4 input-allighn-to-crect-wole-paddings">
+                        <input matInput [matDatepicker]="dp" placeholder="" name="Damage_Master_Entry_Date" [(ngModel)]="Damage_Master_.Date">
+                        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                        <mat-datepicker #dp></mat-datepicker>
+                        </mat-form-field>
+                    </div>           
+</div>
+
+            <!-- <div class="col-md-4">
+                
+            <label class="col-md-4 label-down-alighn-stk-ad-mstr-brcde">Bar Code</label> 
+            <mat-form-field class="col-md-8 input-allighn-to-crect-wole-paddings label-to-crect-all-names-to-div-tre-prt-sles">
+            <input matInput type="text"  name="Damage_Details_Barcode" [(ngModel)]="Damage_Details_.Barcode">     
+            </mat-form-field>
+            </div> -->
+
+          <div class="col-md-3 tab-wole-div-alyn alighn-right-inputs-sales-grid">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item Code</label><!--align-label-tab-lead   -->
+                        <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto2" [(ngModel)]="Barcode_"  (click)="Search_Barcode_Typeahead($event)" 
+                        (input)="Search_Barcode_Typeahead($event)"  class="col-md-8 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched" /><!-- for-input-selct-tblelst nput-laed-tabs-for-wole nput-laed-tabs-for-cuntry-wole-->
+                        <mat-autocomplete #auto2="matAutocomplete" [displayWith]="display_Barcode">
+                            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>                             
+                            <ng-container   *ngIf="!isLoading">
+                                <mat-option *ngFor="let Item of Barcode_Data; let i = index" [value]="Item">
+                                    <span ><div (click)="Barcode_Change(Item)">{{Item.Barcode}}-{{Item.ItemName}}</div></span>
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+           </div>             
+           <div class="col-md-3 tab-wole-div-alyn alighn-right-inputs-sales-grid">
+                <label class="col-md-4 label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item Name <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+                <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Stock_" id ="item" name="item" 
+                (click)="Search_Item_Typeahead($event)" (input)="Search_Item_Typeahead($event)"   
+                 class="col-md-8 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
+                    <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                    <ng-container *ngIf="!isLoading">
+                        <mat-option *ngFor="let Item of Stock_Data" [value]="Item" >
+                            <span><div (click)="Item_Name_Change(Item)">{{Item.ItemName}}-{{Item.Barcode}}</div></span>
+                        </mat-option>
+                    </ng-container>
+                </mat-autocomplete>
+                </div>
+                <!-- <div class="col-md-4 tab-wole-div-alyn">
+                    <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt">To Stock <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+                    <input type="text" [matAutocomplete]="auto" [(ngModel)]="To_Stock_"  name="stock" (click)="Search_To_Stock_Typeahead($event)" (keyup)="Search_To_Stock_Typeahead($event)" class="col-md-8 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_To_Stock">
+                        <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                        <ng-container *ngIf="!isLoading">
+                            <mat-option *ngFor="let To_Stock of To_Stock_Data" [value]="To_Stock">
+                                <span> {{To_Stock.Client_Accounts_Name}} </span>
+                            </mat-option>
+                        </ng-container>
+                    </mat-autocomplete>
+                    </div>   -->
+
+                    <div class="col-md-2">
+                        <label class="col-md-8 label-to-crect-all-names-to-div-tre-prt-sles">Quantity <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label> 
+                    <mat-form-field class="col-md-4 input-allighn-to-crect-wole-paddings">
+                        <input matInput type="text"  [(ngModel)]="Damage_Details_.Quantity" name="Damage_Details_Quantity" (ngModelChange)="Quantity_Change()">     
+                    </mat-form-field>   
+                    </div>     
+
+                        <div class="col-md-2">
+                                <label class="col-md-9 label-down-alighn-stk-ad-mstr-prhse-rte">Purchase Rate <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label> 
+                            <mat-form-field class="col-md-3 input-allighn-to-crect-wole-paddings">
+                                <input matInput type="text" name="Damage_Details_PurchaseRate" [(ngModel)]="Damage_Details_.PurchaseRate">     
+                            </mat-form-field>   
+                            </div>  
+
+                                <div class="col-md-2">
+                                        <label class="col-md-8 label-down-alighn-stk-ad-mstr-prhse-rte">Sales Rate <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label> 
+                                    <mat-form-field class="col-md-4 input-allighn-to-crect-wole-paddings">
+                                        <input matInput type="text" name="Damage_Details_SaleRate" [(ngModel)]="Damage_Details_.SaleRate" (ngModelChange)="Quantity_Change()">     
+                                    </mat-form-field>
+                                    </div>    
+                        <div class="col-md-1 input-allighn-to-crect-wole-paddings">
+                            <label class="label-down-alighn-stk-ad-mstr-mrp input-alighn-right-to-crect-stck-ad-nw-sctn-mrp">MRP <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label> 
+                        <mat-form-field class="col-md-6 input-allighn-to-crect-wole-paddings">
+                            <input matInput type="text" name="Damage_Details_mrp" [(ngModel)]="Damage_Details_.MRP">     
+                        </mat-form-field>  
+                        </div> 
+                          <div class="col-md-1 input-allighn-to-crect-wole-paddings">
+                            <label class="label-down-alighn-stk-ad-mstr-mrp input-alighn-right-to-crect-stck-ad-nw-sctn-mrp">Amount</label> 
+                        <mat-form-field class="col-md-6 input-allighn-to-crect-wole-paddings">
+                            <input matInput readonly type="text" [(ngModel)]="Damage_Details_.Amount" name="Amount" >     
+                        </mat-form-field>  
+                        </div> 
+            <div class="col-md-1">
+                    <label class="label-name-crect-stck-ad-nw-sctn-unt label-down-alighn-stk-ad-mstr-unt">Unit</label> 
+                <mat-form-field class="col-md-7 input-allighn-to-crect-wole-paddings">
+                    <input matInput type="text"  name="Damage_Details_UnitName" [(ngModel)]="Damage_Details_.UnitName" readonly>     
+                </mat-form-field>
+                </div>
+<div class="col-md-1" >
+<button _ngcontent-ucu-c5="" class="btn btn-danger button-to-crect-margin change-colour-button mat-raised-button" (click)="Plus_Damage_Details()" mat-raised-button="" type="button"><span class="mat-button-wrapper"><i _ngcontent-ucu-c5="" aria-hidden="true" class="fa fa-plus"></i></span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></button>
+</div>
+<div class="col-md-12" >
+<div class="card-body">
+<div class="table-responsive">
+<table class="table table-hover">
+    <thead class="bg-col-stock-add-diary thead">
+        <th>Bar Code </th>
+        <th>Quantity</th>
+        <th>Purchase Rate</th>
+        <th>Sale Rate</th>
+        <th>MRP</th>
+        <th [hidden]="Damage_Master_Edit==false">Edit</th>
+        <th [hidden]="Damage_Master_Delete==false">Delete</th>
+    </thead>
+<!-- <ng-container *cdkVirtualFor="let Damage_Details of Damage_Details_Data; let i = index"> -->
+        <tbody class="bk_tb_bg" *ngFor="let Damage_Details of Damage_Details_Data; let i = index">
+        <!-- <td style="padding-left:5px;">{{ i+1 }}</td> -->
+        <td>{{Damage_Details["Barcode"]}}</td>
+        <!-- <td>{{Damage_Details["UnitName"]}}</td>    -->
+        <td>{{Damage_Details["Quantity"]}}</td>
+        <td>{{Damage_Details["PurchaseRate"]}}</td>
+        <td>{{Damage_Details["SaleRate"]}}</td>
+        <td>{{Damage_Details["MRP"]}}</td>
+        <!-- <td>{{Damage_Details["Client_Accounts_Name"]}}</td> -->
+        <td><button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Damage_Master_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Damage_Details(Damage_Details,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button></td>
+<td> <button _ngcontent-gdi-c11="" [hidden]="Damage_Master_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Damage_Details(i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button></td>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+        <div class="col-md-12  margin-to-corect-search-sections">
+             <button mat-raised-button type="button" [hidden]="Damage_Master_Save==false"id="Save_Button"class="btn btn-danger pull-right"(click)="Save_Damage_Master()">Save</button>
+             <button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>
+        </div>
+            </div>
+            <div class="clearfix"></div>
+            </form>
+            </div>
+            </div>
+            </div>      
+</div>
+
+</div>
+<div class="row" *ngIf="!Entry_View">
+        <div class="col-md-12">
+                <div class="card">
+              
+                <div class="card-body">
+                <form>
+                <div class="row">
+                <div class="col-md-12 padd-lft-crect-alighn-wole-div">
+
+                        <div class="col-md-1 chck-bx-down-alighn-prhse-mstr-srch-sctn"> 
+                                <label class="date-label-crect-search-sales-section label-to-crect-all-names-to-div-tre-prt-sles">Date</label>
+                                    <div _ngcontent-xmy-c9="" class="checkbox-to-crect-sales-search-section dv-crct-up-wrd-prchse-mstr-chck-bx-srch-sctn">
+                                        <div _ngcontent-xmy-c9="" class="form-check">
+                                            <label _ngcontent-xmy-c9="" class="form-check-label">
+                                                <input type='checkbox' class="form-check-input" placeholder='Update Stock'  [(ngModel)]="Look_In_Date" name="Look_In_Date"/>
+                                                <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9="" class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>   
+                                </div>  
+
+                    <div class="col-md-3 croct-float-purchase-master-section padd-lft-crect-alighn-wole-div">
+                        <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte label-mrgn-pdng-crect-stk-mstr-frm">From</label>
+                        <mat-form-field class="col-md-8 spcing-crect-input-bxes-wole-divs">
+                                <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate"[(ngModel)]="Search_FromDate">
+                                <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                                <mat-datepicker #dp1></mat-datepicker>
+                              </mat-form-field>
+                        </div>
+    
+                            <div class="col-md-3 croct-float-purchase-master-section">
+                                <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">TO</label>
+                                <mat-form-field class="col-md-8 spcing-crect-input-bxes-wole-divs">
+                                        <input matInput [matDatepicker]="dp2"  name="Search_ToDate" placeholder="" [(ngModel)]="Search_ToDate">
+                                        <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                                        <mat-datepicker #dp2></mat-datepicker>
+                                      </mat-form-field>
+                                </div>
+                                <!-- <div class="col-md-3 croct-float-purchase-master-section" [hidden]="Employee_Edit"    >
+                                        <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Employee </label>
+                                        <input type="text" [matAutocomplete]="auto_Employee" [(ngModel)]="Employee_" name="Employee" (click)="Employee_Typeahead($event)" (keyup)="Employee_Typeahead($event)" class="col-md-8 pdng-crect-rspnsv-mrgn-nptbx-txt" />
+                                        <mat-autocomplete #auto_Employee="matAutocomplete" [displayWith]="display_Employee">
+                                            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                                            <ng-container *ngIf="!isLoading">
+                                                <mat-option *ngFor="let Employee of Employee_Data" [value]="Employee">
+                                                    <span>{{Employee.Client_Accounts_Name}}</span>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-autocomplete>
+                                        </div>  -->
+                                <div class="col-md-2
+                                 croct-float-purchase-master-section">
+                                        <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger pull-right button-to-crect-margin change-colour-button"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                        <button mat-raised-button type="button" (click)="Search_Damage_Master()" class="btn btn-danger button-to-crect-margin pull-right change-colour-button"><i class="fa fa-search" aria-hidden="true"></i></button>        
+                                </div>           
+                </div>
+             
+            
+                </div>
+                <div class="clearfix"></div>
+                </form>
+                </div>
+                </div>
+                </div>   
+<div class="col-md-12">
+<div class="card card-plain" >
+<div class="card-body">
+<div class="table-responsive">
+ <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" >
+      
+    <table class="table table-hover">
+        <thead class="thead">
+        <th> Sl No</th>
+        <th>Date</th>
+        <th>Damage No</th>
+        <th [hidden]="Damage_Master_Edit==false">Edit
+        </th>
+        <th [hidden]="Damage_Master_Delete==false">
+        Delete
+        </th>
+        </thead>
+    <ng-container *cdkVirtualFor="let Damage_Master1 of Damage_Master_Data; let i = index">
+       <tr>
+        <td style="padding-left:5px;">{{ i+1 }}</td>
+        <td>{{Damage_Master1["Search_Date"]}}</td>
+        <td>{{Damage_Master1["Damage_No"]}}</td>
+        <td><button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Damage_Master_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Damage_Master(Damage_Master1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button></td>
+        <td><button _ngcontent-gdi-c11="" [hidden]="Damage_Master_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Damage_Master(Damage_Master1.Damage_Master_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button></td>
+     </tr>
+ </ng-container>
+</table>
+</cdk-virtual-scroll-viewport>
+</div>
+</div>
+<label class="entry-num">Entries : {{Total_Entries}}</label>
+</div>
+</div>
+</div>
+</div>
+</div>

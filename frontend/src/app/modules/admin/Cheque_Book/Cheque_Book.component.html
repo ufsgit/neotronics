@@ -1,0 +1,142 @@
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+    </div>
+    <div class="main-content">
+    <div class="container-fluid">
+    <div class="row" *ngIf="Entry_View">
+    <div class="col-md-12">
+   
+    <div class="card-body">
+    <form>
+    <div class="row">
+    <div class="col-md-6">
+
+<div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-undemp">Bank <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+<input type="text" [matAutocomplete]="auto" [(ngModel)]="Bank_" name="Bank_" (click)="Search_Under_Employee_($event)" (keyup)="Search_Under_Employee_($event)" class="col-md-9 input-allighn-typer-head-all-divs" />
+<mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Search_Under_Employee_">
+<mat-option *ngIf="issLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+<ng-container *ngIf="!issLoading">
+<mat-option *ngFor="let Under_Employee of Bank_Data" [value]="Under_Employee">
+<span>{{Under_Employee.Client_Accounts_Name}}</span>
+</mat-option>
+</ng-container>
+</mat-autocomplete>
+</div>
+        
+<div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Book No <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>    
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+<input matInput type="text" [(ngModel)]="Cheque_Book_.Book_No" name="Cheque_Book_.Cheque_Book_Name">
+</mat-form-field>
+</div>
+</div>
+<div class="col-md-6">
+           
+<div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">From No</label>   
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+<input matInput type="number" [(ngModel)]="Cheque_Book_.From_No" (ngModelChange)="To_No_Change()"name="Cheque_Book_.From_No">
+</mat-form-field>
+</div>
+
+<div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Total Leaves</label>   
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+<input matInput type="number" [(ngModel)]="Cheque_Book_.Total_Leaves" (ngModelChange)="To_No_Change()" name="Cheque_Book_.Total_Leaves">
+</mat-form-field>
+</div>
+
+<div class="col-md-12">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">To No</label>   
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+<input matInput type="number" [(ngModel)]="Cheque_Book_.To_No" name="Cheque_Book_.To_No">
+</mat-form-field>
+</div>
+
+<div class="col-md-12 butn-crct-alghn-dwnwrd-users-srch-new">
+<button mat-raised-button type="button" [hidden]="Cheque_Book_Save==false"id="Save_Button"class="btn btn-danger pull-right"(click)="Save_Cheque_Book()">Save</button>
+<button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>
+</div>       
+    </div>
+    </div>
+    <div class="clearfix"></div>
+    </form>
+    </div>
+    </div>
+    </div>
+    <div class="row" *ngIf="!Entry_View">
+<div class="col-md-5">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name"> Account Name </label>
+<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
+<input matInput type="text"  [(ngModel)]="Search_Cheque_Book_"  name="Search_Cheque_Book_">  
+</mat-form-field>
+</div>
+
+<div class="col-md-5">
+<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-undemp">Bank <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+<input type="text" [matAutocomplete]="auto1" [(ngModel)]="Bank_Search" name="Bank_Search" (click)="Search_Under_Employee_($event)" (keyup)="Search_Under_Employee_($event)" class="col-md-9 input-allighn-typer-head-all-divs" />
+<mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Search_Under_Employee_">
+<mat-option *ngIf="issLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+<ng-container *ngIf="!issLoading">
+<mat-option *ngFor="let Under_Employee of Bank_Data" [value]="Under_Employee">
+<span>{{Under_Employee.Client_Accounts_Name}}</span>
+</mat-option>
+</ng-container>
+</mat-autocomplete>
+</div>
+        
+<div class="col-md-1">
+<button mat-raised-button type="button" (click)="Search_Cheque_Book()" class="btn btn-danger button-to-crect-margin "><i class="fa fa-search" aria-hidden="true"></i></button> 
+<button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin "><i class="fa fa-plus" aria-hidden="true"></i></button> 
+</div>
+<div class="col-md-12">
+<div class="card-plain">
+        <div class="card-body">
+    <div class="table-responsive">
+ <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" >
+    <table class="table table-hover">
+    <thead class="thead">
+    <th>
+    Sl No
+    </th>
+    <th>
+Bank No
+    </th>
+    <th>
+    Bank Name
+    </th>
+    <th [hidden]="Cheque_Book_Edit==false">
+    Edit
+    </th>
+    <th [hidden]="Cheque_Book_Delete==false">
+    Delete
+    </th>
+    </thead>
+    <ng-container *cdkVirtualFor="let Cheque_Book_1 of Cheque_Book_Data; let i = index">
+    <tr>
+    <td style="padding-left:5px;">{{ i+1 }}</td>
+    <td>{{Cheque_Book_1["Book_No"]}}</td>
+      <td>{{Cheque_Book_1["Bank_Name"]}}</td>
+    <td>
+        
+    <button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Cheque_Book_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Client_Accounts(Cheque_Book_1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
+    </td>
+    <td> 
+    <button _ngcontent-gdi-c11="" [hidden]="Cheque_Book_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Cheque_Book(Cheque_Book_1.Cheque_Book_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
+    </td>
+   </tr>
+       </ng-container>
+</table>
+</cdk-virtual-scroll-viewport>
+    </div>
+    </div>
+    
+    <label class="entry-num">Entries : {{Total_Entries}}</label>
+    </div>
+    
+    </div>
+    </div>
+    </div>
+    

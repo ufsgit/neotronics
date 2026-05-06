@@ -1,0 +1,42 @@
+export class Sales_Details
+{
+Sales_Details_Id:number;
+Sales_Master_Id:number;
+Stock_Id:number;
+ItemId:number;
+ItemName:string;
+Barcode:string;
+GroupId:number;
+GroupName:string;
+UnitId:number;
+UnitName:string;
+PurchaseRate:number;
+SaleRate:number;
+MRP:number;
+//HSNId:number;
+ItemCode:string;
+HSNMasterId:number;
+HSNCODE:string;
+SaleTax:number;
+UnitPrice:number;
+Amount:number;
+Unit_Discount:number;
+TaxableAmount:number;
+Quantity:number;
+Discount:number;
+NetValue:number;
+TaxAmount:number;
+Stock:number;
+Description:string;
+Item_Discount_Amount:number;
+GSTA:number;
+    Country_Id: number;
+    Country_Name: string;
+
+    DeliveryOrderMaster_Id: number;
+constructor(values: Object = {})  
+{
+Object.assign(this, values) 
+}
+}
+

@@ -1,0 +1,119 @@
+
+
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+    </div>
+    <div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+    <div class="container-fluid">
+    <div class="row" *ngIf="Entry_View" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+    <div class="col-md-12 mt-2">
+    <div class="card">
+    
+    <div class="card-body" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+    <form>
+    <div class="row" style="display: flex;">
+    <div class="col-md-6">
+    <div class="col-md-12" style="display: flex;" >
+    <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Currency <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+    <mat-form-field class="col-md-8" style="border: 1px solid lightgrey;
+    height: 40px; background-color: #fff;">
+    <input matInput type="text" [(ngModel)]="Currency_.CurrecnyName" name="Currency_.CurrecnyName">
+    </mat-form-field>
+    </div>
+ 
+    <div class="col-md-12 mt-4" style="display: flex;" >
+        <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Sub Currency <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+        <mat-form-field class="col-md-8" style="border: 1px solid lightgrey;
+        height: 40px;background-color: #fff;">
+        <input matInput type="text" [(ngModel)]="Currency_.SubCurrecnyName" name="Currency_.SubCurrecnyName">
+        </mat-form-field>
+        </div>
+        <div class="col-md-4"></div>
+<div class="col-md-4" style="float: right;">
+       
+<button mat-raised-button type="button" [hidden]="Currency_Save==false"id="Save_Button"class="btn btn-danger pull-right"(click)="Save_Currency()">Save</button>
+<button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>
+    </div>
+    </div>
+    
+    </div>
+    <div class="clearfix"></div>
+    </form>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="row" *ngIf="!Entry_View" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+        <div class="card"  
+        style="align-items: center;
+             border: 0;
+             border-radius: 6px;
+             margin-left: 2px;
+             color: #333333;
+             background: #fff;
+             width: 100%;padding: 3px;background-color: #f1f1f1;
+             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+         ">
+            <div class="col-12 row" style="    padding-top: 17px;    padding-bottom: 10px;">
+    <div class="col-md-6" style="display: flex;
+    align-items: center;">
+        <label class="col-md-3 ">Currency</label> 
+    <mat-form-field class="col-md-10" style="border: 1px solid lightgrey;
+    height: 38px; background-color: #fff;" >
+     <input matInput type="text" [(ngModel)]="search_Currency_" name="search_Currency_" >  
+   </mat-form-field>
+    </div>
+    <div class="col-md-3 btn-dwn-crct-align-itm-grp-srch-sctn" style="    margin-top: 0px;
+    ">
+    <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin pull-right change-colour-button">Create New</button>
+    <button mat-raised-button type="button" (click)="Search_Currency()" class="btn btn-danger button-to-crect-margin pull-right change-colour-button">Search</button>
+    </div>
+    </div>
+    </div>
+    <div class="col-md-12 pl-0">
+    <div class="card card-plain">
+   
+    <div class="table-responsive card">
+    <div class="table-responsive"
+        [style.height.px]="myInnerHeight"
+        style="overflow-y: scroll;background-color: #f1f1f1;">
+ <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" > -->
+    <table class="table table-hover">
+    <thead class="thead">
+    <th>
+    Sl No
+    </th>
+    <th>
+  Currency
+    </th>
+   <th [hidden]="Currency_Edit==false">
+    Edit
+    </th>
+    <th [hidden]="Currency_Delete==false">
+    Delete
+    </th>
+    </thead>
+    <!-- <ng-container *cdkVirtualFor="let Currency_1 of Currency_Data; let i = index"> -->
+    <tr  *ngFor="let Currency_1 of Currency_Data; let i =index">
+    <td style="padding-left:5px;">{{ i+1 }}</td>
+    <td>{{Currency_1["CurrecnyName"]}}</td>
+    <td>
+    <button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Currency_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Currency(Currency_1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
+    </td>
+    <td> 
+    <button _ngcontent-gdi-c11="" [hidden]="Currency_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Currency(Currency_1.CurrencyDetails_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
+    </td>
+   </tr>
+       <!-- </ng-container> -->
+</table>
+<!-- </cdk-virtual-scroll-viewport> -->
+    </div>
+    </div>
+    
+    <label class="entry-num">Entries : {{Total_Entries}}</label>
+    </div>
+    </div>
+    </div>
+    </div>
+    

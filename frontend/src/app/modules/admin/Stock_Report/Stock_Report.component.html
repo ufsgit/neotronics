@@ -1,0 +1,244 @@
+<div *ngIf="issLoading" class="overlay">
+        <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+        </mat-progress-spinner>
+        </div>
+ 
+          <div class="container-fluid">
+            <div class="row" *ngIf="Entry_View">
+       <div class="col-md-4 tab-wole-div-alyn div-mve-dwn-crct-algyn-stk-rprt">
+              <label class="col-md-4 label-down-alighn-rcpt-vuchr">Item Group</label>
+              <input type="text" [matAutocomplete]="auto2" [(ngModel)]="Item_Group_" name="Item_group_" (click)="Search_Item_Group_Typeahead($event)" (keyup)="Search_Item_Group_Typeahead($event)" class="col-md-8 for-input-selct-tblelst" /><!-- for-input-selct-tblelst nput-laed-tabs-for-wole nput-laed-tabs-for-cuntry-wole-->
+              <mat-autocomplete #auto2="matAutocomplete" [displayWith]="display_Item_Group">
+                  <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                  <ng-container *ngIf="!isLoading">
+                      <mat-option *ngFor="let Item_Group of Item_Group_Data" [value]="Item_Group">
+                          <span>{{Item_Group.Item_Group_Name}}</span>
+                      </mat-option>
+                  </ng-container>
+              </mat-autocomplete>
+              </div> 
+
+              <div class="col-md-4 tab-wole-div-alyn div-mve-dwn-crct-algyn-stk-rprt">
+                <label class="col-md-3 label-down-alighn-rcpt-vuchr">Item </label>
+                <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_" name="item" (click)="Search_Item_Typeahead($event)" (keyup)="Search_Item_Typeahead($event)" class="col-md-9 for-input-selct-tblelst" /><!-- for-input-selct-tblelst nput-laed-tabs-for-wole nput-laed-tabs-for-cuntry-wole-->
+                <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
+                    <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                    <ng-container *ngIf="!isLoading">
+                        <mat-option *ngFor="let Item of Item_Data" [value]="Item">
+                            <span>{{Item.Item_Name}}</span>
+                        </mat-option>
+                    </ng-container>
+                </mat-autocomplete>
+                </div> 
+
+    <div class="col-md-4 alighn-one-by-by-wle-div div-mve-dwn-crct-algyn-stk-rprt">
+      <label class="col-md-3 label-down-alighn-rcpt-vuchr">BarCode</label>
+      <mat-form-field class="col-md-9 led-srch-sctn-nput-tb">
+                  <input matInput type="text" [(ngModel)]="Barcode_Search" name="Barcode_Search">
+                </mat-form-field>
+    </div>
+
+    <!-- <div class="col-md-4"   [hidden]="Employee_Edit"  >
+      <label class="col-md-4 label-down-alighn-supler-prhse-mstr-down">Employee </label>
+      <input type="text" [matAutocomplete]="auto" [(ngModel)]="Employee_" name="Employee" (click)="Employee_Typeahead($event)" (keyup)="Employee_Typeahead($event)" class="col-md-8 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Employee">
+          <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+          <ng-container *ngIf="!isLoading">
+              <mat-option *ngFor="let Employee of Employee_Data" [value]="Employee">
+                  <span>{{Employee.Client_Accounts_Name}}</span>
+              </mat-option>
+          </ng-container>
+      </mat-autocomplete>
+      </div>    -->
+      <div class="col-md-1 chck-bx-up-alighn-prhse-mstr-srch-sctn"> 
+          <!-- <label class="date-label-crect-search-sales-section label-to-crect-all-names-to-div-tre-prt-sles">Date</label> -->
+              <div _ngcontent-xmy-c9="" class="checkbox-to-crect-sales-search-section dv-crct-up-wrd-prchse-mstr-chck-bx-srch-sctn">
+                  <div _ngcontent-xmy-c9="" class="form-check">
+                      <label _ngcontent-xmy-c9="" class="form-check-label">
+                          <input type='checkbox' class="form-check-input" placeholder='Update Stock'  [(ngModel)]="Is_Date_Check" name="Look_In_Date"/>
+                          <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9="" class="check"></span>
+                          </span>
+                      </label>
+                  </div>
+              </div>   
+          </div>     
+        <div class="col-md-1 wdth-crct-chck-bxes-sles-smry-rprt">     
+            <button mat-raised-button type="button" (click)="Get_Stock_Report()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin"><i class="fa fa-search" aria-hidden="true"></i></button>
+        </div>
+
+    <div class="col-md-12">
+    <div class="card card-plain">
+    <div class="card-body text-title-to-correct-item-group-diary">
+    <div class="table-responsive">
+ <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" >
+    <table class="table table-hover">
+    <thead class="thead">
+    <th class="text-title-to-correct-item-group-diary">
+    Sl No
+    </th>
+    <th>
+    BarCode
+    </th>
+    <th>
+    Item 
+    </th> 
+    <th>
+    Quantity
+    </th>
+    <th>
+    Group
+    </th>
+    <th>
+    Purchase Rate
+    </th>
+    <th>
+    Sale Rate
+    </th>
+    <th>
+    MRP
+    </th>
+    <th>
+    Sales Tax
+    </th>
+    <th>
+    SGST
+    </th>
+    <th>
+    IGST
+    </th>
+    <th>
+    CGST
+    </th>
+    <th>
+    Unit
+    </th>
+    <th>
+    Edit
+    </th>
+
+    </thead>
+    <ng-container *cdkVirtualFor="let Accounts1 of Accounts_Data; let i = index">
+    <tr>
+    <td style="padding-left:5px;">{{ i+1 }}</td>
+    <td>{{Accounts1["Barcode"]}}</td>
+    <td>{{Accounts1["ItemName"]}}</td> 
+    <td>{{Accounts1["Quantity"]}}</td>
+    <td>{{Accounts1["GroupName"]}}</td> 
+    <td>{{Accounts1["PurchaseRate"]}}</td> 
+    <td>{{Accounts1["SaleRate"]}}</td> 
+    <td>{{Accounts1["MRP"]}}</td> 
+    <td>{{Accounts1["SaleTax"]}}</td> 
+    <td>{{Accounts1["SGST"]}}</td> 
+    <td>{{Accounts1["IGST"]}}</td> 
+    <td>{{Accounts1["CGST"]}}</td> 
+    <td>{{Accounts1["UnitName"]}}</td> 
+
+    <td>
+<button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Stock_Add_Master_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Stock_Report(Accounts1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
+</td>
+        </ng-container>
+</table>
+</cdk-virtual-scroll-viewport>
+        </div>
+        </div>
+        <label class="entry-num">Entries : {{Total_Entry}}</label>
+        </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="row" *ngIf="Entry_View_Edit">
+          <div class="col-md-12">
+                  <div class="card">
+          
+                  <div class="card-body">
+                  <form>
+                  <div class="row">
+                  <div class="col-md-12 mrgn-dwn-crct-div-stck-rprt">
+                        
+                  <div class="col-md-4 tab-wole-div-alyn croct-float-purchase-master-section">
+                    <label class="col-md-4">Item Group <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+                    <input type="text"  disabled [matAutocomplete]="auto4" [(ngModel)]="Edit_Item_Group" name="Edit_Item_Group"  (click)="Edit_ItemGroup_Group_Typehead($event)" (keyup)="Edit_ItemGroup_Group_Typehead($event)" class="col-md-8 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+                    <mat-autocomplete #auto4="matAutocomplete" [displayWith]="Edit_display_Item_Group">
+                        <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                        <ng-container *ngIf="!isLoading">
+                            <mat-option *ngFor="let Edit_Item_Group_ of Edit_Item_Group_Data" [value]="Edit_Item_Group_">
+                                <span>{{Edit_Item_Group_.Item_Group_Name}}</span>
+                            </mat-option>
+                        </ng-container>
+                    </mat-autocomplete>
+                    </div> 
+    
+                    <div class="col-md-4 tab-wole-div-alyn croct-float-purchase-master-section">
+                      <label class="col-md-3">Item  <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;;">*</span> </label>
+                      <input type="text" disabled [matAutocomplete]="auto3" [(ngModel)]="Edit_Item" name="Edit_Item" (click)="Edit_Item_Name_Typehead($event)" (keyup)="Edit_Item_Name_Typehead($event)" class="col-md-9 for-input-selct-tblelst" />
+                      <mat-autocomplete #auto3="matAutocomplete" [displayWith]="Edit_display_Item">
+                          <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                          <ng-container *ngIf="!isLoading">
+                              <mat-option *ngFor="let Item_Load of Edit_Item_Name_Data" [value]="Item_Load">
+                                  <span>{{Item_Load.Item_Name}}</span>
+                              </mat-option>
+                          </ng-container>
+                      </mat-autocomplete>
+                      </div> 
+      
+                      <div class="col-md-4 alighn-one-by-by-wle-div alighn-to-right-crect-input croct-float-purchase-master-section">
+                        <label class="col-md-4">BarCode</label>
+                        <mat-form-field class="col-md-8 led-srch-sctn-nput-tb alighn-Edit_Item_Name_Datato-right-crect-input">
+                                    <input disabled matInput type="text" [(ngModel)]="Stock_.Barcode" name="Stock_.Barcode">
+                                  </mat-form-field>
+                      </div>
+
+
+<div class="col-md-12">
+                      <div class="col-md-4 alighn-one-by-by-wle-div alighn-to-right-crect-input">
+                        <label class="col-md-4 padd-lft-crect-alighn-wole-div">Quantity</label>
+                        <mat-form-field class="col-md-8 led-srch-sctn-nput-tb">
+                                    <input disabled matInput type="text" [(ngModel)]="Stock_.Quantity" name="Stock_.Quantity">
+                                  </mat-form-field>
+                      </div>
+
+                      <div class="col-md-4 alighn-one-by-by-wle-div alighn-to-right-crect-input">
+                        <label class="col-md-4 ">SaleRate</label>
+                        <mat-form-field class="col-md-8 led-srch-sctn-nput-tb">
+                                    <input matInput type="text" [(ngModel)]="Stock_.SaleRate" name="Stock_.SaleRate">
+                                  </mat-form-field>
+                      </div>
+
+                      <div class="col-md-4 alighn-one-by-by-wle-div alighn-to-right-crect-input">
+                        <label class="col-md-4 ">PurcahseRate</label>
+                        <mat-form-field class="col-md-8 led-srch-sctn-nput-tb">
+                                    <input matInput type="text" [(ngModel)]="Stock_.PurchaseRate" name="Stock_.PurchaseRate">
+                                  </mat-form-field>
+                      </div>
+</div>
+                      <div class="col-md-4 alighn-one-by-by-wle-div alighn-to-right-crect-input">
+                        <label class="col-md-4">MRP</label>
+                        <mat-form-field class="col-md-8 led-srch-sctn-nput-tb nput-bxs-crct-alghn-wdth-mrgn-stk-rprt-mrp">
+                                    <input matInput type="text" [(ngModel)]="Stock_.MRP" name="Stock_.MRP">
+                                  </mat-form-field>
+                      </div>
+
+                      <div class="col-md-12 croct-float-purchase-master-section">
+                        <label class="col-md-1 label-down-alighn-nvce-nmbr-prhse-mstr-br-cde"><span>Sale Unit</span></label>
+                        <select  disabled   [(ngModel)]="Sale_Unit" name="Sale_Unit"  required class="col-md-11 select-box-style-diary slct-sle-unt-stck-rpt">
+                        <option *ngFor="let Sale_Unit_M of Sale_Unit_Data"[ngValue]="Sale_Unit_M">{{Sale_Unit_M.Sale_Unit_Name}}</option>
+                        </select>
+                        </div>
+
+                  </div>
+                  <div class="col-md-12 wole-div-margin-to-down-proper">
+                    <button mat-raised-button type="button" id="Save_Button"class="btn btn-danger pull-right"(click)="Save_Stock_Report()">Save</button>
+                   <button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>
+                    </div>
+             
+                  </div>
+                  <div class="clearfix"></div>
+                  </form>
+                  </div>
+                  </div>
+                  </div>   
+
+  </div>
+       
+

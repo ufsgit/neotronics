@@ -1,0 +1,942 @@
+<nav [hidden]="getView()" class="navbar navbar-expand-lg topnav" style="padding: 0 15px !important; min-height: 50px;">
+	<div class="container-fluid d-flex align-items-center justify-content-between" style="height: 100%;">
+		<div class="d-flex align-items-center">
+			<img
+				src="/assets/img/ADAT-2.png"
+				width="150px"
+				height="40px"
+				*ngIf="isDesktopMenu()"
+			/>
+			<div
+				class="navbar-wrapper ml-2 pl-2"
+				style="border-left: white solid 1px"
+				*ngIf="isDesktopMenu()"
+			>
+				<a
+					class="navbar-brand"
+					href="javascript:void(0)"
+					style="pointer-events: none"
+					>{{ getTitle() }}</a
+				>
+			</div>
+			<div class="navbar-wrapper" *ngIf="isMobileMenu()">
+				<a
+					class="navbar-brand"
+					href="javascript:void(0)"
+					style="pointer-events: none"
+					>{{ getTitle() }}</a
+				>
+			</div>
+		</div>
+
+		<button
+			*ngIf="isMobileMenu()"
+			mat-raised-buttons
+			class="navbar-toggler btn-rht-mda-qury"
+			type="button"
+			(click)="sidebarToggle()"
+		>
+			<span class="sr-only">Toggle navigation</span>
+			<span class="navbar-toggler-icon icon-bar"></span>
+			<span class="navbar-toggler-icon icon-bar"></span>
+			<span class="navbar-toggler-icon icon-bar"></span>
+		</button>
+
+		<div class="d-flex align-items-center flex-grow-1" *ngIf="isDesktopMenu()">
+			<ul
+				class="navbar-nav flex-grow-1 d-flex flex-row align-items-center justify-content-center"
+			>
+			<li class="nav-item dropdown">
+				<a
+					class="nav-link"
+					href="javascript:void(0)"
+					id="navbarDropdownMenuLink"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false"
+				>
+					<span class="label-name-crect-stck-ad-nw-sctn-unt">
+						<i class="fa fa-university"></i></span
+					><i>Master</i></a
+				>
+				<div
+					class="dropdown-menu dropdown-menu"
+					aria-labelledby="navbarDropdownMenuLink"
+				>
+				<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[88] > -1"
+				[routerLink]="[menuItems[menuArray[88]].path]"
+				>{{ [menuItems[menuArray[88]].title] }}</a
+			>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[5] > -1"
+						[routerLink]="[menuItems[menuArray[5]].path]"
+						>{{ [menuItems[menuArray[5]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[4] > -1"
+						[routerLink]="[menuItems[menuArray[4]].path]"
+						>{{ [menuItems[menuArray[4]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[2] > -1"
+						[routerLink]="[menuItems[menuArray[2]].path]"
+						>{{ [menuItems[menuArray[2]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[1] > -1"
+						[routerLink]="[menuItems[menuArray[1]].path]"
+						>{{ [menuItems[menuArray[1]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[6] > -1"
+						[routerLink]="[menuItems[menuArray[6]].path]"
+						>{{ [menuItems[menuArray[6]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[75] > -1"
+						[routerLink]="[menuItems[menuArray[75]].path]"
+						>{{ [menuItems[menuArray[75]].title] }}</a
+					>
+					<!-- <a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[25] > -1"
+						[routerLink]="[menuItems[menuArray[25]].path]"
+						>{{ [menuItems[menuArray[25]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[39] > -1"
+						[routerLink]="[menuItems[menuArray[39]].path]"
+						>{{ [menuItems[menuArray[39]].title] }}</a
+					> -->
+					 <a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[8] > -1"
+						[routerLink]="[menuItems[menuArray[8]].path]"
+						>{{ [menuItems[menuArray[8]].title] }}</a
+					>
+					<!--
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[7] > -1"
+						[routerLink]="[menuItems[menuArray[7]].path]"
+						>{{ [menuItems[menuArray[7]].title] }}</a
+					> -->
+					<!-- <a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[36] > -1"
+						[routerLink]="[menuItems[menuArray[36]].path]"
+						>{{ [menuItems[menuArray[36]].title] }}</a
+					> -->
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[34] > -1"
+						[routerLink]="[menuItems[menuArray[34]].path]"
+						>{{ [menuItems[menuArray[34]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[12] > -1"
+						[routerLink]="[menuItems[menuArray[12]].path]"
+						>{{ [menuItems[menuArray[12]].title] }}</a
+					>
+			 
+					<!-- <a
+					class="dropdown-item"
+					href="javascript:void(0)"
+					*ngIf="menuArray[83] > -1"
+					[routerLink]="[menuItems[menuArray[83]].path]"
+					>{{ [menuItems[menuArray[83]].title] }}</a
+				>
+				
+				> -->
+					<!-- <a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[79] > -1"
+						[routerLink]="[menuItems[menuArray[79]].path]"
+						>{{ [menuItems[menuArray[79]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[81] > -1"
+						[routerLink]="[menuItems[menuArray[81]].path]"
+						>{{ [menuItems[menuArray[81]].title] }}</a
+					> -->
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[90] > -1"
+						[routerLink]="[menuItems[menuArray[90]].path]"
+						>{{ [menuItems[menuArray[90]].title] }}</a
+					>
+
+
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[91] > -1"
+						[routerLink]="[menuItems[menuArray[91]].path]"
+						>{{ [menuItems[menuArray[91]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[92] > -1"
+						[routerLink]="[menuItems[menuArray[92]].path]"
+						>{{ [menuItems[menuArray[92]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[93] > -1"
+						[routerLink]="[menuItems[menuArray[93]].path]"
+						>{{ [menuItems[menuArray[93]].title] }}</a
+					>
+					<a
+					class="dropdown-item"
+					href="javascript:void(0)"
+					*ngIf="menuArray[112] > -1"
+					[routerLink]="[menuItems[menuArray[112]].path]"
+					>{{ [menuItems[menuArray[112]].title] }}</a
+				> 
+
+				</div>
+			</li>
+			<!-- <li class="nav-item dropdown" *ngIf="menuArray[86] > -1">
+				<a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink"
+					data-toggle="dropdown" [routerLink]="[menuItems[menuArray[86]].path]" aria-haspopup="true"aria-expanded="false">
+					<span class="label-name-crect-stck-ad-nw-sctn-unt">
+						<i class="fa fa-th-large"  aria-hidden="true"></i></span>
+						
+						<i>Dashboard</i>						
+				</a>				
+			</li> -->
+
+			<li class="nav-item">
+				<a class="nav-link" [routerLink]="['/Lead']">
+					<span class="label-name-crect-stck-ad-nw-sctn-unt"> <i
+							class="fa fa-bullhorn"></i></span><i>Lead</i></a>
+			</li>
+
+			<li class="nav-item dropdown">
+				<a
+					class="nav-link"
+					href="javascript:void(0)"
+					id="navbarDropdownMenuLink"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false"
+				>
+					<span class="label-name-crect-stck-ad-nw-sctn-unt">
+						<i class="fa fa-credit-card"></i></span
+					><i>Transactions</i></a
+				>
+				<div
+					class="dropdown-menu dropdown-menu"
+					aria-labelledby="navbarDropdownMenuLink"
+				>
+					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Requirement']">Requirement</a>
+
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[115] > -1"
+						[routerLink]="[menuItems[menuArray[115]].path]"
+						>{{ [menuItems[menuArray[115]].title] }}</a
+					>
+					
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[116] > -1"
+						[routerLink]="[menuItems[menuArray[116]].path]"
+						>{{ [menuItems[menuArray[116]].title] }}</a
+					>
+					
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[94] > -1"
+						[routerLink]="[menuItems[menuArray[94]].path]"
+						>{{ [menuItems[menuArray[94]].title] }}</a
+					>
+					<a
+					class="dropdown-item"
+					href="javascript:void(0)"
+					*ngIf="menuArray[95] > -1"
+					[routerLink]="[menuItems[menuArray[95]].path]"
+					>{{ [menuItems[menuArray[95]].title] }}</a
+				>
+
+				<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[101] > -1"
+				[routerLink]="[menuItems[menuArray[101]].path]"
+				>{{ [menuItems[menuArray[101]].title] }}</a
+			>
+					
+			
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[96] > -1"
+						[routerLink]="[menuItems[menuArray[96]].path]"
+						>{{ [menuItems[menuArray[96]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[97] > -1"
+						[routerLink]="[menuItems[menuArray[97]].path]"
+						>{{ [menuItems[menuArray[97]].title] }}</a
+					>
+					<a
+					class="dropdown-item"
+					href="javascript:void(0)"
+					*ngIf="menuArray[98] > -1"
+					[routerLink]="[menuItems[menuArray[98]].path]"
+					>{{ [menuItems[menuArray[98]].title] }}</a
+				>
+				<a
+					class="dropdown-item"
+					href="javascript:void(0)"
+					*ngIf="menuArray[99] > -1"
+					[routerLink]="[menuItems[menuArray[99]].path]"
+					>{{ [menuItems[menuArray[99]].title] }}</a
+				>
+				
+				<a
+					class="dropdown-item"
+					href="javascript:void(0)"
+					*ngIf="menuArray[100] > -1"
+					[routerLink]="[menuItems[menuArray[100]].path]"
+					>{{ [menuItems[menuArray[100]].title] }}</a
+				>
+
+
+			<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[102] > -1"
+				[routerLink]="[menuItems[menuArray[102]].path]"
+				>{{ [menuItems[menuArray[102]].title] }}</a
+			>
+
+
+			<a
+			class="dropdown-item"
+			href="javascript:void(0)"
+			*ngIf="menuArray[103] > -1"
+			[routerLink]="[menuItems[menuArray[103]].path]"
+			>{{ [menuItems[menuArray[103]].title] }}</a
+		>
+
+		<a
+			class="dropdown-item"
+			href="javascript:void(0)"
+			*ngIf="menuArray[104] > -1"
+			[routerLink]="[menuItems[menuArray[104]].path]"
+			>{{ [menuItems[menuArray[104]].title] }}</a
+		>
+					<!-- <a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[100] > -1"
+						[routerLink]="[menuItems[menuArray[100]].path]"
+						>{{ [menuItems[menuArray[100]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[9] > -1"
+						[routerLink]="[menuItems[menuArray[9]].path]"
+						>{{ [menuItems[menuArray[9]].title] }}</a
+					> -->
+					<!-- <a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[35] > -1"
+						[routerLink]="[menuItems[menuArray[35]].path]"
+						>{{ [menuItems[menuArray[35]].title] }}</a
+					> -->
+					<!-- <a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[14] > -1"
+						[routerLink]="[menuItems[menuArray[14]].path]"
+						>{{ [menuItems[menuArray[14]].title] }}</a
+					> -->
+					<!-- <a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[3] > -1"
+						[routerLink]="[menuItems[menuArray[3]].path]"
+						>{{ [menuItems[menuArray[3]].title] }}</a
+					> -->
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[79] > -1"
+						[routerLink]="[menuItems[menuArray[79]].path]"
+						>{{ [menuItems[menuArray[79]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[81] > -1"
+						[routerLink]="[menuItems[menuArray[81]].path]"
+						>{{ [menuItems[menuArray[81]].title] }}</a
+					>
+					<a
+					class="dropdown-item"
+					href="javascript:void(0)"
+					*ngIf="menuArray[84] > -1"
+					[routerLink]="[menuItems[menuArray[84]].path]"
+					>{{ [menuItems[menuArray[84]].title] }}</a
+				>
+				<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[85] > -1"
+				[routerLink]="[menuItems[menuArray[85]].path]"
+				>{{ [menuItems[menuArray[85]].title] }}</a
+			><a
+			class="dropdown-item"
+			href="javascript:void(0)"
+			*ngIf="menuArray[89] > -1"
+			[routerLink]="[menuItems[menuArray[89]].path]"
+			>{{ [menuItems[menuArray[89]].title] }}</a
+		>
+		<a
+		class="dropdown-item"
+		href="javascript:void(0)"
+		*ngIf="menuArray[107] > -1"
+		[routerLink]="[menuItems[menuArray[107]].path]"
+		>{{ [menuItems[menuArray[107]].title] }}</a
+	> 
+
+<a
+class="dropdown-item"
+href="javascript:void(0)"
+*ngIf="menuArray[113] > -1"
+[routerLink]="[menuItems[menuArray[113]].path]"
+>{{ [menuItems[menuArray[113]].title] }}</a
+> 
+
+<a
+class="dropdown-item"
+href="javascript:void(0)"
+*ngIf="menuArray[114] > -1"
+[routerLink]="[menuItems[menuArray[114]].path]"
+>{{ [menuItems[menuArray[114]].title] }}</a
+> 
+
+				</div>
+			</li>
+
+			<li class="nav-item dropdown">
+				<a
+					class="nav-link"
+					href="javascript:void(0)"
+					id="navbarDropdownMenuLink"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false"
+				>
+					<span class="label-name-crect-stck-ad-nw-sctn-unt">
+						<i class="fa fa-book"></i></span
+					><i>Account Voucher</i></a
+				>
+				<div
+					class="dropdown-menu dropdown-menu"
+					aria-labelledby="navbarDropdownMenuLink"
+				>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[19] > -1"
+						[routerLink]="[menuItems[menuArray[19]].path]"
+						>{{ [menuItems[menuArray[19]].title] }}</a
+					>
+					
+
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[105] > -1"
+						[routerLink]="[menuItems[menuArray[105]].path]"
+						>{{ [menuItems[menuArray[105]].title] }}</a
+					> 
+
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[106] > -1"
+						[routerLink]="[menuItems[menuArray[106]].path]"
+						>{{ [menuItems[menuArray[106]].title] }}</a
+					> 
+
+					<!-- <a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[16] > -1"
+						[routerLink]="[menuItems[menuArray[16]].path]"
+						>{{ [menuItems[menuArray[16]].title] }}</a
+					>-->
+					
+
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[17] > -1"
+						[routerLink]="[menuItems[menuArray[17]].path]"
+						>{{ [menuItems[menuArray[17]].title] }}</a
+					>
+					
+				</div>
+			</li>
+<!-- 
+			<li class="nav-item dropdown">
+				<a
+					class="nav-link"
+					href="javascript:void(0)"
+					id="navbarDropdownMenuLink"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false"
+				>
+					<span class="label-name-crect-stck-ad-nw-sctn-unt">
+						<i class="fa fa-window-restore"></i></span
+					><i>Account Report</i></a
+				>
+				<div
+					class="dropdown-menu dropdown-menu"
+					aria-labelledby="navbarDropdownMenuLink"
+				>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[10] > -1"
+						[routerLink]="[menuItems[menuArray[10]].path]"
+						>{{ [menuItems[menuArray[10]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[20] > -1"
+						[routerLink]="[menuItems[menuArray[20]].path]"
+						>{{ [menuItems[menuArray[20]].title] }}</a
+					>
+			
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[40] > -1"
+						[routerLink]="[menuItems[menuArray[40]].path]"
+						>{{ [menuItems[menuArray[40]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[29] > -1"
+						[routerLink]="[menuItems[menuArray[29]].path]"
+						>{{ [menuItems[menuArray[29]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[41] > -1"
+						[routerLink]="[menuItems[menuArray[41]].path]"
+						>{{ [menuItems[menuArray[41]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[42] > -1"
+						[routerLink]="[menuItems[menuArray[42]].path]"
+						>{{ [menuItems[menuArray[42]].title] }}</a
+					>
+				</div>
+			</li> -->
+
+			<!-- <li class="nav-item dropdown">
+				<a
+					class="nav-link"
+					href="javascript:void(0)"
+					id="navbarDropdownMenuLink"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false"
+				>
+					<span class="label-name-crect-stck-ad-nw-sctn-unt">
+						<i class="fa fa-money"></i></span
+					><i>Tax Report</i></a
+				>
+				<div
+					class="dropdown-menu dropdown-menu"
+					aria-labelledby="navbarDropdownMenuLink"
+				>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[44] > -1"
+						[routerLink]="[menuItems[menuArray[44]].path]"
+						>{{ [menuItems[menuArray[44]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[73] > -1"
+						[routerLink]="[menuItems[menuArray[73]].path]"
+						>{{ [menuItems[menuArray[73]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[69] > -1"
+						[routerLink]="[menuItems[menuArray[69]].path]"
+						>{{ [menuItems[menuArray[69]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[45] > -1"
+						[routerLink]="[menuItems[menuArray[45]].path]"
+						>{{ [menuItems[menuArray[45]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[68] > -1"
+						[routerLink]="[menuItems[menuArray[68]].path]"
+						>{{ [menuItems[menuArray[68]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[46] > -1"
+						[routerLink]="[menuItems[menuArray[46]].path]"
+						>{{ [menuItems[menuArray[46]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[70] > -1"
+						[routerLink]="[menuItems[menuArray[70]].path]"
+						>{{ [menuItems[menuArray[70]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[47] > -1"
+						[routerLink]="[menuItems[menuArray[47]].path]"
+						>{{ [menuItems[menuArray[47]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[48] > -1"
+						[routerLink]="[menuItems[menuArray[48]].path]"
+						>{{ [menuItems[menuArray[48]].title] }}</a
+					>
+				</div>
+			</li> -->
+
+			<li class="nav-item dropdown">
+				<a
+					class="nav-link"
+					href="javascript:void(0)"
+					id="navbarDropdownMenuLink"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false"
+				>
+					<span class="label-name-crect-stck-ad-nw-sctn-unt">
+						<i class="fa fa-database"></i></span
+					><i>Report</i></a
+				>
+				<div
+					class="dropdown-menu dropdown-menu"
+					aria-labelledby="navbarDropdownMenuLink"
+				>
+					<!-- <a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[80] > -1"
+						[routerLink]="[menuItems[menuArray[80]].path]"
+						>{{ [menuItems[menuArray[80]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[82] > -1"
+						[routerLink]="[menuItems[menuArray[82]].path]"
+						>{{ [menuItems[menuArray[82]].title] }}</a
+					>
+					<a
+					class="dropdown-item"
+					href="javascript:void(0)"
+					*ngIf="menuArray[86] > -1"
+					[routerLink]="[menuItems[menuArray[86]].path]"
+					>{{ [menuItems[menuArray[86]].title] }}</a
+				>
+
+				<a class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[87] > -1"
+				[routerLink]="[menuItems[menuArray[87]].path]"
+				>{{ [menuItems[menuArray[87]].title] }}</a>
+
+				<a class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[30] > -1"
+				[routerLink]="[menuItems[menuArray[30]].path]"
+				>{{ [menuItems[menuArray[30]].title] }}</a>
+
+				<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[20] > -1"
+				[routerLink]="[menuItems[menuArray[20]].path]"
+				>{{ [menuItems[menuArray[20]].title] }}</a>
+				<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[32] > -1"
+				[routerLink]="[menuItems[menuArray[32]].path]"
+				>{{ [menuItems[menuArray[32]].title] }}</a> -->
+				
+				<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[10] > -1"
+				[routerLink]="[menuItems[menuArray[10]].path]"
+				>{{ [menuItems[menuArray[10]].title] }}</a
+			>
+			<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[111] > -1"
+				[routerLink]="[menuItems[menuArray[111]].path]"
+				>{{ [menuItems[menuArray[111]].title] }}</a>
+				
+				<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[23] > -1"
+				[routerLink]="[menuItems[menuArray[23]].path]"
+				>{{ [menuItems[menuArray[23]].title] }}</a>
+
+				<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[52] > -1"
+				[routerLink]="[menuItems[menuArray[52]].path]"
+				>{{ [menuItems[menuArray[52]].title] }}</a>
+			
+				<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[108] > -1"
+				[routerLink]="[menuItems[menuArray[108]].path]"
+				>{{ [menuItems[menuArray[108]].title] }}</a>
+				
+				<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[109] > -1"
+				[routerLink]="[menuItems[menuArray[109]].path]"
+				>{{ [menuItems[menuArray[109]].title] }}</a>
+				
+				<a
+				class="dropdown-item"
+				href="javascript:void(0)"
+				*ngIf="menuArray[110] > -1"
+				[routerLink]="[menuItems[menuArray[110]].path]"
+				>{{ [menuItems[menuArray[110]].title] }}</a>
+				<!-- <a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[21] > -1"
+						[routerLink]="[menuItems[menuArray[21]].path]"
+						>{{ [menuItems[menuArray[21]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[27] > -1"
+						[routerLink]="[menuItems[menuArray[27]].path]"
+						>{{ [menuItems[menuArray[27]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[31] > -1"
+						[routerLink]="[menuItems[menuArray[31]].path]"
+						>{{ [menuItems[menuArray[31]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[55] > -1"
+						[routerLink]="[menuItems[menuArray[55]].path]"
+						>{{ [menuItems[menuArray[55]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[61] > -1"
+						[routerLink]="[menuItems[menuArray[61]].path]"
+						>{{ [menuItems[menuArray[61]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[28] > -1"
+						[routerLink]="[menuItems[menuArray[28]].path]"
+						>{{ [menuItems[menuArray[28]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[60] > -1"
+						[routerLink]="[menuItems[menuArray[60]].path]"
+						>{{ [menuItems[menuArray[60]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[67] > -1"
+						[routerLink]="[menuItems[menuArray[67]].path]"
+						>{{ [menuItems[menuArray[67]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[30] > -1"
+						[routerLink]="[menuItems[menuArray[30]].path]"
+						>{{ [menuItems[menuArray[30]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[59] > -1"
+						[routerLink]="[menuItems[menuArray[59]].path]"
+						>{{ [menuItems[menuArray[59]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[80] > -1"
+						[routerLink]="[menuItems[menuArray[80]].path]"
+						>{{ [menuItems[menuArray[80]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[82] > -1"
+						[routerLink]="[menuItems[menuArray[82]].path]"
+						>{{ [menuItems[menuArray[82]].title] }}</a
+					> -->
+					<!-- <a class="dropdown-item" href="javascript:void(0)" *ngIf="menuArray[12]>-1" [routerLink]="[menuItems[menuArray[12]].path]" >{{[menuItems[menuArray[12]].title]}}</a > -->
+				</div>
+			</li>
+
+			<!-- <li class="nav-item dropdown">
+				<a
+					class="nav-link"
+					href="javascript:void(0)"
+					id="navbarDropdownMenuLink"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false"
+				>
+					<span class="label-name-crect-stck-ad-nw-sctn-unt">
+						<i class="fa fa-cog"></i></span
+					><i>General Settings</i></a
+				>
+				<div
+					class="dropdown-menu dropdown-menu"
+					aria-labelledby="navbarDropdownMenuLink"
+				>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[75] > -1"
+						[routerLink]="[menuItems[menuArray[75]].path]"
+						>{{ [menuItems[menuArray[75]].title] }}</a
+					>
+					<a
+						class="dropdown-item"
+						href="javascript:void(0)"
+						*ngIf="menuArray[76] > -1"
+						[routerLink]="[menuItems[menuArray[76]].path]"
+						>{{ [menuItems[menuArray[76]].title] }}</a
+					>
+				</div>
+			</li> -->
+			</ul>
+			<ul class="navbar-nav d-flex flex-row align-items-center">
+				<li class="nav-item">
+					<a class="nav-link" style="margin: 0 10px">
+						<i
+							class="fa fa-user-circle-o"
+							aria-hidden="true"
+							style="
+								margin-top: -2px;
+								margin-left: 5px;
+								margin-right: 5px;
+								font-size: 15px;
+							"
+						></i
+						>{{ uname }}</a
+					>
+				</li>
+				<li class="nav-item">
+					<a
+						class="nav-link"
+						(click)="logout()"
+						style="cursor: pointer"
+					>
+						<i
+							class="fa fa-power-off"
+							aria-hidden="true"
+							style="
+								margin-top: -2px;
+								margin-left: 5px;
+								margin-right: 5px;
+								font-size: 15px;
+							"
+						></i
+						>Logout</a
+					>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>

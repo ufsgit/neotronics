@@ -1,0 +1,164 @@
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+  display: none;
+}
+
+::ng-deep .mat-input-element {
+  padding-left: 15px !important;
+}
+
+::ng-deep .mat-form-field-infix {
+  border-bottom: 0.84375em solid transparent;
+}
+
+input {
+  padding-left: 15px !important;
+}
+
+.for-input-selct-tblelst {
+  margin: 10px 0px 25px 0px;
+  padding: 5px 0px !important;
+  border: #d3d3d3 solid 1px !important;
+}
+
+.my-disable {
+  pointer-events: none;
+}
+
+.disable-div {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+#overlay {
+  position: fixed;
+  /* Sit on top of the page content */
+  display: none;
+  /* Hidden by default */
+  width: 100%;
+  /* Full width (cover the whole page) */
+  height: 100%;
+  /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Black background with opacity */
+  z-index: 2;
+  /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer;
+  /* Add a pointer on hover */
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  /* Firefox */
+}
+
+
+/* .printz .printable th {
+    border: 1px solid #e6e4e4;
+    font-weight: bold;
+    padding: 10px 5px;
+    background: #efefef;
+  } */
+/* .printz .printable td,th {
+    border: 1px solid #e6e4e4;
+    padding: 8px 5px;
+    text-align: center;
+    font-size: 15px;
+    font-family: "Montserrat", sans-serif;
+  } */
+/* .min-hgt td {
+    height: 5px !important;
+    padding: 0 !important;
+  } */
+
+/* .printz .printable .ftright {
+    text-align: right !important;
+  }
+  .printz .notw {
+    border: none !important;
+  }
+
+ 
+  @media print {
+  
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .terms-container {
+      flex: 1; 
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      margin-bottom: 50px; 
+    }
+  
+    .page-break {
+      position: relative; 
+      margin-top: auto; 
+    }
+  
+    .footer-banner {
+      position: relative;
+      background-color: black;
+      height: 50px;
+      margin-top: 20px;
+    }
+  
+   
+    .footer-banner {
+      page-break-before: always; 
+    }
+    
+    .page-break h5 {
+      text-decoration: underline;
+      margin-top: 0 !important;
+    }
+  
+    .page-break p {
+      font-size: 13px;
+      margin-top: 3px !important;
+      margin-bottom: 0px !important;
+    }
+    @media print {
+      .page-break {
+        page-break-before: always; 
+        margin-top: 50px; 
+      }
+    
+      .content {
+        page-break-inside: avoid; 
+      }
+    } 
+  
+  }
+  
+  @media print {
+    .page-break {
+      page-break-before: always; 
+      margin-top: 50px; 
+    }
+  
+    .content {
+      page-break-inside: avoid; 
+    }
+  }
+  
+  
+  .txleft{
+    text-align: left! important;
+  } */
