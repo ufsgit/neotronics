@@ -210,13 +210,13 @@ console.log(formattedDate);
 const key = `abhrami/${formattedDate}_${file.name}`;
   
 		const bucket = new S3({
-		  accessKeyId: " AKIAX37YDYI4ACBOVVMU",
-		  secretAccessKey: "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",
-		  region: "us-east-2",
+		  accessKeyId: environment.aws.accessKeyId,
+		  secretAccessKey: environment.aws.secretAccessKey,
+		  region: environment.aws.region,
 		});
   
 		const params = {
-		  Bucket: "ufsnabeelphotoalbum",
+		  Bucket: environment.aws.bucket,
 		  Key: key,
 		  Body: file,
 		  ACL: "public-read",
