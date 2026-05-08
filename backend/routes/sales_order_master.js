@@ -1,16 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var Sales_Order_Master = require('../models/sales_order_master');
+const asyncHandler = require("../helpers/async-handler");
+const { sendSuccess } = require("../helpers/api-response");
 
-router.post('/Save_Sales_Order/', async function (req, res, next) {
-    try {
-        const resp = await Sales_Order_Master.Save_Sales_Order(req.body);
-        return res.send(resp);
-    } catch (e) {
-        console.log(e);
-        return res.send(e);
-    }
-});
+router.post('/Save_Sales_Order/', asyncHandler(async function (req, res, next) {
+    const resp = await Sales_Order_Master.Save_Sales_Order(req.body, { log: req.log });
+    return sendSuccess(res, { message: "Saved", data: Array.isArray(resp) ? resp : [resp] });
+}));
 
 router.get('/Search_Sales_Order', function (req, res, next) {
     try {

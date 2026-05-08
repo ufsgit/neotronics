@@ -29,6 +29,7 @@ import { currencydetails } from '../../../models/currencydetails';
 import { User_Details } from '../../../models/User_Details';
 import { payment_term } from '../../../models/payment_term';
 import { Sales_Master_Service } from '../../../services/Sales_Master.Service';
+import { Requirement_Master_Service } from '../../../services/Requirement_Master.Service';
 import { RequirementWorkflowService } from '../../../services/RequirementWorkflow.Service';
 import { CommonModule } from '@angular/common';
 import { DecimalPipe } from '@angular/common';
@@ -52,7 +53,7 @@ templateUrl: './Quotation.component.html',
 styleUrls: ['./Quotation.component.css'],
 providers: [
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},]
+    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},DecimalPipe]
 })
 
 export class QuotationComponent implements OnInit, AfterViewInit  {
@@ -77,8 +78,8 @@ export class QuotationComponent implements OnInit, AfterViewInit  {
   }
   Quotation_Master_Data:Quotation_Master[]
 Quotation_Master_:Quotation_Master= new Quotation_Master();
-Quotation_Details_Data:Quotation_Details[]
-Quotation_Details_Data1:Quotation_Details[]
+Quotation_Details_Data:Quotation_Details[];
+Quotation_Details_Data1:Quotation_Details[];
 Quotation_Details_:Quotation_Details= new Quotation_Details();
 
 Quotation_Details_Temp_ : Quotation_Details = new Quotation_Details();
@@ -96,12 +97,12 @@ Item_Group_Search:Item_Group = new Item_Group();
 Currency_Search:currencydetails = new currencydetails();
 
 currency: currencydetails = new currencydetails();
-currencyData: currencydetails[];
+currencyData: currencydetails[] = [];
 Currency_Temp: currencydetails = new currencydetails();
 
 Employee_Search:User_Details = new User_Details();
 Payment_Term:payment_term = new payment_term();
-Payment_Term_Data: payment_term[];
+Payment_Term_Data: payment_term[] = [];
 Payment_Term_Temp: payment_term = new payment_term();
 Bill_Mode_Data:Bill_Mode[]
 Bill_Mode_:Bill_Mode= new Bill_Mode();
@@ -218,7 +219,7 @@ SalesQuotationMaster_Id_Edit: number;
 /*** Added on 17-10-2024 */
 packingListPendingView: Boolean;
 /*** Added on 18-10-2024 */
-PaymentTermData: payment_term[];
+PaymentTermData: payment_term[] = [];
 /** Added on 19-10-2024 */
 packinglistPendingData=[];
 /** Added on 24-10-2024 */
@@ -248,6 +249,7 @@ breakPage: boolean = false;
 constructor(public Sales_Master_Service_: Sales_Master_Service, public currencydetails_Service_: currencydetails_Service, public User_Details_Service_: User_Details_Service, private route: ActivatedRoute, private router: Router, public dialogBox: MatDialog
         , private el: ElementRef, private zone: NgZone, private renderer: Renderer2, public purchaseordermaster_Service_: purchaseordermaster_Service, public Employee_Details_Service_: Employee_Details_Service, public Stock_Service_: Stock_Service,
         public Item_Group_Service_: Item_Group_Service, public payment_term_Service_: payment_term_Service, public Client_Accounts_Service_:Client_Accounts_Service,
+        public Requirement_Master_Service_: Requirement_Master_Service,
         public RequirementWorkflowService_: RequirementWorkflowService,
         private cdr: ChangeDetectorRef
         // public decimalPipe: DecimalPipe
@@ -312,14 +314,42 @@ Page_Load()
         try {
             const parsed = JSON.parse(reqData);
             this.RequirementMaster_Id = Number(parsed.RequirementMaster_Id || 0);
-        } catch(e) { this.RequirementMaster_Id = 0; }
-        localStorage.removeItem('Requirement_For_Quotation');
-        if (this.RequirementMaster_Id > 0) {
-            this.Entry_View = true;
-            this.Edit_Sales = 0;
-            this.Sales_Print = true;
-            return;
+            const pendingItem = parsed.PendingItem;
+
+            if (this.RequirementMaster_Id > 0) {
+                this.Entry_View = true;
+                this.Edit_Sales = 0;
+                this.Sales_Print = true;
+                
+                // Load Requirement Master to autofill Customer, Currency, etc.
+                this.Requirement_Master_Service_.Load_RequirementMaster(this.RequirementMaster_Id).subscribe(result => {
+                    const master = (result && result[0] && result[0][0]) ? result[0][0] : null;
+                    if (master) {
+                        this.Customer_ = { 
+                            Client_Accounts_Id: master.Account_Party_Id, 
+                            Client_Accounts_Name: master.Client_Accounts_Name 
+                        } as any;
+                        this.currency = { 
+                            CurrencyDetails_Id: master.CurrencyDetails_Id, 
+                            CurrecnyName: master.CurrecnyName 
+                        } as any;
+                        // Add other header fields as needed
+                    }
+                    
+                    if (pendingItem) {
+                        this.Quotation_Details_Data = [Object.assign({}, pendingItem)];
+                        this.Final_Amounts();
+                    }
+                });
+                
+                localStorage.removeItem('Requirement_For_Quotation');
+                return;
+            }
+        } catch(e) { 
+            console.error('Error parsing Requirement_For_Quotation', e);
+            this.RequirementMaster_Id = 0; 
         }
+        localStorage.removeItem('Requirement_For_Quotation');
     }
 
     if(this.SalesQuotationMaster_Id >0)
@@ -334,12 +364,12 @@ Page_Load()
 }
 Load_Company() 
     {   
-    this.Sales_Master_Service_.Load_Company().subscribe(Rows => {    
-    if (Rows != null) {
+    this.Sales_Master_Service_.Load_Company().subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;    
+    if (Rows != null && Rows[0] != null && Array.isArray(Rows[0]) && Rows[0].length > 0) {
         debugger;
     this.Print_Company_ = Rows[0][0];
     this.Company_ = Rows[0][0];
-    this.Bank_ = Rows[1];
+    this.Bank_ = Rows[1] || [];
  }
  this.issLoading = false;
  },
@@ -349,41 +379,49 @@ Load_Company()
  });
 }
     Load_Currency() {
-        this.currencydetails_Service_.Search_currencydetails('').subscribe(Rows => {
-            if (Rows != null) {
-                this.currencyData = Rows[0];        
-                this.Currency_Temp.CurrencyDetails_Id = 0;
-                this.Currency_Temp.CurrecnyName = "Select";
-                this.currencyData.unshift(this.Currency_Temp);
-                this.currency = this.currencyData[0];
-                this.Currency_Search = this.currencyData[0];
-            }
+        this.currencydetails_Service_.Search_currencydetails('').subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+            // API returns { success: true, data: [[...]] } via sendSuccess wrapper
+            const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+            const list = Array.isArray(rawData) && Array.isArray(rawData[0]) ? rawData[0]
+                       : Array.isArray(rawData) ? rawData : [];
+            this.currencyData = list;
+            if (!this.currencyData) { this.currencyData = []; }
+            this.Currency_Temp.CurrencyDetails_Id = 0;
+            this.Currency_Temp.CurrecnyName = 'Select';
+            this.currencyData.unshift(this.Currency_Temp);
+            this.currency = this.currencyData[0];
+            this.Currency_Search = this.currencyData[0];
             this.issLoading = false;
         },
-            Rows => {
+            err => {
                 this.issLoading = false;
-                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
+                this.currencyData = this.currencyData || [];
+                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error loading Currency', Type: "2" } });
             });
     }
 
     Load_Item_Group() {
-        this.Item_Group_Service_.Load_Item_Group().subscribe(Rows => {
-            if (Rows != null) {
-                this.itemGroupData = Rows[0];
-                this.itemGroup_Temp.Item_Group_Id = 0;
-                this.itemGroup_Temp.Item_Group_Name = "Select";
-                this.itemGroupData.unshift(this.itemGroup_Temp);
-                this.Item_Group_Search = this.itemGroupData[0];
-            }
+        this.Item_Group_Service_.Load_Item_Group().subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+            // API returns { success: true, data: [[...]] } via sendSuccess wrapper
+            const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+            const list = Array.isArray(rawData) && Array.isArray(rawData[0]) ? rawData[0]
+                       : Array.isArray(rawData) ? rawData : [];
+            this.itemGroupData = list;
+            if (!this.itemGroupData) { this.itemGroupData = []; }
+            this.itemGroup_Temp.Item_Group_Id = 0;
+            this.itemGroup_Temp.Item_Group_Name = 'Select';
+            this.itemGroupData.unshift(this.itemGroup_Temp);
+            this.Item_Group_Search = this.itemGroupData[0];
             this.issLoading = false;
         },
-            Rows => {
+            err => {
                 this.issLoading = false;
-                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
+                this.itemGroupData = this.itemGroupData || [];
+                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error loading Item Group', Type: "2" } });
             });
     }
     // Load_Employees() {
-    //         this.User_Details_Service_.Search_User_Details('',this.User_Type,this.Login_User_Id).subscribe(Rows => {
+    //         this.User_Details_Service_.Search_User_Details('',this.User_Type,this.Login_User_Id).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
     //             if (Rows != null) {
     //                 this.EmployeeData = Rows[0];
     //                 this.Employee_Temp.User_Details_Id = 0;
@@ -400,19 +438,23 @@ Load_Company()
     //             });
     // }
     Load_Payment_Term() {
-        this.payment_term_Service_.Load_Payment_Term().subscribe(Rows => {
-            if (Rows != null) {
-                this.PaymentTermData = Rows[0];
-                this.Payment_Term_Temp.payment_Term_ID = 0;
-                this.Payment_Term_Temp.Payment_Term_Description = "Select";
-                this.PaymentTermData.unshift(this.Payment_Term_Temp);
-                this.Payment_Term = this.PaymentTermData[0];
-            }
+        this.payment_term_Service_.Load_Payment_Term().subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+            // API returns { success: true, data: [[...]] } via sendSuccess wrapper
+            const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+            const list = Array.isArray(rawData) && Array.isArray(rawData[0]) ? rawData[0]
+                       : Array.isArray(rawData) ? rawData : [];
+            this.PaymentTermData = list;
+            if (!this.PaymentTermData) { this.PaymentTermData = []; }
+            this.Payment_Term_Temp.payment_Term_ID = 0;
+            this.Payment_Term_Temp.Payment_Term_Description = 'Select';
+            this.PaymentTermData.unshift(this.Payment_Term_Temp);
+            this.Payment_Term = this.PaymentTermData[0];
             this.issLoading = false;
         },
-            Rows => {
+            err => {
                 this.issLoading = false;
-                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
+                this.PaymentTermData = this.PaymentTermData || [];
+                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error loading Payment Term', Type: "2" } });
             });
     }
 
@@ -587,30 +629,47 @@ New_Date_Format(Date_)
         return this.date;
 }
 
-Print_Click()
-{  
-    this.Final_Amounts();
-    // Dynamic calculation of total quantity for the print layout
-    this.Quotation_Master_.Total_Quantity = this.Quotation_Details_Data.reduce((acc, curr) => acc + Number(curr.Quantity || 0), 0);
-    if (this.Payment_Term && this.Payment_Term.payment_Term_ID > 0) {
-        this.Payment_Term_Description = this.Payment_Term.Payment_Term_Description;
+Print_Click() {
+    this.Generate_Professional_PDF('print');
+}
+
+Preview_PDF() {
+    this.Generate_Professional_PDF('preview');
+}
+
+Download_PDF() {
+    this.Generate_Professional_PDF('download');
+}
+
+Generate_Professional_PDF(mode: string) {
+    const id = this.Quotation_Master_.SalesQuotationMaster_Id;
+    if (!id || id === 0) {
+        alert("Please save the quotation before generating PDF.");
+        return;
     }
-    this.Quotation_Master_.EntryDate = this.formatDate(this.Quotation_Master_.EntryDate);
-    this.Quotation_Master_.PrintDate = this.formatPrintDate(this.Quotation_Master_.EntryDate);
-    setTimeout(() => {
-        const printContent = document.getElementById("Print_Div1");
-        if (!printContent) return;
-        let popupWinindow = window.open('', '_blank', 'width=800,height=900,scrollbars=yes,menubar=no,toolbar=no,location=no,status=no,titlebar=no');
-        popupWinindow.document.open();
-        popupWinindow.document.write(
-            '<html><head><title>Quotation</title><style>' +
-            this.Get_Quotation_Print_Css() +
-            '</style></head><body onload="window.print(); window.close();">' +
-            printContent.innerHTML +
-            '</body></html>'
-        );
-        popupWinindow.document.close();
-    }, 100);
+
+    this.issLoading = true;
+    this.Sales_Master_Service_.Print_Quotation(id).subscribe(blob => {
+        this.issLoading = false;
+        console.log("Received PDF blob size:", blob.size);
+        const url = window.URL.createObjectURL(blob);
+        
+        if (mode === 'download') {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Quotation_${this.Quotation_Master_.QuotationNo || id}.pdf`;
+            a.click();
+        } else {
+            // Open in new tab for print or preview
+            window.open(url, '_blank');
+        }
+        
+        setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+    }, err => {
+        this.issLoading = false;
+        console.error('Print error:', err);
+        alert("Error generating professional PDF.");
+    });
 }
 
 
@@ -1341,7 +1400,7 @@ Change_Bill_Status(Sales_Master_Id,BillType,index)
    if(result=='Yes')
    {
    this.issLoading=true;   
-   this.Sales_Master_Service_.Change_Bill_Status(Sales_Master_Id,BillType).subscribe(Status => {       
+   this.Sales_Master_Service_.Change_Bill_Status(Sales_Master_Id,BillType).subscribe((Status: any) => {       
     Status=Status[0];
    if(Status[0].Sales_Master_Id_>0){
      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Status Changed',Type:"false"}});
@@ -1367,34 +1426,31 @@ Delete_Quotation_Master(SalesQuotationMaster_Id,index)
     ( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Do you want to delete ?',Type:"true",Heading:'Confirm'}});
     dialogRef.afterClosed().subscribe(result =>        
     {    
-    if(result=='Yes')
-    {
-    this.issLoading=true;
-    debugger
-    this.Sales_Master_Service_.Delete_Quotation_Master(SalesQuotationMaster_Id).subscribe(Delete_status => {    
-        debugger   
-        Delete_status=Delete_status[0];
-        if(Delete_status[0].SalesQuotationMaster_Id_==-1){
-            const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Cannot Delete',Type:"3"}});
-            this.issLoading=false;           
-            return;
-          }
-  else if(Delete_status[0].SalesQuotationMaster_Id_>0){
-    this.Quotation_Master_Data.splice(index, 1);
-      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});      
-      this.Search_Quotation();
-    }
-    else
-    {
-    //this.Sales_Master_Data.splice(index, 1);
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
-    }
-    this.issLoading=false;
-    },
-    Rows => {
-        this.issLoading=false;
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error',Type:"2"}});
-    });
+    if (result == 'Yes') {
+        this.issLoading = true;
+        this.Sales_Master_Service_.Delete_Quotation_Master(SalesQuotationMaster_Id)
+        .pipe(finalize(() => this.issLoading = false))
+        .subscribe({
+            next: (response: any) => {
+                if (response.success && response.data){
+                    const deleteStatus = response.data;
+                    if (deleteStatus.SalesQuotationMaster_Id_ == -1) {
+                        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Cannot Delete: Referenced in other documents', Type: "3" } });
+                    } else if (deleteStatus.SalesQuotationMaster_Id_ > 0) {
+                        this.Quotation_Master_Data.splice(index, 1);
+                        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted Successfully', Type: "false" } });
+                        this.Search_Quotation();
+                    } else {
+                        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error occurred', Type: "2" } });
+                    }
+                } else {
+                    this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error occurred', Type: "2" } });
+                }
+            },
+            error: (err) => {
+                this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error occurred while deleting', Type: "2" } });
+            }
+        });
     }
     });
 }
@@ -1403,7 +1459,7 @@ Load_Bill_Type()
 {
     debugger;
     var value=1;
-        this.Sales_Master_Service_.Load_Bill_Type(value).subscribe(Rows => {    
+        this.Sales_Master_Service_.Load_Bill_Type(value).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;    
         if (Rows != null) {
         this.Bill_Type_Data = Rows[0];        
         this.Bill_Type_Temp.Bill_Type_Id = 0;
@@ -1422,7 +1478,7 @@ Load_Bill_Type()
 }
 Load_Bill_Mode()
 {
-        this.Sales_Master_Service_.Load_Bill_Mode().subscribe(Rows => {    
+        this.Sales_Master_Service_.Load_Bill_Mode().subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;    
         if (Rows != null) {
         this.Bill_Mode_Data = Rows[0];        
         this.Bill_Mode_Temp.Bill_Mode_Id = 0;
@@ -1439,7 +1495,7 @@ Load_Bill_Mode()
 }
 Load_Cess()
 {
-    this.Sales_Master_Service_.Load_Cess().subscribe(Rows => {        
+    this.Sales_Master_Service_.Load_Cess().subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;        
         if (Rows != null) {
          //   Rows=0;//Rows[0];
             this.Cess = 0;//Rows[0].Cess;
@@ -1454,7 +1510,7 @@ Load_Cess()
 Load_Company_bank()
 {
     debugger;
-    this.Sales_Master_Service_.Load_Company_Bank().subscribe(Rows => {   
+    this.Sales_Master_Service_.Load_Company_Bank().subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;   
       if (Rows != null) {
             debugger;
             this.Bank_Data=Rows[0];
@@ -1479,7 +1535,7 @@ Search_Customer_Typeahead(event: any)
       {
      this.issLoading = true;
      debugger
-    this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39',Value).subscribe(Rows => {   
+    this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39',Value).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;   
         debugger;  
     if (Rows != null) {
         debugger;  
@@ -1500,7 +1556,7 @@ Search_Customer_Typeahead(event: any)
     var Value = "";    
     Value = event.target.value;      
      this.issLoading = true;
-    this.purchaseordermaster_Service_.Search_PurchaseOrderNumber_Typeahead(Value).subscribe(Rows => {     
+    this.purchaseordermaster_Service_.Search_PurchaseOrderNumber_Typeahead(Value).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;     
     if (Rows != null) {
         this.PurchaseOrder_Data = Rows[0];
     }
@@ -1516,7 +1572,7 @@ Search_Customer_Typeahead(event: any)
      var Value = "";     
      Value = event.target.value;       
       this.issLoading = true;
-     this.User_Details_Service_.Search_User_Details(Value,this.User_Type,this.Login_User_Id).subscribe(Rows => {     
+     this.User_Details_Service_.Search_User_Details(Value,this.User_Type,this.Login_User_Id).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;     
      if (Rows != null) {
          this.EmployeeData = Rows[0];
      }
@@ -1533,7 +1589,7 @@ Search_Customer_Typeahead(event: any)
      Value = event.target.value;
        console.log(Value)
       this.issLoading = true;
-     this.Sales_Master_Service_.Get_Purchase_Item_Code_Typeahead(Value).subscribe(Rows => {     
+     this.Sales_Master_Service_.Get_Purchase_Item_Code_Typeahead(Value).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;     
      if (Rows != null) {
         debugger
          this.ItemCodeData = Rows[0];
@@ -1559,7 +1615,7 @@ if(this.Barcode_.Item_Code)
 }   
      this.Quotation_Details_.ItemName=Value;
       this.issLoading = true;
-     this.Sales_Master_Service_.Search_Item_Typeahead(Value).subscribe(Rows => {    
+     this.Sales_Master_Service_.Search_Item_Typeahead(Value).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;    
      if (Rows != null) {
          this.Stock_Data = Rows[0];         
      }
@@ -1590,7 +1646,7 @@ Search_Barcode_Typeahead(event: any)
         Value = event.target.value;
         {
         this.issLoading = true;
-        this.Sales_Master_Service_.Search_Barcode_Typeahead(Value).subscribe(Rows => {
+        this.Sales_Master_Service_.Search_Barcode_Typeahead(Value).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
             if (Rows != null) 
             {
                 this.Barcode_Data = Rows[0];
@@ -1623,7 +1679,7 @@ Search_Customer_Typeahead(event: any)
             
             //  var Temp_Group_Id='3,'+this.Employee_Id
             this.issLoading = true;
-    this.Sales_Master_Service_.Search_Customer_Typeahead('1,3',Value).subscribe(Rows => {   
+    this.Sales_Master_Service_.Search_Customer_Typeahead('1,3',Value).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;   
         if (Rows != null) {
             this.Customer_Data = Rows[0];
     }
@@ -1658,7 +1714,7 @@ Employee_Typeahead(event: any)
         // if(this.Item_Data==undefined || this.Item_Data.length==0)
          {             
              this.issLoading = true;
-     this.User_Details_Service_.Employee_Typeahead(2,Value).subscribe(Rows => {   
+     this.User_Details_Service_.Employee_Typeahead(2,Value).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;   
          if (Rows != null) {
              this.Employee_Data = Rows[0];
               }
@@ -1842,35 +1898,34 @@ Search_Quotation()
         User_Details_Id_=0;
     else
         User_Details_Id_=this.Employee_Search.User_Details_Id;        
-    this.issLoading=true;    
-    this.QuotNo = this.QuotNo == "" ? undefined : this.QuotNo
-    this.partNo = this.partNo == "" ? undefined : this.partNo
-    debugger
-    this.Sales_Master_Service_.Search_Quotation(look_In_Date_Value,moment(this.Search_FromDate).format('YYYY-MM-DD'), 
-    moment(this.Search_ToDate).format('YYYY-MM-DD'),CustomerId_,this.QuotNo,this.partNo,Item_Group_Id_,
-                                                            CurrencyDetails_Id_,User_Details_Id_,
-                                                        this.User_Type_Id,
-                                                    this.Login_User_Id).subscribe(Rows => {
-                                                                debugger
-    this.Quotation_Master_Data=Rows[0];
-    if(this.Quotation_Master_Data.length>0)
-    {
-        for(var i=0;i<this.Quotation_Master_Data.length;i++)
-        {
-            this.Sales_Master_Total_Amount=Number(this.Sales_Master_Total_Amount)+Number(this.Quotation_Master_Data[i].NetTotal);
-            this.Sales_Master_Total_Amount= Number(this.Sales_Master_Total_Amount.toFixed(3));
+    this.issLoading = true;
+    this.QuotNo = this.QuotNo == "" ? undefined : this.QuotNo;
+    this.partNo = this.partNo == "" ? undefined : this.partNo;
+
+    this.Sales_Master_Service_.Search_Quotation(look_In_Date_Value, moment(this.Search_FromDate).format('YYYY-MM-DD'),
+        moment(this.Search_ToDate).format('YYYY-MM-DD'), CustomerId_, this.QuotNo, this.partNo, Item_Group_Id_,
+        CurrencyDetails_Id_, User_Details_Id_,
+        this.User_Type_Id,
+        this.Login_User_Id)
+    .pipe(finalize(() => this.issLoading = false))
+    .subscribe({
+        next: (response) => {
+            if (response.success) {
+                this.Quotation_Master_Data = response.data[0];
+                if (this.Quotation_Master_Data && this.Quotation_Master_Data.length > 0) {
+                    for (var i = 0; i < this.Quotation_Master_Data.length; i++) {
+                        this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Quotation_Master_Data[i].NetTotal);
+                        this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount.toFixed(3));
+                    }
+                }
+                this.Total_Entries = (this.Quotation_Master_Data || []).length;
+            } else {
+                this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'No Details Found', Type: "3" } });
+            }
+        },
+        error: (err) => {
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
         }
-    }
-    this.Total_Entries=this.Quotation_Master_Data.length;
-    if(this.Quotation_Master_Data.length==0)
-    {
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
-    }
-    this.issLoading=false;
-    },
-    Rows => {
-        this.issLoading=false;
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });
 }
 Add_Sales_Details()
@@ -1898,11 +1953,17 @@ else
 // return
 // } 
 // else
-if(this.Barcode_ == undefined || this.Barcode_ == null)
-{
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Select Item Code',Type: "3" }});
-return
-}
+    // Allow manual entry: either Item_Code or ItemName must be present
+    const itemName = typeof this.Item_ === 'string' ? this.Item_ : (this.Item_ ? this.Item_.ItemName : '');
+    const itemCode = typeof this.Barcode_ === 'string' ? this.Barcode_ : (this.Barcode_ ? this.Barcode_.Item_Code : '');
+
+    if (!itemName && !itemCode) {
+        this.dialogBox.open(DialogBox_Component, { 
+            panelClass: 'Dialogbox-Class', 
+            data: { Message: 'Enter Item Name or Code', Type: "3" } 
+        });
+        return;
+    }
 if(this.Quotation_Details_.Quantity==undefined || this.Quotation_Details_.Quantity==null || this.Quotation_Details_.Quantity==0)
 {
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Enter Quantity',Type: "3" }});
@@ -1945,7 +2006,7 @@ if( this.Item_==null)
     }
     this.Quotation_Details_.Expiry_Date=this.New_Date(new Date(moment(this.Quotation_Details_.Expiry_Date).format('YYYY-MM-DD')));
     this.Quotation_Details_.UnitPrice = parseFloat(Number(this.Quotation_Details_.UnitPrice).toFixed(3));
-    //this.Quotation_Details_.Quantity = parseFloat(Number(this.Quotation_Details_.Quantity).toFixed(3));         
+    this.Quotation_Details_.Quantity = parseFloat(Number(this.Quotation_Details_.Quantity).toFixed(3));         
     if (this.Quotation_Details_Index >= 0) 
     {
         this.Quotation_Details_Data[this.Quotation_Details_Index] = Object.assign({}, this.Quotation_Details_);
@@ -2004,71 +2065,64 @@ Save_Quotation(Printstatus:number)
     this.Sales_Master_Service_.Save_Quotation(this.Quotation_Master_)
     .pipe(
         finalize(() => {
-            console.log("Finalize executed");
             this.issLoading = false;
             const saveButton = document.getElementById("Save_Button");
             if (saveButton) saveButton.hidden = false;
         })
     )
     .subscribe({
-        next: (Save_status) => {
-            console.log("API Response:", Save_status);
+        next: (res: any) => {
+            console.log("Quotation API Response:", res);
+            
+            if (res && res.success) {
+                const data = res.data;
+                const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+                const result = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null);
 
-            if (!Save_status || !Save_status[0]) {
-                this.dialogBox.open(DialogBox_Component, {
-                    panelClass: 'Dialogbox-Class',
-                    data: { Message: 'Invalid server response', Type: "2" }
-                });
-                return;
-            }
+                if (result && Number(result.SalesQuotationMaster_Id_) > 0) {
+                    this.Quotation_Master_.SalesQuotationMaster_Id = result.SalesQuotationMaster_Id_;
+                    this.Quotation_Master_.QuotationNo = result.QuotationNo_;
 
-            if (Number(Save_status[0].SalesQuotationMaster_Id_) > 0) {
-                this.Quotation_Master_.SalesQuotationMaster_Id = Save_status[0].SalesQuotationMaster_Id_;
-                this.Quotation_Master_.QuotationNo = Save_status[0].QuotationNo_;
+                    if (this.RequirementMaster_Id > 0) {
+                        this.RequirementWorkflowService_.LinkQuotation(
+                            this.RequirementMaster_Id,
+                            this.Quotation_Master_.SalesQuotationMaster_Id
+                        ).subscribe({
+                            next: (_: any) => { this.RequirementMaster_Id = 0; },
+                            error: (_err: any) => {}
+                        });
+                    }
 
-                // Link back to Requirement if navigated from Requirement module
-                if (this.RequirementMaster_Id > 0) {
-                    this.RequirementWorkflowService_.LinkQuotation(
-                        this.RequirementMaster_Id,
-                        this.Quotation_Master_.SalesQuotationMaster_Id
-                    ).subscribe(_ => { this.RequirementMaster_Id = 0; }, _err => {});
-                }
-
-                if (Printstatus == 1) {
-                    this.Print_Click();
+                    if (Printstatus == 1) {
+                        this.Print_Click();
+                    } else {
+                        this.dialogBox.open(DialogBox_Component, {
+                            panelClass: 'Dialogbox-Class',
+                            data: { Message: 'Saved Successfully', Type: "false" }
+                        });
+                        this.Edit_Sales = 1;
+                    }
+                    this.Sales_Print = false;
                 } else {
+                    const msg = (result && result.Message) || (res && res.message) || 'Save failed';
                     this.dialogBox.open(DialogBox_Component, {
                         panelClass: 'Dialogbox-Class',
-                        data: { Message: 'Saved Successfully', Type: "false" }
+                        data: { Message: 'Error: ' + msg, Type: "2" }
                     });
-                    this.Edit_Sales = 1;
                 }
-                this.Sales_Print = false;
             } else {
                 this.dialogBox.open(DialogBox_Component, {
                     panelClass: 'Dialogbox-Class',
-                    data: {
-                        Message: 'Error: ' + (Save_status[0].Message || 'Save failed'),
-                        Type: "2"
-                    }
+                    data: { Message: 'Error: ' + (res && res.message ? res.message : 'Save failed'), Type: "2" }
                 });
-                if (this.topDiv) {
-                    this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
             }
         },
-        error: (error) => {
-            console.error("API ERROR:", error);
+        error: (error: any) => {
+            console.error("Quotation API ERROR:", error);
             this.dialogBox.open(DialogBox_Component, {
                 panelClass: 'Dialogbox-Class',
-                data: {
-                    Message: 'Server Error: ' + (error.message || 'Connection failed'),
-                    Type: "2"
-                }
+                data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" }
             });
-            if (this.topDiv) {
-                this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
         }
     });
 }
@@ -2084,8 +2138,8 @@ private Refresh_Sequential_Flags() {
     this.HasPurchaseOrder = false;
     const qid = Number(this.SalesQuotationMaster_Id_Edit || this.SalesQuotationMaster_Id || 0);
     if (!qid) return;
-    this.Sales_Master_Service_.Get_PurchaseOrder_Quotation_Details(qid).subscribe(rows => {
-        const list = (rows && rows[0]) ? rows[0] : [];
+    this.Sales_Master_Service_.Get_PurchaseOrder_Quotation_Details(qid).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+        const list = (Rows && Rows[0]) ? Rows[0] : [];
         this.HasPurchaseOrder = Array.isArray(list) && list.length > 0;
     }, _err => {
         this.HasPurchaseOrder = false;
@@ -2170,7 +2224,7 @@ debugger;
     //     }
     // })
      debugger
-    this.Sales_Master_Service_.Search_Customer_Typeahead('1,2,3,39',"").subscribe(Rows => { 
+    this.Sales_Master_Service_.Search_Customer_Typeahead('1,2,3,39',"").subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response; 
         debugger    
         if (Rows != null) {
             debugger
@@ -2227,22 +2281,23 @@ debugger;
             this.Payment_Term = this.PaymentTermData[i];
         }
     }
-this.Sales_Master_Service_.Get_Quotation_Details(Sales_Master_e.SalesQuotationMaster_Id).subscribe(Rows => {     
-    if (Rows != null) {
-        debugger
-        this.Quotation_Details_Data = Rows[0];
-        //console.log('this.Quotation_Details_Data: ', this.Quotation_Details_Data);
-        this.addBlankRows();
-       // this.Calculate_Quotation_Details_Amount();
-        this.Final_Amounts();
-        debugger
+this.Sales_Master_Service_.Get_Quotation_Details(Sales_Master_e.SalesQuotationMaster_Id).subscribe({
+    next: (res: any) => {     
+        if (res != null) {
+            const data = (res && res.success !== undefined) ? res.data : res;
+            const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+            this.Quotation_Details_Data = Array.isArray(rows[0]) ? rows[0] : rows;
+            this.addBlankRows();
+            this.Final_Amounts();
         }
-           this.issLoading = false;
-       },
-     Rows => {
-            this.issLoading = false;
-       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-    });
+        this.issLoading = false;
+    },
+    error: (err: any) => {
+        this.issLoading = false;
+        console.error("Error loading quotation details:", err);
+        this.dialogBox.open(DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occurred',Type:"2"}});
+    }
+});
     this.issLoading = false;
 }
 Edit_Sales_Details(Quotation_Details_e:Quotation_Details,index)
@@ -2285,10 +2340,16 @@ Get_Stock(){
     this.Quotation_Details_.HSNMasterId=this.Barcode_.HSNMasterId;
     this.Quotation_Details_.Item_Code=this.Barcode_.Item_Code;  
 }
-Get_Stock_Item(){
-    this.Stock_Temp.ItemId=this.Item_.ItemId;
-    this.Stock_Temp.ItemName=this.Item_.ItemName;
-    this.Stock_=Object.assign({},this.Stock_Temp);
+Get_Stock_Item() {
+    if (typeof this.Item_ === 'string') {
+        this.Quotation_Details_.ItemName = this.Item_;
+        this.Quotation_Details_.ItemId = 0;
+        this.Quotation_Details_.Item_Code = '';
+        return;
+    }
+    this.Stock_Temp.ItemId = this.Item_ ? this.Item_.ItemId : 0;
+    this.Stock_Temp.ItemName = this.Item_ ? this.Item_.ItemName : '';
+    this.Stock_ = Object.assign({}, this.Stock_Temp);
     debugger;
     if(this.Item_ != null || this.Item_ != undefined)
     {
@@ -2497,7 +2558,7 @@ debugger;
     this.deliveryPendingView = false;
     this.purchasePendingView = false;
     this.packingListPendingView = false;
-    this.Sales_Master_Service_.Load_Profoma_Items_Pending_List_ByQuotation(this.Quotation_Master_.SalesQuotationMaster_Id).subscribe(Rows => {
+    this.Sales_Master_Service_.Load_Profoma_Items_Pending_List_ByQuotation(this.Quotation_Master_.SalesQuotationMaster_Id).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
      
     this.performaPendingData=Rows[0];
     })
@@ -2519,7 +2580,7 @@ debugger;
     this.deliveryPendingView = false;
     this.purchasePendingView = false;
     this.packingListPendingView = false;
-    this.Sales_Master_Service_.Load_Invoice_Items_Pending_List_ByQuotation(this.Quotation_Master_.SalesQuotationMaster_Id).subscribe(Rows => {
+    this.Sales_Master_Service_.Load_Invoice_Items_Pending_List_ByQuotation(this.Quotation_Master_.SalesQuotationMaster_Id).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
        this.invoicePendingData=Rows[0];
         })
     setTimeout(() => {
@@ -2540,7 +2601,7 @@ debugger;
     this.doListView = false;
     this.purchasePendingView = false;
     this.packingListPendingView = false;
-    this.Sales_Master_Service_.Load_Delivery_Items_Pending_List_ByQuotation(this.Quotation_Master_.SalesQuotationMaster_Id).subscribe(Rows => {
+    this.Sales_Master_Service_.Load_Delivery_Items_Pending_List_ByQuotation(this.Quotation_Master_.SalesQuotationMaster_Id).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
        this.deliveryPendingData=Rows[0];
         })
     setTimeout(() => {
@@ -2561,7 +2622,7 @@ debugger;
     this.proformaListView = false;
     this.doListView = false;
     this.packingListPendingView = false;
-    this.Sales_Master_Service_.Load_Purchase_Items_Pending_List_ByQuotation(this.Quotation_Master_.SalesQuotationMaster_Id).subscribe(Rows => {
+    this.Sales_Master_Service_.Load_Purchase_Items_Pending_List_ByQuotation(this.Quotation_Master_.SalesQuotationMaster_Id).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
        debugger;
         this.purchasePendingData=Rows[0];
         })
@@ -2703,7 +2764,7 @@ debugger;
 //         this.Quotation_Master_.POnumber = result[0][0].POnumber;
 //         this.Entry_View = true;
 // debugger
-//         this.Sales_Master_Service_.Search_Customer_Typeahead('1,2,3,39,36','').subscribe(Rows => {     
+//         this.Sales_Master_Service_.Search_Customer_Typeahead('1,2,3,39,36','').subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;     
 //             if (Rows != null) {
 //                 debugger;
 //                 this.Customer_Data = Rows[0];
@@ -2730,7 +2791,7 @@ debugger;
 //                     }            
 //             }
 //             });        
-//         this.Sales_Master_Service_.Get_Performa_invoice_Details(result[0][0].PerformaInvoiceMaster_Id).subscribe(Rows => { 
+//         this.Sales_Master_Service_.Get_Performa_invoice_Details(result[0][0].PerformaInvoiceMaster_Id).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response; 
 //             if (Rows != null) {
 //                 this.Delivery_Order_Details_Data = Rows[0];
 //                 this.Final_Amounts();                
@@ -2750,7 +2811,7 @@ debugger;
         this.Entry_View=true;
         this.issLoading = true
 debugger;
-        this.Sales_Master_Service_.Load_SalesQuotationMaster(this.SalesQuotationMaster_Id).subscribe(result=>{
+        this.Sales_Master_Service_.Load_SalesQuotationMaster(this.SalesQuotationMaster_Id).subscribe((result: any)=>{
             this.Quotation_Master_=new Quotation_Master();
             this.Quotation_Master_Data=result[0];
             this.Quotation_Master_=Object.assign({},result[0][0]); 
@@ -2788,7 +2849,7 @@ debugger;
         //                 this.Vatin = result[0][0].GSTNo;
         //     }
         // });
-    this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39',"").subscribe(Rows => {  
+    this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39',"").subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;  
         if (Rows != null) {
             this.Customer_Data = Rows[0];
             for(let i=0;i<this.Customer_Data.length;i++){
@@ -2830,7 +2891,7 @@ debugger;
         }
         }
     console.log("QUO - Outside Get_Quotation_Details ");
-    this.Sales_Master_Service_.Get_Quotation_Details(result[0][0].SalesQuotationMaster_Id).subscribe(Rows => { 
+    this.Sales_Master_Service_.Get_Quotation_Details(result[0][0].SalesQuotationMaster_Id).subscribe((Rows: any) => { 
         debugger;
         console.log("QUO - Inside Get_Quotation_Details ");
         console.log('QUO - Rows 1: ', Rows);
@@ -2870,7 +2931,7 @@ debugger;
         this.deliveryPendingView = false;
         this.purchasePendingView = false;
         this.packingListPendingView = false;    
-        this.Sales_Master_Service_.Get_Salesmaster_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe(Rows => {
+        this.Sales_Master_Service_.Get_Salesmaster_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
             this.Sales_Master_Data=Rows[0];    
             });
         setTimeout(() => {
@@ -2891,7 +2952,7 @@ debugger;
         this.deliveryPendingView = false;
         this.purchasePendingView = false;
         this.packingListPendingView = false;
-        this.Sales_Master_Service_.Get_DeliveryOrder_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe(Rows => {
+        this.Sales_Master_Service_.Get_DeliveryOrder_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
             this.DO_Data=Rows[0];    
             });            
         setTimeout(() => {
@@ -2923,7 +2984,7 @@ debugger;
         this.purchasePendingView = false;
         this.packingListPendingView = false;
         debugger;
-        this.Sales_Master_Service_.Get_PackingList_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe(Rows => {
+        this.Sales_Master_Service_.Get_PackingList_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
             debugger;
         this.packinglist_details_Data=Rows[0];
          })
@@ -2954,7 +3015,7 @@ debugger;
         this.deliveryPendingView = false;
         this.purchasePendingView = false;
         this.packingListPendingView = false;
-        this.Sales_Master_Service_.Get_PurchaseOrder_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe(Rows => {
+        this.Sales_Master_Service_.Get_PurchaseOrder_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
             debugger
         this.Purchase_Orderdetails_Data=Rows[0];    
         })
@@ -2986,7 +3047,7 @@ debugger;
         this.doListView = false;
         this.purchasePendingView = false;
         this.packingListPendingView = true;    
-        this.Sales_Master_Service_.Load_PackingList_Items_Pending_List_ByQuotation(this.Quotation_Master_.SalesQuotationMaster_Id).subscribe(Rows => {
+        this.Sales_Master_Service_.Load_PackingList_Items_Pending_List_ByQuotation(this.Quotation_Master_.SalesQuotationMaster_Id).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
             this.packinglistPendingData=Rows[0];
             })
         setTimeout(() => {
@@ -3014,16 +3075,16 @@ debugger;
             this.Sales_Master_Service_.Get_ReferenceId_ByQuotation(quotationId).subscribe(refRows => {
                 const refId = refRows && refRows[0] && refRows[0][0] ? Number(refRows[0][0].ReferenceID || 0) : 0;
                 if (refId > 0) {
-                    this.Sales_Master_Service_.Get_Proforma_History_ByReference(refId).subscribe(Rows => {
+                    this.Sales_Master_Service_.Get_Proforma_History_ByReference(refId).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
                         this.performainvoice_Data = Rows && Rows[0] ? Rows[0] : [];
                     }, _ => { this.performainvoice_Data = []; });
                 } else {
-                    this.Sales_Master_Service_.Get_Proforma_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe(Rows => {
+                    this.Sales_Master_Service_.Get_Proforma_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
                         this.performainvoice_Data = Rows && Rows[0] ? Rows[0] : [];
                     }, _ => { this.performainvoice_Data = []; });
                 }
             }, _ => {
-                this.Sales_Master_Service_.Get_Proforma_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe(Rows => {
+                this.Sales_Master_Service_.Get_Proforma_Quotation_Details(this.SalesQuotationMaster_Id_Edit).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
                     this.performainvoice_Data = Rows && Rows[0] ? Rows[0] : [];
                 }, _ => { this.performainvoice_Data = []; });
             });
@@ -3067,7 +3128,7 @@ debugger;
 
       Load_Vat_Percentage() 
       {   
-      this.Sales_Master_Service_.Load_Vat_Percentage().subscribe(Rows => {    
+      this.Sales_Master_Service_.Load_Vat_Percentage().subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;    
       if (Rows != null) {
           debugger;
       this.Default_Vat_Percentage = Rows[0][0].vat_percentage;
@@ -3167,6 +3228,7 @@ debugger;
           this.Quotation_Master_.VAT_Amount = this.Total * (this.Quotation_Master_.VAT_Percentage/100)
       }
       this.Quotation_Master_.VAT_Amount = Number(this.Quotation_Master_.VAT_Amount.toFixed(3))    
+      this.Quotation_Master_.TaxableAmount = this.Total;
       this.Quotation_Master_.Total_Amount = this.Total + this.Quotation_Master_.VAT_Amount
       this.Quotation_Master_.Total_Amount = Number(this.Quotation_Master_.Total_Amount.toFixed(3))
       this.Quotation_Master_.NetTotal = Number((this.Quotation_Master_.Total_Amount - this.safeNumber(this.Quotation_Master_.Roundoff_Amt)).toFixed(3))

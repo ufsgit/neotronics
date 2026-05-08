@@ -1,7 +1,7 @@
 import { Price_Request_Details } from './Price_Request_Details';
 export class Price_Request_Master
 {
-SalesPrice_RequestMaster_Id: number;
+Price_Request_Master_Id: number;
 Account_Party_Id:number;
 User_Id:number;
 EntryDate:string;
@@ -18,6 +18,7 @@ TotalCGST:number;
 ToalSGST:number;
 TotalIGST:number;
 TotalGST:number;
+TaxableAmount:number;
 Cess:number;
 Customer_Name:string;
 Customer:string;
@@ -83,6 +84,7 @@ Roundoff_Amt:number;
     KindAttendId:number;
     PaymentTermValue:number;
     PrintDate: string;
+Total_Quantity: number;
 Supplier_Ref_No: string;
 
     

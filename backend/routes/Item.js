@@ -1,29 +1,22 @@
 var express = require('express');
 var router = express.Router();
 var Item=require('../models/Item');
-router.post('/Save_Item/',function(req,res,next)
-{ 
-try 
-{
-Item.Save_Item(req.body, function (err, rows) 
-{
-if (err) 
-{
-res.json(err);
-}
-else 
-{
-  res.json(rows);
-}
-});
-}
-catch (e) 
-{
-}
-finally 
-{
-}
-});
+const asyncHandler = require("../helpers/async-handler");
+const { sendSuccess } = require("../helpers/api-response");
+router.post('/Save_Item/', asyncHandler(async function(req,res,next)
+      { 
+      Item.Save_Item(req.body, function (err, rows) 
+      {
+      if (err) 
+      {
+      res.json(err);
+      }
+      else 
+      {
+        return sendSuccess(res, { message: "Saved", data: rows });
+      }
+      });
+      }));
 // router.get('/Search_Item/:Item_Name_?/:Group_Id_?/:Item_Code_?',function(req,res,next)
 // { 
 // try 

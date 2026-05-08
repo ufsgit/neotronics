@@ -277,23 +277,20 @@ export class LeadComponent implements OnInit {
     this.Lead_Service_.Save_Lead(Lead_Copy)
     .pipe(
       finalize(() => {
-        console.log("Lead Save Finalize executed");
         this.issLoading = false;
-        // Buttons in this component don't use [hidden], but reset loader is key
       })
     )
     .subscribe({
-      next: (Save_status) => {
-        console.log("Lead Save API Response:", Save_status);
+      next: (res: any) => {
+        console.log("Lead Save API Response:", res);
         
-        if (Save_status && Save_status[0] && Save_status[0][0] && 
-           (Save_status[0][0].Key_Id > 0 || Save_status[0][0].Lead_Id_ > 0 || Save_status[0][0].Lead_Id > 0)) {
+        if (res && res.success) {
           this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
           this.Close_Click();
           this.Get_Leads();
         } else {
-          console.warn('Save Lead failed result validation:', Save_status);
-          this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured (Validation)', Type: "2" } });
+          console.warn('Save Lead failed:', res);
+          this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: (res && res.message) || 'Error Occurred during Save', Type: "2" } });
         }
       },
       error: (err) => {
@@ -458,20 +455,17 @@ export class LeadComponent implements OnInit {
     this.Lead_Service_.Save_Lead(Lead_Copy)
     .pipe(
       finalize(() => {
-        console.log("Quick Follow-up Save Finalize executed");
         this.issLoading = false;
       })
     )
     .subscribe({
-      next: (Save_status) => {
-        console.log("Quick Follow-up Save API Response:", Save_status);
+      next: (res: any) => {
+        console.log("Quick Follow-up Save API Response:", res);
 
-        if (Save_status && Save_status[0] && Save_status[0][0] && (Save_status[0][0].Key_Id > 0 || Save_status[0][0].Lead_Id_ > 0)) {
-          
+        if (res && res.success) {
           // Immediate local update for better UX
           const index = this.Lead_Data.findIndex(l => l.Lead_Id == Lead_Copy.Lead_Id);
           if (index > -1) {
-            // Sync names for display
             const statusObj = this.Status_Data.find(s => s.Status_Id == Lead_Copy.Status_Id);
             if (statusObj) Lead_Copy.Status_Name = statusObj.Status_Name;
             
@@ -485,7 +479,7 @@ export class LeadComponent implements OnInit {
           this.Close_Drawer();
           this.Get_Leads();
         } else {
-          this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error updating follow-up', Type: "2" } });
+          this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: (res && res.message) || 'Error updating follow-up', Type: "2" } });
         }
       },
       error: (err) => {
@@ -535,21 +529,18 @@ export class LeadComponent implements OnInit {
     this.Requirement_Master_Service_.Save_Requirement(Data)
     .pipe(
       finalize(() => {
-        console.log("Reprocess Requirement Save Finalize executed");
         this.issLoading = false;
       })
     )
     .subscribe({
-      next: (Save_status) => {
-        console.log("Reprocess Requirement Save API Response:", Save_status);
-        if (Save_status && Save_status[0] && Save_status[0][0] && Save_status[0][0].RequirementMaster_Id > 0) {
+      next: (res: any) => {
+        console.log("Reprocess Requirement Save API Response:", res);
+        if (res && res.success) {
           this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Reprocessed Successfully', Type: "false" } });
           this.Close_Reprocess_Drawer();
-          
-          // Navigate to Requirement List view (trigger)
           this.Open_Requirement_List();
         } else {
-          this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
+          this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: (res && res.message) || 'Error Occured', Type: "2" } });
         }
       },
       error: (err) => {

@@ -2,7 +2,7 @@ import { Component, OnInit,Input,Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.js';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, catchError, tap, timeout } from 'rxjs/operators';
 import { AnimationKeyframesSequenceMetadata } from '@angular/animations';
 
 import * as FileSaver from "file-saver";
@@ -27,11 +27,11 @@ return body || { };
 }
 Save_Receipt_Voucher(Receipt_Voucher_)
 {
-   return this.http.post(environment.BasePath +'Receipt_Voucher/Save_Receipt_Voucher/',Receipt_Voucher_);
+   return this.http.post(environment.BasePath +'Receipt_Voucher/Save_Receipt_Voucher/',Receipt_Voucher_).pipe(timeout(60000));
 }
 Save_Receipt_Voucher_Mobile(Receipt_Voucher_)
 {
-   return this.http.post(environment.BasePath +'Receipt_Voucher/Save_Receipt_Voucher_Mobile/',Receipt_Voucher_);
+   return this.http.post(environment.BasePath +'Receipt_Voucher/Save_Receipt_Voucher_Mobile/',Receipt_Voucher_).pipe(timeout(60000));
 }
 Search_Ledger(Search_FromDate, Search_ToDate, ClientAccounts_Id, Voucher_Type_Id): Observable<any> {
    ;

@@ -3,44 +3,29 @@ var fs = require('fs');
 const storedProcedure = require('../helpers/stored-procedure');
 var requirementmaster = {
 
-Save_Requirement: async function (requirementmaster_) {
-        console.log('requirementmaster_ :',requirementmaster_);
-
-        return new Promise(async (rs,rej)=>{
-          const pool = db.promise();
-          var connection = await pool.getConnection();
-          try 
-          {
-           const result1 = await(new storedProcedure('Save_Requirement',[requirementmaster_.RequirementMaster_Id,
-               requirementmaster_.Account_Party_Id,requirementmaster_.EntryDate,requirementmaster_.RequirementNo,requirementmaster_.POnumber,
-               requirementmaster_.CurrencyId,requirementmaster_.PaymentTerms,requirementmaster_.AttendEmployee,requirementmaster_.TotalAmount,
-               requirementmaster_.TotalDiscount,requirementmaster_.Roundoff_Amt,requirementmaster_.Total_Amount,requirementmaster_.Basic_Discount,
-               requirementmaster_.NetTotal, requirementmaster_.Brand, requirementmaster_.PriceBasis, requirementmaster_.Delivery,
-               requirementmaster_.Validity, requirementmaster_.Description1, requirementmaster_.User_Id, requirementmaster_.Delivery_Address1,
-               requirementmaster_.Delivery_Address2, requirementmaster_.Delivery_Address3, requirementmaster_.Delivery_Address4, requirementmaster_.Charge1,
-               requirementmaster_.charge1_Amount, requirementmaster_.Charge2, requirementmaster_.charge2_Amount,requirementmaster_.Discount_Description,
-               requirementmaster_.Additional_Discount, requirementmaster_.Description2,requirementmaster_.Amount_In_Words,requirementmaster_.PreparedBy,
-               requirementmaster_.Charge1per,requirementmaster_.Payment_Term_Description,requirementmaster_.VAT_Percentage,requirementmaster_.VAT_Amount,
-               requirementmaster_.TaxableAmount,requirementmaster_.KindAttend,requirementmaster_.PaymentTermValue,requirementmaster_.Supplier_Ref_No,
-               requirementmaster_.Requirement_Details], connection)).result();
-                   console.log(result1)
-               await connection.commit();
-                connection.release();
-              console.log(result1);
-                rs( result1);
-              }
-           catch (err) {
-           console.log(err);
-           await connection.rollback();
-           rej(err);
-           var result2=[{'Sales_Master_Id_':0}]      
-           rs(result2);
-         }
-         finally 
-         {
-         connection.release();
-      }
-    })
+    Save_Requirement: async function (requirementmaster_, { log } = {}) {
+        if (!requirementmaster_) throw new Error("Payload missing");
+        const { withTransaction, normalizeParams } = require("../helpers/transaction");
+        return withTransaction(async ({ connection }) => {
+            const params = normalizeParams([
+                requirementmaster_.RequirementMaster_Id, requirementmaster_.Account_Party_Id, requirementmaster_.EntryDate,
+                requirementmaster_.RequirementNo, requirementmaster_.POnumber, requirementmaster_.CurrencyId,
+                requirementmaster_.PaymentTerms, requirementmaster_.AttendEmployee, requirementmaster_.TotalAmount,
+                requirementmaster_.TotalDiscount, requirementmaster_.Roundoff_Amt, requirementmaster_.Total_Amount,
+                requirementmaster_.Basic_Discount, requirementmaster_.NetTotal, requirementmaster_.Brand,
+                requirementmaster_.PriceBasis, requirementmaster_.Delivery, requirementmaster_.Validity,
+                requirementmaster_.Description1, requirementmaster_.User_Id, requirementmaster_.Delivery_Address1,
+                requirementmaster_.Delivery_Address2, requirementmaster_.Delivery_Address3, requirementmaster_.Delivery_Address4,
+                requirementmaster_.Charge1, requirementmaster_.charge1_Amount, requirementmaster_.Charge2,
+                requirementmaster_.charge2_Amount, requirementmaster_.Discount_Description, requirementmaster_.Additional_Discount,
+                requirementmaster_.Description2, requirementmaster_.Amount_In_Words, requirementmaster_.PreparedBy,
+                requirementmaster_.Charge1per, requirementmaster_.Payment_Term_Description, requirementmaster_.VAT_Percentage,
+                requirementmaster_.VAT_Amount, requirementmaster_.TaxableAmount, requirementmaster_.KindAttend,
+                requirementmaster_.PaymentTermValue, requirementmaster_.Supplier_Ref_No, requirementmaster_.Requirement_Details
+            ]);
+            if (log) log.info("sp.call", { name: "Save_Requirement" });
+            return (new storedProcedure("Save_Requirement", params, connection)).result();
+        }, { log });
     },
     Delete_requirementmaster: function (requirementmaster_Id_, callback) {
         return db.query("CALL Delete_requirementmaster(@requirementmaster_Id_ :=?)", [requirementmaster_Id_], callback);
@@ -59,6 +44,18 @@ Save_Requirement: async function (requirementmaster_) {
 
     Get_Requirement_Details: function (Requirement_Master_Id_, callback) {
         return db.query("CALL Get_Requirement_Details(@Requirement_Master_Id_ :=?)", [Requirement_Master_Id_], callback);
+    },
+
+    Get_Bill_Type: function (Group_Id_, callback) {
+        return db.query("CALL Get_Bill_Type(@Group_Id_ :=?)", [Group_Id_], callback);
+    },
+
+    Load_Company: function (callback) {
+        return db.query("CALL Load_Company()", [], callback);
+    },
+
+    Load_Vat_Percentage: function (callback) {
+        return db.query("CALL Load_Vat_Percentage()", [], callback);
     },
 
     Get_salesPerformaInvoicemaster: function (PerformaInvoiceId_, callback) {
@@ -144,7 +141,10 @@ Save_Requirement: async function (requirementmaster_) {
             GROUP BY rd.RequirementDetails_Id
             HAVING BalanceQuantity > 0
         `;
-        return db.query(sql, [Requirement_Master_Id], callback);
+        return db.query(sql, [Requirement_Master_Id], function(err, rows) {
+            if (err) return callback(err, null);
+            callback(null, [rows]);
+        });
     },
 
     Get_PriceRequest_Pending_Items: function (Requirement_Master_Id, callback) {
@@ -161,7 +161,10 @@ Save_Requirement: async function (requirementmaster_) {
             GROUP BY rd.RequirementDetails_Id
             HAVING BalanceQuantity > 0
         `;
-        return db.query(sql, [Requirement_Master_Id], callback);
+        return db.query(sql, [Requirement_Master_Id], function(err, rows) {
+            if (err) return callback(err, null);
+            callback(null, [rows]);
+        });
     }
 };
 

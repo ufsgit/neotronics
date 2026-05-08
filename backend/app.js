@@ -1,6 +1,14 @@
 var http = require('http');
-var server = http.Server(app);
 var db = require("./dbconnection");
+
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION! Shutting down...', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('UNHANDLED REJECTION! Shutting down...', reason);
+});
+
 const port = process.env.PORT || 3504;
 var express = require("express");
 var path = require("path");
@@ -14,6 +22,8 @@ var cors = require("cors");
 const jwt = require('./helpers//jwt');
 var routes = require("./routes/index");
 const errorHandler = require('./helpers/error-handler');
+const requestContext = require("./helpers/request-context");
+const autoResponseWrapper = require("./helpers/auto-response-wrapper");
 
 var Login = require("./routes/Login");
 var Account_Group = require('./routes/Account_Group');
@@ -95,10 +105,18 @@ var requirementworkflow = require('./routes/requirementworkflow');
 var Sales_Order_Master = require('./routes/sales_order_master');
 
 var app = express();
+var server = http.Server(app);
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 app.use(cors({ origin: true, credentials: true }));
+app.options('*', cors({ origin: true, credentials: true }));
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+app.use(requestContext({ timeoutMs: Number(process.env.API_TIMEOUT_MS || 60000) }));
+app.use(autoResponseWrapper());
 app.use(logger("dev"));
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: false }));
@@ -184,7 +202,8 @@ app.use('/LeadRequirement', LeadRequirement);
 app.use('/requirementmaster', requirementmaster);
 app.use('/requirementdetails', requirementdetails);
 app.use('/requirementworkflow', requirementworkflow);
-app.use('./Sales_Order_Master',Sales_Order_Master);
+app.use('/Sales_Order_Master', Sales_Order_Master);
+app.use(errorHandler);
 
 app.use(function(req, res, next) {
   var err = new Error("Not Found");

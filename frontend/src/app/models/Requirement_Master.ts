@@ -73,6 +73,10 @@ export class Requirement_Master {
     Handling_Charge: number;
     FormattedEntryDate: string;
     Vatin: string;
+    No: string;
+    TotalC: number;
+    ToalS: number;
+
 
     // Frontend helper fields (to be aligned with Quotation logic)
     Requirement_Details: Requirement_Details[];

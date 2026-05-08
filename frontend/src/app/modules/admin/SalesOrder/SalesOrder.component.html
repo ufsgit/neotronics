@@ -855,7 +855,7 @@
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Invoice Date:</p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
-            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ Sales_Order_Master.PrintDate }}</p>
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ Sales_Order_Master_.PrintDate }}</p>
         </div>
     </div>
 
@@ -867,7 +867,7 @@
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Invoice nO: </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
-            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ Sales_Order_Master.Invoice_No }} - {{Sales_Master_.EntryDate | date:'yyyy' }}</p>
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ Sales_Order_Master_.Invoice_No }} - {{Sales_Order_Master_.EntryDate | date:'yyyy' }}</p>
         </div>
     </div>
 
@@ -878,16 +878,16 @@
         <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">+968 22820150</p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master.LPONo">
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master_.LPONo">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">LPO No :</p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master.LPONo" >
-            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{Sales_Order_Master.LPONo}}</p>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master_.LPONo" >
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{Sales_Order_Master_.LPONo}}</p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="!Sales_Order_Master.LPONo">
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="!Sales_Order_Master_.LPONo">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;"></p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="!Sales_Order_Master.LPONo" >
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="!Sales_Order_Master_.LPONo" >
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;"></p>
         </div>
     </div>
@@ -936,7 +936,7 @@
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
             <p style="font-size: 12px; text-align: right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
-                <span *ngIf="Sales_Order_Master.PaymentTermValue>0">{{ Sales_Order_Master.PaymentTermValue }}</span>
+                <span *ngIf="Sales_Order_Master_.PaymentTermValue>0">{{ Sales_Order_Master_.PaymentTermValue }}</span>
                 <span *ngIf="PaymentTerm.payment_Term_ID>0">  {{ PaymentTerm.Payment_Term_Description }}</span>
             </p>
         </div>
@@ -948,16 +948,16 @@
         <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">1150753</p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master.DONo">
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master_.DONo">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">DO Num</p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master.DONo">
-            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ Sales_Order_Master.DONo }}</p>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master_.DONo">
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ Sales_Order_Master_.DONo }}</p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="!Sales_Order_Master.DONo">
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="!Sales_Order_Master_.DONo">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;"></p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="!Sales_Order_Master.DONo">
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="!Sales_Order_Master_.DONo">
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;"></p>
         </div>
     </div>
@@ -969,11 +969,11 @@
         <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">OM1100004897</p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master.DuePrintDate !=''">
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master_.DuePrintDate !=''">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Due Date:</p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;"  *ngIf="Sales_Order_Master.DuePrintDate !=''">
-            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ Sales_Order_Master.DuePrintDate }}</p>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;"  *ngIf="Sales_Order_Master_.DuePrintDate !=''">
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ Sales_Order_Master_.DuePrintDate }}</p>
         </div>
     </div>
 
@@ -984,18 +984,18 @@
         <div style="width: 45%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;"></p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master.SupplyPrintDate !=''">
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master_.SupplyPrintDate !=''">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Supply Date:</p>
         </div>
-        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master.SupplyPrintDate !=''">
-            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ Sales_Order_Master.SupplyPrintDate }}</p>
+        <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" *ngIf="Sales_Order_Master_.SupplyPrintDate !=''">
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">{{ Sales_Order_Master_.SupplyPrintDate }}</p>
         </div>
     </div>  
     <div style="display: flex; justify-content: space-between; margin-bottom: 0px;">
       <div style="width: 65%; display: flex; flex-direction: column; gap: 3px;">
         <h5 style="text-decoration: underline; font-weight: bold; margin-top: 06px !important; 
             margin-bottom: 3px !important;font-family: arial, sans-serif;">Customer Address</h5>
-        <p style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Sales_Order_Master.Customer_Name }}</p>
+        <p style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Sales_Order_Master_.Customer_Name }}</p>
         <p *ngIf="Address1"   style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Address1 }}</p>
         <p *ngIf="Address2"   style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Address2 }}</p>
         <p *ngIf="Address3"   style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Address3 }}</p>
@@ -1003,15 +1003,15 @@
         <p *ngIf="Vatin"   style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">VATIN {{ Vatin }}</p>
 
         <p style="margin-top: 0px;font-family: arial, sans-serif;">
-            <span style="text-decoration: underline;font-size: 12px; font-weight: bold;font-family: arial, sans-serif;">Attention:</span> {{ Sales_Order_Master.KindAttend }}</p>
+            <span style="text-decoration: underline;font-size: 12px; font-weight: bold;font-family: arial, sans-serif;">Attention:</span> {{ Sales_Order_Master_.KindAttend }}</p>
         </div>
       <div style="width:35%; display: flex; flex-direction: column; gap: 3px; text-align: end;">
         <h5 style="text-decoration: underline; font-weight: bold; margin-top: 0px !important; 
   margin-bottom: 3px !important;font-family: arial, sans-serif;">Delivery Address</h5>
-        <p *ngIf="Sales_Order_Master.Delivery_Address1"    style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Sales_Order_Master.Delivery_Address1 }}</p>
-        <p *ngIf="Sales_Order_Master.Delivery_Address2"    style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Sales_Order_Master.Delivery_Address2 }}</p>
-        <p *ngIf="Sales_Order_Master.Delivery_Address3"    style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Sales_Order_Master.Delivery_Address3 }}</p>
-        <p *ngIf="Sales_Order_Master.Delivery_Address4"    style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Sales_Order_Master.Delivery_Address4 }}</p>
+        <p *ngIf="Sales_Order_Master_.Delivery_Address1"    style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Sales_Order_Master_.Delivery_Address1 }}</p>
+        <p *ngIf="Sales_Order_Master_.Delivery_Address2"    style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Sales_Order_Master_.Delivery_Address2 }}</p>
+        <p *ngIf="Sales_Order_Master_.Delivery_Address3"    style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Sales_Order_Master_.Delivery_Address3 }}</p>
+        <p *ngIf="Sales_Order_Master_.Delivery_Address4"    style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Sales_Order_Master_.Delivery_Address4 }}</p>
       </div>
     </div>
   
@@ -1030,7 +1030,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of Sales_Details_Data; let i = index">
+        <tr *ngFor="let item of Sales_Order_Details_Data; let i = index">
           <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ i + 1 }}</td>
           <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.ItemCode }}</td>
           <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ item.ItemName }}</td>
@@ -1050,14 +1050,14 @@
         </tr>
     </table>
         <div [style.margin-top.px]="breakPage ?
-                                    (Sales_Details_Data.length < 30 ? 140 : 
-                                        (Sales_Details_Data.length < 51 ? 220 : 
-                                            (Sales_Details_Data.length < 70 ? 300 : 320)
+                                    (Sales_Order_Details_Data.length < 30 ? 140 : 
+                                        (Sales_Order_Details_Data.length < 51 ? 220 : 
+                                            (Sales_Order_Details_Data.length < 70 ? 300 : 320)
                                         )
                                     ) 
                                     :                                 
-                                (Sales_Details_Data.length > 3 ? 0:
-                                    (Sales_Details_Data.length < 2 ? 40 : 10)
+                                (Sales_Order_Details_Data.length > 3 ? 0:
+                                    (Sales_Order_Details_Data.length < 2 ? 40 : 10)
                                 )">
         <div style="display: flex; justify-content: space-between; margin-bottom: 1px;">
         <div style="margin-bottom: 1px;width: 48%;" >
@@ -1066,48 +1066,48 @@
                 <span style=" font-size: 9px; color: grey;font-family: arial, sans-serif;">{{ Print_Company_.Note }}</span>
               </p>
       <p style="font-size: 12px;font-family: arial, sans-serif;font-weight: bold;">
-        <span style="font-weight: bold;font-family: arial, sans-serif;">Amount in Words: </span>{{ Sales_Order_Master.Amount_In_Words }}</p>
+        <span style="font-weight: bold;font-family: arial, sans-serif;">Amount in Words: </span>{{ Sales_Order_Master_.Amount_In_Words }}</p>
    
         </div>
     
         <div style=" margin: 1px; padding: 0px; text-align: end;">
-            <p style="font-size: 12px;font-weight: bold;  margin-bottom: 0px;margin-top: 10px;font-family: arial, sans-serif; " *ngIf="Sales_Order_Master.TotalAmount >0">
-                <span style="font-weight: bold;font-family: arial, sans-serif;">Sub Total: </span>{{ Sales_Order_Master.TotalAmount | number:'1.3-3' }}</p>
+            <p style="font-size: 12px;font-weight: bold;  margin-bottom: 0px;margin-top: 10px;font-family: arial, sans-serif; " *ngIf="Sales_Order_Master_.TotalAmount >0">
+                <span style="font-weight: bold;font-family: arial, sans-serif;">Sub Total: </span>{{ Sales_Order_Master_.TotalAmount | number:'1.3-3' }}</p>
             
             <p style="font-size: 12px;margin-top: 1px !important;font-weight: bold; margin-bottom: 0px !important;font-family: arial, sans-serif;">
                 <span style="font-weight: bold;font-family: arial, sans-serif;">
-                    <span *ngIf="Sales_Order_Master.Charge1">{{ Sales_Order_Master.Charge1 }}</span> 
-                    <span *ngIf="printCharge1per" >({{Sales_Order_Master.Charge1per}})%:</span>
+                    <span *ngIf="Sales_Order_Master_.Charge1">{{ Sales_Order_Master_.Charge1 }}</span> 
+                    <span *ngIf="printCharge1per" >({{Sales_Order_Master_.Charge1per}})%:</span>
                 </span> 
-                <span *ngIf="printChargeAmount1">{{ Sales_Order_Master.charge1_Amount | number:'1.3-3'}}</span>
+                <span *ngIf="printChargeAmount1">{{ Sales_Order_Master_.charge1_Amount | number:'1.3-3'}}</span>
                
             </p>
             
             <p style="font-size: 12px;margin-top: 1px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;">
                 <span style="font-weight: bold;font-family: arial, sans-serif;" 
-                *ngIf="Sales_Order_Master.Charge2">{{ Sales_Order_Master.Charge2 }} :</span>
+                *ngIf="Sales_Order_Master_.Charge2">{{ Sales_Order_Master_.Charge2 }} :</span>
                 <span *ngIf="printChargeAmount2" style="font-family: arial, sans-serif;" >
-                  {{ Sales_Order_Master.charge2_Amount | number:'1.3-3' }}
+                  {{ Sales_Order_Master_.charge2_Amount | number:'1.3-3' }}
                 </span>
               </p>
               
             <p style="font-size: 12px;margin-top: 1px !important; margin-bottom: 0px !important;font-family: arial, sans-serif;">
-                <span *ngIf="printAdditional_Discount" style="font-weight: bold;">Discount {{ Sales_Order_Master.Discount_Description }}% :</span> 
-                <span *ngIf="printAdditional_Discount">{{ Sales_Order_Master.Additional_Discount  | number:'1.3-3' }}</span>
+                <span *ngIf="printAdditional_Discount" style="font-weight: bold;">Discount {{ Sales_Order_Master_.Discount_Description }}% :</span> 
+                <span *ngIf="printAdditional_Discount">{{ Sales_Order_Master_.Additional_Discount  | number:'1.3-3' }}</span>
             </p>
             <p style="font-size: 12px;  margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;" 
-            *ngIf="Sales_Order_Master.TotalDiscount >0"><span style="font-weight: bold;">Total Discount: </span>{{ Sales_Order_Master.TotalDiscount | number:'1.3-3'}}</p>
+            *ngIf="Sales_Order_Master_.TotalDiscount >0"><span style="font-weight: bold;">Total Discount: </span>{{ Sales_Order_Master_.TotalDiscount | number:'1.3-3'}}</p>
             
             <p style="font-size: 12px;  margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;" 
             *ngIf="Total >0"><span style="font-weight: bold;">Total: </span>{{ Total | number:'1.3-3'}}</p>
             <p style="font-size: 12px;  margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;" 
-            *ngIf="printVAT_Amount"><span style="font-weight: bold;margin-right: 4px;">Vat {{Sales_Order_Master.VAT_percentage}} % </span>{{Sales_Order_Master.VAT_Amount | number:'1.3-3'}}</p> 
+            *ngIf="printVAT_Amount"><span style="font-weight: bold;margin-right: 4px;">Vat {{Sales_Order_Master_.VAT_percentage}} % </span>{{Sales_Order_Master_.VAT_Amount | number:'1.3-3'}}</p> 
             <p style="font-size: 12px;  margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;" 
-            *ngIf="Sales_Order_Master.Total_Amount >0"><span style="font-weight: bold;">Total Amount: </span>{{ Sales_Order_Master.Total_Amount| number:'1.3-3' }}</p>
+            *ngIf="Sales_Order_Master_.Total_Amount >0"><span style="font-weight: bold;">Total Amount: </span>{{ Sales_Order_Master_.Total_Amount| number:'1.3-3' }}</p>
             <p style="font-size: 12px;  margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; " 
-            *ngIf="printRoundoff_Amt"><span style="font-weight: bold;">Additional Discount: </span>{{ Sales_Order_Master.Roundoff_Amt | number:'1.3-3'}}</p>
+            *ngIf="printRoundoff_Amt"><span style="font-weight: bold;">Additional Discount: </span>{{ Sales_Order_Master_.Roundoff_Amt | number:'1.3-3'}}</p>
             <p style="font-size: 12px;  margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;" 
-            *ngIf="Sales_Order_Master.NetTotal >0"><span style="font-weight: bold;">Net Total: </span>{{ Sales_Order_Master.NetTotal | number:'1.3-3'}}</p>
+            *ngIf="Sales_Order_Master_.NetTotal >0"><span style="font-weight: bold;">Net Total: </span>{{ Sales_Order_Master_.NetTotal | number:'1.3-3'}}</p>
            </div>
     </div>
 

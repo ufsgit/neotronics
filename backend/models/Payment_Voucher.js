@@ -2,54 +2,32 @@ var db = require("../dbconnection");
 var fs = require("fs");
 const storedProcedure = require("../helpers/stored-procedure");
 const { json } = require("body-parser");
+const { withTransaction, normalizeParams } = require("../helpers/transaction");
 var Payment_Voucher = {	
-	Save_Payment_Voucher: async function (Payment_Voucher_) {
-		return new Promise(async (rs, rej) => {
-			const pool = db.promise();
-			let result1;
-			var connection = await pool.getConnection();
+	Save_Payment_Voucher: async function (Payment_Voucher_, { log } = {}) {
+		if (!Payment_Voucher_) throw new Error("Payload missing");
+		let Purchasepayment_value = 0;
+		const Payment_Reference_Data = Payment_Voucher_.Payment_Reference;
+		if (Payment_Reference_Data != undefined && Payment_Reference_Data != "" && Payment_Reference_Data != null) Purchasepayment_value = 1;
 
-			var Purchasepayment_value = 0;
-
-			let Payment_Reference_Data = Payment_Voucher_.Payment_Reference;
-			if (Payment_Reference_Data != undefined && Payment_Reference_Data != "" && Payment_Reference_Data != null)
-			Purchasepayment_value = 1;
-
-
-			try {
-				console.log(Payment_Voucher_);
-				const result1 = await new storedProcedure(
-					"Save_Payment_Voucher",
-					[
-						Payment_Voucher_.Payment_Voucher_Id,
-						Payment_Voucher_.Date,
-						Payment_Voucher_.CurrencyId,
-						Payment_Voucher_.From_Account_Id,
-						Payment_Voucher_.Amount,
-						Payment_Voucher_.To_Account_Id,
-						Payment_Voucher_.Payment_Mode_Name,
-						Payment_Voucher_.User_Id,
-						Payment_Voucher_.Payment_Status,
-						Payment_Voucher_.Description,
-						JSON.stringify(Payment_Voucher_.Payment_Reference),
-						Purchasepayment_value,
-					],
-					connection
-				).result();
-				console.log(result1);
-				await connection.commit();
-				connection.release();
-				rs(result1);
-			} catch (err) {
-				console.log(err);
-				await connection.rollback();
-				rej(err);
-				var result2 = [{ Payment_Voucher_Id_: 0 }];
-				rs(result2);
-			} finally {
-				connection.release();
-			}
-		});
+		return withTransaction(async ({ connection }) => {
+			const params = normalizeParams([
+				Payment_Voucher_.Payment_Voucher_Id,
+				Payment_Voucher_.Date,
+				Payment_Voucher_.CurrencyId,
+				Payment_Voucher_.From_Account_Id,
+				Payment_Voucher_.Amount,
+				Payment_Voucher_.To_Account_Id,
+				Payment_Voucher_.Payment_Mode_Name,
+				Payment_Voucher_.User_Id,
+				Payment_Voucher_.Payment_Status,
+				Payment_Voucher_.Description,
+				JSON.stringify(Payment_Voucher_.Payment_Reference),
+				Purchasepayment_value,
+			]);
+			if (log) log.info("sp.call", { name: "Save_Payment_Voucher" });
+			return new storedProcedure("Save_Payment_Voucher", params, connection).result();
+		}, { log });
 	},
 	Delete_Payment_Voucher: function (Payment_Voucher_Id_, callback) {
 		return db.query(

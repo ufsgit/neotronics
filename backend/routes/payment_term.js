@@ -1,6 +1,8 @@
  var express = require('express');
  var router = express.Router();
  var payment_term=require('../models/payment_term');
+ const asyncHandler = require("../helpers/async-handler");
+ const { sendSuccess } = require("../helpers/api-response");
  router.post('/Save_payment_term/',function(req,res,next)
  { 
  try 
@@ -98,28 +100,26 @@ payment_term.Delete_payment_term(req.params.payment_term_Id_, function (err, row
 
   /** Added on 30-10-2024 */
   
-  router.get('/Load_Payment_Term/',function(req,res,next)
+  router.get('/Load_Payment_Term/', asyncHandler(function(req,res,next)
   { 
-  try 
-  {
-    payment_term.Load_Payment_Term( function (err, rows) 
-  {
-  if (err) 
-  {
-  res.json(err);
-  }
-  else 
-  {
-  res.json(rows);
-  }
-  });
-  }
-  catch (e) 
-  {
-  }
+    req.log && req.log.info("api.request", { handler: "payment_term.Load_Payment_Term" });
+    req.log && req.log.info("sql.start", { sp: "Load_Payment_Term" });
+    payment_term.Load_Payment_Term(function (err, rows) 
+    {
+      if (err) 
+      {
+        req.log && req.log.error("sql.error", { sp: "Load_Payment_Term", code: err.code, message: err.message });
+        return next(err);
+      }
+      req.log && req.log.info("sql.ok", { sp: "Load_Payment_Term" });
+      return sendSuccess(res, { message: "OK", data: rows || [] });
+    });
+  }));
+  /*
   finally 
   {
   }
-  });
+   });
+   */
   module.exports = router;
 

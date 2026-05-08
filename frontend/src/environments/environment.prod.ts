@@ -6,7 +6,7 @@ export const environment = {
 	BasePath: "https://neotronicsapi.trackbox.live/",
 
 	// BasePath: "https://perfecthillsapi.trackbox.live/",
-	FilePath: "https://perfecthillsapi.trackbox.live/uploads/",
+	FilePath: "https://neotronicsapi.trackbox.live/uploads/",
 
 	// AWS S3 Configuration — inject real values via CI/CD environment secrets, never commit keys here
 	aws: {

@@ -120,7 +120,8 @@ try
  {
    if (err)
    {
-     return 1;
+     console.error('Save_Company failed:', err);
+     return res.status(500).json({ message: 'Save_Company failed', error: err.message || err });
    }
    else
    {

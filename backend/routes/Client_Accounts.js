@@ -1,22 +1,18 @@
 var express = require("express");
 var router = express.Router();
 var Client_Accounts = require("../models/Client_Accounts");
-router.post("/Save_Client_Accounts/", function (req, res, next) {
-	try {
-		Client_Accounts.Save_Client_Accounts(req.body, function (err, rows) {
-			if (err) {
-				console.log(err);
-				res.json(err);
-			} else {
-				console.log(rows);
-				res.json(rows);
-			}
-		});
-	} catch (e) {
-		console.log(e);
-	} finally {
-	}
-});
+const asyncHandler = require("../helpers/async-handler");
+const { sendSuccess } = require("../helpers/api-response");
+router.post("/Save_Client_Accounts/", asyncHandler(async function (req, res, next) {
+	Client_Accounts.Save_Client_Accounts(req.body, function (err, rows) {
+		if (err) {
+			console.log(err);
+			res.json(err);
+		} else {
+			return sendSuccess(res, { message: "Saved", data: rows });
+		}
+	});
+}));
 router.get(
 	"/Search_Customer/:Client_Accounts_Name_?/:Employee_Id ?",
 	function (req, res, next) {
@@ -219,20 +215,15 @@ router.get(
 	}
 );
 
-router.post("/Save_Company/", function (req, res, next) {
-	try {
-		Client_Accounts.Save_Company(req.body, function (err, rows) {
-			if (err) {
-				res.json(err);
-			} else {
-				res.json(rows);
-			}
-		});
-	} catch (e) {
-		console.log(e);
-	} finally {
-	}
-});
+router.post("/Save_Company/", asyncHandler(async function (req, res, next) {
+	Client_Accounts.Save_Company(req.body, function (err, rows) {
+		if (err) {
+			res.json(err);
+		} else {
+			return sendSuccess(res, { message: "Saved", data: rows });
+		}
+	});
+}));
 
 router.get("/Search_Company/", function (req, res, next) {
 	try {

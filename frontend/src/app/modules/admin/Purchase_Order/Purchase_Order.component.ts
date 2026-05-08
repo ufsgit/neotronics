@@ -2033,14 +2033,10 @@ Save_Quotation(Printstatus:number)
         return
     }    
     this.Quotation_Master_.SalesQuotationMaster_Id = 0;
-    // this.Quotation_Master_.QuotationNo = "test"
     this.Quotation_Master_.Account_Party_Id=this.Customer_.Client_Accounts_Id;
     this.Quotation_Master_.User_Id=Number(this.Login_User_Id);
     this.Quotation_Master_.POnumber = this.POnumber.InvoiceNo
     this.Quotation_Master_.Quotation_Details=this.Quotation_Details_Data;
-    // this.Quotation_Master_.KindAttend=this.Attention.User_Details_Id;
-    // this.Quotation_Master_.AttendEmployee = this.Employee.User_Details_Id
-    // this.Quotation_Master_.Payment_Term_Description = this.Payment_Term_Description_.payment_Term_ID
     console.log("Before Purchase Order (Quotation) API call");
     this.issLoading = true;
 
@@ -2054,38 +2050,42 @@ Save_Quotation(Printstatus:number)
         })
     )
     .subscribe({
-        next: (Save_status) => {
-            console.log("Purchase Order (Quotation) API Response:", Save_status);
+        next: (res: any) => {
+            console.log("Purchase Order (Quotation) API Response:", res);
 
-            if (!Save_status || !Save_status[0]) {
-                this.dialogBox.open(DialogBox_Component, {
-                    panelClass: 'Dialogbox-Class',
-                    data: { Message: 'Invalid server response', Type: "2" }
-                });
-                return;
-            }
+            if (res && res.success) {
+                const data = res.data;
+                const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+                const result = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null);
 
-            if (Number(Save_status[0].SalesQuotationMaster_Id_) > 0) {
-                this.Quotation_Master_.SalesQuotationMaster_Id = Save_status[0].SalesQuotationMaster_Id_;
-                
-                if (Printstatus == 1) {
-                    this.Print_Click();
+                if (result && Number(result.SalesQuotationMaster_Id_) > 0) {
+                    this.Quotation_Master_.SalesQuotationMaster_Id = result.SalesQuotationMaster_Id_;
+                    
+                    if (Printstatus == 1) {
+                        this.Print_Click();
+                    } else {
+                        this.dialogBox.open(DialogBox_Component, {
+                            panelClass: 'Dialogbox-Class',
+                            data: { Message: 'Saved Successfully', Type: "false" }
+                        });
+                        this.Clr_Sales_Master();
+                    }
+                    this.Sales_Print = false;
                 } else {
+                    const msg = (result && result.Message) || (res && res.message) || 'Save failed';
                     this.dialogBox.open(DialogBox_Component, {
                         panelClass: 'Dialogbox-Class',
-                        data: { Message: 'Saved Successfully', Type: "false" }
+                        data: { Message: 'Error: ' + msg, Type: "2" }
                     });
-                    this.Clr_Sales_Master();
                 }
-                this.Sales_Print = false;
             } else {
                 this.dialogBox.open(DialogBox_Component, {
                     panelClass: 'Dialogbox-Class',
-                    data: { Message: 'Error Occured', Type: "2" }
+                    data: { Message: 'Error: ' + (res && res.message ? res.message : 'Save failed'), Type: "2" }
                 });
             }
         },
-        error: (error) => {
+        error: (error: any) => {
             console.error("Purchase Order (Quotation) API ERROR:", error);
             this.dialogBox.open(DialogBox_Component, {
                 panelClass: 'Dialogbox-Class',
@@ -2631,10 +2631,6 @@ Save_purchase_order(Printstatus:number)
     //     if(this.Employee)
     //     this.Purchase_Ordermaster_.AttendEmployee = this.Employee.User_Details_Id
 
-        
-    // this.Purchase_Ordermaster_.Payment_Term_Description = this.Payment_Term_Description_.payment_Term_ID;
-    // this.Purchase_Ordermaster_.PaymentTerms = this.Payment_Term_Description_.Payment_Term_Description;
-
 
     if(this.Payment_Term_Description_ == undefined || this.Payment_Term_Description_ == null){
         this.Purchase_Ordermaster_.Payment_Term_Description = 0;
@@ -2660,60 +2656,48 @@ Save_purchase_order(Printstatus:number)
         })
     )
     .subscribe({
-        next: (Save_status) => {
-            console.log("Purchase Order API Response:", Save_status);
+        next: (res: any) => {
+            console.log("Purchase Order API Response:", res);
 
-            if (!Save_status || !Save_status[0]) {
-                this.dialogBox.open(DialogBox_Component, {
-                    panelClass: 'Dialogbox-Class',
-                    data: { Message: 'Invalid server response', Type: "2" }
-                });
-                return;
-            }
+            if (res && res.success) {
+                const data = res.data;
+                const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+                const result = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null);
 
-            if (Number(Save_status[0].Purchase_OrderMaster_Id_) > 0) {
-                this.Purchase_Ordermaster_.Purchase_OrderMaster_Id = Save_status[0].Purchase_OrderMaster_Id_;
-                this.Purchase_OrderMaster_Id_Edit = this.Purchase_Ordermaster_.Purchase_OrderMaster_Id;
-                this.Purchase_Ordermaster_.OrderNumber = Save_status[0].OrderNumber_;
-                this.Purchase_Ordermaster_.PrintDate = Save_status[0].PrintDate;
-                
-                if (Printstatus == 1) {
-                    this.Print_Click();
+                if (result && Number(result.Purchase_OrderMaster_Id_) > 0) {
+                    this.Purchase_Ordermaster_.Purchase_OrderMaster_Id = result.Purchase_OrderMaster_Id_;
+                    this.Purchase_OrderMaster_Id_Edit = this.Purchase_Ordermaster_.Purchase_OrderMaster_Id;
+                    this.Purchase_Ordermaster_.OrderNumber = result.OrderNumber_;
+                    this.Purchase_Ordermaster_.PrintDate = result.PrintDate;
+                    
+                    if (Printstatus == 1) {
+                        this.Print_Click();
+                    } else {
+                        this.dialogBox.open(DialogBox_Component, {
+                            panelClass: 'Dialogbox-Class',
+                            data: { Message: 'Saved Successfully', Type: "false" }
+                        });
+                    }
+                    this.Sales_Print = false;
                 } else {
+                    const msg = (result && result.Message) || (res && res.message) || 'Save failed';
                     this.dialogBox.open(DialogBox_Component, {
                         panelClass: 'Dialogbox-Class',
-                        data: { Message: 'Saved Successfully', Type: "false" }
+                        data: { Message: 'Error: ' + msg, Type: "2" }
                     });
                 }
-                this.Sales_Print = false;
             } else {
                 this.dialogBox.open(DialogBox_Component, {
                     panelClass: 'Dialogbox-Class',
-                    data: {
-                        Message: 'Error: ' + (Save_status[0].Message || 'Save failed'),
-                        Type: "2"
-                    }
-                });
-                setTimeout(() => {
-                    if (this.topDiv) {
-                        this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
+                    data: { Message: 'Error: ' + (res && res.message ? res.message : 'Save failed'), Type: "2" }
                 });
             }
         },
-        error: (error) => {
+        error: (error: any) => {
             console.error("Purchase Order API ERROR:", error);
             this.dialogBox.open(DialogBox_Component, {
                 panelClass: 'Dialogbox-Class',
-                data: {
-                    Message: 'Server Error: ' + (error.message || 'Connection failed'),
-                    Type: "2"
-                }
-            });
-            setTimeout(() => {
-                if (this.topDiv) {
-                    this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" }
             });
         }
     });
@@ -2750,27 +2734,33 @@ Search_PerformaInvoice()
     
     this.Sales_Master_Service_.Search_PurchaseOrder(look_In_Date_Value,moment(this.Search_FromDate).format('YYYY-MM-DD'), moment(this.Search_ToDate).format('YYYY-MM-DD'),
     CustomerId_,this.orderNo,this.partNo,Item_Group_Id_, CurrencyDetails_Id_,AccountType_Id_,
-this.User_Type_Id, this.Login_User_Id).subscribe(Rows => {
-        
-    this.Purchase_Ordermaster_Data=Rows[0];
-    if(this.Purchase_Ordermaster_Data.length>0)
-    {
-        for(var i=0;i<this.Purchase_Ordermaster_Data.length;i++)
-        {
-            this.Sales_Master_Total_Amount=Number(this.Sales_Master_Total_Amount)+Number(this.Purchase_Ordermaster_Data[i].NetTotal);
-            this.Sales_Master_Total_Amount= Number(this.Sales_Master_Total_Amount.toFixed(3));
+this.User_Type_Id, this.Login_User_Id).subscribe({
+        next: (res: any) => {
+            this.Purchase_Ordermaster_Data = [];
+            if (res && res.success) {
+                const data = res.data;
+                const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+                this.Purchase_Ordermaster_Data = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data : []);
+
+                if (this.Purchase_Ordermaster_Data.length > 0) {
+                    for (var i = 0; i < this.Purchase_Ordermaster_Data.length; i++) {
+                        this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Purchase_Ordermaster_Data[i].NetTotal);
+                        this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount.toFixed(3));
+                    }
+                }
+                this.Total_Entries = this.Purchase_Ordermaster_Data.length;
+                if (this.Purchase_Ordermaster_Data.length == 0) {
+                    this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'No Details Found', Type: "3" } });
+                }
+            } else {
+                this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error: ' + (res && res.message ? res.message : 'Search failed'), Type: "2" } });
+            }
+            this.issLoading = false;
+        },
+        error: (error: any) => {
+            this.issLoading = false;
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" } });
         }
-    }
-    this.Total_Entries=this.Purchase_Ordermaster_Data.length;
-    if(this.Purchase_Ordermaster_Data.length==0)
-    {
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
-    }
-    this.issLoading=false;
-    },
-    Rows => {
-        this.issLoading=false;
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });
 }
 
@@ -2887,18 +2877,24 @@ Edit_PurchaseOrder_Master(Sales_Master_e:Purchase_Ordermaster,index)
     //     }},
     //     );
 
-this.Sales_Master_Service_.Get_PurchaseOrder_Details(Sales_Master_e.Purchase_OrderMaster_Id).subscribe(Rows => { 
-    
-    if (Rows != null) {
-        this.Purchase_Orderdetails_Data = Rows[0];
-        this.addBlankRows();
-        this.Final_Amounts();        
-        }          
-       },
-     Rows => {
-       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-    });
-    this.issLoading = false;
+this.Sales_Master_Service_.Get_PurchaseOrder_Details(Sales_Master_e.Purchase_OrderMaster_Id).subscribe({
+    next: (res: any) => {
+        if (res && res.success) {
+            const data = res.data;
+            const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+            this.Purchase_Orderdetails_Data = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data : []);
+            this.addBlankRows();
+            this.Final_Amounts();
+        } else {
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error: ' + (res && res.message ? res.message : 'Load failed'), Type: "2" } });
+        }
+        this.issLoading = false;
+    },
+    error: (error: any) => {
+        this.issLoading = false;
+        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" } });
+    }
+});
 }
 
 
@@ -2912,30 +2908,28 @@ Delete_Purchase_Order(Purchase_OrderMaster_Id,index)
     {
     this.issLoading=true;
     
-    this.Sales_Master_Service_.Delete_Purchase_Order(Purchase_OrderMaster_Id).subscribe(Delete_status => {    
-           
-        Delete_status=Delete_status[0];
-        if(Delete_status[0].Purchase_OrderMaster_Id_==-1){
-            const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Cannot Delete',Type:"3"}});
-            this.issLoading=false;           
-            return;
+    this.Sales_Master_Service_.Delete_Purchase_Order(Purchase_OrderMaster_Id).subscribe({
+        next: (res: any) => {
+            if (res && res.success) {
+                const data = res.data;
+                const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+                const result = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null);
+
+                if (result && result.Purchase_OrderMaster_Id_ == -1) {
+                    this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Cannot Delete', Type: "3" } });
+                } else {
+                    this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted', Type: "false" } });
+                    this.Search_PerformaInvoice();
+                }
+            } else {
+                this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error: ' + (res && res.message ? res.message : 'Delete failed'), Type: "2" } });
             }
-    else if(Delete_status[0].Purchase_OrderMaster_Id_>0){
-    //this.Purchase_Orderdetails_Data.splice(index, 1);
-      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
-      
-      this.Search_PerformaInvoice();
-    }
-    else
-    {
-    //this.Sales_Master_Data.splice(index, 1);
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
-    }
-    this.issLoading=false;
-    },
-    Rows => {
-        this.issLoading=false;
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error',Type:"2"}});
+            this.issLoading = false;
+        },
+        error: (error: any) => {
+            this.issLoading = false;
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" } });
+        }
     });
     }
     });

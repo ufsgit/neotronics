@@ -1,6 +1,7 @@
 var db=require('../dbconnection');
 var fs = require('fs');
 const storedProcedure=require('../helpers/stored-procedure');
+const { withTransaction, normalizeParams } = require("../helpers/transaction");
 var Purchase_Master=
 { 
 // Save_Purchase_Master: async function (Purchase_Master_) {
@@ -204,31 +205,17 @@ Search_Service_Type_Typeahead: function (Service_Type_Name_,callback)
             Service_Type_Name_='';
         return db.query("CALL Search_Service_Type_Typeahead(@Service_Type_Name_ :=?)", [Service_Type_Name_],callback);
  },
-Save_Service: async function (Service_) {
-         return new Promise(async (rs,rej)=>{
-           const pool = db.promise();
-           let result1;
-           var connection = await pool.getConnection();
-    try {
-    const result1 = await(new storedProcedure('Save_Service',[Service_.Service_Id,Service_.Account_Party_Id,Service_.Entry_Date,
-        Service_.InvoiceNo, Service_.GrossTotal, Service_.TaxableAmount, Service_.TotalDiscount, Service_.TotalGST, Service_.TotalCGST, Service_.TotalSGST, Service_.TotalIGST, Service_.NetTotal,
-        Service_.Tot_Cess, Service_.Roundoff,  Service_.TotalAmount, Service_.BillType, Service_.User_Id, Service_.Description, Service_.Service_Details]
-    , connection)).result();
-                await connection.commit();
-                 connection.release();
-                 rs( result1);
-               }
-            catch (err) {              
-            await connection.rollback();
-            rej(err);
-            var result2=[{'Service_Id_':0}]      
-            rs(result2);
-          }
-          finally 
-          {
-          connection.release();
-       }
-    })
+Save_Service: async function (Service_, { log } = {}) {
+    if (!Service_) throw new Error("Payload missing");
+    return withTransaction(async ({ connection }) => {
+        const params = normalizeParams([
+            Service_.Service_Id, Service_.Account_Party_Id, Service_.Entry_Date,
+            Service_.InvoiceNo, Service_.GrossTotal, Service_.TaxableAmount, Service_.TotalDiscount, Service_.TotalGST, Service_.TotalCGST, Service_.TotalSGST, Service_.TotalIGST, Service_.NetTotal,
+            Service_.Tot_Cess, Service_.Roundoff, Service_.TotalAmount, Service_.BillType, Service_.User_Id, Service_.Description, Service_.Service_Details,
+        ]);
+        if (log) log.info("sp.call", { name: "Save_Service" });
+        return (new storedProcedure("Save_Service", params, connection)).result();
+    }, { log });
 },
 
 
@@ -315,40 +302,21 @@ Get_Item_Name_Get_With_Code:function(Item_Code_,Item_Group_Id_,callback)
 //    })
 // }
 
-Save_Purchase_Master_App: async function (Purchase_Master_) {
-    console.log(Purchase_Master_)
-      return new Promise(async (rs,rej)=>{
-        const pool = db.promise();
-        let result1;
-        var connection = await pool.getConnection();
-     try {
-         const result1 = await(new storedProcedure('Save_Purchase_Master_App',
-         [Purchase_Master_.Purchase_Master_Id,Purchase_Master_.Account_Party_Id,Purchase_Master_.PurchaseDate,
-             Purchase_Master_.InvoiceNo,Purchase_Master_.Discount,Purchase_Master_.Roundoff,Purchase_Master_.TotalAmount,
-             Purchase_Master_.TotalDiscount,Purchase_Master_.TaxableAmount,Purchase_Master_.TotalGST,Purchase_Master_.TotalCGST,
-             Purchase_Master_.TotalSGST,Purchase_Master_.TotalIGST,Purchase_Master_.Other_Charges,Purchase_Master_.GrossTotal, 
-             Purchase_Master_.NetTotal,Purchase_Master_.BillType, Purchase_Master_.User_Id, Purchase_Master_.Description,
-             Purchase_Master_.Document_Name,Purchase_Master_.File_Name,Purchase_Master_.Item_Group_Id,Purchase_Master_.Item_Group_Name,
-             Purchase_Master_.Branch_Id,Purchase_Master_.Branch_Name,Purchase_Master_.Purchase_Details   ,Purchase_Master_.Payment_mode       
-  
-         ], connection)).result();
-           console.log( result1)                       
-             await connection.commit();
-              connection.release();
-              rs( result1);
-            }
-         catch (err) {
-         console.log(err);                
-         await connection.rollback();
-         rej(err);
-         var result2=[{'Purchase_Master_Id_':0}]      
-         rs(result2);
-       }
-       finally 
-       {
-       connection.release();
-    }
- })
+Save_Purchase_Master_App: async function (Purchase_Master_, { log } = {}) {
+    if (!Purchase_Master_) throw new Error("Payload missing");
+    return withTransaction(async ({ connection }) => {
+        const params = normalizeParams([
+            Purchase_Master_.Purchase_Master_Id, Purchase_Master_.Account_Party_Id, Purchase_Master_.PurchaseDate,
+            Purchase_Master_.InvoiceNo, Purchase_Master_.Discount, Purchase_Master_.Roundoff, Purchase_Master_.TotalAmount,
+            Purchase_Master_.TotalDiscount, Purchase_Master_.TaxableAmount, Purchase_Master_.TotalGST, Purchase_Master_.TotalCGST,
+            Purchase_Master_.TotalSGST, Purchase_Master_.TotalIGST, Purchase_Master_.Other_Charges, Purchase_Master_.GrossTotal,
+            Purchase_Master_.NetTotal, Purchase_Master_.BillType, Purchase_Master_.User_Id, Purchase_Master_.Description,
+            Purchase_Master_.Document_Name, Purchase_Master_.File_Name, Purchase_Master_.Item_Group_Id, Purchase_Master_.Item_Group_Name,
+            Purchase_Master_.Branch_Id, Purchase_Master_.Branch_Name, Purchase_Master_.Purchase_Details, Purchase_Master_.Payment_mode,
+        ]);
+        if (log) log.info("sp.call", { name: "Save_Purchase_Master_App" });
+        return (new storedProcedure("Save_Purchase_Master_App", params, connection)).result();
+    }, { log });
 },
 
 

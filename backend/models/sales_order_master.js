@@ -3,53 +3,31 @@ var fs = require('fs');
 var request = require('request');
 const fetch = require("node-fetch");
 const storedProcedure=require('../helpers/stored-procedure');
+const { withTransaction, normalizeParams } = require("../helpers/transaction");
 var Sales_Order_Master=
 { 
     
-    Save_Sales_Order: async function (Sales_Order_Master_) {
-        console.log(Sales_Order_Master_);
-        console.log(Sales_Order_Master_.Sales_Details);
+    Save_Sales_Order: async function (Sales_Order_Master_, { log } = {}) {
+        if (!Sales_Order_Master_) throw new Error("Payload missing");
+        if (Sales_Order_Master_.SalesQuotationMaster_Id == undefined) Sales_Order_Master_.SalesQuotationMaster_Id = 0;
+        if (!Sales_Order_Master_.Sales_Details || Sales_Order_Master_.Sales_Details.length === 0) Sales_Order_Master_.Sales_Details = [];
 
-         return new Promise(async (rs,rej)=>{
-           const pool = db.promise();
-           let result1;
-           var connection = await pool.getConnection();
-           if(Sales_Order_Master_.SalesQuotationMaster_Id == undefined){
-            Sales_Order_Master_.SalesQuotationMaster_Id = 0
-          }
-           if(!Sales_Order_Master_.Sales_Details || Sales_Order_Master_.Sales_Details.length === 0){
-            Sales_Order_Master_.Sales_Details = [];
-          }
-           try 
-           {
-            const result1 = await(new storedProcedure('Save_Sales_Order_Master',[Sales_Order_Master_.Sales_Master_Id,Sales_Order_Master_.Account_Party_Id,Sales_Order_Master_.EntryDate,Sales_Order_Master_.LPONo,
-                Sales_Order_Master_.DONo,Sales_Order_Master_.PackingListNumber,Sales_Order_Master_.CurrencyId,Sales_Order_Master_.TypeId,Sales_Order_Master_.PaymentTerms,Sales_Order_Master_.TotalAmount,Sales_Order_Master_.TotalDiscount,Sales_Order_Master_.Roundoff_Amt,
-                Sales_Order_Master_.Total_Amount,Sales_Order_Master_.NetTotal,Sales_Order_Master_.User_Id,Sales_Order_Master_.Delivery_Address1,Sales_Order_Master_.Delivery_Address2,
-                Sales_Order_Master_.Delivery_Address3, Sales_Order_Master_.Delivery_Address4, Sales_Order_Master_.Charge1, Sales_Order_Master_.charge1_Amount,Sales_Order_Master_.Charge2, Sales_Order_Master_.charge2_Amount,
-                Sales_Order_Master_.Discount_Description, Sales_Order_Master_.Additional_Discount, Sales_Order_Master_.Description2, Sales_Order_Master_.Amount_In_Words, Sales_Order_Master_.Charge1per,Sales_Order_Master_.Employee,
-                Sales_Order_Master_.DueDate,Sales_Order_Master_.SupplyDate,Sales_Order_Master_.Basic_Discount,
-                Sales_Order_Master_.Payment_Term_Description, Sales_Order_Master_.VAT_percentage,Sales_Order_Master_.VAT_Amount,Sales_Order_Master_.TaxableAmount,Sales_Order_Master_.KindAttend,Sales_Order_Master_.PaymentTermValue, Sales_Order_Master_.Sales_Details,
-                Sales_Order_Master_.SalesQuotationMaster_Id, 
-                Sales_Order_Master_.PerformaInvoiceMaster_Id, Sales_Order_Master_.DeliveryOrderMaster_Id
-            ], connection)).result();
-                    console.log(result1)
-                await connection.commit();
-                 connection.release();
-                 console.log(result1);
-                 rs( result1);
-               }
-            catch (err) {
-                console.log(err);
-            await connection.rollback();
-            var result2=[{'Sales_Master_Id_':0}]      
-            rs(result2);
-          }
-          finally 
-          {
-          connection.release();
-       }
-    })
-},
+        return withTransaction(async ({ connection }) => {
+            const params = normalizeParams([
+                Sales_Order_Master_.Sales_Master_Id, Sales_Order_Master_.Account_Party_Id, Sales_Order_Master_.EntryDate, Sales_Order_Master_.LPONo,
+                Sales_Order_Master_.DONo, Sales_Order_Master_.PackingListNumber, Sales_Order_Master_.CurrencyId, Sales_Order_Master_.TypeId, Sales_Order_Master_.PaymentTerms, Sales_Order_Master_.TotalAmount, Sales_Order_Master_.TotalDiscount, Sales_Order_Master_.Roundoff_Amt,
+                Sales_Order_Master_.Total_Amount, Sales_Order_Master_.NetTotal, Sales_Order_Master_.User_Id, Sales_Order_Master_.Delivery_Address1, Sales_Order_Master_.Delivery_Address2,
+                Sales_Order_Master_.Delivery_Address3, Sales_Order_Master_.Delivery_Address4, Sales_Order_Master_.Charge1, Sales_Order_Master_.charge1_Amount, Sales_Order_Master_.Charge2, Sales_Order_Master_.charge2_Amount,
+                Sales_Order_Master_.Discount_Description, Sales_Order_Master_.Additional_Discount, Sales_Order_Master_.Description2, Sales_Order_Master_.Amount_In_Words, Sales_Order_Master_.Charge1per, Sales_Order_Master_.Employee,
+                Sales_Order_Master_.DueDate, Sales_Order_Master_.SupplyDate, Sales_Order_Master_.Basic_Discount,
+                Sales_Order_Master_.Payment_Term_Description, Sales_Order_Master_.VAT_percentage, Sales_Order_Master_.VAT_Amount, Sales_Order_Master_.TaxableAmount, Sales_Order_Master_.KindAttend, Sales_Order_Master_.PaymentTermValue, Sales_Order_Master_.Sales_Details,
+                Sales_Order_Master_.SalesQuotationMaster_Id,
+                Sales_Order_Master_.PerformaInvoiceMaster_Id, Sales_Order_Master_.DeliveryOrderMaster_Id,
+            ]);
+            if (log) log.info("sp.call", { name: "Save_Sales_Order_Master" });
+            return (new storedProcedure("Save_Sales_Order_Master", params, connection)).result();
+        }, { log });
+    },
 
  Search_Sales_Order:function(Is_Date_Check_,FromDate_,ToDate_,Account_Party_Id_,Invoice_No_,Part_No_,Item_Group_Id_,CurrencyDetails_Id_,AccountType_Id_,User_Details_Id_,
     User_Type, Login_User_Id,callback)

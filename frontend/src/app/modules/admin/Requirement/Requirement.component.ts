@@ -1,6 +1,7 @@
 import { ChangeDetectorRef,Component, OnInit, HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, NgZone, Input, Pipe, PipeTransform, QueryList, ViewChildren  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { finalize, catchError, timeout } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 import { Client_Accounts } from '../../../models/Client_Accounts';
 import { User_Details_Service } from '../../../services/User_Details.Service';
@@ -20,7 +21,8 @@ import { Bill_Type } from '../../../models/Bill_Type';
 import { Bill_Mode } from '../../../models/Bill_Mode';
 import { Stock } from '../../../models/Stock';
 import { Item_Service } from '../../../services/Item.Service';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatDialogConfig, MatButtonToggleGroup} from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
+import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
@@ -54,7 +56,7 @@ templateUrl: './Requirement.component.html',
 styleUrls: ['./Requirement.component.css'],
 providers: [
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},]
+    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},DecimalPipe]
 })
 
 export class RequirementComponent implements OnInit, AfterViewInit  {
@@ -98,16 +100,16 @@ Bill_Type_:Bill_Type= new Bill_Type();
 Bill_Type_Temp:Bill_Type= new Bill_Type();
 Bill_Type_Search:Bill_Type= new Bill_Type();
 Item_Group_Search:Item_Group = new Item_Group();
-Currency_Search:currencydetails = new currencydetails();
+Currency_Search:currencydetails = new currencydetails({ CurrencyDetails_Id: 0, CurrecnyName: '', SubCurrecnyName: '' });
 
-currency: currencydetails = new currencydetails();
+currency: currencydetails = new currencydetails({ CurrencyDetails_Id: 0, CurrecnyName: '', SubCurrecnyName: '' });
 currencyData: currencydetails[] = [];
-Currency_Temp: currencydetails = new currencydetails();
+Currency_Temp: currencydetails = new currencydetails({ CurrencyDetails_Id: 0, CurrecnyName: '', SubCurrecnyName: '' });
 
 Employee_Search:User_Details = new User_Details();
-Payment_Term:payment_term = new payment_term();
-Payment_Term_Data: payment_term[];
-Payment_Term_Temp: payment_term = new payment_term();
+Payment_Term:payment_term = new payment_term({ payment_Term_ID: 0, Payment_Term_Description: '' });
+Payment_Term_Data: payment_term[] = [];
+Payment_Term_Temp: payment_term = new payment_term({ payment_Term_ID: 0, Payment_Term_Description: '' });
 Bill_Mode_Data:Bill_Mode[]
 Bill_Mode_:Bill_Mode= new Bill_Mode();
 Bill_Mode_Temp:Bill_Mode= new Bill_Mode();
@@ -369,51 +371,61 @@ Page_Load()
 Load_Company() 
     {   
     this.Requirement_Master_Service_.Load_Company().subscribe(Rows => {    
-    if (Rows != null) {
-        debugger;
-    this.Print_Company_ = Rows[0][0];
-    this.Company_ = Rows[0][0];
-    this.Bank_ = Rows[1];
- }
- this.issLoading = false;
- },
- Rows => {
- this.issLoading = false;
- const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
- });
+        // API returns { success: true, data: [[...]] } via sendSuccess wrapper
+        const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+        if (rawData != null && rawData[0] != null && Array.isArray(rawData[0]) && rawData[0].length > 0) {
+            debugger;
+            this.Print_Company_ = rawData[0][0];
+            this.Company_ = rawData[0][0];
+            this.Bank_ = rawData[1] || [];
+        }
+        this.issLoading = false;
+    },
+    Rows => {
+        this.issLoading = false;
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error loading Company',Type:"2"}});
+    });
 }
     Load_Currency() {
         this.currencydetails_Service_.Search_currencydetails('').subscribe(Rows => {
-            if (Rows != null) {
-                this.currencyData = Rows[0];        
-                this.Currency_Temp.CurrencyDetails_Id = 0;
-                this.Currency_Temp.CurrecnyName = "Select";
-                this.currencyData.unshift(this.Currency_Temp);
-                this.currency = this.currencyData[0];
-                this.Currency_Search = this.currencyData[0];
-            }
+            // API returns { success: true, data: [[...]] } via sendSuccess wrapper
+            const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+            const list = Array.isArray(rawData) && Array.isArray(rawData[0]) ? rawData[0]
+                       : Array.isArray(rawData) ? rawData : [];
+            this.currencyData = list;
+            if (!this.currencyData) { this.currencyData = []; }
+            this.Currency_Temp.CurrencyDetails_Id = 0;
+            this.Currency_Temp.CurrecnyName = 'Select';
+            this.currencyData.unshift(this.Currency_Temp);
+            this.currency = this.currencyData[0];
+            this.Currency_Search = this.currencyData[0];
             this.issLoading = false;
         },
-            Rows => {
+            err => {
                 this.issLoading = false;
-                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
+                this.currencyData = this.currencyData || [];
+                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error loading Currency', Type: "2" } });
             });
     }
 
     Load_Item_Group() {
         this.Item_Group_Service_.Load_Item_Group().subscribe(Rows => {
-            if (Rows != null) {
-                this.itemGroupData = Rows[0];
-                this.itemGroup_Temp.Item_Group_Id = 0;
-                this.itemGroup_Temp.Item_Group_Name = "Select";
-                this.itemGroupData.unshift(this.itemGroup_Temp);
-                this.Item_Group_Search = this.itemGroupData[0];
-            }
+            // API returns { success: true, data: [[...]] } via sendSuccess wrapper
+            const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+            const list = Array.isArray(rawData) && Array.isArray(rawData[0]) ? rawData[0]
+                       : Array.isArray(rawData) ? rawData : [];
+            this.itemGroupData = list;
+            if (!this.itemGroupData) { this.itemGroupData = []; }
+            this.itemGroup_Temp.Item_Group_Id = 0;
+            this.itemGroup_Temp.Item_Group_Name = 'Select';
+            this.itemGroupData.unshift(this.itemGroup_Temp);
+            this.Item_Group_Search = this.itemGroupData[0];
             this.issLoading = false;
         },
-            Rows => {
+            err => {
                 this.issLoading = false;
-                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
+                this.itemGroupData = this.itemGroupData || [];
+                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error loading Item Group', Type: "2" } });
             });
     }
     // Load_Employees() {
@@ -435,18 +447,22 @@ Load_Company()
     // }
     Load_Payment_Term() {
         this.payment_term_Service_.Load_Payment_Term().subscribe(Rows => {
-            if (Rows != null) {
-                this.PaymentTermData = Rows[0];
-                this.Payment_Term_Temp.payment_Term_ID = 0;
-                this.Payment_Term_Temp.Payment_Term_Description = "Select";
-                this.PaymentTermData.unshift(this.Payment_Term_Temp);
-                this.Payment_Term = this.PaymentTermData[0];
-            }
+            // API returns { success: true, data: [[...]] } via sendSuccess wrapper
+            const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+            const list = Array.isArray(rawData) && Array.isArray(rawData[0]) ? rawData[0]
+                       : Array.isArray(rawData) ? rawData : [];
+            this.PaymentTermData = list;
+            if (!this.PaymentTermData) { this.PaymentTermData = []; }
+            this.Payment_Term_Temp.payment_Term_ID = 0;
+            this.Payment_Term_Temp.Payment_Term_Description = 'Select';
+            this.PaymentTermData.unshift(this.Payment_Term_Temp);
+            this.Payment_Term = this.PaymentTermData[0];
             this.issLoading = false;
         },
-            Rows => {
+            err => {
                 this.issLoading = false;
-                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
+                this.PaymentTermData = this.PaymentTermData || [];
+                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error loading Payment Term', Type: "2" } });
             });
     }
 
@@ -1229,22 +1245,24 @@ Load_Bill_Type()
 {
     debugger;
     var value=1;
-        this.Requirement_Master_Service_.Load_Bill_Type(value).subscribe(Rows => {    
-        if (Rows != null && Rows[0] != null) {
-        this.Bill_Type_Data = Rows[0];        
-        this.Bill_Type_Temp.Bill_Type_Id = 0;
-        this.Bill_Type_Temp.Bill_Type_Name = "Select";
-        this.Bill_Type_Data.unshift(this.Bill_Type_Temp);
-        debugger;
-        this.Bill_Type_Search=this.Bill_Type_Data[0];
-        this.Bill_Type_=this.Bill_Type_Data[1];
+    this.Requirement_Master_Service_.Load_Bill_Type(value).subscribe(Rows => {    
+        // API returns { success: true, data: [[...]] } via sendSuccess wrapper
+        const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+        if (rawData != null && rawData[0] != null) {
+            this.Bill_Type_Data = rawData[0];        
+            this.Bill_Type_Temp.Bill_Type_Id = 0;
+            this.Bill_Type_Temp.Bill_Type_Name = "Select";
+            this.Bill_Type_Data.unshift(this.Bill_Type_Temp);
+            debugger;
+            this.Bill_Type_Search=this.Bill_Type_Data[0];
+            this.Bill_Type_=this.Bill_Type_Data[1];
         }
         this.issLoading = false;
-        },
-        Rows => {
+    },
+    Rows => {
         this.issLoading = false;
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-        });
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error loading Bill Type',Type:"2"}});
+    });
 }
 Load_Bill_Mode()
 {
@@ -1709,6 +1727,48 @@ PriceRequest_Pending_Click(master: any) {
     });
 }
 
+Edit_Quotation_Pending(item: any) {
+    const requirementId = this.Requirement_Master_.RequirementMaster_Id;
+    if (!requirementId) return;
+
+    // Use specific pending item data
+    const quotationItem = {
+        ItemId: item.ItemId || item.Item_ID || item.Item_Code || item.ItemCode,
+        ItemName: item.ItemName || item.Item_Name,
+        Item_Code: item.Part_No || item.PartNo || item.Part_Number || item.PartNumber,
+        Quantity: item.BalanceQuantity || item.Balance_Qty,
+        UnitPrice: item.Rate || item.UnitPrice || item.Unit_Price
+    };
+
+    localStorage.setItem('Requirement_For_Quotation', JSON.stringify({ 
+        RequirementMaster_Id: requirementId,
+        PendingItem: quotationItem 
+    }));
+    
+    this.router.navigateByUrl('/Quotation');
+}
+
+Edit_PriceRequest_Pending(item: any) {
+    const requirementId = this.Requirement_Master_.RequirementMaster_Id;
+    if (!requirementId) return;
+
+    // Use specific pending item data
+    const priceRequestItem = {
+        ItemId: item.ItemId || item.Item_ID || item.Item_Code || item.ItemCode,
+        ItemName: item.ItemName || item.Item_Name,
+        Item_Code: item.Part_No || item.PartNo || item.Part_Number || item.PartNumber,
+        Quantity: item.BalanceQuantity || item.Balance_Qty,
+        UnitPrice: item.Rate || item.LastRequestedPrice || item.UnitPrice || item.Unit_Price
+    };
+
+    localStorage.setItem('Requirement_For_PriceRequest', JSON.stringify({ 
+        RequirementMaster_Id: requirementId,
+        PendingItem: priceRequestItem 
+    }));
+    
+    this.router.navigateByUrl('/Price_Request');
+}
+
 makeQuotation() {
     const id = this.Requirement_Master_.RequirementMaster_Id;
     if (!id) return;
@@ -1938,11 +1998,17 @@ else
 // return
 // } 
 // else
-if(this.Barcode_ == undefined || this.Barcode_ == null || (this.Barcode_ as any).Item_Code == undefined || (this.Barcode_ as any).Item_Code == null || (this.Barcode_ as any).Item_Code == "")
-{
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Select Item Code',Type: "3" }});
-return
-}
+    // Allow manual entry: either Item_Code or ItemName must be present
+    const itemName = typeof this.Item_ === 'string' ? this.Item_ : (this.Item_ ? this.Item_.ItemName : '');
+    const itemCode = typeof this.Barcode_ === 'string' ? this.Barcode_ : (this.Barcode_ ? this.Barcode_.Item_Code : '');
+
+    if (!itemName && !itemCode) {
+        this.dialogBox.open(DialogBox_Component, { 
+            panelClass: 'Dialogbox-Class', 
+            data: { Message: 'Enter Item Name or Code', Type: "3" } 
+        });
+        return;
+    }
 if(this.Requirement_Details_.Quantity==undefined || this.Requirement_Details_.Quantity==null || this.Requirement_Details_.Quantity==0)
 {
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Enter Quantity',Type: "3" }});
@@ -2023,7 +2089,7 @@ Save_Requirement(Printstatus:number)
         }  
     
     debugger; 
-    if(this.currency.CurrencyDetails_Id == undefined || this.currency.CurrencyDetails_Id == 0 ){
+    if(!this.currency || this.currency.CurrencyDetails_Id == undefined || this.currency.CurrencyDetails_Id == 0 ){
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Choose currency',Type:"3"}});
         return
     }    
@@ -2043,67 +2109,59 @@ Save_Requirement(Printstatus:number)
     this.Requirement_Master_.CurrencyId = this.currency.CurrencyDetails_Id;
     console.log("Before Requirement API call");
     this.issLoading = true;
+    const saveButton = document.getElementById("Save_Button");
+    if (saveButton) saveButton.hidden = true;
 
     this.Requirement_Master_Service_.Save_Requirement(this.Requirement_Master_)
     .pipe(
         finalize(() => {
-            console.log("Requirement Finalize executed");
             this.issLoading = false;
-            const saveButton = document.getElementById("Save_Button");
             if (saveButton) saveButton.hidden = false;
         })
     )
     .subscribe({
-        next: (Save_status) => {
-            console.log("Requirement API Response:", Save_status);
+        next: (res: any) => {
+            console.log("Requirement API Response:", res);
 
-            if (!Save_status || !Save_status[0]) {
-                this.dialogBox.open(DialogBox_Component, {
-                    panelClass: 'Dialogbox-Class',
-                    data: { Message: 'Invalid server response', Type: "2" }
-                });
-                return;
-            }
+            if (res && res.success) {
+                const data = res.data;
+                const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+                const result = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null);
 
-            if (Number(Save_status[0].RequirementMaster_Id_) > 0) {
-                this.Requirement_Master_.RequirementMaster_Id = Save_status[0].RequirementMaster_Id_;
-                this.Requirement_Master_.RequirementNo = Save_status[0].RequirementNo_;          
-                
-                if (Printstatus == 1) {
-                    this.Print_Click();
+                if (result && Number(result.RequirementMaster_Id_) > 0) {
+                    this.Requirement_Master_.RequirementMaster_Id = result.RequirementMaster_Id_;
+                    this.Requirement_Master_.RequirementNo = result.RequirementNo_;          
+                    
+                    if (Printstatus == 1) {
+                        this.Print_Click();
+                    } else {
+                        this.dialogBox.open(DialogBox_Component, {
+                            panelClass: 'Dialogbox-Class',
+                            data: { Message: 'Saved Successfully', Type: "false" }
+                        });
+                        this.Edit_Sales = 1;
+                    }        
+                    this.Sales_Print = false;
                 } else {
+                    const msg = (result && result.Message) || (res && res.message) || 'Save failed';
                     this.dialogBox.open(DialogBox_Component, {
                         panelClass: 'Dialogbox-Class',
-                        data: { Message: 'Saved Successfully', Type: "false" }
+                        data: { Message: 'Error: ' + msg, Type: "2" }
                     });
-                    this.Edit_Sales = 1;
-                }        
-                this.Sales_Print = false;
+                }
             } else {
                 this.dialogBox.open(DialogBox_Component, {
                     panelClass: 'Dialogbox-Class',
-                    data: {
-                        Message: 'Error: ' + (Save_status[0].Message || 'Save failed'),
-                        Type: "2"
-                    }
+                    data: { Message: 'Error: ' + (res && res.message ? res.message : 'Save failed'), Type: "2" }
                 });
-                if (this.topDiv) {
-                    this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
             }
         },
-        error: (error) => {
+        error: (error: any) => {
             console.error("Requirement API ERROR:", error);
             this.dialogBox.open(DialogBox_Component, {
                 panelClass: 'Dialogbox-Class',
-                data: {
-                    Message: 'Server Error: ' + (error.message || 'Connection failed'),
-                    Type: "2"
-                }
+                data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" }
             });
-            if (this.topDiv) {
-                this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
         }
     });
 }
@@ -2316,10 +2374,16 @@ Get_Stock(){
     this.Requirement_Details_.HSNMasterId=this.Barcode_.HSNMasterId;
     this.Requirement_Details_.Item_Code=this.Barcode_.Item_Code;  
 }
-Get_Stock_Item(){
-    this.Stock_Temp.ItemId=this.Item_.ItemId;
-    this.Stock_Temp.ItemName=this.Item_.ItemName;
-    this.Stock_=Object.assign({},this.Stock_Temp);
+Get_Stock_Item() {
+    if (typeof this.Item_ === 'string') {
+        this.Requirement_Details_.ItemName = this.Item_;
+        this.Requirement_Details_.ItemId = 0;
+        this.Requirement_Details_.Item_Code = '';
+        return;
+    }
+    this.Stock_Temp.ItemId = this.Item_ ? this.Item_.ItemId : 0;
+    this.Stock_Temp.ItemName = this.Item_ ? this.Item_.ItemName : '';
+    this.Stock_ = Object.assign({}, this.Stock_Temp);
     debugger;
     if(this.Item_ != null || this.Item_ != undefined)
     {
@@ -3077,16 +3141,18 @@ debugger;
       Load_Vat_Percentage() 
       {   
       this.Requirement_Master_Service_.Load_Vat_Percentage().subscribe(Rows => {    
-      if (Rows != null) {
-          debugger;
-      this.Default_Vat_Percentage = Rows[0][0].vat_percentage;
-   }
-   this.issLoading = false;
-   },
-   Rows => {
-   this.issLoading = false;
-   const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-   });
+          // API returns { success: true, data: [[...]] } via sendSuccess wrapper
+          const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+          if (rawData != null && rawData[0] != null && Array.isArray(rawData[0]) && rawData[0].length > 0 && rawData[0][0] != null) {
+              debugger;
+              this.Default_Vat_Percentage = rawData[0][0].vat_percentage;
+          }
+          this.issLoading = false;
+      },
+      Rows => {
+          this.issLoading = false;
+          const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error loading VAT',Type:"2"}});
+      });
   }
   Requirement_Master_Desc2_Break()
   {
@@ -3176,6 +3242,7 @@ debugger;
           this.Requirement_Master_.VAT_Amount = this.Total * (this.Requirement_Master_.VAT_Percentage/100)
       }
       this.Requirement_Master_.VAT_Amount = Number(this.Requirement_Master_.VAT_Amount.toFixed(3))    
+      this.Requirement_Master_.TaxableAmount = this.Total;
       this.Requirement_Master_.Total_Amount = this.Total + this.Requirement_Master_.VAT_Amount
       this.Requirement_Master_.Total_Amount = Number(this.Requirement_Master_.Total_Amount.toFixed(3))
       this.Requirement_Master_.NetTotal = Number((this.Requirement_Master_.Total_Amount - this.safeNumber(this.Requirement_Master_.Roundoff_Amt)).toFixed(3))

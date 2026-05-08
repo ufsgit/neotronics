@@ -2,6 +2,8 @@
  var router = express.Router();
  var Purchase_Master=require('../models/Purchase_Master');
  const upload = require('../helpers/multer-helper');
+ const asyncHandler = require("../helpers/async-handler");
+ const { sendSuccess } = require("../helpers/api-response");
 //  router.post('/Save_Purchase_Master/',async function(req,res,next)
 //         { 
 //         try 
@@ -15,7 +17,7 @@
 //       });
 
 
-      router.post('/Save_Purchase_Master', (req, res, next) =>
+      router.post('/Save_Purchase_Master', asyncHandler(async (req, res, next) =>
       {
        try
        {
@@ -93,36 +95,25 @@
 //  console.log(Purchase_Data);
 
 
-         Purchase_Master.Save_Purchase_Master(jsondata1, function (err, rows)
-             {
-      
-             if (err) 
-             {
-               console.log(err)
-               return 1;
-             }
-             else
-             {
-              console.log(rows);
-               return res.json(rows);
-               
-             }
+         const rows = await new Promise((resolve, reject) => {
+           Purchase_Master.Save_Purchase_Master(jsondata1, function (err, rows) {
+             if (err) return reject(err);
+             resolve(rows);
            });
+         });
+         return sendSuccess(res, { message: "Saved", data: Array.isArray(rows) ? rows : [rows] });
          
        }
       
        catch (err) 
        {
-         
-         const error = new Error('Please upload a file')
-         error.httpStatusCode = 400
-         return next(error)
+         throw err;
        }
          finally 
          {
          }
        }
-      );   
+      ));   
 
 
 router.get('/Search_Item_Typeahead/:Item_Name_?',function(req,res,next)
@@ -769,20 +760,11 @@ router.get('/Delete_Service/:Service_Id_?',function(req,res,next)
 //   }
 // });
 
-router.post('/Save_Purchase_Master_App/',async function(req,res,next)
+router.post('/Save_Purchase_Master_App/', asyncHandler(async function(req,res,next)
         { 
-        try 
-        {
-          console.log(req.query)
-        const resp=await Purchase_Master.Save_Purchase_Master_App(req.query);
-        console.log(resp)
-        return res.send(resp);
-        }
-        catch(e){
-          console.log(e)
-        return res.send(e);
-        }
-      });
+        const resp = await Purchase_Master.Save_Purchase_Master_App(req.body, { log: req.log });
+        return sendSuccess(res, { message: "Saved", data: Array.isArray(resp) ? resp : [resp] });
+      }));
 
       /** Added on 22-08-2024 */
 
@@ -847,8 +829,8 @@ router.post('/Save_Purchase_Master_App/',async function(req,res,next)
       
              if (err) 
              {
-               console.log(err)
-               return 1;
+               console.error('Save_CreditNote_Master_1 failed:', err);
+               return res.status(500).json({ message: 'Save_CreditNote_Master_1 failed', error: err.message || err });
              }
              else
              {

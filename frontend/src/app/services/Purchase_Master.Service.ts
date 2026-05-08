@@ -2,7 +2,7 @@ import { Component, OnInit,Input,Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.js';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, catchError, tap, timeout } from 'rxjs/operators';
 import { AnimationKeyframesSequenceMetadata } from '@angular/animations';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -226,7 +226,7 @@ debugger;
 //     }       
  
 // debugger;
-   return this.http.post(environment.BasePath + 'Purchase_Master/Save_Purchase_Master', postData);
+   return this.http.post(environment.BasePath + 'Purchase_Master/Save_Purchase_Master', postData).pipe(timeout(60000));
 }
 
 

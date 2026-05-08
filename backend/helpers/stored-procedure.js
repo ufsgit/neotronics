@@ -13,10 +13,11 @@ function isPlainObject(value) {
 }
 
 class StoredProcedure {
-  constructor(name, params,db1) {
+  constructor(name, params, db1, options) {
     this.db = db1;
     this.name = name;
     this.params = params;
+    this.options = options || {};
     this.buildQuery();
 
   }
@@ -41,7 +42,7 @@ class StoredProcedure {
   result() {
     let params = this.params;
     for (const key in params) {
-      if (!params[key] && typeof params[key] === "undefined") {
+      if (params[key] === undefined) {
         params[key] = null;
       }
       if (isPlainObject(params[key])) {
@@ -56,14 +57,32 @@ class StoredProcedure {
 
     return new Promise((res, rej) => {
       const dbCall = this.db ? this.db : db;
-      dbCall.query(this.query, params, (er, s) => {
-        if (er) {
-        
-          rej(er);
-        } else {
-          res(s[0]);
+      const timeout = Number(process.env.DB_QUERY_TIMEOUT_MS || this.options.timeoutMs || 60000);
+      
+      try {
+        // Try calling with callback (for regular pool/connection)
+        const queryObj = dbCall.query({ sql: this.query, timeout }, params, (er, s) => {
+          // If this is a promise connection, this callback might never be called.
+          if (er) {
+            rej(er);
+          } else {
+            res(s && s[0]);
+          }
+        });
+
+        // If it returns a Promise (mysql2 promise-based), handle it
+        if (queryObj && typeof queryObj.then === 'function') {
+          queryObj.then((result) => {
+            // mysql2 promise returns [rows, fields]
+            const rows = Array.isArray(result) ? result[0] : result;
+            res(rows && rows[0]);
+          }).catch((err) => {
+            rej(err);
+          });
         }
-      });
+      } catch (err) {
+        rej(err);
+      }
     });
   }
 }

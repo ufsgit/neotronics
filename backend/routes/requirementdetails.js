@@ -10,19 +10,19 @@ requirementdetails.Save_requirementdetails(req.body, function (err, rows)
 {
  if (err)
  {
-  res.json(err);
+  console.error('Save_requirementdetails failed:', err);
+  return res.status(500).json({ message: 'Save_requirementdetails failed', error: err.message || err });
  }
  else
  {
-  res.json(rows);
+  return res.json(rows);
  }
 });
 }
 catch (e)
 {
-}
-finally
-{
+  console.error('Save_requirementdetails error:', e);
+  return res.status(500).json({ message: 'Save_requirementdetails exception', error: e.message || e });
 }
 });
 

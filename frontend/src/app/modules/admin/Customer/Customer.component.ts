@@ -342,44 +342,46 @@ else
     this.Client_Accounts_Service_.Save_Client_Accounts(this.Client_Accounts_)
     .pipe(
       finalize(() => {
-        console.log("Customer Save Finalize executed");
         this.issLoading = false;
         const saveButton = document.getElementById("Save_Button");
         if (saveButton) saveButton.hidden = false;
       })
     )
     .subscribe({
-      next: (Save_status) => {
-        console.log("Customer Save API Response:", Save_status);
+      next: (res: any) => {
+        console.log("Customer Save API Response:", res);
         
-        if (!Save_status || !Save_status[0]) {
-          this.dialogBox.open(DialogBox_Component, {
-            panelClass: 'Dialogbox-Class',
-            data: { Message: 'Invalid server response', Type: "2" }
-          });
-          return;
-        }
+        if (res && res.success) {
+          const data = res.data;
+          const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+          const result = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null);
 
-        const resultId = Number(Save_status[0][0].Client_Accounts_Id_);
-        if (resultId > 0) {
-          this.dialogBox.open(DialogBox_Component, {
-            panelClass: 'Dialogbox-Class',
-            data: { Message: 'Saved Successfully', Type: "false" }
-          });
-          this.Search_Client_Accounts();
-        } else if (resultId == -1) {
-          this.dialogBox.open(DialogBox_Component, {
-            panelClass: 'Dialogbox-Class',
-            data: { Message: 'Customer Name Already Exists', Type: "2" }
-          });
+          const resultId = result ? Number(result.Client_Accounts_Id_) : 0;
+          if (resultId > 0) {
+            this.dialogBox.open(DialogBox_Component, {
+              panelClass: 'Dialogbox-Class',
+              data: { Message: 'Saved Successfully', Type: "false" }
+            });
+            this.Search_Client_Accounts();
+          } else if (resultId == -1) {
+            this.dialogBox.open(DialogBox_Component, {
+              panelClass: 'Dialogbox-Class',
+              data: { Message: 'Customer Name Already Exists', Type: "2" }
+            });
+          } else {
+            this.dialogBox.open(DialogBox_Component, {
+              panelClass: 'Dialogbox-Class',
+              data: { Message: 'Error: ' + (res.message || 'Save failed'), Type: "2" }
+            });
+          }
         } else {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',
-            data: { Message: 'Error Occured', Type: "2" }
+            data: { Message: 'Error: ' + (res && res.message ? res.message : 'Save failed'), Type: "2" }
           });
         }
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error("Customer Save API ERROR:", error);
         this.dialogBox.open(DialogBox_Component, {
           panelClass: 'Dialogbox-Class',

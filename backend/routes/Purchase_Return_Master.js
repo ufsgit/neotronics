@@ -35,8 +35,8 @@ router.post('/Save_Purchase_Return_Master', (req, res, next) =>
   
          if (err) 
          {
-           console.log(err)
-           return 1;
+           console.error('Save_Purchase_Return_Master failed:', err);
+           return res.status(500).json({ message: 'Save_Purchase_Return_Master failed', error: err.message || err });
          }
          else
          {

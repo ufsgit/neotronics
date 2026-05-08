@@ -2,7 +2,7 @@ import { Component, OnInit,Input,Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.js';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, catchError, tap, timeout } from 'rxjs/operators';
 import { AnimationKeyframesSequenceMetadata } from '@angular/animations';
 @Injectable({
 providedIn: 'root'
@@ -18,7 +18,7 @@ headers: new HttpHeaders({
 }AnimationKeyframesSequenceMetadata
 Save_Payment_Voucher(Payment_Voucher_)
 {
-return this.http.post(environment.BasePath +'Payment_Voucher/Save_Payment_Voucher/',Payment_Voucher_);}
+return this.http.post(environment.BasePath +'Payment_Voucher/Save_Payment_Voucher/',Payment_Voucher_).pipe(timeout(60000));}
 private extractData(res: Response)
 {
 let body = res;

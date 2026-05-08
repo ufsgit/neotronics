@@ -67,12 +67,19 @@ Save_Item:function(Item_,callback)
         const tryUpdateTaxColumns = (itemId, done) => {
             const id = Number(itemId || 0);
             if (!id) return done(null);
-            const q = "UPDATE Item SET gst = ?, cgst = ?, sgst = ?, igst = ?, b2b_rate = ?, b2c_rate = ? WHERE Item_Id = ?";
+            const q = "UPDATE Item SET Sales_Tax = ?, cgst = ?, sgst = ?, igst = ?, b2b_rate = ?, b2c_rate = ? WHERE Item_Id = ?";
             db.query(q, [gst, cgst, sgst, igst, b2bRate, b2cRate, id], (e2) => {
-                // If columns don't exist yet, ignore (DB migration not applied)
-                if (e2 && (e2.code === 'ER_BAD_FIELD_ERROR' || e2.code === 'ER_NO_SUCH_TABLE')) {
-                    console.warn("Tax columns update skipped:", e2.code);
-                    return done(null);
+                if (!e2) return done(null);
+                if (e2.code === 'ER_BAD_FIELD_ERROR' || e2.code === 'ER_NO_SUCH_TABLE') {
+                    console.warn("Item tax column update skipped, falling back to legacy gst column:", e2.code);
+                    const legacyQ = "UPDATE Item SET gst = ?, cgst = ?, sgst = ?, igst = ?, b2b_rate = ?, b2c_rate = ? WHERE Item_Id = ?";
+                    return db.query(legacyQ, [gst, cgst, sgst, igst, b2bRate, b2cRate, id], (e3) => {
+                        if (e3 && (e3.code === 'ER_BAD_FIELD_ERROR' || e3.code === 'ER_NO_SUCH_TABLE')) {
+                            console.warn("Legacy tax column update skipped:", e3.code);
+                            return done(null);
+                        }
+                        done(e3);
+                    });
                 }
                 done(e2);
             });
@@ -211,4 +218,3 @@ Search_Service_Type:function(Service_Type_Name_,callback)
     },
 };
 module.exports=Item;
-

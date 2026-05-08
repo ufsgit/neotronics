@@ -8,7 +8,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app.routing';
 import { ComponentsModule } from './components/components.module';
 import { AppComponent } from './app.component';
-import { MatExpansionModule, MatInputModule } from '@angular/material'
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatInputModule } from '@angular/material/input';
 import {  AgmCoreModule} from '@agm/core';
 import { TokenInterceptor } from './interceptor/http.interceptor';
 import { DialogBox_Component } from './modules/admin/DialogBox/DialogBox.component';

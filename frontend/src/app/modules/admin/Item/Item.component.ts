@@ -385,47 +385,51 @@ else
     console.log("Before Item Save API call");
     this.issLoading = true;
 
+    this.issLoading = true;
+
     this.Item_Service_.Save_Item(this.Item_)
     .pipe(
       finalize(() => {
-        console.log("Item Save Finalize executed");
         this.issLoading = false;
         const saveButton = document.getElementById("Save_Button");
         if (saveButton) saveButton.hidden = false;
       })
     )
     .subscribe({
-      next: (Save_status) => {
-        console.log("Item Save API Response:", Save_status);
+      next: (res: any) => {
+        console.log("Item Save API Response:", res);
         
-        if (!Save_status || !Save_status[0]) {
-          this.dialogBox.open(DialogBox_Component, {
-            panelClass: 'Dialogbox-Class',
-            data: { Message: 'Invalid server response', Type: "2" }
-          });
-          return;
-        }
+        if (res && res.success) {
+          const data = res.data;
+          const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+          const result = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null);
 
-        const resultId = Number(Save_status[0][0].Item_Id_);
-        if (resultId > 0) {
-          this.dialogBox.open(DialogBox_Component, {
-            panelClass: 'Dialogbox-Class',
-            data: { Message: 'Saved Successfully', Type: "false" }
-          });
-          this.Clr_Item();
-        } else if (resultId == -1) {
-          this.dialogBox.open(DialogBox_Component, {
-            panelClass: 'Dialogbox-Class',
-            data: { Message: 'Item Name Already Exists', Type: "2" }
-          });
+          const resultId = result ? Number(result.Item_Id_) : 0;
+          if (resultId > 0) {
+            this.dialogBox.open(DialogBox_Component, {
+              panelClass: 'Dialogbox-Class',
+              data: { Message: 'Saved Successfully', Type: "false" }
+            });
+            this.Clr_Item();
+          } else if (resultId == -1) {
+            this.dialogBox.open(DialogBox_Component, {
+              panelClass: 'Dialogbox-Class',
+              data: { Message: 'Item Name Already Exists', Type: "2" }
+            });
+          } else {
+            this.dialogBox.open(DialogBox_Component, {
+              panelClass: 'Dialogbox-Class',
+              data: { Message: 'Error: ' + (res.message || 'Save failed'), Type: "2" }
+            });
+          }
         } else {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',
-            data: { Message: 'Error Occured', Type: "2" }
+            data: { Message: 'Error: ' + (res && res.message ? res.message : 'Save failed'), Type: "2" }
           });
         }
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error("Item Save API ERROR:", error);
         this.dialogBox.open(DialogBox_Component, {
           panelClass: 'Dialogbox-Class',

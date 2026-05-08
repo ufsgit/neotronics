@@ -20,7 +20,11 @@ function jwt() {
         path: [
             // public routes that don't require authentication
             '/Login',
-            '/Public'
-        ]
+            '/Public',
+            /^\/Sales_Master\/Print_Quotation\/.*/
+        ],
+        custom: function (req) {
+            return req.method === 'OPTIONS';
+        }
     });
 }

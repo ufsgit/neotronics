@@ -34,6 +34,7 @@ import { deliveryordermaster_Service } from '../../../services/deliveryordermast
 import {accounttype} from '../../../models/accounttype';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { Client_Accounts_Service } from '../../../services/Client_Accounts.Service';
+import { finalize } from 'rxjs/operators';
 
 const moment = _rollupMoment || _moment;
 export const MY_FORMATS = {
@@ -356,9 +357,11 @@ debugger
     if(this.DeliveryOrderMaster_Id > 0)
     {
         debugger
-        this.Load_DeliveryOrder()
+        this.Load_DeliveryOrder();
     }
 }
+
+
 Load_Company() 
     {   
     this.Sales_Master_Service_.Load_Company().subscribe(Rows => {    
@@ -1310,7 +1313,7 @@ Change_Bill_Status(Sales_Master_Id,BillType,index)
    if(result=='Yes')
    {
    this.issLoading=true;   
-   this.Sales_Master_Service_.Change_Bill_Status(Sales_Master_Id,BillType).subscribe(Status => {       
+   this.Sales_Master_Service_.Change_Bill_Status(Sales_Master_Id,BillType).subscribe((Status: any) => {       
     Status=Status[0];
    if(Status[0].Sales_Master_Id_>0){
      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Status Changed',Type:"false"}});
@@ -1336,35 +1339,31 @@ Delete_Quotation_Master(DeliveryOrderMaster_Id,index)
     ( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Do you want to delete ?',Type:"true",Heading:'Confirm'}});
     dialogRef.afterClosed().subscribe(result =>        
     {    
-    if(result=='Yes')
-    {
-    this.issLoading=true;
-    debugger
-    this.Sales_Master_Service_.Delete_Delivery_Order(DeliveryOrderMaster_Id).subscribe(Delete_status => {    
-        debugger   
-        Delete_status=Delete_status[0];
-        if(Delete_status[0].DeliveryOrderMaster_Id_==-1){
-            const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Cannot Delete',Type:"3"}});
-            this.issLoading=false;           
-            return;
-          }
-  else if(Delete_status[0].DeliveryOrderMaster_Id_>0){
-    this.Quotation_Master_Data.splice(index, 1);
-      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
-      
-      this.Search_Quotation();
-    }
-    else
-    {
-    //this.Sales_Master_Data.splice(index, 1);
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
-    }
-    this.issLoading=false;
-    },
-    Rows => {
-        this.issLoading=false;
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error',Type:"2"}});
-    });
+    if (result == 'Yes') {
+        this.issLoading = true;
+        this.Sales_Master_Service_.Delete_Delivery_Order(DeliveryOrderMaster_Id)
+        .pipe(finalize(() => this.issLoading = false))
+        .subscribe({
+            next: (response: any) => {
+                if (response.success && response.data) {
+                    const deleteStatus = response.data;
+                    if (deleteStatus.DeliveryOrderMaster_Id_ == -1) {
+                        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Cannot Delete', Type: "3" } });
+                    } else if (deleteStatus.DeliveryOrderMaster_Id_ > 0) {
+                        this.Quotation_Master_Data.splice(index, 1);
+                        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted Successfully', Type: "false" } });
+                        this.Search_Quotation();
+                    } else {
+                        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error occurred', Type: "2" } });
+                    }
+                } else {
+                    const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error occurred', Type: "2" } });
+                }
+            },
+            error: (err) => {
+                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error occurred while deleting', Type: "2" } });
+            }
+        });
     }
     });
 }
@@ -1971,41 +1970,31 @@ Search_Quotation()
         Account_Type_Id_ = this.Search_AccountType.AccountType_Id;
 
 
-    this.issLoading=true;    
-    this.QuotNo = this.QuotNo == "" ? undefined : this.QuotNo
-    this.partNo = this.partNo == "" ? undefined : this.partNo
-    
+    this.issLoading = true;
     this.Sales_Master_Service_.Search_Delivery_Order(look_In_Date_Value,
-                                                moment(this.Search_FromDate).format('YYYY-MM-DD'), 
-                                                moment(this.Search_ToDate).format('YYYY-MM-DD'),
-                                                CustomerId_,
-                                                this.QuotNo,
-                                                this.partNo,
-                                                Item_Group_Id_,
-                                                CurrencyDetails_Id_,
-                                                User_Details_Id_,
-                                                Account_Type_Id_,
-                                                this.User_Type_Id,
-                                                this.Login_User_Id).subscribe(Rows => {
-    this.Quotation_Master_Data=Rows[0];
-    if(this.Quotation_Master_Data.length>0)
-    {
-        for(var i=0;i<this.Quotation_Master_Data.length;i++)
-        {
-            this.Sales_Master_Total_Amount=Number(this.Sales_Master_Total_Amount)+Number(this.Quotation_Master_Data[i].GrandTotal);
-            this.Sales_Master_Total_Amount= Number(this.Sales_Master_Total_Amount.toFixed(3));
+        moment(this.Search_FromDate).format('YYYY-MM-DD'),
+        moment(this.Search_ToDate).format('YYYY-MM-DD'),
+        CustomerId_,
+        this.QuotNo,
+        this.partNo,
+        Item_Group_Id_,
+        CurrencyDetails_Id_,
+        User_Details_Id_,
+        Account_Type_Id_,
+        this.User_Type_Id, this.Login_User_Id)
+    .pipe(finalize(() => this.issLoading = false))
+    .subscribe({
+        next: (response) => {
+            if (response.success) {
+                this.Quotation_Master_Data = response.data;
+                this.Total_Entries = this.Quotation_Master_Data.length;
+            } else {
+                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'No Data Found', Type: "2" } });
+            }
+        },
+        error: (err) => {
+            const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
         }
-    }
-    this.Total_Entries=this.Quotation_Master_Data.length;
-    if(this.Quotation_Master_Data.length==0)
-    {
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
-    }
-    this.issLoading=false;
-    },
-    Rows => {
-        this.issLoading=false;
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });
 }
 Add_Sales_Details()
@@ -2312,81 +2301,46 @@ debugger
     }
 
     // this.Delivery_Order_Master_.LPONo = POnumber_Ids;
-    this.Delivery_Order_Master_.Delivery_Order_Details=this.Delivery_Order_Details_Data;
+    this.Delivery_Order_Master_.Delivery_Order_Details = this.Delivery_Order_Details_Data;
     this.Delivery_Order_Master_.EntryDate = this.New_Date(new Date(moment(this.Delivery_Order_Master_.EntryDate).format('YYYY-MM-DD')));
-    // this.Quotation_Master_.AttendEmployee = this.Employee.User_Details_Id
-    this.issLoading=true;  
-    debugger 
-    this.Sales_Master_Service_.Save_Delivery_Order(this.Delivery_Order_Master_).subscribe(Save_status => {   
-        debugger
-        
-        if(Number(Save_status[0].DeliveryOrderMaster_Id_)>0)
-        {
-            this.Delivery_Order_Master_.DeliveryOrderMaster_Id = Save_status[0].DeliveryOrderMaster_Id_;
-            this.Delivery_Order_Master_.DONo = Save_status[0].DONo_;          
-            this.DeliveryOrderMaster_Id_Edit = this.Delivery_Order_Master_.DeliveryOrderMaster_Id
-            //if(Save_status[0].Voucher_No_!=null && Save_status[0].Voucher_No_!=undefined)
-            //{                
-                
-                // this.Sales_Master_Service_.Get_Quotation_Master(this.Quotation_Master_.Quotation_Master_Id).subscribe(Rows => { 
-                //         debugger;
-                //     if (Rows != null) {
-                //         this.Quotation_Details_Data = Rows[0];
-                //         this.Quotation_Details_Data1 = Rows[1];
-                //         this.Sales_Master_Data1 = Rows[2];        
-                //         this.Bank_Data=Rows[3];
-                //         this.Bank_ = this.Bank_Data[0]
-                //         this.Company_ = Rows[4][0]
-                //         }
-                //            this.issLoading = false;
-                //        },
-                //      Rows => {
-                //             this.issLoading = false;
-                //        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-                //     });       
-                
-            //}
-            if (Printstatus==1)
-            {
-                this.Print_Click();
-            }
-            else
-            {
-                this.issLoading = false;
-                const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
-                //this.Sales_Print = false;  
-                 
-                // this.Clr_Sales_Master() 
-                         
-            }
-            //document.getElementById("Save_Button").hidden=true;
-            // this.Disable_Tab_Permission();
-            // document.getElementById("Tab_Edit").hidden=false;
-        this.Sales_Print = false;
-        // this.Close_Click();
-        }
-        else{
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-        setTimeout(() => {
-            if (this.topDiv) {
-                this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-        document.getElementById("Save_Button").hidden=false;   
-        }
-        this.issLoading=false;
-        },
-        Rows => { 
-            this.issLoading=false;
-            document.getElementById('Save_Button').hidden=false;
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-        setTimeout(() => {
-            if (this.topDiv) {
-                this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });    
-    });
+    this.issLoading = true;
 
+    this.Sales_Master_Service_.Save_Delivery_Order(this.Delivery_Order_Master_)
+    .pipe(finalize(() => this.issLoading = false))
+    .subscribe({
+        next: (response: any) => {
+            if (response.success && response.data) {
+                const saveResult = response.data;
+                if (Number(saveResult.DeliveryOrderMaster_Id_) > 0) {
+                    this.Delivery_Order_Master_.DeliveryOrderMaster_Id = saveResult.DeliveryOrderMaster_Id_;
+                    this.Delivery_Order_Master_.DONo = saveResult.DONo_;
+                    this.DeliveryOrderMaster_Id_Edit = this.Delivery_Order_Master_.DeliveryOrderMaster_Id;
+
+                    if (Printstatus == 1) {
+                        this.Print_Click();
+                    } else {
+                        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
+                    }
+                    this.Sales_Print = false;
+                } else {
+                    const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error Occured', Type: "2" } });
+                    document.getElementById("Save_Button").hidden = false;
+                }
+            } else {
+                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error Occured', Type: "2" } });
+                document.getElementById("Save_Button").hidden = false;
+            }
+        },
+        error: (err) => {
+            document.getElementById('Save_Button').hidden = false;
+            const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
+            setTimeout(() => {
+                if (this.topDiv) {
+                    this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        }
+    });
 }
 Edit_Button_Click()
 {
@@ -2569,28 +2523,25 @@ for(var i=0;i<this.AccounttypeData.length;i++)
     }
 
     debugger;
-
-       
-
-
-        this.Sales_Master_Service_.Get_Delivery_Order_Details(Sales_Master_e.DeliveryOrderMaster_Id).subscribe
-        (Rows => { 
-            debugger;
     
-            if (Rows != null) {
-                this.Delivery_Order_Details_Data = Rows[0];
-                this.addBlankRows();
-                // this.Final_Amounts();
-                
+        this.issLoading = true;
+        this.Sales_Master_Service_.Get_Delivery_Order_Details(Sales_Master_e.DeliveryOrderMaster_Id)
+        .pipe(finalize(() => this.issLoading = false))
+        .subscribe({
+            next: (response) => {
+                if (response.success && response.data) {
+                    this.Delivery_Order_Details_Data = response.data[0];
+                    this.addBlankRows();
+                } else {
+                    const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error Occured', Type: "2" } });
                 }
-                 
-               },
-             Rows => {
-                    
-               const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-            });
+            },
+            error: (err) => {
+                const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured while fetching details', Type: "2" } });
+            }
+        });
 
-
+    
             this.Search_PurchaseOrderNumber_Typeahead('')
 
 
@@ -2649,7 +2600,7 @@ for(var i=0;i<this.Bill_Mode_Data.length;i++)
 this.issLoading = false;
 }
 Edit_Sales_Details(Quotation_Details_e:Quotation_Details,index)
-{   
+{
     this.Quotation_Details_Index=index;
     this.Quotation_Details_=Quotation_Details_e;
     this.Stock_Temp.ItemId=Quotation_Details_e.ItemId;
@@ -2665,8 +2616,11 @@ Edit_Sales_Details(Quotation_Details_e:Quotation_Details,index)
     this.Sale_Detail_Quantity=this.Quotation_Details_.Quantity;
     this.Edit_Stock_-this.Quotation_Details_.Stock;
     this.Quotation_Details_Description=this.Quotation_Details_.Description;
+
 }
-Get_Stock(){
+
+Get_Stock(): void {
+
     // console.log("Barcode_.Stock_Id", this.Barcode_.Stock_Id)
     // this.Sales_Master_Service_.Search_Item_Typeahead("").subscribe(Rows => {
   
@@ -3060,7 +3014,7 @@ Show_Quotation_Click(SalesQuotationMaster_Id)
 Invoice_Click(){
     this.invoice_list_view = true;
         this.issLoading = true;
-        this.Sales_Master_Service_.Get_Delivery_Salesmaster(this.DeliveryOrderMaster_Id_Edit).subscribe(Rows => {
+        this.Sales_Master_Service_.Get_Delivery_Salesmaster(this.DeliveryOrderMaster_Id_Edit).subscribe((Rows: any) => {
             this.Invoice_Data=Rows[0];    
             this.issLoading = false;
             }); 
@@ -3079,7 +3033,7 @@ Load_DeliveryOrder(){
     this.Entry_View = true;
     this.issLoading = true;
     debugger;
-    this.salesquotationmaster_Service_.Load_DeliveryOrder(this.DeliveryOrderMaster_Id).subscribe(result=>{
+    this.salesquotationmaster_Service_.Load_DeliveryOrder(this.DeliveryOrderMaster_Id).subscribe((result: any)=>{
         debugger;
         //this.Delivery_Order_Master_Data=result[0];
         this.SalesQuotationMaster_Id = result[0][0].SalesQuotationMaster_Id;
@@ -3151,17 +3105,22 @@ this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39','').s
     }
 });
 
-this.Sales_Master_Service_.Get_Delivery_Order_Details(result[0][0].DeliveryOrderMaster_Id).subscribe
-(Rows => { 
-    debugger;
-    if (Rows != null) {
-        this.Delivery_Order_Details_Data = Rows[0];
-        this.addBlankRows();        
-        }          
-       },
-     Rows => {
-       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-    });
+this.issLoading = true;
+this.Sales_Master_Service_.Get_Delivery_Order_Details(result[0][0].DeliveryOrderMaster_Id)
+.pipe(finalize(() => this.issLoading = false))
+.subscribe({
+    next: (response) => {
+        if (response.success && response.data) {
+            this.Delivery_Order_Details_Data = response.data[0];
+            this.addBlankRows();
+        } else {
+            const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error Occured', Type: "2" } });
+        }
+    },
+    error: (err) => {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured while fetching details', Type: "2" } });
+    }
+});
 
         if(this.currencyData==undefined || this.currencyData==null)
             {
@@ -3418,8 +3377,8 @@ Edit_Delivery_Salesmaster(Sales_Master_Id)
 
 //   }
 
-addBlankRows(): void {
 
+addBlankRows(): void {
     let cellThr: number = 0;
     let cellThr1: number = 0;
     let nosOfBlankRows: number = 0;
@@ -3442,7 +3401,6 @@ addBlankRows(): void {
     // this.Quotation_Details_Data.forEach((item, index) => {
     //     item.ItemName = `Edited ${item.ItemName}`;
     //   });
-
     this.cdr.detectChanges();
 
     // Loop through and apply changes to all cells

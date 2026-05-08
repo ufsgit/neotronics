@@ -1,93 +1,55 @@
 var db=require('../dbconnection');
 var fs = require('fs');
 const storedProcedure = require('../helpers/stored-procedure');
+const { withTransaction, normalizeParams } = require("../helpers/transaction");
 var Receipt_Voucher=
 { 
 
 
-    Save_Receipt_Voucher: async function (Receipt_Voucher_) {
-		return new Promise(async (rs, rej) => {
-			const pool = db.promise();
-			let result1;
-			var connection = await pool.getConnection();
+    Save_Receipt_Voucher: async function (Receipt_Voucher_, { log } = {}) {
+        if (!Receipt_Voucher_) throw new Error("Payload missing");
+        let Purchasepayment_value = 0;
+        const Receipt_Reference_Data = Receipt_Voucher_.Receipt_Reference;
+        if (Receipt_Reference_Data != undefined && Receipt_Reference_Data != "" && Receipt_Reference_Data != null) Purchasepayment_value = 1;
 
-			var Purchasepayment_value = 0;
+        return withTransaction(async ({ connection }) => {
+            const params = normalizeParams([
+                Receipt_Voucher_.Receipt_Voucher_Id,
+                Receipt_Voucher_.Date,
+                Receipt_Voucher_.CurrencyId,
+                Receipt_Voucher_.From_Account_Id,
+                Receipt_Voucher_.Amount,
+                Receipt_Voucher_.To_Account_Id,
+                Receipt_Voucher_.Payment_Mode_Name,
+                Receipt_Voucher_.User_Id,
+                Receipt_Voucher_.User_Name,
+                Receipt_Voucher_.Description,
+                Receipt_Voucher_.Print_Caption_Id,
+                JSON.stringify(Receipt_Voucher_.Receipt_Reference),
+                Purchasepayment_value,
+            ]);
+            if (log) log.info("sp.call", { name: "Save_Receipt_Voucher" });
+            return new storedProcedure("Save_Receipt_Voucher", params, connection).result();
+        }, { log });
+    },
 
-			let Receipt_Reference_Data = Receipt_Voucher_.Receipt_Reference;
-			if (Receipt_Reference_Data != undefined && Receipt_Reference_Data != "" && Receipt_Reference_Data != null)
-                Purchasepayment_value = 1;
+Save_Receipt_Voucher_old: async function (Receipt_Voucher_, { log } = {}) {
+    if (!Receipt_Voucher_) throw new Error("Payload missing");
+    let Salesrecipt_value = 0;
+    const Receipt_Reference_Data = Receipt_Voucher_.Receipt_Reference;
+    if (Receipt_Reference_Data != undefined && Receipt_Reference_Data != "" && Receipt_Reference_Data != null) Salesrecipt_value = 1;
 
-
-			try {
-				console.log(Receipt_Voucher_);
-				const result1 = await new storedProcedure(
-					"Save_Receipt_Voucher",
-					[
-						Receipt_Voucher_.Receipt_Voucher_Id,
-						Receipt_Voucher_.Date,
-						Receipt_Voucher_.CurrencyId,
-						Receipt_Voucher_.From_Account_Id,
-						Receipt_Voucher_.Amount,
-						Receipt_Voucher_.To_Account_Id,
-						Receipt_Voucher_.Payment_Mode_Name,
-						Receipt_Voucher_.User_Id,
-                        Receipt_Voucher_.User_Name,						
-						Receipt_Voucher_.Description,
-                        Receipt_Voucher_.Print_Caption_Id,
-						JSON.stringify(Receipt_Voucher_.Receipt_Reference),
-						Purchasepayment_value,
-					],
-					connection
-				).result();
-				console.log(result1);
-				await connection.commit();
-				connection.release();
-				rs(result1);
-			} catch (err) {
-				console.log(err);
-				await connection.rollback();
-				rej(err);
-				var result2 = [{ Receipt_Voucher_Id_: 0 }];
-				rs(result2);
-			} finally {
-				connection.release();
-			}
-		});
-	},
-
-Save_Receipt_Voucher_old: async function (Receipt_Voucher_) {
-    return new Promise(async (rs, rej) => {
-        const pool = db.promise();
-        let result1;
-        var connection = await pool.getConnection();
-        var Salesrecipt_value = 0;
-
-			let Receipt_Reference_Data = Receipt_Voucher_.Receipt_Reference;
-			if (Receipt_Reference_Data != undefined && Receipt_Reference_Data != "" && Receipt_Reference_Data != null)
-			Salesrecipt_value = 1;
-        try {
-            console.log(Receipt_Voucher_)
-            const result1 = await (new storedProcedure('Save_Receipt_Voucher', [Receipt_Voucher_.Receipt_Voucher_Id, 
-                Receipt_Voucher_.Date, Receipt_Voucher_.CurrencyId,Receipt_Voucher_.From_Account_Id,
-                Receipt_Voucher_.Amount, Receipt_Voucher_.To_Account_Id,  Receipt_Voucher_.Payment_Mode,
-                Receipt_Voucher_.User_Id,Receipt_Voucher_.User_Name, Receipt_Voucher_.Description, 
-                Receipt_Voucher_.Print_Caption_Id,JSON.stringify(Receipt_Voucher_.Receipt_Reference),Salesrecipt_value,], connection)).result();
-            console.log(result1)
-            await connection.commit();
-            connection.release();
-            rs(result1);
-        }
-        catch (err) {
-            console.log(err)
-            await connection.rollback();
-            rej(err);
-            var result2 = [{ Receipt_Voucher_Id_: 0 }]
-            rs(result2);
-        }
-        finally {
-            connection.release();
-        }
-    })
+    return withTransaction(async ({ connection }) => {
+        const params = normalizeParams([
+            Receipt_Voucher_.Receipt_Voucher_Id,
+            Receipt_Voucher_.Date, Receipt_Voucher_.CurrencyId, Receipt_Voucher_.From_Account_Id,
+            Receipt_Voucher_.Amount, Receipt_Voucher_.To_Account_Id, Receipt_Voucher_.Payment_Mode,
+            Receipt_Voucher_.User_Id, Receipt_Voucher_.User_Name, Receipt_Voucher_.Description,
+            Receipt_Voucher_.Print_Caption_Id, JSON.stringify(Receipt_Voucher_.Receipt_Reference), Salesrecipt_value,
+        ]);
+        if (log) log.info("sp.call", { name: "Save_Receipt_Voucher(old)" });
+        return (new storedProcedure("Save_Receipt_Voucher", params, connection)).result();
+    }, { log });
 },
 Save_Receipt_Voucher_Mobile:function(Receipt_Voucher_,callback)
     { 

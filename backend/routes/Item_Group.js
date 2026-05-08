@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var Item_Group=require('../models/Item_Group');
+const asyncHandler = require("../helpers/async-handler");
+const { sendSuccess } = require("../helpers/api-response");
 
 router.post('/Save_Item_Group/',function(req,res,next)
     { 
@@ -144,29 +146,21 @@ router.get('/ItemGroup_Typehead/:Item_Group_Name_?',function(req,res,next)
     {
     }
     });
-router.get('/Load_Item_Group/',function(req,res,next)
+router.get('/Load_Item_Group/', asyncHandler(function(req,res,next)
     { 
-    try 
-    {
+    req.log && req.log.info("api.request", { handler: "Item_Group.Load_Item_Group" });
+    req.log && req.log.info("sql.start", { sp: "Load_Item_Group" });
     Item_Group.Load_Item_Group(function (err, rows) 
     {
-    if (err) 
-    {
-    res.json(err);
-    }
-    else 
-    {
-    res.json(rows);
-    }
+      if (err) 
+      {
+        req.log && req.log.error("sql.error", { sp: "Load_Item_Group", code: err.code, message: err.message });
+        return next(err);
+      }
+      req.log && req.log.info("sql.ok", { sp: "Load_Item_Group" });
+      return sendSuccess(res, { message: "OK", data: rows || [] });
     });
-    }
-    catch (e) 
-    {
-    }
-    finally 
-    {
-    }
-    });
+    }));
 
 
     /** Added on 17-7-24 */

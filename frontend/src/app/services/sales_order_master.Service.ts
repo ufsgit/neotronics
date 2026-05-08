@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.js';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { timeout } from 'rxjs/operators';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 
@@ -28,7 +29,7 @@ export class Sales_Order_Master_Service {
   }
 
   Save_Sales_Order(Sales_Order_Master_: any) {
-    return this.http.post(environment.BasePath + 'sales_order_master/Save_Sales_Order/', Sales_Order_Master_);
+    return this.http.post(environment.BasePath + 'sales_order_master/Save_Sales_Order/', Sales_Order_Master_).pipe(timeout(60000));
   }
 
   Search_Sales_Order(

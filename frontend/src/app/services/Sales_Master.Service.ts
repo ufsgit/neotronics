@@ -2,7 +2,7 @@ import { Component, OnInit,Input,Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.js';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, catchError, tap, timeout } from 'rxjs/operators';
 import { AnimationKeyframesSequenceMetadata } from '@angular/animations';
 import { param } from 'jquery';
 import * as FileSaver from 'file-saver';
@@ -33,17 +33,17 @@ private saveExcelFile(buffer: any, fileName: string): void {
 }
 Save_Sales_Master(Sales_Master_)
 {
-    return this.http.post(environment.BasePath +'Sales_Master/Save_Sales_Master/',Sales_Master_);
+    return this.http.post(environment.BasePath +'Sales_Master/Save_Sales_Master/',Sales_Master_).pipe(timeout(60000));
 }
    
 Save_Quotation(Quotation_Master_)
 {
-    return this.http.post(environment.BasePath +'Sales_Master/Save_Quotation/',Quotation_Master_);
+    return this.http.post(environment.BasePath +'Sales_Master/Save_Quotation/',Quotation_Master_).pipe(timeout(60000));
 }
 
 Save_Price_Request(Price_Request_Master_)
 {
-    return this.http.post(environment.BasePath +'Sales_Master/Save_Price_Request/',Price_Request_Master_);
+    return this.http.post(environment.BasePath +'Sales_Master/Save_Price_Request/',Price_Request_Master_).pipe(timeout(60000));
 }
 
 
@@ -51,7 +51,7 @@ Save_Price_Request(Price_Request_Master_)
 
 Save_Sales_Master_Mobile(Sales_Master_)
 {
-    return this.http.post(environment.BasePath +'Sales_Master/Save_Sales_Master_Mobile/',Sales_Master_);
+    return this.http.post(environment.BasePath +'Sales_Master/Save_Sales_Master_Mobile/',Sales_Master_).pipe(timeout(60000));
 }
 Search_Item_Typeahead(Item_Name):Observable<any>
 {
@@ -262,9 +262,9 @@ Delete_Quotation_Master(SalesQuotationMaster_Id)
     return this.http.get(environment.BasePath +'Sales_Master/Delete_Quotation_Master/'+SalesQuotationMaster_Id);
 }
 
-Delete_Price_Request_Master(SalesPrice_RequestMaster_Id)
+Delete_Price_Request_Master(Price_Request_Master_Id)
 {
-    return this.http.get(environment.BasePath +'Sales_Master/Delete_Price_Request_Master/'+SalesPrice_RequestMaster_Id);
+    return this.http.get(environment.BasePath +'Sales_Master/Delete_Price_Request_Master/'+Price_Request_Master_Id);
 }
 
 
@@ -934,6 +934,18 @@ Search_SaleInvoice_By_Supplier_Typeahead(Client_Accounts_Id_,InvoiceNo_)
        
     };
     return this.http.post(environment.BasePath +'Sales_Master/Get_Item_Name_Typeahead_For_Sales_Return',postData);}
+
+    Print_Quotation(Sales_Master_Id): Observable<Blob> {
+        return this.http.get(environment.BasePath + 'Sales_Master/Print_Quotation/' + Sales_Master_Id, {
+            responseType: 'blob'
+        });
+    }
+
+    Print_Quotation_JSON(master: any, details: any[]): Observable<Blob> {
+        return this.http.post(environment.BasePath + 'Sales_Master/Print_Quotation_JSON', { master, details }, {
+            responseType: 'blob'
+        });
+    }
 
     /*** */
 

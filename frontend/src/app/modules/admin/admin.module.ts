@@ -4,26 +4,22 @@
  */
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { HttpModule } from "@angular/http";
-import { RouterModule } from "@angular/router";
-import {
-	MatTableModule,
-	MatProgressSpinnerModule,
-	MatDialogModule,
-	MatAutocompleteModule,
-	MatPaginatorModule,
-	MatToolbarModule,
-	MatSidenavModule,
-	MatSortModule,
-	MatMenuModule,
-	MatIconModule,
-	MatButtonModule,
-	MatSelectModule,
-	MatFormFieldModule,
-	MatDatepickerModule,
-	MatExpansionModule,
-} from "@angular/material";
-import { MatNativeDateModule } from "@angular/material";
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSortModule } from '@angular/material/sort';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatNativeDateModule } from '@angular/material/core';
 import { SharedModule } from "../shared-module/shared-module";
 import { AdminRoutes } from "./admin.routing";
 import { AdminComponent } from "./admin.component";
@@ -104,8 +100,8 @@ import { LeadRequirementComponent } from './LeadRequirement/LeadRequirement.comp
 import { LeadRequirementTransactionComponent } from './LeadRequirementTransaction/LeadRequirementTransaction.component';
 import { Price_RequestComponent } from './Price_Request/Price_Request.component';
 
-import { CommonModule } from '@angular/common';
-import { from } from "rxjs";
+import { CommonModule, DecimalPipe } from '@angular/common';
+import { RouterModule } from "@angular/router";
 
 @NgModule({
 	imports: [
@@ -130,7 +126,6 @@ import { from } from "rxjs";
 		MatDatepickerModule,
 		ScrollingModule,
 		FormsModule,  
-		HttpModule,
 		MatCheckboxModule,
 		CommonModule,
 		MatNativeDateModule,
@@ -169,12 +164,14 @@ import { from } from "rxjs";
 		purchase_return_masterComponent,
 		QuotationComponent,
 		RequirementComponent,
-		Purchase_orderComponent,BrandComponent,Payment_TermComponent,CurrencyComponent,Country_Of_OrginComponent,
+		Purchase_orderComponent,
+		BrandComponent,
+		Payment_TermComponent,
+		CurrencyComponent,
+		Country_Of_OrginComponent,
 		Delivery_OrderComponent,
-		Purchase_orderComponent,BrandComponent,Payment_TermComponent,CurrencyComponent,Country_Of_OrginComponent,
 		Performa_InvoiceComponent,
 		InvoiceComponent,
-		Purchase_orderComponent,
 		GRNComponent,
 		Packing_ListComponent,
 		PurchaseReturnComponent,
@@ -207,7 +204,7 @@ import { from } from "rxjs";
 		SalesOrderComponent,
 		Price_RequestComponent
 	],
-	providers: [ChatService],
+	providers: [ChatService, DecimalPipe],
 	bootstrap: [],
 })
 export class AdminModule {}

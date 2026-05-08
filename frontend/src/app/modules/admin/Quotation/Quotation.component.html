@@ -96,7 +96,7 @@
                     <select [(ngModel)]="Currency_Search" id="Currency_Search" name="Currency_Search" required
                         class="col-md-7 " style="height: 40px;border: 1px solid #b1b1b1;">
                         <option *ngFor="let currency of currencyData" [ngValue]="currency">
-                            {{currency.CurrecnyName}}
+                            {{currency?.CurrecnyName}}
                         </option>
                     </select>
                 </div>
@@ -859,8 +859,14 @@
                                     class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print"
                                     [hidden]="Sales_Master_Save==false" (click)="Save_Quotation(0)">Save</button>
                                 <button mat-raised-button type="button" [hidden]="Sales_Print"
-                                    class="btn btn-danger pull-right no-print" (click)="Print_Click()">
-                                    <i class="fa fa-print" aria-hidden="true"></i></button>
+                                    class="btn btn-danger pull-right no-print" (click)="Print_Click()" title="Professional Print">
+                                    <i class="fa fa-print" aria-hidden="true"></i> Print</button>
+                                <button mat-raised-button type="button" [hidden]="Sales_Print"
+                                    class="btn btn-danger pull-right no-print" (click)="Preview_PDF()" title="Preview PDF">
+                                    <i class="fa fa-eye" aria-hidden="true"></i> Preview</button>
+                                <button mat-raised-button type="button" [hidden]="Sales_Print"
+                                    class="btn btn-danger pull-right no-print" (click)="Download_PDF()" title="Download PDF">
+                                    <i class="fa fa-download" aria-hidden="true"></i> Download</button>
                                 <button mat-raised-button type="button"
                                     class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
                                     (click)="printAcknowledgment()">ACKNOWLEDGEMENT</button>
@@ -1649,14 +1655,15 @@
 <div id="Print_Div1" class="print-container" style="display: none;">
     <!-- HEADER -->
     <div class="header">
-        <div class="logo">NEOTR<span>⚡</span>NICS</div>
+        <div class="logo">
+        <img src="/assets/img/printlogo.png" alt="NEOTRNICS"/></div>
         <div class="company-details">
-            <b>{{Print_Company_?.Company_Name || 'NEOTRONICS'}}</b><br>
-            {{Print_Company_?.Address1}}<br>
-            {{Print_Company_?.Address2}}, {{Print_Company_?.Address3}}<br>
-            Phone: {{Print_Company_?.Mobile}} {{Print_Company_?.Phone}}<br>
-            {{Print_Company_?.Email}}<br>
-            GSTIN: {{Print_Company_?.GSTNo}}
+            <b>{{Company_.Company_Name || 'NEOTRONICS'}}</b><br>
+            {{Company_.Address1}}, {{Company_.Address2}}<br>
+            {{Company_.Address3}}, {{Company_.Address4}}<br>
+            Phone: {{Company_.Mobile_Number}}
+            {{Company_.EMail}}<br>
+            GSTIN: {{Company_.NO}}
         </div>
     </div>
 
@@ -1666,16 +1673,16 @@
     <div class="section">
         <div>
             <b>Estimate For</b>
-            {{Customer_?.Client_Accounts_Name}}<br>
-            {{Customer_?.Address1}}<br>
-            {{Customer_?.Address2}}<br>
-            {{Customer_?.Address3}}<br>
-            Ph: {{Customer_?.Mobile}}
+            {{Quotation_Master_.Customer_Name}}<br>
+            {{Quotation_Master_.Address1}}<br>
+            {{Quotation_Master_.Address2}}<br>
+            {{Quotation_Master_.Address3}}<br>
+            Ph: {{Quotation_Master_.Mobile}}
         </div>
         <div class="right" style="text-align: right;">
             <b>Estimate Details</b>
-            Estimate No: {{Quotation_Master_?.QuotationNo}}<br>
-            Date: {{Quotation_Master_?.PrintDate}}
+            Estimate No: {{Quotation_Master_.QuotationNo}}<br>
+            Date: {{Quotation_Master_.PrintDate}}
         </div>
     </div>
 
@@ -1707,11 +1714,11 @@
                 <td></td>
                 <td class="right">Total</td>
                 <td class="center">
-                    {{Quotation_Master_?.Total_Quantity}}
+                    {{Quotation_Master_.Total_Quantity}}
                 </td>
                 <td></td>
                 <td></td>
-                <td class="right">₹ {{Quotation_Master_?.TotalAmount | number:'1.2-2'}}</td>
+                <td class="right">₹ {{Quotation_Master_.TotalAmount | number:'1.2-2'}}</td>
             </tr>
         </tbody>
     </table>
@@ -1720,29 +1727,29 @@
     <div class="section" style="margin-top: 20px;">
         <div style="width: 60%;">
             <b>Estimate Amount In Words</b>
-            {{Quotation_Master_?.Amount_In_Words}}
+            {{Quotation_Master_.Amount_In_Words}}
         </div>
         <div style="width: 35%;">
             <div class="summary-box">
                 <div class="summary-line">
                     <span>Sub Total</span>
-                    <span>₹ {{Quotation_Master_?.TotalAmount | number:'1.2-2'}}</span>
+                    <span>₹ {{Quotation_Master_.TotalAmount | number:'1.2-2'}}</span>
                 </div>
-                <div class="summary-line" *ngIf="Quotation_Master_?.TotalDiscount > 0">
+                <div class="summary-line" *ngIf="Quotation_Master_.TotalDiscount > 0">
                     <span>Discount</span>
-                    <span>- ₹ {{Quotation_Master_?.TotalDiscount | number:'1.2-2'}}</span>
+                    <span>- ₹ {{Quotation_Master_.TotalDiscount | number:'1.2-2'}}</span>
                 </div>
-                <div class="summary-line" *ngIf="Quotation_Master_?.charge1_Amount > 0">
-                    <span>{{Quotation_Master_?.Charge1 || 'Additional Charges'}}</span>
-                    <span>₹ {{Quotation_Master_?.charge1_Amount | number:'1.2-2'}}</span>
+                <div class="summary-line" *ngIf="Quotation_Master_.charge1_Amount > 0">
+                    <span>{{Quotation_Master_.Charge1 || 'Additional Charges'}}</span>
+                    <span>₹ {{Quotation_Master_.charge1_Amount | number:'1.2-2'}}</span>
                 </div>
                 <div class="summary-line" *ngIf="Quotation_Master_?.VAT_Amount > 0">
-                    <span>VAT ({{Quotation_Master_?.VAT_Percentage}}%)</span>
-                    <span>₹ {{Quotation_Master_?.VAT_Amount | number:'1.2-2'}}</span>
+                    <span>VAT ({{Quotation_Master_.VAT_Percentage}}%)</span>
+                    <span>₹ {{Quotation_Master_.VAT_Amount | number:'1.2-2'}}</span>
                 </div>
                 <div class="summary-line total">
                     <span>Total</span>
-                    <span>₹ {{Quotation_Master_?.NetTotal | number:'1.2-2'}}</span>
+                    <span>₹ {{Quotation_Master_.NetTotal | number:'1.2-2'}}</span>
                 </div>
             </div>
         </div>
@@ -1753,15 +1760,15 @@
         <div class="terms-section">
             <b>Terms and Conditions</b>
             <ul class="terms-list">
-                <li *ngIf="Quotation_Master_?.VAT_Percentage > 0">GST: {{Quotation_Master_?.VAT_Percentage}}% Extra</li>
-                <li *ngIf="Quotation_Master_?.Brand">Brand: {{Quotation_Master_?.Brand}}</li>
-                <li *ngIf="Quotation_Master_?.PriceBasis">Price Basis: {{Quotation_Master_?.PriceBasis}}</li>
-                <li *ngIf="Quotation_Master_?.Delivery">Delivery: {{Quotation_Master_?.Delivery}}</li>
+                <li *ngIf="Quotation_Master_.VAT_Percentage > 0">GST: {{Quotation_Master_.VAT_Percentage}}% Extra</li>
+                <li *ngIf="Quotation_Master_.Brand">Brand: {{Quotation_Master_.Brand}}</li>
+                <li *ngIf="Quotation_Master_.PriceBasis">Price Basis: {{Quotation_Master_.PriceBasis}}</li>
+                <li *ngIf="Quotation_Master_.Delivery">Delivery: {{Quotation_Master_.Delivery}}</li>
                 <li *ngIf="Payment_Term?.Payment_Term_Description && Payment_Term?.Payment_Term_Description !== 'Select'">
                     Payment: {{Payment_Term?.Payment_Term_Description}}
                 </li>
-                <li *ngIf="Quotation_Master_?.Validity">Warranty: {{Quotation_Master_?.Validity}}</li>
-                <li *ngIf="Quotation_Master_?.Description1">Note: {{Quotation_Master_?.Description1}}</li>
+                <li *ngIf="Quotation_Master_.Validity">Warranty: {{Quotation_Master_.Validity}}</li>
+                <li *ngIf="Quotation_Master_.Description1">Note: {{Quotation_Master_.Description1}}</li>
             </ul>
         </div>
 
@@ -1769,20 +1776,20 @@
         <div class="bank-section">
             <b>Bank Details</b>
             <div class="bank-details">
-                <p><b>Bank Name:</b> {{Bank_?.Client_Accounts_Name}}</p>
-                <p><b>Account No:</b> {{Bank_?.Client_Accounts_No}}</p>
-                <p><b>IFSC Code:</b> {{Bank_?.Address3}}</p>
-                <p *ngIf="Bank_?.Address1"><b>Branch:</b> {{Bank_?.Address1}}</p>
-                <p><b>Account Holder:</b> {{Print_Company_?.Company_Name || 'NEOTRONICS'}}</p>
+                <p><b>Bank Name:</b> {{Bank_.Client_Accounts_Name}}</p>
+                <p><b>Account No:</b> {{Bank_.Client_Accounts_No}}</p>
+                <p><b>IFSC Code:</b> {{Bank_.Address3}}</p>
+                <p *ngIf="Bank_.Address1"><b>Branch:</b> {{Bank_.Address1}}</p>
+                <p><b>Account Holder:</b> {{Print_Company_.Company_Name || 'NEOTRONICS'}}</p>
             </div>
         </div>
     </div>
 
     <!-- SIGNATURE -->
     <div class="signature-area">
-        For: {{Print_Company_?.Company_Name || 'NEOTRONICS'}}<br><br>
+        For: {{Company_.Company_Name || 'NEOTRONICS'}}<br><br>
         <div class="signature-box">
-            <img *ngIf="Print_Company_?.Company_Sign" [src]="Print_Company_?.Company_Sign" alt="Signature">
+            <!-- <img *ngIf="Company_.Company_Sign" [src]="Company_.Company_Sign" alt="Signature"> -->
         </div>
         <b>Authorized Signatory</b>
     </div>
@@ -1845,7 +1852,7 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p
                 style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
-                <span *ngIf="currency.CurrencyDetails_Id > 0">{{currency.CurrecnyName}}</span>
+                <span *ngIf="currency?.CurrencyDetails_Id > 0">{{currency?.CurrecnyName}}</span>
             </p>
         </div>
     </div>
@@ -2179,8 +2186,8 @@
         <tr>
             <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;">
                 <b>Payment Term: </b> {{ Quotation_Master_.PaymentTermValue }}
-                <span *ngIf="Payment_Term.payment_Term_ID > 0" style="font-family: arial, sans-serif;font-size: 12px;">
-                    {{ Payment_Term.Payment_Term_Description}}</span>
+                <span *ngIf="Payment_Term?.payment_Term_ID > 0" style="font-family: arial, sans-serif;font-size: 12px;">
+                    {{ Payment_Term?.Payment_Term_Description}}</span>
             </td>
             <td style="width:35%;font-family: arial, sans-serif;font-size: 12px;">
                 <b><span *ngIf="printAcknowledgeTotalDiscount">Total Discount :</span></b>
@@ -2194,7 +2201,7 @@
        <tr>
         <td style="width: 85%;">
             <b>Payment Term: </b>  {{ Quotation_Master_.PaymentTermValue }} 
-            <span *ngIf="Payment_Term.payment_Term_ID > 0"> {{ Payment_Term.Payment_Term_Description}}</span>
+            <span *ngIf="Payment_Term?.payment_Term_ID > 0"> {{ Payment_Term?.Payment_Term_Description}}</span>
         </td>
        <td style="width:31%;">
             <b><span *ngIf="printAcknowledgeTotalDiscount">Total Discount :</span></b>
@@ -2351,7 +2358,7 @@
                 <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Currency:</p>
             </div>
             <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
-                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;"><span *ngIf="currency.CurrencyDetails_Id > 0">{{currency.CurrecnyName}}</span></p>
+                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;"><span *ngIf="currency?.CurrencyDetails_Id > 0">{{currency?.CurrecnyName}}</span></p>
             </div>
         </div>    
         
@@ -2588,7 +2595,7 @@
     <tr>
         <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
             <b>Payment Term: </b>  {{ Quotation_Master_.PaymentTermValue }} 
-            <span *ngIf="Payment_Term.payment_Term_ID > 0"> {{ Payment_Term.Payment_Term_Description}}</span>
+            <span *ngIf="Payment_Term?.payment_Term_ID > 0"> {{ Payment_Term?.Payment_Term_Description}}</span>
         </td>
         <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
             <b><span *ngIf="printAcknowledgeTotalDiscount">Total Discount :</span></b>

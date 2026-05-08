@@ -1197,7 +1197,6 @@ Change_Bill_Status(Sales_Master_Id,BillType,index)
 
 Delete_Performa_Invoice_Master(PerformaInvoiceMaster_Id,index)
  {
-    debugger
     const dialogRef = this.dialogBox.open
     ( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Do you want to delete ?',Type:"true",Heading:'Confirm'}});
     dialogRef.afterClosed().subscribe(result =>        
@@ -1205,31 +1204,28 @@ Delete_Performa_Invoice_Master(PerformaInvoiceMaster_Id,index)
     if(result=='Yes')
     {
     this.issLoading=true;
-    debugger
-    this.Sales_Master_Service_.Delete_Performa_Invoice_Master(PerformaInvoiceMaster_Id).subscribe(Delete_status => {    
-        debugger   
-        Delete_status=Delete_status[0];
-        if(Delete_status[0].PerformaInvoiceMaster_Id_==-1){
-            const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Cannot Delete',Type:"3"}});
-            this.issLoading=false;           
-            return;
-          }
-  else if(Delete_status[0].PerformaInvoiceMaster_Id_>0){
-    this.performainvoicedetails_Data.splice(index, 1);
-      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
-      
-      this.Search_PerformaInvoice();
-    }
-    else
-    {
-    //this.Sales_Master_Data.splice(index, 1);
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
-    }
-    this.issLoading=false;
-    },
-    Rows => {
-        this.issLoading=false;
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error',Type:"2"}});
+    this.Sales_Master_Service_.Delete_Performa_Invoice_Master(PerformaInvoiceMaster_Id).subscribe({
+        next: (res: any) => {
+            if (res && res.success) {
+                const data = res.data;
+                const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+                const result = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null);
+
+                if (result && result.PerformaInvoiceMaster_Id_ == -1) {
+                    this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Cannot Delete', Type: "3" } });
+                } else {
+                    this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted', Type: "false" } });
+                    this.Search_PerformaInvoice();
+                }
+            } else {
+                this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error: ' + (res && res.message ? res.message : 'Delete failed'), Type: "2" } });
+            }
+            this.issLoading = false;
+        },
+        error: (error: any) => {
+            this.issLoading = false;
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" } });
+        }
     });
     }
     });
@@ -2586,7 +2582,6 @@ Save_PerformaInvoice(Printstatus:number)
 {
 
  
-    debugger
     if(this.performainvoicedetails_Data == undefined || this.performainvoicedetails_Data == null || this.performainvoicedetails_Data.length == 0 || this.performainvoicedetails_Data.length == undefined )
     {
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Add atleast one Item',Type:"3"}});
@@ -2608,21 +2603,6 @@ Save_PerformaInvoice(Printstatus:number)
     this.performainvoicemaster_.TypeId = this.Accounttype.AccountType_Id;
     this.performainvoicemaster_.AccountType_Id = this.Accounttype.AccountType_Id;
 
-
-
-    // this.performainvoicemaster_.POnumber = this.POnumber.InvoiceNo
-    // this.performainvoicemaster_.POnumber = this.POnumber.InvoiceNo
-
-
-    // if(this.Attention)
-    // this.performainvoicemaster_.KindAttend=this.Attention.User_Details_Id;
-    // if(this.Employee)
-    // this.performainvoicemaster_.AttendEmployee = this.Employee.User_Details_Id
-  // if(this.Accounttype)
-//     this.performainvoicemaster_.AccountType_Id = this.Accounttype.AccountType_Id
-debugger
-    // if(this.POnumber)
-    // this.performainvoicemaster_.POnumber=this.POnumber.InvoiceNo;
     if(this.Payment_Term_Description_ == undefined || this.Payment_Term_Description_ == null){
         this.performainvoicemaster_.Payment_Term_Description = 0;
         this.performainvoicemaster_.PaymentTerms = "";
@@ -2631,31 +2611,8 @@ debugger
         this.performainvoicemaster_.PaymentTerms = this.Payment_Term_Description_.Payment_Term_Description;
     }
     
-    // this.performainvoicemaster_.EntryDate = this.formatDate(this.performainvoicemaster_.EntryDate)
     this.performainvoicemaster_.EntryDate = this.New_Date(new Date(moment(this.performainvoicemaster_.EntryDate).format('YYYY-MM-DD')));
 
-    this.issLoading=true;  
-
-
-
-
-    // this.performainvoicemaster_.PerformaInvoiceMaster_Id = 0;
-    // // this.performainvoicemaster_.QuotationNo = "test"
-    // this.performainvoicemaster_.Account_Party_Id=this.Customer_.Client_Accounts_Id;
-    // this.performainvoicemaster_.User_Id=Number(this.Login_User_Id);
-    // this.performainvoicemaster_.POnumber = this.POnumber.InvoiceNo
-    // this.performainvoicemaster_.AccountType_Id = this.Accounttype.AccountType_Id
-    // this.performainvoicemaster_.EntryDate = this.formatDate(this.performainvoicemaster_.EntryDate)
-
-    debugger
-    // this.performainvoicemaster_.performainvoicedetails=this.performainvoicedetails_Data;
-    // this.performainvoicemaster_.KindAttend=this.Attention.User_Details_Id;
-    // this.performainvoicemaster_.AttendEmployee = this.Employee.User_Details_Id
-        // this.performainvoicemaster_.AttendEmployee = this.Accounttype.AccountType_Id;
-
-    // this.performainvoicemaster_.Payment_Term_Description = this.Payment_Term_Description_.payment_Term_ID
-    // this.issLoading=true;   
-    debugger
     console.log("Before Performa Invoice API call");
     this.issLoading = true;
 
@@ -2669,56 +2626,47 @@ debugger
         })
     )
     .subscribe({
-        next: (Save_status) => {
-            console.log("Performa Invoice API Response:", Save_status);
+        next: (res: any) => {
+            console.log("Performa Invoice API Response:", res);
 
-            if (!Save_status || !Save_status[0]) {
-                this.dialogBox.open(DialogBox_Component, {
-                    panelClass: 'Dialogbox-Class',
-                    data: { Message: 'Invalid server response', Type: "2" }
-                });
-                return;
-            }
+            if (res && res.success) {
+                const data = res.data;
+                const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+                const result = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null);
 
-            if (Number(Save_status[0].PerformaInvoiceMaster_Id_) > 0) {
-                this.performainvoicemaster_.PerformaInvoiceMaster_Id = Save_status[0].PerformaInvoiceMaster_Id_;
-                this.PerformaInvoiceMaster_Id_Edit = this.performainvoicemaster_.PerformaInvoiceMaster_Id;
-                this.performainvoicemaster_.PrintDate = Save_status[0].PrintDate;
-                
-                if (Printstatus == 1) {
-                    this.Print_Click();
+                if (result && Number(result.PerformaInvoiceMaster_Id_) > 0) {
+                    this.performainvoicemaster_.PerformaInvoiceMaster_Id = result.PerformaInvoiceMaster_Id_;
+                    this.PerformaInvoiceMaster_Id_Edit = this.performainvoicemaster_.PerformaInvoiceMaster_Id;
+                    this.performainvoicemaster_.PrintDate = result.PrintDate;
+                    
+                    if (Printstatus == 1) {
+                        this.Print_Click();
+                    } else {
+                        this.dialogBox.open(DialogBox_Component, {
+                            panelClass: 'Dialogbox-Class',
+                            data: { Message: 'Saved Successfully', Type: "false" }
+                        });
+                    }
+                    this.Sales_Print = false;
                 } else {
+                    const msg = (result && result.Message) || (res && res.message) || 'Save failed';
                     this.dialogBox.open(DialogBox_Component, {
                         panelClass: 'Dialogbox-Class',
-                        data: { Message: 'Saved Successfully', Type: "false" }
+                        data: { Message: 'Error: ' + msg, Type: "2" }
                     });
                 }
-                this.Sales_Print = false;
             } else {
                 this.dialogBox.open(DialogBox_Component, {
                     panelClass: 'Dialogbox-Class',
-                    data: { 
-                        Message: 'Error: ' + (Save_status[0].Message || 'Save failed'), 
-                        Type: "2" 
-                    }
-                });
-                setTimeout(() => {
-                    if (this.topDiv) {
-                        this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
+                    data: { Message: 'Error: ' + (res && res.message ? res.message : 'Save failed'), Type: "2" }
                 });
             }
         },
-        error: (error) => {
+        error: (error: any) => {
             console.error("Performa Invoice API ERROR:", error);
             this.dialogBox.open(DialogBox_Component, {
                 panelClass: 'Dialogbox-Class',
                 data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" }
-            });
-            setTimeout(() => {
-                if (this.topDiv) {
-                    this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
             });
         }
     });
@@ -2752,30 +2700,35 @@ Search_PerformaInvoice()
     this.issLoading=true;    
     this.InvoiceNo = this.InvoiceNo == "" ? undefined : this.InvoiceNo
     this.partNo = this.partNo == "" ? undefined : this.partNo
-    debugger
     this.Sales_Master_Service_.Search_PerformaInvoice(look_In_Date_Value,moment(this.Search_FromDate).format('YYYY-MM-DD'), moment(this.Search_ToDate).format('YYYY-MM-DD'),
     CustomerId_,this.InvoiceNo,this.partNo,Item_Group_Id_, CurrencyDetails_Id_,AccountType_Id_,
-    this.User_Type_Id, this.Login_User_Id).subscribe(Rows => {
-        debugger
-    this.performainvoice_Data=Rows[0];
-    if(this.performainvoice_Data.length>0)
-    {
-        for(var i=0;i<this.performainvoice_Data.length;i++)
-        {
-            this.Sales_Master_Total_Amount=Number(this.Sales_Master_Total_Amount)+Number(this.performainvoice_Data[i].NetTotal);
-            this.Sales_Master_Total_Amount= Number(this.Sales_Master_Total_Amount.toFixed(3));
+    this.User_Type_Id, this.Login_User_Id).subscribe({
+        next: (res: any) => {
+            this.performainvoice_Data = [];
+            if (res && res.success) {
+                const data = res.data;
+                const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+                this.performainvoice_Data = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data : []);
+
+                if (this.performainvoice_Data.length > 0) {
+                    for (var i = 0; i < this.performainvoice_Data.length; i++) {
+                        this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.performainvoice_Data[i].NetTotal);
+                        this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount.toFixed(3));
+                    }
+                }
+                this.Total_Entries = this.performainvoice_Data.length;
+                if (this.performainvoice_Data.length == 0) {
+                    this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'No Details Found', Type: "3" } });
+                }
+            } else {
+                this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error: ' + (res && res.message ? res.message : 'Search failed'), Type: "2" } });
+            }
+            this.issLoading = false;
+        },
+        error: (error: any) => {
+            this.issLoading = false;
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" } });
         }
-    }
-    this.Total_Entries=this.performainvoice_Data.length;
-    if(this.performainvoice_Data.length==0)
-    {
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
-    }
-    this.issLoading=false;
-    },
-    Rows => {
-        this.issLoading=false;
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });
 }
 
@@ -2911,23 +2864,24 @@ Edit_Performa_invoice(Sales_Master_e:performainvoicemaster,index)
     }
 this.issLoading = true;
 debugger
-this.Sales_Master_Service_.Get_Performa_invoice_Details(Sales_Master_e.PerformaInvoiceMaster_Id).subscribe(Rows => { 
-    debugger
-    
-    if (Rows != null) {
-        this.performainvoicedetails_Data = Rows[0];
-        debugger
-
-        this.addBlankRows();
-        this.Final_Amounts();
-        
+this.Sales_Master_Service_.Get_Performa_invoice_Details(Sales_Master_e.PerformaInvoiceMaster_Id).subscribe({
+    next: (res: any) => {
+        if (res && res.success) {
+            const data = res.data;
+            const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+            this.performainvoicedetails_Data = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data : []);
+            this.addBlankRows();
+            this.Final_Amounts();
+        } else {
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error: ' + (res && res.message ? res.message : 'Load failed'), Type: "2" } });
         }
-           this.issLoading = false;
-       },
-     Rows => {
-            this.issLoading = false;
-       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-    });
+        this.issLoading = false;
+    },
+    error: (error: any) => {
+        this.issLoading = false;
+        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" } });
+    }
+});
 }
 
 Delete_Quotation_Detail(itemIndex){

@@ -18,6 +18,7 @@ TotalCGST:number;
 ToalSGST:number;
 TotalIGST:number;
 TotalGST:number;
+TaxableAmount:number;
 Cess:number;
 Customer_Name:string;
 Customer:string;

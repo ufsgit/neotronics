@@ -8,9 +8,9 @@ var Lead = {
             Lead_.Phone,
             Lead_.Source,
             Lead_.Contact_Person,
-            Lead_.Contact_Number,    // new field
-            Lead_.Vertical,       // comma-separated string e.g. "1,3"
-            Lead_.Enquiry_For,    // selected enquiry option ID
+            Lead_.Contact_Number,
+            Lead_.Vertical,
+            Lead_.Enquiry_For,
             Lead_.Designation,
             Lead_.Email,
             Lead_.Website,
@@ -31,7 +31,8 @@ var Lead = {
             Lead_.FollowUp_Date,
             Lead_.Login_User_Id,
             Lead_.Next_FollowUp_Date
-        ];
+        ].map(p => p === undefined ? null : p);
+
         return db.query("CALL Save_Lead(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             params28, (err, rows) => {
                 return callback(err, rows);
@@ -55,10 +56,10 @@ var Lead = {
         return db.query("CALL Get_Lead_FollowUp_History(?)", [Lead_Id], callback);
     },
     Update_Staff_Name_Single: function (Lead_Id, Staff_Id, callback) {
-        return db.query("UPDATE Lead SET Staff_Id = ?, Staff_Name = (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = ?) WHERE Lead_Id = ?", [Staff_Id, Staff_Id, Lead_Id], callback);
+        return db.query("UPDATE `Lead` SET Staff_Id = ?, Staff_Name = (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = ?) WHERE Lead_Id = ?", [Staff_Id, Staff_Id, Lead_Id], callback);
     },
     Update_Latest_FollowUp: function (Lead_Id, Staff_Id, callback) {
-        const query = "UPDATE Follow_up SET Staff_Id = ?, Staff_Name = (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = ?) WHERE Lead_Id = ? ORDER BY FollowUp_Id DESC LIMIT 1";
+        const query = "UPDATE `Follow_up` SET Staff_Id = ?, Staff_Name = (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = ?) WHERE Lead_Id = ? ORDER BY FollowUp_Id DESC LIMIT 1";
         return db.query(query, [Staff_Id, Staff_Id, Lead_Id], callback);
     }
 };

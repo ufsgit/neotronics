@@ -204,7 +204,7 @@ Sales_Master_Data=[];doListView = false;DO_Data=[];poListView=false;Purchase_Ord
 packingListView = false;packinglist_details_Data=[];performaPendingView=false;performaPendingData=[];invoicePendingView = false;invoicePendingData=[];deliveryPendingView = false;
 deliveryPendingData=[];purchasePendingView=false;purchasePendingData=[];printLetterhead:boolean = false;
 /*** Added on 15-10-2024 */
-SalesPrice_RequestMaster_Id: number = 0;
+Price_Request_Master_Id: number = 0;
 itemGroupData: Item_Group[];
 itemGroup: Item_Group = new Item_Group();
 itemGroup_Temp: Item_Group = new Item_Group();
@@ -212,7 +212,7 @@ EmployeeData: User_Details[];
 Employee: User_Details = new User_Details();
 Employee_Temp: User_Details = new User_Details();
 /** Added on 16-10-2024 */
-SalesPrice_RequestMaster_Id_Edit: number;
+Price_Request_Master_Id_Edit: number;
 /*** Added on 17-10-2024 */
 packingListPendingView: Boolean;
 /*** Added on 18-10-2024 */
@@ -269,8 +269,8 @@ ngOnInit()
     this.Login_User_Id=localStorage.getItem('Login_User');
     this.Employee_Name=localStorage.getItem('Employee_Name');
     this.Employee_Id=Number(localStorage.getItem('Employee_Id'));
-    this.SalesPrice_RequestMaster_Id = Number(localStorage.getItem('SalesPrice_RequestMaster_Id'));
-    localStorage.removeItem('SalesPrice_RequestMaster_Id');
+    this.Price_Request_Master_Id = Number(localStorage.getItem('Price_Request_Master_Id'));
+    localStorage.removeItem('Price_Request_Master_Id');
     this.Permissions = Get_Page_Permission(95);
     if(this.Permissions==undefined || this.Permissions==null)
     {
@@ -312,17 +312,44 @@ Page_Load()
         try {
             const parsed = JSON.parse(reqData);
             this.RequirementMaster_Id = Number(parsed.RequirementMaster_Id || 0);
-        } catch(e) { this.RequirementMaster_Id = 0; }
-        localStorage.removeItem('Requirement_For_PriceRequest');
-        if (this.RequirementMaster_Id > 0) {
-            this.Entry_View = true;
-            this.Edit_Sales = 0;
-            this.Sales_Print = true;
-            return;
+            const pendingItem = parsed.PendingItem;
+
+            if (this.RequirementMaster_Id > 0) {
+                this.Entry_View = true;
+                this.Edit_Sales = 0;
+                this.Sales_Print = true;
+                
+                // Load Requirement Master to autofill Customer, Currency, etc.
+                this.Requirement_Master_Service_.Load_RequirementMaster(this.RequirementMaster_Id).subscribe(result => {
+                    const master = (result && result[0] && result[0][0]) ? result[0][0] : null;
+                    if (master) {
+                        this.Customer_ = { 
+                            Client_Accounts_Id: master.Account_Party_Id, 
+                            Client_Accounts_Name: master.Client_Accounts_Name 
+                        } as any;
+                        this.currency = { 
+                            CurrencyDetails_Id: master.CurrencyDetails_Id, 
+                            CurrecnyName: master.CurrecnyName 
+                        } as any;
+                    }
+                    
+                    if (pendingItem) {
+                        this.Price_Request_Details_Data = [Object.assign({}, pendingItem)];
+                        this.Final_Amounts();
+                    }
+                });
+                
+                localStorage.removeItem('Requirement_For_PriceRequest');
+                return;
+            }
+        } catch(e) { 
+            console.error('Error parsing Requirement_For_PriceRequest', e);
+            this.RequirementMaster_Id = 0; 
         }
+        localStorage.removeItem('Requirement_For_PriceRequest');
     }
 
-    if(this.SalesPrice_RequestMaster_Id >0)
+    if(this.Price_Request_Master_Id >0)
     {
         this.Entry_View=true;
         this.Edit_Sales=1;
@@ -351,7 +378,8 @@ Load_Company()
     Load_Currency() {
         this.currencydetails_Service_.Search_currencydetails('').subscribe(Rows => {
             if (Rows != null) {
-                this.currencyData = Rows[0];        
+                const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+                this.currencyData = Array.isArray(rawData) && Array.isArray(rawData[0]) ? rawData[0] : (Array.isArray(rawData) ? rawData : []);
                 this.Currency_Temp.CurrencyDetails_Id = 0;
                 this.Currency_Temp.CurrecnyName = "Select";
                 this.currencyData.unshift(this.Currency_Temp);
@@ -369,7 +397,8 @@ Load_Company()
     Load_Item_Group() {
         this.Item_Group_Service_.Load_Item_Group().subscribe(Rows => {
             if (Rows != null) {
-                this.itemGroupData = Rows[0];
+                const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+                this.itemGroupData = Array.isArray(rawData) && Array.isArray(rawData[0]) ? rawData[0] : (Array.isArray(rawData) ? rawData : []);
                 this.itemGroup_Temp.Item_Group_Id = 0;
                 this.itemGroup_Temp.Item_Group_Name = "Select";
                 this.itemGroupData.unshift(this.itemGroup_Temp);
@@ -402,7 +431,8 @@ Load_Company()
     Load_Payment_Term() {
         this.payment_term_Service_.Load_Payment_Term().subscribe(Rows => {
             if (Rows != null) {
-                this.PaymentTermData = Rows[0];
+                const rawData = (Rows && (Rows as any).data) ? (Rows as any).data : Rows;
+                this.PaymentTermData = Array.isArray(rawData) && Array.isArray(rawData[0]) ? rawData[0] : (Array.isArray(rawData) ? rawData : []);
                 this.Payment_Term_Temp.payment_Term_ID = 0;
                 this.Payment_Term_Temp.Payment_Term_Description = "Select";
                 this.PaymentTermData.unshift(this.Payment_Term_Temp);
@@ -772,7 +802,7 @@ Print_Search_Click()
 }
 Clr_Sales_Master()
 {
-    this.Price_Request_Master_.SalesPrice_RequestMaster_Id=0;
+    this.Price_Request_Master_.Price_Request_Master_Id=0;
     this.Price_Request_Master_.Account_Party_Id=0;
     //this.Price_Request_Master_.Employee_Id=0;
     //this.Price_Request_Master_.Employee_Name=this.Employee_Name;
@@ -983,7 +1013,7 @@ Change_Bill_Status(Sales_Master_Id,BillType,index)
    }
    });
 }
-Delete_Price_Request_Master(SalesPrice_RequestMaster_Id,index)
+Delete_Price_Request_Master(Price_Request_Master_Id,index)
  {
     const dialogRef = this.dialogBox.open
     ( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Do you want to delete ?',Type:"true",Heading:'Confirm'}});
@@ -993,15 +1023,15 @@ Delete_Price_Request_Master(SalesPrice_RequestMaster_Id,index)
     {
     this.issLoading=true;
     debugger
-    this.Sales_Master_Service_.Delete_Price_Request_Master(SalesPrice_RequestMaster_Id).subscribe(Delete_status => {    
+    this.Sales_Master_Service_.Delete_Price_Request_Master(Price_Request_Master_Id).subscribe((response: any) => {    
         debugger   
-        Delete_status=Delete_status[0];
-        if(Delete_status[0].SalesPrice_RequestMaster_Id_==-1){
+        const Delete_status = response.success ? response.data : null;
+        if(!Delete_status || !Delete_status[0] || Delete_status[0][0].Price_Request_Master_Id_==-1){
             const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Cannot Delete',Type:"3"}});
             this.issLoading=false;           
             return;
           }
-  else if(Delete_status[0].SalesPrice_RequestMaster_Id_>0){
+  else if(Delete_status[0][0].Price_Request_Master_Id_>0){
     this.Price_Request_Master_Data.splice(index, 1);
       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});      
       this.Search_Price_Request();
@@ -1025,15 +1055,16 @@ Load_Bill_Type()
 {
     debugger;
     var value=1;
-        this.Sales_Master_Service_.Load_Bill_Type(value).subscribe(Rows => {    
-        if (Rows != null) {
-        this.Bill_Type_Data = Rows[0];        
-        this.Bill_Type_Temp.Bill_Type_Id = 0;
-        this.Bill_Type_Temp.Bill_Type_Name = "Select";
-        this.Bill_Type_Data.unshift(this.Bill_Type_Temp);
-        debugger;
-        this.Bill_Type_Search=this.Bill_Type_Data[0];
-        this.Bill_Type_=this.Bill_Type_Data[1];
+        this.Sales_Master_Service_.Load_Bill_Type(value).subscribe((response: any) => {    
+        if (response != null) {
+            const Rows = response.success ? response.data : response;
+            this.Bill_Type_Data = Rows[0];        
+            this.Bill_Type_Temp.Bill_Type_Id = 0;
+            this.Bill_Type_Temp.Bill_Type_Name = "Select";
+            this.Bill_Type_Data.unshift(this.Bill_Type_Temp);
+            debugger;
+            this.Bill_Type_Search=this.Bill_Type_Data[0];
+            this.Bill_Type_=this.Bill_Type_Data[1];
         }
         this.issLoading = false;
         },
@@ -1044,13 +1075,14 @@ Load_Bill_Type()
 }
 Load_Bill_Mode()
 {
-        this.Sales_Master_Service_.Load_Bill_Mode().subscribe(Rows => {    
-        if (Rows != null) {
-        this.Bill_Mode_Data = Rows[0];        
-        this.Bill_Mode_Temp.Bill_Mode_Id = 0;
-        this.Bill_Mode_Temp.Bill_Mode_Name = "Select";
-        this.Bill_Mode_Data.unshift(this.Bill_Mode_Temp);
-        this.Bill_Mode_=this.Bill_Mode_Data[0];
+        this.Sales_Master_Service_.Load_Bill_Mode().subscribe((response: any) => {    
+        if (response != null) {
+            const Rows = response.success ? response.data : response;
+            this.Bill_Mode_Data = Rows[0];        
+            this.Bill_Mode_Temp.Bill_Mode_Id = 0;
+            this.Bill_Mode_Temp.Bill_Mode_Name = "Select";
+            this.Bill_Mode_Data.unshift(this.Bill_Mode_Temp);
+            this.Bill_Mode_=this.Bill_Mode_Data[0];
         }
         this.issLoading = false;
         },
@@ -1076,12 +1108,13 @@ Load_Cess()
 Load_Company_bank()
 {
     debugger;
-    this.Sales_Master_Service_.Load_Company_Bank().subscribe(Rows => {   
-      if (Rows != null) {
+    this.Sales_Master_Service_.Load_Company_Bank().subscribe((response: any) => {   
+      if (response != null) {
             debugger;
+            const Rows = response.success ? response.data : response;
             this.Bank_Data=Rows[0];
-        this.Bank_ = this.Bank_Data[0]
-        this.Company_ = Rows[1][0]
+            this.Bank_ = this.Bank_Data[0]
+            this.Company_ = Rows[1][0]
         }
         this.issLoading = false;
     },
@@ -1472,27 +1505,26 @@ Search_Price_Request()
     moment(this.Search_ToDate).format('YYYY-MM-DD'),CustomerId_,this.QuotNo,this.partNo,Item_Group_Id_,
                                                             CurrencyDetails_Id_,User_Details_Id_,
                                                         this.User_Type_Id,
-                                                    this.Login_User_Id).subscribe(Rows => {
-                                                                debugger
-    this.Price_Request_Master_Data=Rows[0];
-    if(this.Price_Request_Master_Data.length>0)
-    {
-        for(var i=0;i<this.Price_Request_Master_Data.length;i++)
-        {
-            this.Sales_Master_Total_Amount=Number(this.Sales_Master_Total_Amount)+Number(this.Price_Request_Master_Data[i].NetTotal);
-            this.Sales_Master_Total_Amount= Number(this.Sales_Master_Total_Amount.toFixed(3));
+                                                    this.Login_User_Id).subscribe({
+        next: (response: any) => {
+            if (response.success) {
+                this.Price_Request_Master_Data = response.data[0];
+                if (this.Price_Request_Master_Data && this.Price_Request_Master_Data.length > 0) {
+                    for (var i = 0; i < this.Price_Request_Master_Data.length; i++) {
+                        this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Price_Request_Master_Data[i].NetTotal);
+                        this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount.toFixed(3));
+                    }
+                }
+                this.Total_Entries = (this.Price_Request_Master_Data || []).length;
+            } else {
+                this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'No Details Found', Type: "3" } });
+            }
+            this.issLoading = false;
+        },
+        error: (err) => {
+            this.issLoading = false;
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
         }
-    }
-    this.Total_Entries=this.Price_Request_Master_Data.length;
-    if(this.Price_Request_Master_Data.length==0)
-    {
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
-    }
-    this.issLoading=false;
-    },
-    Rows => {
-        this.issLoading=false;
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });
 }
 Add_Sales_Details()
@@ -1520,11 +1552,17 @@ else
 // return
 // } 
 // else
-if(this.Barcode_ == undefined || this.Barcode_ == null)
-{
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Select Item Code',Type: "3" }});
-return
-}
+    // Allow manual entry: either Item_Code or ItemName must be present
+    const itemName = typeof this.Item_ === 'string' ? this.Item_ : (this.Item_ ? this.Item_.ItemName : '');
+    const itemCode = typeof this.Barcode_ === 'string' ? this.Barcode_ : (this.Barcode_ ? this.Barcode_.Item_Code : '');
+
+    if (!itemName && !itemCode) {
+        this.dialogBox.open(DialogBox_Component, { 
+            panelClass: 'Dialogbox-Class', 
+            data: { Message: 'Enter Item Name or Code', Type: "3" } 
+        });
+        return;
+    }
 if(this.Price_Request_Details_.Quantity==undefined || this.Price_Request_Details_.Quantity==null || this.Price_Request_Details_.Quantity==0)
 {
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Enter Quantity',Type: "3" }});
@@ -1633,8 +1671,9 @@ Save_Price_Request(Printstatus:number)
         })
     )
     .subscribe({
-        next: (Save_status) => {
-            console.log("Price Request API Response:", Save_status);
+        next: (response: any) => {
+            const Save_status = response.success ? response.data : null;
+            console.log("Price Request API Response:", response);
 
             if (!Save_status || !Save_status[0]) {
                 this.dialogBox.open(DialogBox_Component, {
@@ -1644,39 +1683,40 @@ Save_Price_Request(Printstatus:number)
                 return;
             }
 
-            if (Number(Save_status[0].SalesPrice_RequestMaster_Id_) > 0) {
-                this.Price_Request_Master_.SalesPrice_RequestMaster_Id = Save_status[0].SalesPrice_RequestMaster_Id_;
-                this.Price_Request_Master_.Price_RequestNo = Save_status[0].Price_RequestNo_;          
+            const data = response.data;
+            const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
+            const result = (rows && rows[0] && Array.isArray(rows[0])) ? rows[0][0] : (rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null));
+
+            if (result && Number(result.Price_Request_Master_Id_) > 0) {
+                this.Price_Request_Master_.Price_Request_Master_Id = result.Price_Request_Master_Id_;
+                this.Price_Request_Master_.Price_RequestNo = result.Price_RequestNo_;          
                 
                 // Link back to Requirement if navigated from Requirement module
                 if (this.RequirementMaster_Id > 0) {
                     this.RequirementWorkflowService_.LinkPriceRequest(
                         this.RequirementMaster_Id,
-                        this.Price_Request_Master_.SalesPrice_RequestMaster_Id
-                    ).subscribe(_ => { this.RequirementMaster_Id = 0; });
+                        this.Price_Request_Master_.Price_Request_Master_Id
+                    ).subscribe({
+                        next: (_: any) => { this.RequirementMaster_Id = 0; },
+                        error: (_err: any) => { console.error("LinkPriceRequest Error:", _err); }
+                    });
                 }
 
-                if (Printstatus == 1) {
-                    this.Print_Click();
-                } else {
-                    this.dialogBox.open(DialogBox_Component, {
-                        panelClass: 'Dialogbox-Class',
-                        data: { Message: 'Saved Successfully', Type: "false" }
-                    });
-                    this.Edit_Sales = 1;
-                }        
-                this.Sales_Print = false;
+                this.dialogBox.open(DialogBox_Component, {
+                    panelClass: 'Dialogbox-Class',
+                    data: { Message: 'Saved Successfully', Type: "false" }
+                });
+                this.Edit_Sales = 1;
+                this.Sales_Print = true;
+                this.Search_Price_Request();
             } else {
                 this.dialogBox.open(DialogBox_Component, {
                     panelClass: 'Dialogbox-Class',
-                    data: {
-                        Message: 'Error: ' + (Save_status[0].Message || 'Save failed'),
-                        Type: "2"
-                    }
+                    data: { Message: (result && result.Message_) || 'Save failed', Type: "2" }
                 });
-                if (this.topDiv) {
-                    this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+            }
+            if (this.topDiv) {
+                this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         },
         error: (error) => {
@@ -1739,7 +1779,7 @@ Edit_Price_Request_Master(Sales_Master_e,index)
     this.issLoading = true;
     this.Price_Request_Master_Index=index;
     this.Price_Request_Master_=Object.assign({},Sales_Master_e); 
-    this.SalesPrice_RequestMaster_Id_Edit = Sales_Master_e.SalesPrice_RequestMaster_Id;
+    this.Price_Request_Master_Id_Edit = Sales_Master_e.Price_Request_Master_Id;
     this.Customer_Temp.Client_Accounts_Id=Sales_Master_e.Account_Party_Id;
     this.Customer_Temp.Client_Accounts_Name=Sales_Master_e.Customer;
     this.Customer_=this.Customer_Temp;
@@ -1829,10 +1869,10 @@ debugger;
             this.Payment_Term = this.PaymentTermData[i];
         }
     }
-this.Sales_Master_Service_.Get_Price_Request_Details(Sales_Master_e.SalesPrice_RequestMaster_Id).subscribe(Rows => {     
-    if (Rows != null) {
+this.Sales_Master_Service_.Get_Price_Request_Details(Sales_Master_e.Price_Request_Master_Id).subscribe((response: any) => {     
+    if (response != null) {
         debugger
-        this.Price_Request_Details_Data = Rows[0];
+        this.Price_Request_Details_Data = response.success ? response.data[0] : (response[0] || []);
         //console.log('this.Price_Request_Details_Data: ', this.Price_Request_Details_Data);
         this.addBlankRows();
        // this.Calculate_Price_Request_Details_Amount();
@@ -1887,10 +1927,16 @@ Get_Stock(){
     this.Price_Request_Details_.HSNMasterId=this.Barcode_.HSNMasterId;
     this.Price_Request_Details_.Item_Code=this.Barcode_.Item_Code;  
 }
-Get_Stock_Item(){
-    this.Stock_Temp.ItemId=this.Item_.ItemId;
-    this.Stock_Temp.ItemName=this.Item_.ItemName;
-    this.Stock_=Object.assign({},this.Stock_Temp);
+Get_Stock_Item() {
+    if (typeof this.Item_ === 'string') {
+        this.Price_Request_Details_.ItemName = this.Item_;
+        this.Price_Request_Details_.ItemId = 0;
+        this.Price_Request_Details_.Item_Code = '';
+        return;
+    }
+    this.Stock_Temp.ItemId = this.Item_ ? this.Item_.ItemId : 0;
+    this.Stock_Temp.ItemName = this.Item_ ? this.Item_.ItemName : '';
+    this.Stock_ = Object.assign({}, this.Stock_Temp);
     debugger;
     if(this.Item_ != null || this.Item_ != undefined)
     {
@@ -2031,7 +2077,7 @@ debugger;
     // this.Address4 = ''
     // this.Vatin = ''
     this.Edit_Sales = 0;
-    this.Price_Request_Master_.SalesPrice_RequestMaster_Id = 0;
+    this.Price_Request_Master_.Price_Request_Master_Id = 0;
     // this.Price_Request_Master_.Delivery_Address1 = '';
     // this.Price_Request_Master_.Delivery_Address2 = '';
     // this.Price_Request_Master_.Delivery_Address3 = '';
@@ -2098,7 +2144,7 @@ debugger;
     this.deliveryPendingView = false;
     this.purchasePendingView = false;
     this.packingListPendingView = false;
-    this.Sales_Master_Service_.Load_Profoma_Items_Pending_List_ByQuotation(this.Price_Request_Master_.SalesPrice_RequestMaster_Id).subscribe(Rows => {
+    this.Sales_Master_Service_.Load_Profoma_Items_Pending_List_ByQuotation(this.Price_Request_Master_.Price_Request_Master_Id).subscribe(Rows => {
      
     this.performaPendingData=Rows[0];
     })
@@ -2119,7 +2165,7 @@ debugger;
     this.deliveryPendingView = false;
     this.purchasePendingView = false;
     this.packingListPendingView = false;
-    this.Sales_Master_Service_.Load_Invoice_Items_Pending_List_ByQuotation(this.Price_Request_Master_.SalesPrice_RequestMaster_Id).subscribe(Rows => {
+    this.Sales_Master_Service_.Load_Invoice_Items_Pending_List_ByQuotation(this.Price_Request_Master_.Price_Request_Master_Id).subscribe(Rows => {
        this.invoicePendingData=Rows[0];
         })
     setTimeout(() => {
@@ -2139,7 +2185,7 @@ debugger;
     this.doListView = false;
     this.purchasePendingView = false;
     this.packingListPendingView = false;
-    this.Sales_Master_Service_.Load_Delivery_Items_Pending_List_ByQuotation(this.Price_Request_Master_.SalesPrice_RequestMaster_Id).subscribe(Rows => {
+    this.Sales_Master_Service_.Load_Delivery_Items_Pending_List_ByQuotation(this.Price_Request_Master_.Price_Request_Master_Id).subscribe(Rows => {
        this.deliveryPendingData=Rows[0];
         })
     setTimeout(() => {
@@ -2159,7 +2205,7 @@ debugger;
     this.proformaListView = false;
     this.doListView = false;
     this.packingListPendingView = false;
-    this.Sales_Master_Service_.Load_Purchase_Items_Pending_List_ByQuotation(this.Price_Request_Master_.SalesPrice_RequestMaster_Id).subscribe(Rows => {
+    this.Sales_Master_Service_.Load_Purchase_Items_Pending_List_ByQuotation(this.Price_Request_Master_.Price_Request_Master_Id).subscribe(Rows => {
        debugger;
         this.purchasePendingData=Rows[0];
         })
@@ -2342,21 +2388,22 @@ debugger;
         this.Entry_View=true;
         this.issLoading = true
 debugger;
-        this.Sales_Master_Service_.Load_Price_Request_Master(this.SalesPrice_RequestMaster_Id).subscribe(result=>{
+        this.Sales_Master_Service_.Load_Price_Request_Master(this.Price_Request_Master_Id).subscribe((response: any)=>{
             this.Price_Request_Master_=new Price_Request_Master();
-            this.Price_Request_Master_Data=result[0];
-            this.Price_Request_Master_=Object.assign({},result[0][0]); 
-            this.Price_Request_Master_.PaymentTermValue=result[0][0].PaymentTermValue
-            this.Price_Request_Master_.POnumber = result[0][0].POnumber;          
+            const Rows = response.success ? response.data : [];
+            this.Price_Request_Master_Data=Rows[0];
+            this.Price_Request_Master_=Object.assign({},Rows[0][0]); 
+            this.Price_Request_Master_.PaymentTermValue=Rows[0][0].PaymentTermValue
+            this.Price_Request_Master_.POnumber = Rows[0][0].POnumber;          
         this.Edit_Sales=1;
         this.Sales_Print = false;    
-        this.Customer_Temp.Client_Accounts_Id=result[0][0].Account_Party_Id;
-        this.Customer_Temp.Client_Accounts_Name=result[0][0].Customer;
+        this.Customer_Temp.Client_Accounts_Id=Rows[0][0].Account_Party_Id;
+        this.Customer_Temp.Client_Accounts_Name=Rows[0][0].Customer;
         this.Customer_=this.Customer_Temp;
         this.Price_Request_Master_.Customer_Name=this.Customer_.Client_Accounts_Name;
         this.Price_Request_Master_.Customer=this.Price_Request_Master_.Customer_Name; 
         
-        this.SalesPrice_RequestMaster_Id_Edit = this.SalesPrice_RequestMaster_Id;
+        this.Price_Request_Master_Id_Edit = this.Price_Request_Master_Id;
 
         // this.Client_Accounts_Service_.Get_Client_Accounts(this.Price_Request_Master_.Account_Party_Id).subscribe((result)=>{
         //     if(result!=null)
@@ -2421,12 +2468,12 @@ debugger;
         }
         }
     console.log("QUO - Outside Get_Price_Request_Details ");
-    this.Sales_Master_Service_.Get_Price_Request_Details(result[0][0].SalesPrice_RequestMaster_Id).subscribe(Rows => { 
-        debugger;
+    this.Sales_Master_Service_.Get_Price_Request_Details(Rows[0][0].Price_Request_Master_Id).subscribe((response: any) => { 
+        const Rows_Details = response.success ? response.data[0] : (response[0] || []);        debugger;
         console.log("QUO - Inside Get_Price_Request_Details ");
-        console.log('QUO - Rows 1: ', Rows);
-            if (Rows != null) {
-            this.Price_Request_Details_Data = Rows[0];
+        console.log('QUO - Rows 1: ', response);
+            if (Rows_Details != null) {
+            this.Price_Request_Details_Data = Rows_Details;
             console.log('QUO - Price_Request_Details_Data: ', this.Price_Request_Details_Data);
             this.Calculate_Price_Request_Details_Amount();
             this.Final_Amounts();
@@ -2441,7 +2488,7 @@ debugger;
     })
 }
       makeInvoice(){
-        localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.SalesPrice_RequestMaster_Id.toString());
+        localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.Price_Request_Master_Id.toString());
         this.router.navigateByUrl(`/Invoice`);
       }
       Edit_Price_Request_SalesMaster(Sales_Master_Id)
@@ -2460,7 +2507,7 @@ debugger;
         this.deliveryPendingView = false;
         this.purchasePendingView = false;
         this.packingListPendingView = false;    
-        this.Sales_Master_Service_.Get_Salesmaster_Quotation_Details(this.SalesPrice_RequestMaster_Id_Edit).subscribe(Rows => {
+        this.Sales_Master_Service_.Get_Salesmaster_Quotation_Details(this.Price_Request_Master_Id_Edit).subscribe(Rows => {
             this.Sales_Master_Data=Rows[0];    
             });
         setTimeout(() => {
@@ -2480,7 +2527,7 @@ debugger;
         this.deliveryPendingView = false;
         this.purchasePendingView = false;
         this.packingListPendingView = false;
-        this.Sales_Master_Service_.Get_DeliveryOrder_Quotation_Details(this.SalesPrice_RequestMaster_Id_Edit).subscribe(Rows => {
+        this.Sales_Master_Service_.Get_DeliveryOrder_Quotation_Details(this.Price_Request_Master_Id_Edit).subscribe(Rows => {
             this.DO_Data=Rows[0];    
             });            
         setTimeout(() => {
@@ -2491,7 +2538,7 @@ debugger;
       }    
       makeDO(){
         debugger
-        localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.SalesPrice_RequestMaster_Id.toString());
+        localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.Price_Request_Master_Id.toString());
         debugger
         this.router.navigateByUrl(`/Delivery_Order`);
       }
@@ -2512,7 +2559,7 @@ debugger;
         this.purchasePendingView = false;
         this.packingListPendingView = false;
         debugger;
-        this.Sales_Master_Service_.Get_PackingList_Quotation_Details(this.SalesPrice_RequestMaster_Id_Edit).subscribe(Rows => {
+        this.Sales_Master_Service_.Get_PackingList_Quotation_Details(this.Price_Request_Master_Id_Edit).subscribe(Rows => {
             debugger;
         this.packinglist_details_Data=Rows[0];
          })
@@ -2523,7 +2570,7 @@ debugger;
         });
       }    
       makePackingList(){
-        localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.SalesPrice_RequestMaster_Id.toString());
+        localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.Price_Request_Master_Id.toString());
         this.router.navigateByUrl(`/Packing_List`);
       }
       Edit_Price_Request_PackingList(PackingList_Master_Id)
@@ -2542,7 +2589,7 @@ debugger;
         this.deliveryPendingView = false;
         this.purchasePendingView = false;
         this.packingListPendingView = false;
-        this.Sales_Master_Service_.Get_PurchaseOrder_Quotation_Details(this.SalesPrice_RequestMaster_Id_Edit).subscribe(Rows => {
+        this.Sales_Master_Service_.Get_PurchaseOrder_Quotation_Details(this.Price_Request_Master_Id_Edit).subscribe(Rows => {
             debugger
         this.Purchase_Orderdetails_Data=Rows[0];    
         })
@@ -2554,7 +2601,7 @@ debugger;
       }    
       makePO(){
         debugger;
-        localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.SalesPrice_RequestMaster_Id.toString());
+        localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.Price_Request_Master_Id.toString());
         this.router.navigateByUrl(`/Purchase_order`);
       }
       Edit_Price_Request_PurchaseOrder(PurchaseOrderMaster_Id)
@@ -2574,7 +2621,7 @@ debugger;
         this.doListView = false;
         this.purchasePendingView = false;
         this.packingListPendingView = true;    
-        this.Sales_Master_Service_.Load_PackingList_Items_Pending_List_ByQuotation(this.Price_Request_Master_.SalesPrice_RequestMaster_Id).subscribe(Rows => {
+        this.Sales_Master_Service_.Load_PackingList_Items_Pending_List_ByQuotation(this.Price_Request_Master_.Price_Request_Master_Id).subscribe(Rows => {
             this.packinglistPendingData=Rows[0];
             })
         setTimeout(() => {
@@ -2595,7 +2642,7 @@ debugger;
         this.deliveryPendingView = false;
         this.purchasePendingView = false;
         this.packingListPendingView = false;
-        this.Sales_Master_Service_.Get_Proforma_Quotation_Details(this.SalesPrice_RequestMaster_Id_Edit).subscribe(Rows => {
+        this.Sales_Master_Service_.Get_Proforma_Quotation_Details(this.Price_Request_Master_Id_Edit).subscribe(Rows => {
         this.performainvoice_Data=Rows[0];    
         });
         setTimeout(() => {
@@ -2624,7 +2671,7 @@ debugger;
       }
       makeProforma(){ 
         debugger;
-        localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.SalesPrice_RequestMaster_Id.toString());
+        localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.Price_Request_Master_Id.toString());
         this.router.navigateByUrl(`/Performa_Invoice`);
       }
       Edit_Price_Request_Proforma(PerformaInvoiceMaster_Id)
@@ -2735,11 +2782,13 @@ debugger;
           this.Price_Request_Master_.VAT_Amount = this.Total * (this.Price_Request_Master_.VAT_Percentage/100)
       }
       this.Price_Request_Master_.VAT_Amount = Number(this.Price_Request_Master_.VAT_Amount.toFixed(3))    
+      this.Price_Request_Master_.TaxableAmount = Number(this.Total.toFixed(3));
       this.Price_Request_Master_.Total_Amount = this.Total + this.Price_Request_Master_.VAT_Amount
       this.Price_Request_Master_.Total_Amount = Number(this.Price_Request_Master_.Total_Amount.toFixed(3))
       this.Price_Request_Master_.NetTotal = Number((this.Price_Request_Master_.Total_Amount - this.safeNumber(this.Price_Request_Master_.Roundoff_Amt)).toFixed(3))
       this.Price_Request_Master_.NetTotal = Number(this.Price_Request_Master_.NetTotal.toFixed(3))
       this.Price_Request_Master_.TotalAmount = parseFloat(this.Price_Request_Master_.TotalAmount.toFixed(3));
+      this.Price_Request_Master_.Total_Quantity = this.Price_Request_Details_Data.reduce((acc, curr) => acc + Number(curr.Quantity || 0), 0);
       this.Price_Request_Master_.Amount_In_Words = this.numberToWordsIndianCurrency(this.Price_Request_Master_.NetTotal)       
      debugger;
   //this.Clr_Sales_Edit_Data();

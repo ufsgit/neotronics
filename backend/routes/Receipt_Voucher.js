@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var Receipt_Voucher=require('../models/Receipt_Voucher');
+const asyncHandler = require("../helpers/async-handler");
+const { sendSuccess } = require("../helpers/api-response");
 
 // router.get('/Get_Location', function(req, res, next) {
 //   console.log('1')
@@ -12,19 +14,10 @@ var Receipt_Voucher=require('../models/Receipt_Voucher');
 
 // });
 
-router.post('/Save_Receipt_Voucher/', async function (req, res, next) {
-  try {
-   
-    const resp = await Receipt_Voucher.Save_Receipt_Voucher(req.body);
-    console.log(resp);
-    return res.send(resp);
-  }
-  catch (e) {
-
-
-    return res.send(e);
-  }
-});
+router.post('/Save_Receipt_Voucher/', asyncHandler(async function (req, res, next) {
+    const resp = await Receipt_Voucher.Save_Receipt_Voucher(req.body, { log: req.log });
+    return sendSuccess(res, { message: "Saved", data: Array.isArray(resp) ? resp : [resp] });
+}));
 router.post('/Save_Receipt_Voucher_Mobile/',function(req,res,next)
   { 
   try 

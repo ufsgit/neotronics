@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 var Payment_Voucher = require("../models/Payment_Voucher");
 const upload = require("../helpers/multer-helper");
+const asyncHandler = require("../helpers/async-handler");
+const { sendSuccess } = require("../helpers/api-response");
 // router.post('/Save_Payment_Voucher/',function(req,res,next)
 //   {
 //   try
@@ -26,14 +28,10 @@ const upload = require("../helpers/multer-helper");
 //   }
 //   });
 
-router.post("/Save_Payment_Voucher/", async function (req, res, next) {
-	try {
-		const resp = await Payment_Voucher.Save_Payment_Voucher(req.body);
-		return res.send(resp);
-	} catch (e) {
-		return res.send(e);
-	}
-});
+router.post("/Save_Payment_Voucher/", asyncHandler(async function (req, res, next) {
+	const resp = await Payment_Voucher.Save_Payment_Voucher(req.body, { log: req.log });
+	return sendSuccess(res, { message: "Saved", data: Array.isArray(resp) ? resp : [resp] });
+}));
 router.get(
 	"/Search_Payment_Voucher/:From_Date_?/:To_Date_?/:To_Account_Id_?/:Voucher_No_?/:Is_Date_Check_?/:CurrencyId?/:Login_User_?/:User_Type?",
 	function (req, res, next) {
@@ -329,9 +327,8 @@ router.post("/Save_Waste_Management", upload.array("myFile"), (req, res, next) =
         };
 		Payment_Voucher.Save_Waste_Management(Document_Data, function (err, rows) {
             if (err) {
-                console.log(err);
-       console.log(e);
-                return 1;
+                console.error('Save_Waste_Management failed:', err);
+                return res.status(500).json({ message: 'Save_Waste_Management failed', error: err.message || err });
             } else {
                 console.log(rows);
                 return res.json(rows);
@@ -584,9 +581,8 @@ router.get('/Get_Petty_Cash_details/:Petty_Cash_Id_?',function(req,res,next)
      
             Payment_Voucher.Save_Petty_Cash(PettyCash_Data, function (err, rows) {
                 if (err) {
-                    console.log(err);
-                    // console.log(sslc_year)
-                    return 1;
+                    console.error('Save_Petty_Cash failed:', err);
+                    return res.status(500).json({ message: 'Save_Petty_Cash failed', error: err.message || err });
                 } else {
                     console.log(rows);
                     return res.json(rows);
@@ -701,9 +697,8 @@ router.get('/Get_Petty_Cash_details/:Petty_Cash_Id_?',function(req,res,next)
 			};
 			Payment_Voucher.Save_Daybook_App(Document_Data, function (err, rows) {
 				if (err) {
-					console.log(err);
-		//    console.log(e);
-					return 1;
+					console.error('Save_Daybook_App failed:', err);
+					return res.status(500).json({ message: 'Save_Daybook_App failed', error: err.message || err });
 				} else {
 					console.log(rows);
 					return res.json(rows);
@@ -868,9 +863,8 @@ router.get('/Get_Petty_Cash_details/:Petty_Cash_Id_?',function(req,res,next)
 			};
 			Payment_Voucher.Save_Daybook(Document_Data, function (err, rows) {
 				if (err) {
-					console.log(err);
-		//    console.log(e);
-					return 1;
+					console.error('Save_Daybook failed:', err);
+					return res.status(500).json({ message: 'Save_Daybook failed', error: err.message || err });
 				} else {
 					console.log(rows);
 					return res.json(rows);

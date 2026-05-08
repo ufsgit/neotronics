@@ -1682,33 +1682,32 @@ Search_SalesReturn_Master()
   // else
   //     User_Details_Id_=this.Employee_Search.User_Details_Id;
   
-  this.issLoading=true;    
-  this.QuotNo = this.QuotNo == "" ? undefined : this.QuotNo
-  this.partNo = this.partNo == "" ? undefined : this.partNo
-  debugger
-  this.Sales_Master_Service_.Search_SalesReturn_Master(look_In_Date_Value,moment(this.Search_FromDate).format('YYYY-MM-DD'), moment(this.Search_ToDate).format('YYYY-MM-DD'),CustomerId_,this.QuotNo,this.partNo,Item_Group_Id_,
-                                                          CurrencyDetails_Id_,AccountType_Id_,
-                                                        this.User_Type_Id, this.Login_User_Id).subscribe(Rows => {
-                                                            debugger
-  this.Sales_Return_Master_Data=Rows[0];
-  if(this.Sales_Return_Master_Data.length>0)
-  {
-      for(var i=0;i<this.Sales_Return_Master_Data.length;i++)
-      {
-          this.Sales_Master_Total_Amount=Number(this.Sales_Master_Total_Amount)+Number(this.Sales_Return_Master_Data[i].NetTotal);
-          this.Sales_Master_Total_Amount= Number(this.Sales_Master_Total_Amount.toFixed(3));
+  this.issLoading = true;
+  this.QuotNo = this.QuotNo == "" ? undefined : this.QuotNo;
+  this.partNo = this.partNo == "" ? undefined : this.partNo;
+
+  this.Sales_Master_Service_.Search_SalesReturn_Master(look_In_Date_Value, moment(this.Search_FromDate).format('YYYY-MM-DD'), moment(this.Search_ToDate).format('YYYY-MM-DD'), CustomerId_, this.QuotNo, this.partNo, Item_Group_Id_,
+      CurrencyDetails_Id_, AccountType_Id_,
+      this.User_Type_Id, this.Login_User_Id)
+  .pipe(finalize(() => this.issLoading = false))
+  .subscribe({
+      next: (response: any) => {
+          if (response.success) {
+              this.Sales_Return_Master_Data = response.data;
+              if (this.Sales_Return_Master_Data.length > 0) {
+                  for (var i = 0; i < this.Sales_Return_Master_Data.length; i++) {
+                      this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Sales_Return_Master_Data[i].NetTotal);
+                      this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount.toFixed(3));
+                  }
+              }
+              this.Total_Entries = this.Sales_Return_Master_Data.length;
+          } else {
+              const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'No Details Found', Type: "3" } });
+          }
+      },
+      error: (err) => {
+          const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
       }
-  }
-  this.Total_Entries=this.Sales_Return_Master_Data.length;
-  if(this.Sales_Return_Master_Data.length==0)
-  {
-  const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
-  }
-  this.issLoading=false;
-  },
-  Rows => {
-      this.issLoading=false;
-      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
   });
 }
 Add_Sales_Details()
@@ -1878,53 +1877,40 @@ debugger
 
   console.log("Before Sales Return Save API call");
   this.issLoading = true;
-
   this.Sales_Master_Service_.Save_Sales_Returns_Master(this.Sales_Return_Master_)
-    .pipe(
-      finalize(() => {
-        console.log("Sales Return Save Finalize executed");
-        this.issLoading = false;
-        const saveButton = document.getElementById("Save_Button");
-        if (saveButton) saveButton.hidden = false;
-      })
-    )
+    .pipe(finalize(() => this.issLoading = false))
     .subscribe({
-      next: (Save_status) => {
-        console.log("Sales Return Save API Response:", Save_status);
+      next: (response: any) => {
+        if (response.success && response.data) {
+          const saveResult = response.data;
+          if (Number(saveResult.Sales_Return_Master_Id_) > 0) {
+            this.Sales_Return_Master_.Sales_Return_Master_Id = saveResult.Sales_Return_Master_Id_;
+            this.Sales_Print = false;
+            this.Sales_Return_Master_.Invoice_No = saveResult.Voucher_No_;
+            this.Sales_Return_Master_Id_Edit = this.Sales_Return_Master_.Sales_Return_Master_Id;
+            this.Edit_Sales = 1;
 
-        if (!Save_status || !Save_status[0]) {
-          this.dialogBox.open(DialogBox_Component, {
-            panelClass: 'Dialogbox-Class',
-            data: { Message: 'Invalid server response', Type: "2" }
-          });
-          return;
-        }
-
-        if (Number(Save_status[0].Sales_Return_Master_Id_) > 0) {
-          this.Sales_Return_Master_.Sales_Return_Master_Id = Save_status[0].Sales_Return_Master_Id_;
-          this.Sales_Print = false;
-          this.Sales_Return_Master_.Invoice_No = Save_status[0].Voucher_No_;
-          this.Sales_Return_Master_Id_Edit = this.Sales_Return_Master_.Sales_Return_Master_Id;
-          this.Edit_Sales = 1;
-
-          this.dialogBox.open(DialogBox_Component, {
-            panelClass: 'Dialogbox-Class',
-            data: { Message: 'Saved Successfully', Type: "false" }
-          });
+            this.dialogBox.open(DialogBox_Component, {
+              panelClass: 'Dialogbox-Class',
+              data: { Message: 'Saved Successfully', Type: "false" }
+            });
+          } else {
+            this.dialogBox.open(DialogBox_Component, {
+              panelClass: 'Dialogbox-Class',
+              data: { Message: response.message || 'Error Occured', Type: "2" }
+            });
+            document.getElementById("Save_Button").hidden = false;
+          }
         } else {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',
-            data: { Message: 'Error Occured', Type: "2" }
+            data: { Message: response.message || 'Error Occured', Type: "2" }
           });
-          setTimeout(() => {
-            if (this.topDiv) {
-              this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-          });
+          document.getElementById("Save_Button").hidden = false;
         }
       },
       error: (error) => {
-        console.error("Sales Return Save API ERROR:", error);
+        document.getElementById("Save_Button").hidden = false;
         this.dialogBox.open(DialogBox_Component, {
           panelClass: 'Dialogbox-Class',
           data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" }
@@ -1936,7 +1922,6 @@ debugger
         });
       }
     });
-
 }
 Edit_Button_Click()
 {
@@ -2433,22 +2418,22 @@ for(let i=0;i<this.currencyData.length;i++){
     }
 }
 this.issLoading = true;
-debugger
-this.Sales_Master_Service_.Get_SalesReturn_Details(Sales_Master_e.Sales_Return_Master_Id).subscribe(Rows => { 
-  debugger
-  if (Rows != null) {
-      this.Sales_Return_Details_Data = Rows[0];
-
-      this.addBlankRows();
-      this.Final_Amounts();
-      
-      }
-         this.issLoading = false;
-     },
-   Rows => {
-          this.issLoading = false;
-     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-  });
+this.Sales_Master_Service_.Get_SalesReturn_Details(Sales_Master_e.Sales_Return_Master_Id)
+.pipe(finalize(() => this.issLoading = false))
+.subscribe({
+    next: (response) => {
+        if (response.success && response.data) {
+            this.Sales_Return_Details_Data = response.data[0];
+            this.addBlankRows();
+            this.Final_Amounts();
+        } else {
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error Occured', Type: "2" } });
+        }
+    },
+    error: (err) => {
+        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured while fetching details', Type: "2" } });
+    }
+});
 }
 
 
@@ -2459,29 +2444,28 @@ Delete_SalesReturn_Master(Sales_Return_Master_Id,index)
   ( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Do you want to delete ?',Type:"true",Heading:'Confirm'}});
   dialogRef.afterClosed().subscribe(result =>        
   {    
-  if(result=='Yes')
-  {
-  this.issLoading=true;
-  debugger
-  this.Sales_Master_Service_.Delete_SalesReturn_Master(Sales_Return_Master_Id).subscribe(Delete_status => {    
-      debugger   
-  if(Delete_status[0][0].Sales_Return_Master_Id_>0){
-  // this.Sales_Master_Data.splice(index, 1);
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
-    
-    this.Search_SalesReturn_Master();
-  }
-  else
-  {
-  //this.Sales_Master_Data.splice(index, 1);
-  const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
-  }
-  this.issLoading=false;
-  },
-  Rows => {
-      this.issLoading=false;
-  const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error',Type:"2"}});
-  });
+  if (result == 'Yes') {
+      this.issLoading = true;
+      this.Sales_Master_Service_.Delete_SalesReturn_Master(Sales_Return_Master_Id)
+      .pipe(finalize(() => this.issLoading = false))
+      .subscribe({
+          next: (response: any) => {
+              if (response.success && response.data) {
+                  const deleteStatus = response.data;
+                  if (deleteStatus.Sales_Return_Master_Id_ > 0) {
+                      const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted Successfully', Type: "false" } });
+                      this.Search_SalesReturn_Master();
+                  } else {
+                      this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error occurred', Type: "2" } });
+                  }
+              } else {
+                  this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error occurred', Type: "2" } });
+              }
+          },
+          error: (err) => {
+              this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error occurred while deleting', Type: "2" } });
+          }
+      });
   }
   });
 }
@@ -2663,7 +2647,7 @@ else{
 
 
 
-this.Sales_Master_Service_.Get_Sales_Details(Sales_Master_Id_new).subscribe(Rows => { 
+this.Sales_Master_Service_.Get_Sales_Details(Sales_Master_Id_new).subscribe((Rows: any) => { 
   debugger
   if (Rows != null) {
       this.Sales_Return_Details_Data = Rows[0];
