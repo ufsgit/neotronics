@@ -16,7 +16,7 @@ templateUrl: './Brand.component.html',
 styleUrls: ['./Brand.component.css']
 })
 export class BrandComponent implements OnInit {
-Brand_Data:Brand[]
+Brand_Data:Brand[] = []; // Initialize as empty array
 HSN_Data:HSN[]
 Brand_:Brand= new Brand();
 Brand_Name_Search:string;
@@ -95,6 +95,8 @@ Clr_Brand()
    this.Brand_.Saleunit_Name="";
    this.Brand_.Brand_Code="";
    this.Brand_.Brand_Name="";
+   this.Brand_.Item_Id=0;
+   this.Brand_.Item_Name="";
    this.Brand_.Sales_Tax=0;
    this.Brand_.HSNMasterId=0;
    this.Brand_.CGST=0;
@@ -157,7 +159,16 @@ Search_Brand()
     debugger
     this.Brand_Service_.Search_Brand(this.Search_Brand_).subscribe(Rows => {
      debugger
-    this.Brand_Data=Rows[0];
+    // Ensure Rows is in the expected format
+    if (Rows && Array.isArray(Rows) && Rows.length > 0 && Array.isArray(Rows[0])) {
+        this.Brand_Data = Rows[0];
+    } else if (Rows && Array.isArray(Rows)) {
+        this.Brand_Data = Rows;
+    } else {
+        this.Brand_Data = [];
+        console.log('Unexpected response format:', Rows);
+    }
+    
     this.Total_Entries=this.Brand_Data.length;
     if(this.Brand_Data.length==0)
     {
@@ -167,6 +178,7 @@ Search_Brand()
     },
     Rows => { 
         this.issLoading=false;
+        this.Brand_Data = []; // Ensure it's always an array
    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}}); });
   
 }
@@ -202,7 +214,10 @@ Delete_Brand(Brand_Id,index)
 Save_Brand()
 {debugger
         if (this.Brand_.Brand_Name == undefined || this.Brand_.Brand_Name == null || this.Brand_.Brand_Name == "") {
-        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Name', Type: "3" } });
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Brand Name', Type: "3" } });
+        }
+        else if (this.Brand_.Item_Name == undefined || this.Brand_.Item_Name == null || this.Brand_.Item_Name == "") {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Item Name', Type: "3" } });
         }
         // else  if (this.Brand_.Brand_Code == undefined || this.Brand_.Brand_Code == null || this.Brand_.Brand_Code == "") {
         // const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Brand Code', Type: "3" } });
@@ -236,10 +251,28 @@ else
       })
     )
     .subscribe({
-      next: (Save_status) => {
+      next: (Save_status: any) => {
         console.log("Brand Save API Response:", Save_status);
-        
-        if (!Save_status || !Save_status[0]) {
+
+        let resultId: number = NaN;
+        try {
+          if (Save_status && Save_status.data && Save_status.data[0]) {
+            const raw = Save_status.data[0];
+            if (raw[0] && raw[0][0] && raw[0][0].Brand_Id_ !== undefined) {
+              resultId = Number(raw[0][0].Brand_Id_);
+            } else if (raw[0] && raw[0].Brand_Id_ !== undefined) {
+              resultId = Number(raw[0].Brand_Id_);
+            } else if (raw.Brand_Id_ !== undefined) {
+              resultId = Number(raw.Brand_Id_);
+            }
+          } else if (Save_status && Save_status[0] && Save_status[0][0]) {
+            resultId = Number(Save_status[0][0].Brand_Id_);
+          }
+        } catch (e) {
+          resultId = NaN;
+        }
+
+        if (isNaN(resultId)) {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',
             data: { Message: 'Invalid server response', Type: "2" }
@@ -247,13 +280,13 @@ else
           return;
         }
 
-        const resultId = Number(Save_status[0][0].Brand_Id_);
         if (resultId > 0) {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',
             data: { Message: 'Saved Successfully', Type: "false" }
           });
           this.Clr_Brand();
+          this.Search_Brand(); // Refresh the list
         } else if (resultId == -1) {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',

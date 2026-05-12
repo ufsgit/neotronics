@@ -1,0 +1,100 @@
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value"></mat-progress-spinner>
+</div>
+<div class="main-content mt-0" style="padding: 0px 0px !important; background-color: #f1f1f1;">
+    <div class="container-fluid">
+        <div class="row mt-2" *ngIf="Entry_View" style="background-color: #f1f1f1 !important;">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body" style="background-color: #f1f1f1 !important;">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="col-md-12">
+                                        <label class="label-field">Caption <span class="required-star">*</span></label>
+                                        <mat-form-field class="col-md-10 margin-textbox" style="width:100%; border: 1px solid lightgrey; background-color: #fff; padding: 10px;">
+                                            <input matInput type="text" [(ngModel)]="Term_.Caption" name="Term_.Caption" class="input-text-field">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-12 mt-2">
+                                        <label class="label-field">Terms & Condition <span class="required-star">*</span></label>
+                                        <mat-form-field class="col-md-10 margin-textbox" style="width:100%; border: 1px solid lightgrey; background-color: #fff; padding: 10px;">
+                                            <textarea matInput rows="6" [(ngModel)]="Term_.Terms_Text" name="Term_.Terms_Text" class="input-text-field"></textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-12">
+                                        <label class="label-field">Description</label>
+                                        <mat-form-field class="col-md-10 margin-textbox" style="width:100%; border: 1px solid lightgrey; background-color: #fff; padding: 10px;">
+                                            <textarea matInput rows="10" [(ngModel)]="Term_.Description" name="Term_.Description" class="input-text-field"></textarea>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-12 buttons-wrapper" style="margin-top: 20px;">
+                                        <button mat-raised-button type="button" [hidden]="Term_Save==false" id="Save_Button" class="btn btn-danger pull-right save-close-new-buttons" (click)="Save_Term()">Save</button>
+                                        <button mat-raised-button type="button" class="btn btn-danger pull-right save-close-new-buttons" (click)="Close_Click()">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="!Entry_View">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body" style="align-items: center; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%; padding: 3px; background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="col-md-12 search-row" style="display: flex; align-items: center;">
+                                        <label class="search-label">Caption</label>
+                                        <mat-form-field class="col-md-10 margin-textbox" style="border: 1px solid lightgrey; height: 40px; background-color: #fff; width:100%;">
+                                            <input matInput type="text" [(ngModel)]="Search_Caption" name="Search_Caption" class="col-md-8 input-text-field">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" style="display:flex; align-items:center; justify-content:flex-end; gap: 10px;">
+                                    <button mat-raised-button type="button" (click)="Search_Term()" class="btn btn-danger button-to-crect-margin mt-0">Search</button>
+                                    <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin mt-0">Create New</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="table-responsive card">
+                    <div class="table-responsive" [style.height.px]="myInnerHeight" style="overflow-y: scroll; background-color: #f1f1f1;">
+                        <table class="table table-hover">
+                            <thead class="thead">
+                                <th class="table-header">Sl No</th>
+                                <th class="table-header">Caption</th>
+                                <th class="table-header">Terms & Condition</th>
+                                <th class="table-header">Description</th>
+                                <th class="table-header" [hidden]="Term_Edit==false">Edit</th>
+                            </thead>
+                            <ng-container *ngFor="let term of Terms_Data; let i = index">
+                                <tr>
+                                    <td style="padding-left:5px;">{{ i + 1 }}</td>
+                                    <td>{{ term.Caption }}</td>
+                                    <td>{{ term.Terms_Text }}</td>
+                                    <td>{{ term.Description }}</td>
+                                    <td>
+                                        <button [hidden]="Term_Edit==false" class="btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" type="button" (click)="Edit_Term(term, i)">
+                                            <span class="mat-button-wrapper"><i class="material-icons">edit</i></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </table>
+                    </div>
+                </div>
+                <label class="entry-num">Entries : {{ Total_Entries }}</label>
+            </div>
+        </div>
+    </div>
+</div>

@@ -76,7 +76,8 @@ return index;
  {
 this.payment_term_.payment_Term_ID=0;
 this.payment_term_.Payment_Term_Description="";
-
+this.payment_term_.Description="";
+this.payment_term_.Caption="";
 }
 
 

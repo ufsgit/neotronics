@@ -2,7 +2,7 @@
 	<div class="container-fluid d-flex align-items-center justify-content-between" style="height: 100%;">
 		<div class="d-flex align-items-center">
 			<img
-				src="/assets/img/ADAT-2.png"
+				src="/assets/img/ADAT.png"
 				width="150px"
 				height="40px"
 				*ngIf="isDesktopMenu()"
@@ -202,6 +202,7 @@
 						[routerLink]="[menuItems[menuArray[91]].path]"
 						>{{ [menuItems[menuArray[91]].title] }}</a
 					>
+					<!--
 					<a
 						class="dropdown-item"
 						href="javascript:void(0)"
@@ -216,6 +217,9 @@
 						[routerLink]="[menuItems[menuArray[93]].path]"
 						>{{ [menuItems[menuArray[93]].title] }}</a
 					>
+					-->
+					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Model']">Model</a>
+					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Terms_And_Condition']">Terms & Condition</a>
 					<a
 					class="dropdown-item"
 					href="javascript:void(0)"

@@ -43,6 +43,17 @@ Search_Item(Item_Name,Group_Id_,Item_Code_):Observable<any>
     return this.http.get(environment.BasePath + 'Item/Search_Item/',  { params: Search_Data });
 }
 
+Item_Typeahead(Item_Name):Observable<any>
+{
+    if(Item_Name==undefined)
+        Item_Name="";
+
+    var Search_Data = {
+        'Item_Name': Item_Name
+    }
+    return this.http.get(environment.BasePath + 'Item/Item_Typeahead/',  { params: Search_Data });
+}
+
 Delete_Item(Item_Id)
 {
  return this.http.get(environment.BasePath +'Item/Delete_Item/'+Item_Id);}

@@ -19,6 +19,14 @@
   height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
     <input matInput type="text" [(ngModel)]="Brand_.Brand_Name" name="Brand_.Brand_Name" class="input-text-Brand-group-diary">
   </mat-form-field>
+  </div>
+
+  <div class="col-md-12">
+    <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Item Name <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>   
+  <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
+  height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
+    <input matInput type="text" [(ngModel)]="Brand_.Item_Name" name="Brand_.Item_Name" class="input-text-Brand-group-diary">
+  </mat-form-field>
   </div>     
    
   <!-- <div class="col-md-12 crect-mrgn-dte-wole-prtin-stock-add">
@@ -106,6 +114,10 @@
         <th>
         Brand 
         </th>
+
+        <th>
+        Item Name 
+        </th>
        
         <!-- <th>
           Under Brand
@@ -123,6 +135,7 @@
         <tr>  
           <td style="padding-left:5px;">{{ i+1 }}</td>
           <td>{{Brand_1["Brand_Name"]}}</td>
+          <td>{{Brand_1["Item_Name"] || '-'}}</td>
           
           <!-- <td>{{Brand_1["under_brand_Name"]}}</td> -->
            

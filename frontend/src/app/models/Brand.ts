@@ -9,6 +9,8 @@ Saleunit_Id:number;
 Saleunit_Name:string;
 Brand_Code:string;
 Brand_Name:string;
+Item_Id:number;
+Item_Name:string;
 Sales_Tax:number;
 HSNMasterId:number;
 CGST:number;

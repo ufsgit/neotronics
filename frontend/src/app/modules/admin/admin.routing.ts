@@ -38,6 +38,8 @@ import { QuotationComponent } from "./Quotation/Quotation.component";
 import { RequirementComponent } from "./Requirement/Requirement.component";
 import { BrandComponent } from "./Brand/Brand.component";
 import { Payment_TermComponent } from "./Payment_Term/Payment_Term.component";
+import { ModelComponent } from "./Model/Model.component";
+import { TermsAndConditionComponent } from "./TermsAndCondition/TermsAndCondition.component";
 import { CurrencyComponent } from "./Currency/Currency.component";
 import { Country_Of_OrginComponent } from "./Country_Of_Orgin/Country_Of_Orgin.component";
 import { Delivery_OrderComponent } from "./Delivery_Order/Delivery_Order.component";
@@ -116,6 +118,8 @@ export const AdminRoutes: Routes = [
 			{ path: "Brand", component: BrandComponent },
 			{ path: "AddStock", component: AddStockComponent },
 			{ path: "Payment_Term", component: Payment_TermComponent },
+			{ path: "Model", component: ModelComponent },
+			{ path: "Terms_And_Condition", component: TermsAndConditionComponent },
 			{ path: "Currency", component: CurrencyComponent },
 			{ path: "Country_Of_Orgin", component: Country_Of_OrginComponent },
 			{ path: "Delivery_Order", component: Delivery_OrderComponent },

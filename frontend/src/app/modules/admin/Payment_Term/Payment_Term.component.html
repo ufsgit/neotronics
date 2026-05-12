@@ -21,7 +21,20 @@
     <input matInput type="text" [(ngModel)]="payment_term_.Payment_Term_Description" name="payment_term_.Payment_Term_Description">
     </mat-form-field>
     </div>
- 
+    <div class="col-md-12" style="display: flex;" >
+    <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Description </label>
+    <mat-form-field class="col-md-8" style="border: 1px solid lightgrey;background-color: #fff;
+    height: 40px;">
+    <input matInput type="text" [(ngModel)]="payment_term_.Description" name="payment_term_.Description">
+    </mat-form-field>
+    </div>
+    <div class="col-md-12" style="display: flex;" >
+    <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Caption </label>
+    <mat-form-field class="col-md-8" style="border: 1px solid lightgrey;background-color: #fff;
+    height: 40px;">
+    <input matInput type="text" [(ngModel)]="payment_term_.Caption" name="payment_term_.Caption">
+    </mat-form-field>
+    </div>
 
     </div>
     <div class="col-md-6">
@@ -81,6 +94,8 @@
     <th>
         Payment Term
     </th>
+    <th>Description</th>
+    <th>Caption</th>
    <th [hidden]="payment_term_Edit==false">
     Edit
     </th>
@@ -92,6 +107,8 @@
     <tr *ngFor="let payment_term_1 of payment_term_Data; let i =index">
     <td style="padding-left:5px;">{{ i+1 }}</td>
     <td>{{payment_term_1["Payment_Term_Description"]}}</td>
+    <td>{{payment_term_1["Description"]}}</td>
+    <td>{{payment_term_1["Caption"]}}</td>
     <td>
     <button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="payment_term_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_payment_term(payment_term_1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
     </td>
