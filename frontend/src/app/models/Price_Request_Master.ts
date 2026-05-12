@@ -48,6 +48,7 @@ Handling_Total :number;
 Vehicle_No: string;
 Driver_Name :string;
 Mobile_No: string;
+Email: string;
 
 Delivery_Address1 : string; 
 Delivery_Address2 : string;

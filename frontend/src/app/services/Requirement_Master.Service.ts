@@ -30,12 +30,14 @@ export class Requirement_Master_Service {
         return this.http.post(environment.BasePath + 'requirementmaster/Save_Requirement/', Requirement_Master_).pipe(timeout(60000));
     }
 
+    Get_Next_Requirement_No(): Observable<any> {
+        return this.http.get(environment.BasePath + 'requirementmaster/Get_Next_Requirement_No').pipe(timeout(60000));
+    }
+
 
 Search_Requirement(look_In_Date_Value,From_Date,To_Date,Customer,RequirementNo,partNo,Item_Group_Id_,CurrencyDetails_Id_,User_Details_Id_,
     User_Type_,Login_User_Id_ ):Observable<any>
 {
-    // if(Item_Name==undefined)
-    //     Item_Name="";  
     var Search_Data = { 
         'Is_Date_Check_': look_In_Date_Value,
         'From_Date_': From_Date,
@@ -180,5 +182,11 @@ Search_Requirement(look_In_Date_Value,From_Date,To_Date,Customer,RequirementNo,p
 
     Get_PriceRequest_Pending_Items(Requirement_Master_Id): Observable<any> {
         return this.http.get(environment.BasePath + 'requirementmaster/Get_PriceRequest_Pending_Items/' + Requirement_Master_Id);
+    }
+
+    Print_Requirement(Requirement_Master_Id): Observable<Blob> {
+        return this.http.get(environment.BasePath + 'requirementmaster/Print_Requirement/' + Requirement_Master_Id, {
+            responseType: 'blob'
+        });
     }
 }

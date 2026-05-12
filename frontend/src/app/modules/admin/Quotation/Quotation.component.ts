@@ -206,6 +206,7 @@ deliveryPendingData=[];purchasePendingView=false;purchasePendingData=[];printLet
 SalesQuotationMaster_Id: number = 0;
 /** Reference flow (RequirementMaster_Id) */
 RequirementMaster_Id: number = 0;
+cameFromRequirement: boolean = false;
 /** Sequential flow helpers */
 HasPurchaseOrder: boolean = false;
 itemGroupData: Item_Group[];
@@ -263,7 +264,13 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
         this.Load_Vat_Percentage();        
     }
 
-ngOnInit() 
+    compareCurrency(c1: any, c2: any): boolean {
+        return c1 && c2 ? c1.CurrencyDetails_Id === c2.CurrencyDetails_Id : c1 === c2;
+    }
+    comparePaymentTerm(p1: any, p2: any): boolean {
+        return p1 && p2 ? p1.payment_Term_ID === p2.payment_Term_ID : p1 === p2;
+    }
+    ngOnInit() 
 {
     debugger;
     this.User_Type=(localStorage.getItem('User_Type'));
@@ -317,9 +324,11 @@ Page_Load()
             const pendingItem = parsed.PendingItem;
 
             if (this.RequirementMaster_Id > 0) {
+                this.cameFromRequirement = true;
                 this.Entry_View = true;
                 this.Edit_Sales = 0;
                 this.Sales_Print = true;
+                this.issLoading = true;
                 
                 // Load Requirement Master to autofill Customer, Currency, etc.
                 this.Requirement_Master_Service_.Load_RequirementMaster(this.RequirementMaster_Id).subscribe(result => {
@@ -327,20 +336,92 @@ Page_Load()
                     if (master) {
                         this.Customer_ = { 
                             Client_Accounts_Id: master.Account_Party_Id, 
-                            Client_Accounts_Name: master.Client_Accounts_Name 
+                            Client_Accounts_Name: master.Client_Accounts_Name || master.Customer
                         } as any;
                         this.currency = { 
                             CurrencyDetails_Id: master.CurrencyDetails_Id, 
                             CurrecnyName: master.CurrecnyName 
                         } as any;
-                        // Add other header fields as needed
+                        
+                        // Map master fields
+                        this.Quotation_Master_.Address1 = master.Address1;
+                        this.Quotation_Master_.Address2 = master.Address2;
+                        this.Quotation_Master_.Address3 = master.Address3;
+                        this.Quotation_Master_.Address4 = master.Address4;
+                        
+                        this.Address1 = master.Address1;
+                        this.Address2 = master.Address2;
+                        this.Address3 = master.Address3;
+                        this.Address4 = master.Address4;
+                        this.Attention = { User_Details_Name: master.KindAttend } as any;
+                        this.Employee = { User_Details_Name: master.AttendEmployee } as any;
+
+
+                        this.Quotation_Master_.Vatin = master.GSTNo || master.Vatin;
+                        this.Quotation_Master_.AttendEmployee = master.AttendEmployee;
+                        this.Quotation_Master_.Reference = master.RequirementNo;
+                        this.Quotation_Master_.Description1 = master.Description1;
+                        this.Quotation_Master_.Description2 = master.RequirementNo; // Showing Req No in Reference field
+                        this.Quotation_Master_.KindAttend = master.KindAttend;
+                        this.Quotation_Master_.POnumber = master.POnumber;
+                        this.Quotation_Master_.Supplier_Ref_No = master.Supplier_Ref_No;
+
+                        if (master.CurrencyDetails_Id > 0 && this.currencyData) {
+                            this.currency = this.currencyData.find(c => c.CurrencyDetails_Id == master.CurrencyDetails_Id);
+                        }
+                        this.Quotation_Master_.PriceBasis = master.PriceBasis;
+                        if (master.Payment_Term_Description > 0 || master.PaymentTerms) {
+                            this.Payment_Term = {
+                                payment_Term_ID: master.Payment_Term_Description,
+                                Payment_Term_Description: master.PaymentTerms
+                            } as any;
+                            if (this.PaymentTermData && master.Payment_Term_Description > 0) {
+                                const found = this.PaymentTermData.find(p => p.payment_Term_ID == master.Payment_Term_Description);
+                                if (found) this.Payment_Term = found;
+                            }
+                        }
+                        this.Quotation_Master_.Delivery = master.Delivery;
+                        this.Quotation_Master_.Validity = master.Validity;
+                        this.Quotation_Master_.PreparedBy = master.PreparedBy;
+                        this.Quotation_Master_.Charge1 = master.Charge1;
+                        this.Quotation_Master_.charge1_Amount = master.charge1_Amount;
+                        this.Quotation_Master_.Charge2 = master.Charge2;
+                        this.Quotation_Master_.charge2_Amount = master.charge2_Amount;
+                        this.Quotation_Master_.Additional_Discount = master.Additional_Discount;
+                        this.Quotation_Master_.Discount_Description = master.Discount_Description;
+                        this.Quotation_Master_.Amount_In_Words = master.Amount_In_Words;
                     }
                     
                     if (pendingItem) {
                         this.Quotation_Details_Data = [Object.assign({}, pendingItem)];
+                        this.addBlankRows();
                         this.Final_Amounts();
+                        this.issLoading = false;
+                    } else {
+                        // Load all details if no specific pending item
+                        this.Requirement_Master_Service_.Get_Requirement_Details(this.RequirementMaster_Id).subscribe(detailsResult => {
+                            const details = (detailsResult && detailsResult[0]) ? detailsResult[0] : [];
+                            this.Quotation_Details_Data = details.map(item => ({
+                                ItemId: item.ItemId,
+                                ItemName: item.ItemName,
+                                Item_Code: item.Part_No || item.Item_Code,
+                                Quantity: item.Quantity,
+                                UnitPrice: item.UnitPrice,
+                                UnitId: item.UnitId,
+                                UnitName: item.UnitName,
+                                Description: item.Description,
+                                Discount: item.Discount || 0,
+                                NetValue: item.NetValue,
+                                Amount: item.Amount,
+                                TaxAmount: item.TaxAmount || 0,
+                                HSNCODE: item.HSNCODE
+                            }));
+                            this.addBlankRows();
+                            this.Final_Amounts();
+                            this.issLoading = false;
+                        }, _err => { this.issLoading = false; });
                     }
-                });
+                }, _err => { this.issLoading = false; });
                 
                 localStorage.removeItem('Requirement_For_Quotation');
                 return;
@@ -348,6 +429,7 @@ Page_Load()
         } catch(e) { 
             console.error('Error parsing Requirement_For_Quotation', e);
             this.RequirementMaster_Id = 0; 
+            this.issLoading = false;
         }
         localStorage.removeItem('Requirement_For_Quotation');
     }
@@ -488,6 +570,11 @@ Create_New()
 
 Close_Click()
 {
+    if (this.cameFromRequirement) {
+        this.cameFromRequirement = false;
+        this.router.navigateByUrl('/Requirement');
+        return;
+    }
     this.Entry_View = false;
     this.Edit_Sales=0;
     this.CGST_SUM=0;
@@ -2059,6 +2146,11 @@ Save_Quotation(Printstatus:number)
     this.Quotation_Master_.PaymentTerms = this.Payment_Term.Payment_Term_Description;
     //this.Quotation_Master_.EntryDate = this.formatDate(this.Quotation_Master_.EntryDate);
     this.Quotation_Master_.CurrencyId = this.currency.CurrencyDetails_Id;
+    this.Quotation_Master_.AttendEmployee = this.Employee && typeof this.Employee === 'object' ? this.Employee.User_Details_Name : (typeof this.Employee === 'string' ? this.Employee : '');
+    this.Quotation_Master_.AttendEmployeeId = this.Employee && typeof this.Employee === 'object' ? this.Employee.User_Details_Id : 0;
+    this.Quotation_Master_.KindAttend = this.Attention && typeof this.Attention === 'object' ? this.Attention.User_Details_Name : (typeof this.Attention === 'string' ? this.Attention : '');
+    this.Quotation_Master_.KindAttendId = this.Attention && typeof this.Attention === 'object' ? this.Attention.User_Details_Id : 0;
+
     console.log("Before API call");
     this.issLoading = true;
 
@@ -2096,9 +2188,15 @@ Save_Quotation(Printstatus:number)
                     if (Printstatus == 1) {
                         this.Print_Click();
                     } else {
-                        this.dialogBox.open(DialogBox_Component, {
+                        const dialogRef = this.dialogBox.open(DialogBox_Component, {
                             panelClass: 'Dialogbox-Class',
                             data: { Message: 'Saved Successfully', Type: "false" }
+                        });
+                        dialogRef.afterClosed().subscribe(() => {
+                            if (this.cameFromRequirement) {
+                                this.cameFromRequirement = false;
+                                this.router.navigateByUrl('/Requirement');
+                            }
                         });
                         this.Edit_Sales = 1;
                     }

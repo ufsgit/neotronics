@@ -1,4 +1,4 @@
-<div *ngIf="issLoading" class="overlay">
+﻿<div *ngIf="issLoading" class="overlay">
     <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
     </mat-progress-spinner>
 </div>
@@ -91,15 +91,15 @@
                     </select>
                 </div>
 
-                <div class="col-md-2 row  mb-1" style="align-items: center;">
+                <!-- <div class="col-md-2 row  mb-1" style="align-items: center;">
                     <label class="col-md-5 mb-0 " style="text-align: end;">Currency</label>
                     <select [(ngModel)]="Currency_Search" id="Currency_Search" name="Currency_Search" required
                         class="col-md-7 " style="height: 40px;border: 1px solid #b1b1b1;">
                         <option *ngFor="let curr of currencyData" [ngValue]="curr">
                             {{curr?.CurrecnyName}}
                         </option>
-                    </select>
-                </div>
+                    </select> -->
+                <!-- </div> -->
 
                 <div class="col-md-3 row mb-1" style="align-items: center; justify-content: center;">
                     <!-- <button mat-raised-button type="button" class="btn btn-danger pull-right mt-0 mb-0"  (click)="Print_Search_Click()">
@@ -276,9 +276,7 @@
             <div class="container-fluid" #topDiv>
                 <div class="col-md-6 croct-float-purchase-master-section ">
                     <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
-                            <span style="color:#ef071e; ">*</span></label>
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer</label>
                         <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer"
                             (ngModelChange)="selectCustomer()" (click)="Search_Customer_Typeahead($event)"
                             (input)="Search_Customer_Typeahead($event)"
@@ -287,288 +285,180 @@
                             <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
                             <ng-container *ngIf="!isLoading">
                                 <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
-                                    <span
-                                        (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
+                                    <span (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
                                 </mat-option>
                             </ng-container>
                         </mat-autocomplete>
                     </div>
-                    <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                    <div class="col-md-12 mb-1" *ngIf="showCustomerName">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer Name <span style="color:#ef071e; ">*</span></label>
+                        <input type="text" [(ngModel)]="Requirement_Master_.Customer_Name" readonly name="Customer_Name_Display"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 mb-1" *ngIf="showAddress">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address</label>
                         <input type="text" [(ngModel)]="Address1" readonly
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                    <div class="col-md-12 mb-1" *ngIf="showAddress">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
                         <input type="text" [(ngModel)]="Address2" readonly
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                    <div class="col-md-12 mb-1" *ngIf="showAddress">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
                         <input type="text" [(ngModel)]="Address3" readonly
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                    <div class="col-md-12 mb-1" *ngIf="showAddress">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
                         <input type="text" [(ngModel)]="Address4" readonly
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Delivery
-                            Address</label>
-                        <input type="text" name="Delivery_Address1" [(ngModel)]="Requirement_Master_.Delivery_Address1"
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1" *ngIf="showWhatsAppNumber">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">WhatsApp Number</label>
+                        <input type="text" name="Mobile_No_WA" [(ngModel)]="Requirement_Master_.Mobile_No"
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" name="Delivery_Address1" [(ngModel)]="Requirement_Master_.Delivery_Address2"
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1" *ngIf="showMail">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Mail</label>
+                        <input type="text" name="Email_Field" [(ngModel)]="Requirement_Master_.Email"
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" name="Delivery_Address3" [(ngModel)]="Requirement_Master_.Delivery_Address3"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" name="Delivery_Address4" [(ngModel)]="Requirement_Master_.Delivery_Address4"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    <div style="display:none">
+                        <input type="text" name="Delivery_Address1" [(ngModel)]="Requirement_Master_.Delivery_Address1">
+                        <input type="text" name="Delivery_Address2" [(ngModel)]="Requirement_Master_.Delivery_Address2">
+                        <input type="text" name="Delivery_Address3" [(ngModel)]="Requirement_Master_.Delivery_Address3">
+                        <input type="text" name="Delivery_Address4" [(ngModel)]="Requirement_Master_.Delivery_Address4">
                     </div>
                 </div>
                 <div class="col-md-6 croct-float-purchase-master-section">
-                    <div class="col-md-12 mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date
-                            <span style="color:#ef071e; ">*</span></label>
-                        <mat-form-field
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            style="height: 47px !important">
-                            <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate"
-                                [(ngModel)]="Requirement_Master_.EntryDate">
+                    <div class="col-md-12 mb-1" *ngIf="showDate">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date <span style="color:#ef071e; ">*</span></label>
+                        <mat-form-field class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 47px !important">
+                            <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate" [(ngModel)]="Requirement_Master_.EntryDate">
                             <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
                             <mat-datepicker #dpdate></mat-datepicker>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Requirement
-                            No</label>
-                        <input type="text" name="RequirementNo" [(ngModel)]="Requirement_Master_.RequirementNo" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Currency
-                            <span style="color:#ef071e; ">*</span>
-                        </label>
-                        <select *ngIf="currency"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            name="currency" id="currency" [(ngModel)]="currency" (ngModelChange)="Final_Amounts()">
-                            <option *ngFor="let curr of currencyData" [ngValue]="curr">
-                                {{curr?.CurrecnyName}}</option>
-                        </select>
-
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">PO
-                            Number
-                        </label>
-                        <input type="text" name="POnumber" [(ngModel)]="Requirement_Master_.POnumber"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
-                            Ref No
-                        </label>
-                        <input type="text" name="Supplier_Ref_No" [(ngModel)]="Requirement_Master_.Supplier_Ref_No"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Attention
-                        </label>
-
-                        <input type="text" name="KindAttend" [(ngModel)]="Requirement_Master_.KindAttend"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Employee
-                        </label>
-
-                        <input type="text" name="AttendEmployee" [(ngModel)]="Requirement_Master_.AttendEmployee"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Reference</label>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1" *ngIf="showReferenceNo">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Reference No</label>
                         <input type="text" name="Mobile_No" [(ngModel)]="Requirement_Master_.Description2"
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1" *ngIf="showRequirementNo">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Requirement No</label>
+                        <input type="text" name="RequirementNo" [(ngModel)]="Requirement_Master_.RequirementNo"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div style="display:none">
+                        <select *ngIf="currency" name="currency" id="currency" [(ngModel)]="currency" (ngModelChange)="Final_Amounts()">
+                            <option *ngFor="let curr of currencyData" [ngValue]="curr">{{curr?.CurrecnyName}}</option>
+                        </select>
+                        <input type="text" name="POnumber" [(ngModel)]="Requirement_Master_.POnumber">
+                        <input type="text" name="Supplier_Ref_No" [(ngModel)]="Requirement_Master_.Supplier_Ref_No">
+                        <input type="text" name="KindAttend" [(ngModel)]="Requirement_Master_.KindAttend">
+                        <input type="text" name="AttendEmployee" [(ngModel)]="Requirement_Master_.AttendEmployee">
+                    </div>
                 </div>
-            </div>
-            <div class="row" style="background-color: #f1f1f1;">
+            </div>            <div class="row" style="background-color: #f1f1f1;">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body" style="background-color: #f1f1f1;">
 
                             <div class="row">
-                                <div class="col-md-12">
-                                    <div
-                                        class="col-md-4 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Part
-                                            Number
-                                            <span style="color:#ef071e; ">*</span>
-                                        </label>
-                                        <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto42"
-                                            style="padding-left: 5px !important;" [(ngModel)]="Barcode_"
-                                            (click)="Get_Stock_Item_Code_Typeahead($event)"
-                                            (input)="Get_Stock_Item_Code_Typeahead($event)"
-                                            (keyup.enter)="Plus_Requirement_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched" />
-                                        <mat-autocomplete #auto42="matAutocomplete" [displayWith]="display_ItemCode">
-                                            <mat-option *ngIf="isLoading"><mat-spinner
-                                                    diameter="500"></mat-spinner></mat-option>
-                                            <ng-container *ngIf="!isLoading">
-                                                <mat-option *ngFor="let Item of ItemCodeData; let i = index"
-                                                    [value]="Item">
-                                                    <span>
-                                                        <div (click)="Barcode_Change(Item)">{{Item.Item_Code}} -
-                                                            {{Item.Item_Name || Item.ItemName}}</div>
-                                                    </span>
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-autocomplete>
-                                    </div>
-
-
-                                    <div
-                                        class="col-md-5 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item
-                                            & Description
-                                            <span style="color:#ef071e; "></span>
-                                        </label>
-
+                                <div class="col-md-12" style="display: flex; gap: 10px; align-items: flex-end; margin-bottom: 20px;">
+                                    <!-- Item & Description input -->
+                                    <div style="flex: 0 0 calc(25% - 8px);">
+                                        <label class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item <span style="color:#ef071e; "></span></label>
                                         <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_" name="Item"
                                             (input)="Search_Item_Typeahead($event)"
                                             (click)="Search_Item_Typeahead($event)" (ngModelChange)="Get_Stock_Item()"
                                             (keyup.enter)="Plus_Requirement_Details($event)"
-                                            style="padding-left: 5px !important;"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
                                             class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
                                         <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
-                                            <mat-option *ngIf="isLoading"><mat-spinner
-                                                    diameter="500"></mat-spinner></mat-option>
+                                            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
                                             <ng-container *ngIf="!isLoading">
                                                 <mat-option *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
-                                                    <span
-                                                        (click)="Item_Name_Change(Itemstock)">{{Itemstock.ItemName}}-{{Itemstock.Item_Code}}
-                                                        - {{Itemstock.Quantity}}</span>
+                                                    <span (click)="Item_Name_Change(Itemstock)">{{Itemstock.ItemName}}-{{Itemstock.Item_Code}} - {{Itemstock.Quantity}}</span>
                                                 </mat-option>
                                             </ng-container>
                                         </mat-autocomplete>
                                     </div>
-                                    <div
-                                        class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Uom
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="text" [(ngModel)]="Requirement_Details_.UnitName"
-                                            style="padding-left: 5px !important;" id="Requirement_Details_.UnitName"
-                                            name="Requirement_Details_.UnitName"
+                                    <!-- Description -->
+                                    <div style="flex: 0 0 calc(16.66% - 8px);">
+                                        <label class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Description</label>
+                                        <input type="text" [(ngModel)]="Requirement_Details_.Description"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;" id="Requirement_Details_.Description"
+                                            name="Requirement_Details_.Description"
                                             (keyup.enter)="Plus_Requirement_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
                                     </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty
-                                            <span style="color:#ef071e; ">*</span></label>
+                                    <!-- Model -->
+                                    <div style="flex: 0 0 calc(8.33% - 8px);">
+                                        <label class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Model</label>
+                                        <input type="text" [(ngModel)]="Requirement_Details_.Model"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;" id="Requirement_Details_.Model"
+                                            name="Requirement_Details_.Model"
+                                            (keyup.enter)="Plus_Requirement_Details($event)"
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                    </div>
+                                    <!-- Qty -->
+                                    <div style="flex: 0 0 calc(8.33% - 8px);">
+                                        <label class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty</label>
                                         <input type="number" [(ngModel)]="Requirement_Details_.Quantity"
-                                            style="padding-left: 5px !important;" id="Requirement_Details_.Quantity"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;" id="Requirement_Details_.Quantity"
                                             name="Requirement_Details_.Quantity"
                                             (ngModelChange)="Calculate_Requirement_Details_Amount()"
                                             (keyup.enter)="Plus_Requirement_Details($event)"
                                             class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
                                     </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Unit
-                                            Price
-                                            <span style="color:#ef071e; ">*</span></label>
-                                        <input type="number" [(ngModel)]="Requirement_Details_.UnitPrice"
-                                            style="padding-left: 5px !important;" id="Requirement_Details_.UnitPrice"
-                                            name="Requirement_Details_.UnitPrice"
-                                            (ngModelChange)="Calculate_Requirement_Details_Amount()"
+                                    <!-- Unit -->
+                                    <div style="flex: 0 0 calc(8.33% - 8px);">
+                                        <label class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Unit</label>
+                                        <input type="text" [(ngModel)]="Requirement_Details_.UnitName"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;" id="Requirement_Details_.UnitName"
+                                            name="Requirement_Details_.UnitName"
                                             (keyup.enter)="Plus_Requirement_Details($event)"
                                             class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
                                     </div>
-
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Discount
-                                            %
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="number" [(ngModel)]="Requirement_Details_.Discount"
-                                            style="padding-left: 5px !important;" id="Requirement_Details_.Discount"
-                                            name="Requirement_Details_.Discount"
-                                            (ngModelChange)="Calculate_Requirement_Details_Amount()"
+                                    <!-- Brand -->
+                                    <div style="flex: 0 0 calc(16.66% - 8px);">
+                                        <label class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Brand</label>
+                                        <input type="text" [(ngModel)]="Requirement_Details_.Brand"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;" id="Requirement_Details_.Brand"
+                                            name="Requirement_Details_.Brand"
                                             (keyup.enter)="Plus_Requirement_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Unit
-                                            Discount
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="number" [(ngModel)]="Requirement_Details_.Unit_Discount"
-                                            style="padding-left: 5px !important;"
-                                            id="Requirement_Details_.Unit_Discount"
-                                            name="Requirement_Details_.Unit_Discount"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid"
-                                            readonly />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Total
-                                            Price <span style="color:#ef071e; "></span></label>
-                                        <input type="number" [(ngModel)]="Requirement_Details_.NetValue"
-                                            id="Requirement_Details_.NetValue" name="Requirement_Details_.NetValue"
-                                            style="padding-left: 5px !important;"
-                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched"
-                                            readonly />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Availability
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="text" style="padding-left: 5px !important;"
-                                            [(ngModel)]="Requirement_Details_.Availability"
-                                            (keyup.enter)="Plus_Requirement_Details($event)"
-                                            id="Requirement_Details_.Availability"
-                                            name="Requirement_Details_.Availability"
                                             class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
                                     </div>
-                                    <div style="margin-top: 39px !important;"
-                                        class="col-md-1 alighn-right-inputs-sales-grid div-to-down-margin-crect-allighn-wole-scton">
+                                    <!-- HIDDEN: Part Number (barcode) autocomplete preserved -->
+                                    <div style="display:none">
+                                        <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto42"
+                                            [(ngModel)]="Barcode_"
+                                            (click)="Get_Stock_Item_Code_Typeahead($event)"
+                                            (input)="Get_Stock_Item_Code_Typeahead($event)"
+                                            (keyup.enter)="Plus_Requirement_Details($event)" />
+                                        <mat-autocomplete #auto42="matAutocomplete" [displayWith]="display_ItemCode">
+                                            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                                            <ng-container *ngIf="!isLoading">
+                                                <mat-option *ngFor="let Item of ItemCodeData; let i = index" [value]="Item">
+                                                    <span><div (click)="Barcode_Change(Item)">{{Item.Item_Code}} - {{Item.Item_Name || Item.ItemName}}</div></span>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-autocomplete>
+                                        <input type="number" [(ngModel)]="Requirement_Details_.UnitPrice" id="Requirement_Details_.UnitPrice" name="Requirement_Details_.UnitPrice" (ngModelChange)="Calculate_Requirement_Details_Amount()" (keyup.enter)="Plus_Requirement_Details($event)" />
+                                        <input type="number" [(ngModel)]="Requirement_Details_.Discount" id="Requirement_Details_.Discount" name="Requirement_Details_.Discount" (ngModelChange)="Calculate_Requirement_Details_Amount()" (keyup.enter)="Plus_Requirement_Details($event)" />
+                                        <input type="number" [(ngModel)]="Requirement_Details_.Unit_Discount" id="Requirement_Details_.Unit_Discount" name="Requirement_Details_.Unit_Discount" readonly />
+                                        <input type="number" [(ngModel)]="Requirement_Details_.NetValue" id="Requirement_Details_.NetValue" name="Requirement_Details_.NetValue" readonly />
+                                        <input type="text" [(ngModel)]="Requirement_Details_.Availability" id="Requirement_Details_.Availability" name="Requirement_Details_.Availability" (keyup.enter)="Plus_Requirement_Details($event)" />
+                                    </div>
+                                    <!-- Add Button -->
+                                    <div style="flex: 0 0 auto; padding-bottom: 5px;">
                                         <button mat-raised-button type="button"
                                             (click)="Plus_Requirement_Details($event)"
                                             class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes"
-                                            style="border-radius: 5px !important;">
+                                            style="border-radius: 5px !important; padding: 8px 20px; font-size: 14px; min-width: auto;">
                                             Add</button>
                                     </div>
                                 </div>
@@ -578,31 +468,23 @@
                                             <table class="table table-hover table-for-sale-search-section-diary">
                                                 <thead class="bg-col-stock-add-diary">
                                                     <th>No </th>
-                                                    <th>Part Number</th>
-                                                    <th>Item & Description </th>
-                                                    <th>Uom</th>
+                                                    <th>Item </th>
+                                                    <th>Description</th>
+                                                    <th>Model</th>
+                                                    <th>Brand</th>
                                                     <th>Qty</th>
-                                                    <th>Unit Price</th>
-                                                    <th>Discount %</th>
-                                                    <th>Unit Discount</th>
-                                                    <th>Total Price</th>
-                                                    <th>Availability</th>
+                                                    <th>Unit </th>
                                                     <th></th>
                                                 </thead>
                                                 <tbody class="bk_tb_bg"
                                                     *ngFor="let Sales_Details of Requirement_Details_Data; let i = index">
                                                     <td>{{i+1}}</td>
-                                                    <td>{{Sales_Details["Item_Code"] || Sales_Details["ItemCode"]}}</td>
-                                                    <td [id]="'cell' + (i + 1)">
-                                                        {{ Sales_Details["ItemName"] }}
-                                                    </td>
-                                                    <td>{{Sales_Details["UnitName"]}}</td>
+                                                    <td [id]="'cell' + (i + 1)">{{ Sales_Details["ItemName"] }}</td>
+                                                    <td>{{Sales_Details["Description"]}}</td>
+                                                    <td>{{Sales_Details["Model"]}}</td>
                                                     <td>{{Sales_Details["Quantity"]}}</td>
-                                                    <td>{{Sales_Details["UnitPrice"] | number: '1.3-3'}}</td>
-                                                    <td>{{Sales_Details["Discount"] | number: '1.3-3'}}</td>
-                                                    <td>{{Sales_Details["Unit_Discount"] | number: '1.3-3'}}</td>
-                                                    <td>{{Sales_Details["NetValue"] | number: '1.3-3'}}</td>
-                                                    <td>{{Sales_Details["Availability"]}}</td>
+                                                    <td>{{Sales_Details["UnitName"]}}</td>
+                                                    <td>{{Sales_Details["Brand"]}}</td>
                                                     <td style="width:75px;">
                                                         <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                             [hidden]="Sales_Master_Edit==false"
@@ -616,22 +498,10 @@
                                                                     <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                                         class="material-icons"
                                                                         (click)="Edit_Requirement_Detail(Sales_Details,i)">edit</i></span>
-                                                                <div _ngcontent-jry-c5=""
-                                                                    class="mat-button-ripple mat-ripple" matripple=""
-                                                                    ng-reflect-centered="false"
-                                                                    ng-reflect-disabled="false"
-                                                                    ng-reflect-trigger="[object HTMLButtonElement]">
-                                                                </div>
-                                                                <div _ngcontent-jry-c5=""
-                                                                    class="mat-button-focus-overlay">
-                                                                </div>
                                                             </span>
-                                                            <div class="mat-button-ripple mat-ripple" matripple=""
-                                                                ng-reflect-centered="false" ng-reflect-disabled="false"
-                                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                            <div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div>
                                                             <div class="mat-button-focus-overlay"></div>
                                                         </button>
-
                                                         <button _ngcontent-gdi-c11=""
                                                             [hidden]="Sales_Master_Delete==false"
                                                             class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
@@ -642,262 +512,58 @@
                                                                 class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
                                                                     class="material-icons"
                                                                     (click)="Delete_Requirement_Detail(i)">close</i></span>
-                                                            <div class="mat-button-ripple mat-ripple" matripple=""
-                                                                ng-reflect-centered="false" ng-reflect-disabled="false"
-                                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
+                                                            <div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div>
                                                             <div class="mat-button-focus-overlay"></div>
                                                         </button>
                                                     </td>
-
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-5">
-                                    <h4 style="font-weight: bold;">Terms & Conditions</h4>
+                                                                <div class="col-md-12 mt-5">
+                                    <h4 style="font-weight: bold;">Terms &amp; Conditions</h4>
                                 </div>
-
-                                <div class="col-md-4">
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Brand</label>
-                                        <input type="text" [(ngModel)]="Requirement_Master_.Brand"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Price
-                                            Basis</label>
-                                        <input type="text" [(ngModel)]="Requirement_Master_.PriceBasis"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment
-                                            Term</label>
-                                        <input type="number" [(ngModel)]="Requirement_Master_.PaymentTermValue" style="width: 12%;border: 1px solid lightgrey;
-                                            border-radius: 5px;padding-left: 5px !important;height: 36px;"
+                                <div class="col-md-6">
+                                    <!-- Payment Term -->
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1" *ngIf="showTermsPaymentTerm">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment Term</label>
+                                        <input type="number" [(ngModel)]="Requirement_Master_.PaymentTermValue" style="width: 12%;border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important;height: 36px;"
                                             class="mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                                         <select *ngIf="Payment_Term" [(ngModel)]="Payment_Term" id="Payment_Term" name="Payment_Term"
                                             class="for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe ng-pristine ng-valid ng-touched"
-                                            style="width: 37%;border: 1px solid lightgrey;
-                                            border-radius: 5px;padding-left: 5px !important;height: 36px;">
+                                            style="width: 37%;border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important;height: 36px;">
                                             <option *ngFor="let PaymentTerm of PaymentTermData" [ngValue]="PaymentTerm">
                                                 {{PaymentTerm?.Payment_Term_Description}}</option>
                                         </select>
                                     </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Delivery</label>
-                                        <input type="text" [(ngModel)]="Requirement_Master_.Delivery "
-                                            id="Requirement_Master_.Delivery" name="Requirement_Master_.Delivery"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    <!-- HIDDEN: other terms fields preserved for data binding -->
+                                    <div style="display:none">
+                                        <input type="text" [(ngModel)]="Requirement_Master_.Brand">
+                                        <input type="text" [(ngModel)]="Requirement_Master_.PriceBasis">
+                                        <input type="text" [(ngModel)]="Requirement_Master_.Delivery " id="Requirement_Master_.Delivery" name="Requirement_Master_.Delivery">
+                                        <input type="text" [(ngModel)]="Requirement_Master_.Validity " id="Requirement_Master_.Validity" name="Requirement_Master_.Validity">
+                                        <input type="checkbox" [(ngModel)]="printLetterhead" id="Requirement_Master_.printLetterhead" name="Requirement_Master_.printLetterhead" />
+                                        <input type="number" id="Requirement_Master_.Discount_Description" name="Requirement_Master_.Discount_Description" [(ngModel)]="Requirement_Master_.Discount_Description" (ngModelChange)="Final_Amounts()">
+                                        <input type="text" name="Description1Charge" [(ngModel)]="Requirement_Master_.Charge1">
+                                        <input type="number" [(ngModel)]="Requirement_Master_.Charge1per" id="Requirement_Master_.Charge1per" name="Requirement_Master_.Charge1per" (ngModelChange)="Final_Amounts()">
+                                        <input type="text" [(ngModel)]="Requirement_Master_.Charge2" id="Requirement_Master_.Charge2" name="Requirement_Master_.Charge2">
+                                        <input type="text" [(ngModel)]="Requirement_Master_.PreparedBy" id="Requirement_Master_.PreparedBy" name="Requirement_Master_.PreparedBy">
+                                        <input type="number" [(ngModel)]="Requirement_Master_.VAT_Percentage" id="Requirement_Master_.VAT_Percentage" name="Requirement_Master_.VAT_Percentage" (ngModelChange)="Final_Amounts()">
+                                        <input type="text" [ngModel]="Requirement_Master_.TotalAmount | number:'1.3-3'" id="Requirement_Master_.TotalAmount" name="Requirement_Master_.TotalAmount" readonly>
+                                        <input type="number" [(ngModel)]="Requirement_Master_.Additional_Discount" id="Requirement_Master_.Additional_Discount" name="Requirement_Master_.Additional_Discount" (ngModelChange)="Calculate_Discount_Percent();">
+                                        <input type="text" [ngModel]="Requirement_Master_.charge1_Amount | number:'1.3-3'" id="Requirement_Master_.charge1_Amount" name="Requirement_Master_.charge1_Amount" (ngModelChange)="Final_Amounts()" readonly>
+                                        <input type="number" [(ngModel)]="Requirement_Master_.charge2_Amount" id="Requirement_Master_.charge2_Amount" name="Requirement_Master_.charge2_Amount" (ngModelChange)="Final_Amounts()">
+                                        <input type="text" [ngModel]="Requirement_Master_.TotalDiscount | number:'1.3-3'" id="Requirement_Master_.TotalDiscount" name="Requirement_Master_.TotalDiscount" readonly>
+                                        <input type="text" [ngModel]="Total | number:'1.3-3'" id="Requirement_Master_.Total" name="Requirement_Master_.Total" readonly>
+                                        <input type="text" [ngModel]="Requirement_Master_.VAT_Amount | number:'1.3-3'" id="Requirement_Master_.VAT_Amount" name="Requirement_Master_.VAT_Amount" (ngModelChange)="Final_Amounts()" readonly>
+                                        <input type="text" [ngModel]="Requirement_Master_.Total_Amount | number:'1.3-3'" id="Requirement_Master_.Total_Amount" name="Requirement_Master_.Total_Amount" readonly>
+                                        <input type="number" [(ngModel)]="Requirement_Master_.Roundoff_Amt" id="Requirement_Master_.Roundoff_Amt" name="Requirement_Master_.Roundoff_Amt" (ngModelChange)="Final_Amounts()">
+                                        <input type="text" [ngModel]="Requirement_Master_.NetTotal | number:'1.3-3'" id="Requirement_Master_.NetTotal" name="Requirement_Master_.NetTotal" readonly>
+                                        <input type="text" [(ngModel)]="Requirement_Master_.Amount_In_Words" id="Requirement_Master_.Amount_In_Words_hidden" name="Requirement_Master_.Amount_In_Words">
                                     </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Validity</label>
-                                        <input type="text" [(ngModel)]="Requirement_Master_.Validity "
-                                            id="Requirement_Master_.Validity" name="Requirement_Master_.Validity"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Notes</label>
-                                        <input type="text" [(ngModel)]="Requirement_Master_.Description1"
-                                            id="Requirement_Master_.Description1"
-                                            name="Requirement_Master_.Description1"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class=" label-to-crect-all-names-to-div-tre-prt-sles">Print
-                                            Letterhead</label>
-
-
-                                        <input style="margin-left: 4%;" type='checkbox' class="form-check-input"
-                                            id="Requirement_Master_.printLetterhead"
-                                            name="Requirement_Master_.printLetterhead" [(ngModel)]="printLetterhead" />
-                                        <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9=""
-                                                class="check"></span>
-                                        </span>
-
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1"
-                                        style="visibility: hidden;">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles"></label>
-                                        <input type="number"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Discount
-                                            %</label>
-                                        <input type="number" id="Requirement_Master_.Discount_Description"
-                                            name="Requirement_Master_.Discount_Description"
-                                            [(ngModel)]="Requirement_Master_.Discount_Description"
-                                            (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Description
-                                            %</label>
-                                        <input type="text" name="Description1" [(ngModel)]="Requirement_Master_.Charge1"
-                                            class="col-md-3"
-                                            style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important;height: 36px;">
-                                        <input type="number" class="col-md-3"
-                                            style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important;height: 36px;"
-                                            [(ngModel)]="Requirement_Master_.Charge1per"
-                                            id="Requirement_Master_.Charge1per" name="Requirement_Master_.Charge1per"
-                                            (ngModelChange)="Final_Amounts()">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Description</label>
-                                        <input type="text" [(ngModel)]="Requirement_Master_.Charge2"
-                                            id="Requirement_Master_.Charge2" name="Requirement_Master_.Charge2"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Prepared
-                                            By</label>
-                                        <input type="text" [(ngModel)]="Requirement_Master_.PreparedBy"
-                                            id="Requirement_Master_.PreparedBy" name="Requirement_Master_.PreparedBy"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1"
-                                        style="visibility: hidden;">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles"></label>
-                                        <input type="number"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Vat
-                                            %</label>
-                                        <input type="number" [(ngModel)]="Requirement_Master_.VAT_Percentage"
-                                            id="Requirement_Master_.VAT_Percentage"
-                                            name="Requirement_Master_.VAT_Percentage" (ngModelChange)="Final_Amounts()"
-                                            name="Requirement_Master_.Handling_"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <!-- Sub Total -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Sub
-                                            Total</label>
-                                        <input type="text" [ngModel]="Requirement_Master_.TotalAmount | number:'1.3-3'"
-                                            id="Requirement_Master_.TotalAmount" name="Requirement_Master_.TotalAmount"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Additional Discount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amounts</label>
-                                        <input type="number" [(ngModel)]="Requirement_Master_.Additional_Discount"
-                                            id="Requirement_Master_.Additional_Discount"
-                                            name="Requirement_Master_.Additional_Discount"
-                                            (ngModelChange)="Calculate_Discount_Percent();"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- Charge 1 Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amount</label>
-                                        <input type="text"
-                                            [ngModel]="Requirement_Master_.charge1_Amount | number:'1.3-3'"
-                                            id="Requirement_Master_.charge1_Amount"
-                                            name="Requirement_Master_.charge1_Amount" (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Charge 2 Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amount</label>
-                                        <input type="number" [(ngModel)]="Requirement_Master_.charge2_Amount"
-                                            id="Requirement_Master_.charge2_Amount"
-                                            name="Requirement_Master_.charge2_Amount" (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- Total Discount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total
-                                            Discount</label>
-                                        <input type="text"
-                                            [ngModel]="Requirement_Master_.TotalDiscount | number:'1.3-3'"
-                                            id="Requirement_Master_.TotalDiscount"
-                                            name="Requirement_Master_.TotalDiscount"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Total -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total</label>
-                                        <input type="text" [ngModel]="Total | number:'1.3-3'"
-                                            id="Requirement_Master_.Total" name="Requirement_Master_.Total"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- VAT Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">VAT
-                                            Amount</label>
-                                        <input type="text" [ngModel]="Requirement_Master_.VAT_Amount | number:'1.3-3'"
-                                            id="Requirement_Master_.VAT_Amount" name="Requirement_Master_.VAT_Amount"
-                                            (ngModelChange)="Final_Amounts()" readonly
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- Total Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total
-                                            Amount</label>
-                                        <input type="text" [ngModel]="Requirement_Master_.Total_Amount | number:'1.3-3'"
-                                            id="Requirement_Master_.Total_Amount"
-                                            name="Requirement_Master_.Total_Amount"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Roundoff Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Additional
-                                            Discount</label>
-                                        <input type="number" [(ngModel)]="Requirement_Master_.Roundoff_Amt"
-                                            id="Requirement_Master_.Roundoff_Amt"
-                                            name="Requirement_Master_.Roundoff_Amt" (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- NET Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">NET
-                                            Amount</label>
-                                        <input type="text" [ngModel]="Requirement_Master_.NetTotal | number:'1.3-3'"
-                                            id="Requirement_Master_.NetTotal" name="Requirement_Master_.NetTotal"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12" style="display: flex;justify-content: flex-end;">
+                                </div><div style="display:none">
+<div class="col-md-12" style="display: flex;justify-content: flex-end;">
                                 <div class="col-md-4">
                                 </div>
                                 <div class="col-md-8">
@@ -910,8 +576,9 @@
                                         id="Requirement_Master_.Delivery" name="Requirement_Master_.Amount_In_Words">
                                 </div>
                             </div>
+                            </div>
 
-                            <div class="col-md-12">
+<div class="col-md-12">
                                 <!-- <button mat-raised-button type="button" id="Tab_Edit" (click)="Edit_Button_Click()" class="btn btn-danger pull-right">Edit</button> -->
                                 <button mat-raised-button type="button"
                                     class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
@@ -922,20 +589,26 @@
                                                                         (click)="Quotation_Pending_Click(Requirement_Master_)">Quotation Pending</button>
                                 <button mat-raised-button type="button"
                                     class="btn pull-right btn-primary div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="makeQuotation()">Quotation</button>
+                                    (click)="Create_Quotation_Click(Requirement_Master_)">Quotation</button>
                                 <button mat-raised-button type="button"
                                     class="btn pull-right btn-info div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
                                                                         (click)="PriceRequest_Pending_Click(Requirement_Master_)">Price Request Pending</button>
                                 <button mat-raised-button type="button"
                                     class="btn pull-right btn-primary div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="makePriceRequest_Navigate()">Price Request</button>
+                                    (click)="Price_Request_Click(Requirement_Master_)">Price Request</button>
 
                                 <button mat-raised-button type="button" id="Save_Button"
                                     class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
                                     [hidden]="Sales_Master_Save==false" (click)="Save_Requirement(0)">Save</button>
                                 <button mat-raised-button type="button" [hidden]="Sales_Print"
-                                    class="btn btn-danger pull-right" (click)="Print_Click()">
-                                    <i class="fa fa-print" aria-hidden="true"></i></button>
+                                    class="btn btn-danger pull-right no-print" (click)="Print_Click()" title="Professional Print">
+                                    <i class="fa fa-print" aria-hidden="true"></i> Print</button>
+                                <button mat-raised-button type="button" [hidden]="Sales_Print"
+                                    class="btn btn-danger pull-right no-print" (click)="Preview_PDF()" title="Preview PDF">
+                                    <i class="fa fa-eye" aria-hidden="true"></i> Preview</button>
+                                <button mat-raised-button type="button" [hidden]="Sales_Print"
+                                    class="btn btn-danger pull-right no-print" (click)="Download_PDF()" title="Download PDF">
+                                    <i class="fa fa-download" aria-hidden="true"></i> Download</button>
                             </div>
                             <div class="clearfix"></div>
                         </div>
@@ -1506,7 +1179,7 @@
                     </div>
                 </div>
             </div>
-            <div class="container-fluid mt-1" *ngIf="quotationPendingView">
+            <div class="container-fluid mt-1" *ngIf="quotationPendingView" #bottomDiv9>
                 <div class="col-md-12">
                     <div class="card" style="background-color: #f1f1f1;">
                         <div class="card-body" style="overflow: scroll; height: 40em">
@@ -1553,7 +1226,7 @@
                 </div>
             </div>
 
-            <div class="container-fluid mt-1" *ngIf="priceRequestPendingView">
+            <div class="container-fluid mt-1" *ngIf="priceRequestPendingView" #bottomDiv10>
                 <div class="col-md-12">
                     <div class="card" style="background-color: #f1f1f1;">
                         <div class="card-body" style="overflow: scroll; height: 40em">
@@ -1600,7 +1273,7 @@
                     </div>
                 </div>
             </div>
-            <div class="container-fluid mt-1" *ngIf="quotationListView">
+            <div class="container-fluid mt-1" *ngIf="quotationListView" #bottomDiv11>
                 <div class="col-md-12">
                     <div class="card" style="background-color: #f1f1f1;">
                         <div class="card-body" style="overflow: scroll; height: 40em;">
@@ -1620,8 +1293,8 @@
                                         <tbody class="bk_tb_bg" *ngFor="let item of Quotation_Data; let i = index">
                                             <td style="text-align: center;">{{i+1}}</td>
                                             <td style="text-align: center;">{{item["EntryDate"] | date:'dd/MM/yyyy'}}</td>
-                                            <td style="text-align: center;">{{item["QuotationNo"]}}</td>
-                                            <td style="text-align: center;">{{item["NetTotal"]}}</td>
+                                            <td style="text-align: center;">{{item["QuotationNo"] || item["Quotation_No"]}}</td>
+                                            <td style="text-align: center;">{{item["NetTotal"] || item["Total_Amount"] || item["TotalAmount"]}}</td>
                                             <td>
                                                 <button class="btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
                                                     mat-raised-button (click)="View_Edit_Quotation_Click(item)">
@@ -1645,7 +1318,7 @@
                 </div>
             </div>
 
-            <div class="container-fluid mt-1" *ngIf="priceRequestListView">
+            <div class="container-fluid mt-1" *ngIf="priceRequestListView" #bottomDiv12>
                 <div class="col-md-12">
                     <div class="card" style="background-color: #f1f1f1;">
                         <div class="card-body" style="overflow: scroll; height: 40em;">
@@ -1664,8 +1337,8 @@
                                         </thead>
                                         <tbody class="bk_tb_bg" *ngFor="let item of Price_Request_Data; let i = index">
                                             <td style="text-align: center;">{{i+1}}</td>
-                                            <td style="text-align: center;">{{item["RequestNumber"]}}</td>
-                                            <td style="text-align: center;">{{item["TotalAmount"]}}</td>
+                                            <td style="text-align: center;">{{item["Price_RequestNo"] || item["RequestNumber"] || item["Price_Request_No"]}}</td>
+                                            <td style="text-align: center;">{{item["Total_Amount"] || item["TotalAmount"] || item["NetTotal"]}}</td>
                                             <td style="text-align: center;">{{item["EntryDate"] | date:'dd/MM/yyyy'}}</td>
                                             <td style="text-align: center;">
                                                 <button class="btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
@@ -1915,7 +1588,7 @@
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">+968 22820150</p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">Currency:</p>
+            <!-- <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">Currency:</p> -->
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;"><span *ngIf="currency?.CurrencyDetails_Id > 0">{{currency?.CurrecnyName}}</span></p>

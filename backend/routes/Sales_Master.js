@@ -600,4 +600,9 @@ router.get('/Load_Price_Request_Master/:Price_Request_Master_Id_?', asyncHandler
     return sendSuccess(res, { data: rows });
 }));
 
+router.get('/Get_Next_Price_Request_No', asyncHandler(async function (req, res, next) {
+    const rows = await Sales_Master.Get_Next_Price_Request_No(req.query.EntryDate_);
+    return sendSuccess(res, { data: rows });
+}));
+
 module.exports = router;

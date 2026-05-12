@@ -71,6 +71,10 @@ export class RequirementComponent implements OnInit, AfterViewInit  {
     @ViewChild('bottomDiv6', { static: false }) bottomDiv6: ElementRef;
     @ViewChild('bottomDiv7', { static: false }) bottomDiv7: ElementRef;
     @ViewChild('bottomDiv8', { static: false }) bottomDiv8: ElementRef;
+    @ViewChild('bottomDiv9', { static: false }) bottomDiv9: ElementRef;
+    @ViewChild('bottomDiv10', { static: false }) bottomDiv10: ElementRef;
+    @ViewChild('bottomDiv11', { static: false }) bottomDiv11: ElementRef;
+    @ViewChild('bottomDiv12', { static: false }) bottomDiv12: ElementRef;
     @ViewChild('topDiv', { static: false }) topDiv: ElementRef;
     @ViewChild('topDiv1', { static: false }) topDiv1: ElementRef;
     @ViewChildren('cell') cells: QueryList<ElementRef>;
@@ -249,6 +253,49 @@ Payment_Term_Description: string = '';
 blankItems: number[] = [];
 marginTopItemNameCount : boolean = false;
 breakPage: boolean = false;
+
+/*** Field Visibility Controls - Added on 11-05-2026 */
+// Customer Details Section
+showCustomerName: boolean = true;
+showAddress: boolean = true;
+showWhatsAppNumber: boolean = true;
+showMail: boolean = true;
+showDeliveryAddress: boolean = false;
+
+// Right Side Section
+showDate: boolean = true;
+showReferenceNo: boolean = true;
+showRequirementNo: boolean = true;
+showCurrency: boolean = false;
+showPONumber: boolean = false;
+showSupplierRefNo: boolean = false;
+showKindAttend: boolean = false;
+showAttendEmployee: boolean = false;
+
+// Item Table Columns
+showItemPartNumber: boolean = false;
+showItemUnitPrice: boolean = false;
+showItemDiscount: boolean = false;
+showItemUnitDiscount: boolean = false;
+showItemTotalPrice: boolean = false;
+showItemAvailability: boolean = false;
+showItemName: boolean = true;
+showItemDescription: boolean = true;
+showItemModel: boolean = true;
+showItemQty: boolean = true;
+showItemUnit: boolean = true;
+showItemBrand: boolean = true;
+
+// Terms Section
+showTermsTS: boolean = true;
+showTermsPaymentTerm: boolean = true;
+showTermsBrand: boolean = false;
+showTermsPriceBasis: boolean = false;
+showTermsDelivery: boolean = false;
+showTermsValidity: boolean = false;
+showTermsDiscount: boolean = false;
+showTermsCharges: boolean = false;
+showTermsVAT: boolean = false;
 constructor(public Requirement_Master_Service_: Requirement_Master_Service, public currencydetails_Service_: currencydetails_Service, public User_Details_Service_: User_Details_Service, private route: ActivatedRoute, private router: Router, public dialogBox: MatDialog
         , private el: ElementRef, private zone: NgZone, private renderer: Renderer2, public purchaseordermaster_Service_: purchaseordermaster_Service, public Employee_Details_Service_: Employee_Details_Service, public Stock_Service_: Stock_Service,
         public Item_Group_Service_: Item_Group_Service, public payment_term_Service_: payment_term_Service, public Client_Accounts_Service_:Client_Accounts_Service,
@@ -287,7 +334,8 @@ ngOnInit()
     this.Sales_Master_Edit=this.Permissions.Edit;
     this.Sales_Master_Save=this.Permissions.Save;
     this.Sales_Master_Delete=this.Permissions.Delete;
-    this.Page_Load()
+    this.Page_Load();
+    this.Load_Field_Visibility_Settings();
     }
 }
 call_api()
@@ -318,6 +366,9 @@ Page_Load()
         this.Sales_Print = false;
         debugger;
         this.Load_RequirementMaster();
+    }
+    else {
+        this.Load_Next_Requirement_No();
     }
     // Auto-fill from Lead if navigated via Requirement button
     const leadJson = localStorage.getItem('Lead_For_Requirement');
@@ -367,6 +418,18 @@ Page_Load()
         });
     }
     //this.myDate=new Date();
+}
+
+Load_Next_Requirement_No() {
+    if (this.Requirement_Master_ && Number(this.Requirement_Master_.RequirementMaster_Id || 0) > 0) return;
+    this.Requirement_Master_Service_.Get_Next_Requirement_No().subscribe({
+        next: (response: any) => {
+            const rows = response && response.success ? response.data : null;
+            const nextNo = rows && rows[0] ? Number(rows[0].NextNo || 0) : 0;
+            if (nextNo > 0) this.Requirement_Master_.RequirementNo = String(nextNo);
+        },
+        error: () => {}
+    });
 }
 Load_Company() 
     {   
@@ -492,6 +555,7 @@ Create_New()
     this.deliveryPendingView = false;
     this.purchasePendingView = false;
     this.packingListPendingView = false;
+    this.Load_Next_Requirement_No();
 }
 
 Close_Click()
@@ -637,7 +701,51 @@ New_Date_Format(Date_)
       //  this.date = this.day + "-"+ this.month + "-" + this.year ;
         return this.date;
 }
-Print_Click()
+Print_Click() {
+    this.Generate_Professional_PDF('print');
+}
+
+Preview_PDF() {
+    this.Generate_Professional_PDF('preview');
+}
+
+Download_PDF() {
+    this.Generate_Professional_PDF('download');
+}
+
+Generate_Professional_PDF(mode: string) {
+    const id = this.Requirement_Master_.RequirementMaster_Id;
+    if (!id || id === 0) {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Please save the requirement before generating PDF.', Type: "2" } });
+        return;
+    }
+
+    this.issLoading = true;
+    this.Requirement_Master_Service_.Print_Requirement(id).subscribe(blob => {
+        this.issLoading = false;
+        console.log("Received PDF blob size:", blob.size);
+        const url = window.URL.createObjectURL(blob);
+        
+        if (mode === 'download') {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Requirement_${this.Requirement_Master_.RequirementNo || id}.pdf`;
+            a.click();
+        } else {
+            // Open in new tab for print or preview
+            window.open(url, '_blank');
+        }
+        
+        setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+    }, err => {
+        this.issLoading = false;
+        console.error('Print error:', err);
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error generating professional PDF.', Type: "2" } });
+    });
+}
+
+
+_Old_Print_Click()
 {  
     this.printAcknowledgeCharge1per = false;
     this.printAcknowledgeChargeAmount1 = false;
@@ -1127,6 +1235,63 @@ Clr_Sales_Edit_Data()
     this.Edit_Totamt=0;
     this.Requirement_Details_Description="";
 }
+
+/*** Load and Save Field Visibility Settings - Added on 11-05-2026 */
+Load_Field_Visibility_Settings()
+{
+    const savedSettings = localStorage.getItem('Requirement_Field_Visibility');
+    if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        // Apply saved settings
+        Object.assign(this, settings);
+    }
+}
+
+Save_Field_Visibility_Settings()
+{
+    const visibilitySettings = {
+        // Customer Details Section
+        showCustomerName: this.showCustomerName,
+        showAddress: this.showAddress,
+        showWhatsAppNumber: this.showWhatsAppNumber,
+        showMail: this.showMail,
+        showDeliveryAddress: this.showDeliveryAddress,
+        // Right Side Section
+        showDate: this.showDate,
+        showReferenceNo: this.showReferenceNo,
+        showRequirementNo: this.showRequirementNo,
+        showCurrency: this.showCurrency,
+        showPONumber: this.showPONumber,
+        showSupplierRefNo: this.showSupplierRefNo,
+        showKindAttend: this.showKindAttend,
+        showAttendEmployee: this.showAttendEmployee,
+        // Item Table Columns
+        showItemPartNumber: this.showItemPartNumber,
+        showItemUnitPrice: this.showItemUnitPrice,
+        showItemDiscount: this.showItemDiscount,
+        showItemUnitDiscount: this.showItemUnitDiscount,
+        showItemTotalPrice: this.showItemTotalPrice,
+        showItemAvailability: this.showItemAvailability,
+        showItemName: this.showItemName,
+        showItemDescription: this.showItemDescription,
+        showItemModel: this.showItemModel,
+        showItemQty: this.showItemQty,
+        showItemUnit: this.showItemUnit,
+        showItemBrand: this.showItemBrand,
+        // Terms Section
+        showTermsTS: this.showTermsTS,
+        showTermsPaymentTerm: this.showTermsPaymentTerm,
+        showTermsBrand: this.showTermsBrand,
+        showTermsPriceBasis: this.showTermsPriceBasis,
+        showTermsDelivery: this.showTermsDelivery,
+        showTermsValidity: this.showTermsValidity,
+        showTermsDiscount: this.showTermsDiscount,
+        showTermsCharges: this.showTermsCharges,
+        showTermsVAT: this.showTermsVAT
+    };
+    localStorage.setItem('Requirement_Field_Visibility', JSON.stringify(visibilitySettings));
+}
+
 Delete_Sales_Details(Requirement_Details_e:Requirement_Details,index)
 {
     /*this.Edit_CGST=Requirement_Details_e.CGSTAMT
@@ -1629,6 +1794,11 @@ Price_Request_Click(master: any) {
     this.purchasePendingView = false;
     this.packingListPendingView = false;
     this.Load_PriceRequest_Requirement_Details(id);
+    setTimeout(() => {
+        if (this.bottomDiv12) {
+            this.bottomDiv12.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 500);
 }
 
 Create_Quotation_Click(master: any) {
@@ -1647,6 +1817,11 @@ Create_Quotation_Click(master: any) {
     this.purchasePendingView = false;
     this.packingListPendingView = false;
     this.Load_Quotation_Requirement_Details(id);
+    setTimeout(() => {
+        if (this.bottomDiv11) {
+            this.bottomDiv11.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 500);
 }
 
 Load_Quotation_Requirement_Details(id: number) {
@@ -1693,6 +1868,11 @@ Quotation_Pending_Click(master: any) {
     this.Requirement_Master_Service_.Get_Quotation_Pending_Items(id).subscribe(rows => {
         this.quotationPendingData = (rows && rows[0]) ? rows[0] : [];
         this.issLoading = false;
+        setTimeout(() => {
+            if (this.bottomDiv9) {
+                this.bottomDiv9.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
     }, _err => {
         this.quotationPendingData = [];
         this.issLoading = false;
@@ -1721,6 +1901,11 @@ PriceRequest_Pending_Click(master: any) {
     this.Requirement_Master_Service_.Get_PriceRequest_Pending_Items(id).subscribe(rows => {
         this.priceRequestPendingData = (rows && rows[0]) ? rows[0] : [];
         this.issLoading = false;
+        setTimeout(() => {
+            if (this.bottomDiv10) {
+                this.bottomDiv10.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
     }, _err => {
         this.priceRequestPendingData = [];
         this.issLoading = false;
@@ -1766,7 +1951,7 @@ Edit_PriceRequest_Pending(item: any) {
         PendingItem: priceRequestItem 
     }));
     
-    this.router.navigateByUrl('/Price_Request');
+    this.router.navigateByUrl('/PriceRequest');
 }
 
 makeQuotation() {
@@ -1809,15 +1994,15 @@ View_Edit_Quotation_Click(master: any) {
 View_Edit_PriceRequest_Click(master: any) {
     const pid = Number(master.PriceRequestMaster_Id || master.price_request_master_id || master.PriceRequestMaster_Id_ || 0);
     if (!pid) return;
-    localStorage.setItem('PriceRequestMaster_Id', String(pid));
-    this.router.navigateByUrl('/PriceRequest'); // Assuming route is /PriceRequest
+    localStorage.setItem('Price_Request_Master_Id', String(pid));
+    this.router.navigateByUrl('/PriceRequest');
 }
 
 makePriceRequest_Navigate() {
     const id = this.Requirement_Master_.RequirementMaster_Id;
     if (!id) return;
     localStorage.setItem('Requirement_For_PriceRequest', JSON.stringify({ RequirementMaster_Id: id }));
-    this.router.navigateByUrl('/PriceRequest'); // Assuming route is /PriceRequest
+    this.router.navigateByUrl('/PriceRequest');
 }
 Barcode_Change(Barcode_sl:Requirement_Details)
 {    
@@ -2014,11 +2199,6 @@ if(this.Requirement_Details_.Quantity==undefined || this.Requirement_Details_.Qu
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Enter Quantity',Type: "3" }});
 return
 }
-else if(this.Requirement_Details_.UnitPrice==undefined || this.Requirement_Details_.UnitPrice==null || this.Requirement_Details_.UnitPrice==0)
-{
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Enter Unit Price',Type: "3" }});
-return
-}
 else 
 {
 if(this.Requirement_Details_Data==undefined)
@@ -2083,17 +2263,16 @@ Save_Requirement(Printstatus:number)
 
     // if(this.Customer_ == undefined || this.Customer_ == null)
     // { }
-        if(this.Customer_.Client_Accounts_Id==0 || this.Customer_.Client_Accounts_Id==null || this.Customer_.Client_Accounts_Id==undefined){
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Choose Customer',Type:"3"}});
+        if(!this.Requirement_Master_.Customer_Name || this.Requirement_Master_.Customer_Name.trim() == ""){
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Enter Customer Name',Type:"3"}});
         return
         }  
     
-    debugger; 
-    if(!this.currency || this.currency.CurrencyDetails_Id == undefined || this.currency.CurrencyDetails_Id == 0 ){
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Choose currency',Type:"3"}});
+    if(!this.Requirement_Master_.EntryDate || this.Requirement_Master_.EntryDate == null || this.Requirement_Master_.EntryDate == undefined){
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Enter Date',Type:"3"}});
         return
-    }    
-    this.Requirement_Master_.Account_Party_Id=this.Customer_.Client_Accounts_Id;
+    }
+    this.Requirement_Master_.Account_Party_Id=this.Customer_ && this.Customer_.Client_Accounts_Id ? this.Customer_.Client_Accounts_Id : 0;
     this.Requirement_Master_.User_Id=Number(this.Login_User_Id);
     this.Requirement_Master_.Requirement_Details=this.Requirement_Details_Data;
     debugger
@@ -2106,11 +2285,14 @@ Save_Requirement(Printstatus:number)
     this.Requirement_Master_.Payment_Term_Description = this.Payment_Term.payment_Term_ID;
     this.Requirement_Master_.PaymentTerms = this.Payment_Term.Payment_Term_Description;
     //this.Requirement_Master_.EntryDate = this.formatDate(this.Requirement_Master_.EntryDate);
-    this.Requirement_Master_.CurrencyId = this.currency.CurrencyDetails_Id;
+    this.Requirement_Master_.CurrencyId = (this.currency && this.currency.CurrencyDetails_Id) ? this.currency.CurrencyDetails_Id : 0;
     console.log("Before Requirement API call");
     this.issLoading = true;
     const saveButton = document.getElementById("Save_Button");
     if (saveButton) saveButton.hidden = true;
+    
+    // Save field visibility settings
+    this.Save_Field_Visibility_Settings();
 
     this.Requirement_Master_Service_.Save_Requirement(this.Requirement_Master_)
     .pipe(

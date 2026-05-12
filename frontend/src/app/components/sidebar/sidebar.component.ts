@@ -67,6 +67,45 @@ menuItems:any[];
 uname:string;
 
 Menus:any[];
+  private ensurePriceRequestMenuItem() {
+    if (!Array.isArray(this.menuItems)) this.menuItems = [];
+
+    const exists = this.menuItems.some((m: any) => (m && (m.path === '/PriceRequest' || m.path === 'PriceRequest')));
+    if (exists) return;
+
+    this.menuItems.push({
+      path: '/PriceRequest',
+      title: 'Price Request',
+      icon: 'unarchive',
+      class: '',
+      Menu_Id: '0',
+      View: 'true',
+      Save: 'true',
+      Edit: 'true',
+      Delete: 'true',
+      Menu_Type: true,
+    });
+  }
+
+  private ensurePriceResponseMenuItem() {
+    if (!Array.isArray(this.menuItems)) this.menuItems = [];
+
+    const exists = this.menuItems.some((m: any) => (m && (m.path === '/PriceResponse' || m.path === 'PriceResponse')));
+    if (exists) return;
+
+    this.menuItems.push({
+      path: '/PriceResponse',
+      title: 'Price Response',
+      icon: 'unarchive',
+      class: '',
+      Menu_Id: '0',
+      View: 'true',
+      Save: 'true',
+      Edit: 'true',
+      Delete: 'true',
+      Menu_Type: true,
+    });
+  }
   constructor(
     public userData: UserData,
     public router: Router,
@@ -74,6 +113,8 @@ Menus:any[];
   ) {
     
     this.menuItems= ROUTES.filter(menuItem => menuItem);
+    this.ensurePriceRequestMenuItem();
+    this.ensurePriceResponseMenuItem();
     // this.router.navigateByUrl('Leads');
    }
 
@@ -89,6 +130,8 @@ ROUTES=JSON.parse(retrievedObject);
 var retrievedPointer=localStorage.getItem('Pointer_Temp');
 Pointer_Table=JSON.parse(retrievedPointer);
 this.menuItems= ROUTES.filter(menuItem => menuItem);
+this.ensurePriceRequestMenuItem();
+this.ensurePriceResponseMenuItem();
 
   }
   isMobileMenu() {

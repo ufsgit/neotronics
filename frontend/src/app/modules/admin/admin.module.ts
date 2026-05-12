@@ -99,6 +99,7 @@ import { SalesOrderComponent} from './SalesOrder/SalesOrder.component';
 import { LeadRequirementComponent } from './LeadRequirement/LeadRequirement.component';
 import { LeadRequirementTransactionComponent } from './LeadRequirementTransaction/LeadRequirementTransaction.component';
 import { Price_RequestComponent } from './Price_Request/Price_Request.component';
+import { Price_ResponseComponent } from './Price_Response/Price_Response.component';
 
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { RouterModule } from "@angular/router";
@@ -202,7 +203,8 @@ import { RouterModule } from "@angular/router";
 		LeadRequirementComponent,
 		LeadRequirementTransactionComponent,
 		SalesOrderComponent,
-		Price_RequestComponent
+		Price_RequestComponent,
+		Price_ResponseComponent
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],

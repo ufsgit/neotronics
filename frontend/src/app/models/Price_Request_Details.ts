@@ -26,6 +26,8 @@ SaleTax:number;
 TaxAmount:number;
 Stock:number;
 Description:string;
+Model:string;
+Brand:string;
 UnitPrice:number;
 Amount:number;
 Availability:string;

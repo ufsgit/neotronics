@@ -319,7 +319,7 @@
                         </label>
                         <select
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            name="currency" id="currency" [(ngModel)]="currency" (ngModelChange)="Final_Amounts()">
+                            name="currency" id="currency" [(ngModel)]="currency" [compareWith]="compareCurrency" (ngModelChange)="Final_Amounts()">
                             <option *ngFor="let curr of currencyData" [ngValue]="curr">
                                 {{curr.CurrecnyName}}</option>
                         </select>
@@ -432,7 +432,8 @@
                                         <input type="text" [(ngModel)]="Quotation_Details_.UnitName"
                                             style="padding-left: 5px !important;" id="Quotation_Details_.UnitName"
                                             name="Quotation_Details_.UnitName"
-                                            (keyup.enter)="Plus_Quotation_Details($event)"
+                                            (keyup.enter)="
+                            ($event)"
                                             class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
                                     </div>
                                     <div
@@ -622,7 +623,7 @@
                                         <input type="number" [(ngModel)]="Quotation_Master_.PaymentTermValue" style="width: 12%;border: 1px solid lightgrey;
                                             border-radius: 5px;padding-left: 5px !important;height: 36px;"
                                             class="mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                        <select [(ngModel)]="Payment_Term" id="Payment_Term" name="Payment_Term"
+                                        <select [(ngModel)]="Payment_Term" id="Payment_Term" name="Payment_Term" [compareWith]="comparePaymentTerm"
                                             class="for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe ng-pristine ng-valid ng-touched"
                                             style="width: 37%;border: 1px solid lightgrey;
                                             border-radius: 5px;padding-left: 5px !important;height: 36px;">

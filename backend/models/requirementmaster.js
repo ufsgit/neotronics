@@ -27,6 +27,15 @@ var requirementmaster = {
             return (new storedProcedure("Save_Requirement", params, connection)).result();
         }, { log });
     },
+
+    Get_Next_Requirement_No: async function () {
+        // RequirementNo is stored as string but usually numeric; follow Save_Requirement SP logic (MAX(CAST(...))+1)
+        const [rows] = await db.promise().query(
+            "SELECT COALESCE(MAX(CAST(RequirementNo AS UNSIGNED)),0) AS MaxNo FROM requirementmaster WHERE DeleteStatus = 0"
+        );
+        const maxNo = rows && rows[0] ? Number(rows[0].MaxNo || 0) : 0;
+        return [{ NextNo: maxNo + 1 }];
+    },
     Delete_requirementmaster: function (requirementmaster_Id_, callback) {
         return db.query("CALL Delete_requirementmaster(@requirementmaster_Id_ :=?)", [requirementmaster_Id_], callback);
     },
@@ -164,6 +173,33 @@ var requirementmaster = {
         return db.query(sql, [Requirement_Master_Id], function(err, rows) {
             if (err) return callback(err, null);
             callback(null, [rows]);
+        });
+    },
+
+    Get_requirementmaster_Promise: function (id) {
+        return new Promise((resolve, reject) => {
+            this.Get_requirementmaster(id, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+    },
+
+    Get_Requirement_Details_Promise: function (id) {
+        return new Promise((resolve, reject) => {
+            this.Get_Requirement_Details(id, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+    },
+
+    Load_Company_Promise: function () {
+        return new Promise((resolve, reject) => {
+            this.Load_Company((err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
         });
     }
 };

@@ -46,6 +46,12 @@ Save_Price_Request(Price_Request_Master_)
     return this.http.post(environment.BasePath +'Sales_Master/Save_Price_Request/',Price_Request_Master_).pipe(timeout(60000));
 }
 
+Get_Next_Price_Request_No(EntryDate_): Observable<any>
+{
+    const Search_Data = { 'EntryDate_': EntryDate_ };
+    return this.http.get(environment.BasePath + 'Sales_Master/Get_Next_Price_Request_No', { params: Search_Data });
+}
+
 
 
 

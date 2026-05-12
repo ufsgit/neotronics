@@ -69,6 +69,7 @@ import { SalesOrderComponent } from './SalesOrder/SalesOrder.component';
 import { LeadRequirementComponent } from './LeadRequirement/LeadRequirement.component';
 import { LeadRequirementTransactionComponent } from './LeadRequirementTransaction/LeadRequirementTransaction.component';
 import { Price_RequestComponent } from './Price_Request/Price_Request.component';
+import { Price_ResponseComponent } from './Price_Response/Price_Response.component';
 
 export const AdminRoutes: Routes = [
 	{
@@ -143,6 +144,7 @@ export const AdminRoutes: Routes = [
 			{ path: 'LeadRequirementTransaction/:id', component: LeadRequirementTransactionComponent },
 			{ path: 'SalesOrder', component: SalesOrderComponent },
 			{ path: "PriceRequest", component: Price_RequestComponent },
+			{ path: "PriceResponse", component: Price_ResponseComponent },
 
 
 			{ path: "**", redirectTo: "/auth/login" },

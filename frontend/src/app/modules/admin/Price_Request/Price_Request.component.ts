@@ -244,6 +244,7 @@ blankItems: number[] = [];
 marginTopItemNameCount : boolean = false;
 breakPage: boolean = false;
 RequirementMaster_Id: number = 0;
+cameFromRequirement: boolean = false;
 constructor(public Sales_Master_Service_: Sales_Master_Service, public currencydetails_Service_: currencydetails_Service, public User_Details_Service_: User_Details_Service, private route: ActivatedRoute, private router: Router, public dialogBox: MatDialog
         , private el: ElementRef, private zone: NgZone, private renderer: Renderer2, public purchaseordermaster_Service_: purchaseordermaster_Service, public Employee_Details_Service_: Employee_Details_Service, public Stock_Service_: Stock_Service,
         public Item_Group_Service_: Item_Group_Service, public payment_term_Service_: payment_term_Service, public Client_Accounts_Service_:Client_Accounts_Service,
@@ -261,7 +262,13 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
         this.Load_Vat_Percentage();        
     }
 
-ngOnInit() 
+    compareCurrency(c1: any, c2: any): boolean {
+        return c1 && c2 ? c1.CurrencyDetails_Id === c2.CurrencyDetails_Id : c1 === c2;
+    }
+    comparePaymentTerm(p1: any, p2: any): boolean {
+        return p1 && p2 ? p1.payment_Term_ID === p2.payment_Term_ID : p1 === p2;
+    }
+    ngOnInit() 
 {
     debugger;
     this.User_Type=(localStorage.getItem('User_Type'));
@@ -315,9 +322,12 @@ Page_Load()
             const pendingItem = parsed.PendingItem;
 
             if (this.RequirementMaster_Id > 0) {
+                this.cameFromRequirement = true;
                 this.Entry_View = true;
                 this.Edit_Sales = 0;
                 this.Sales_Print = true;
+                this.issLoading = true;
+                this.Load_Next_Price_Request_No();
                 
                 // Load Requirement Master to autofill Customer, Currency, etc.
                 this.Requirement_Master_Service_.Load_RequirementMaster(this.RequirementMaster_Id).subscribe(result => {
@@ -325,19 +335,88 @@ Page_Load()
                     if (master) {
                         this.Customer_ = { 
                             Client_Accounts_Id: master.Account_Party_Id, 
-                            Client_Accounts_Name: master.Client_Accounts_Name 
+                            Client_Accounts_Name: master.Client_Accounts_Name || master.Customer
                         } as any;
                         this.currency = { 
                             CurrencyDetails_Id: master.CurrencyDetails_Id, 
                             CurrecnyName: master.CurrecnyName 
                         } as any;
+
+                        // Map master fields
+                        this.Price_Request_Master_.Address1 = master.Address1;
+                        this.Price_Request_Master_.Address2 = master.Address2;
+                        this.Price_Request_Master_.Address3 = master.Address3;
+                        this.Price_Request_Master_.Address4 = master.Address4;
+
+                        this.Address1 = master.Address1;
+                        this.Address2 = master.Address2;
+                        this.Address3 = master.Address3;
+                        this.Address4 = master.Address4;
+                        this.Attention = { User_Details_Name: master.KindAttend } as any;
+                        this.Employee = { User_Details_Name: master.AttendEmployee } as any;
+
+                        this.Price_Request_Master_.Vatin = master.GSTNo || master.Vatin;
+                        this.Price_Request_Master_.Reference = master.RequirementNo;
+                        this.Price_Request_Master_.Description1 = master.Description1;
+                        this.Price_Request_Master_.Description2 = master.RequirementNo; // Showing Req No in Reference field
+                        this.Price_Request_Master_.AttendEmployee = master.AttendEmployee;
+                        this.Price_Request_Master_.KindAttend = master.KindAttend;
+                        this.Price_Request_Master_.POnumber = master.POnumber;
+                        this.Price_Request_Master_.Supplier_Ref_No = master.Supplier_Ref_No;
+
+                        if (master.CurrencyDetails_Id > 0 && this.currencyData) {
+                            this.currency = this.currencyData.find(c => c.CurrencyDetails_Id == master.CurrencyDetails_Id);
+                        }
+                        this.Price_Request_Master_.PriceBasis = master.PriceBasis;
+                        if (master.Payment_Term_Description > 0 || master.PaymentTerms) {
+                            this.Payment_Term = {
+                                payment_Term_ID: master.Payment_Term_Description,
+                                Payment_Term_Description: master.PaymentTerms
+                            } as any;
+                            if (this.PaymentTermData && master.Payment_Term_Description > 0) {
+                                const found = this.PaymentTermData.find(p => p.payment_Term_ID == master.Payment_Term_Description);
+                                if (found) this.Payment_Term = found;
+                            }
+                        }
+                        this.Price_Request_Master_.Delivery = master.Delivery;
+                        this.Price_Request_Master_.Validity = master.Validity;
+                        this.Price_Request_Master_.PreparedBy = master.PreparedBy;
+                        this.Price_Request_Master_.Charge1 = master.Charge1;
+                        this.Price_Request_Master_.charge1_Amount = master.charge1_Amount;
+                        this.Price_Request_Master_.Charge2 = master.Charge2;
+                        this.Price_Request_Master_.charge2_Amount = master.charge2_Amount;
+                        this.Price_Request_Master_.Additional_Discount = master.Additional_Discount;
+                        this.Price_Request_Master_.Discount_Description = master.Discount_Description;
+                        this.Price_Request_Master_.Amount_In_Words = master.Amount_In_Words;
                     }
                     
                     if (pendingItem) {
                         this.Price_Request_Details_Data = [Object.assign({}, pendingItem)];
                         this.Final_Amounts();
+                        this.issLoading = false;
+                    } else {
+                        // Load all details if no specific pending item
+                        this.Requirement_Master_Service_.Get_Requirement_Details(this.RequirementMaster_Id).subscribe(detailsResult => {
+                            const details = (detailsResult && detailsResult[0]) ? detailsResult[0] : [];
+                            this.Price_Request_Details_Data = details.map(item => ({
+                                ItemId: item.ItemId,
+                                ItemName: item.ItemName,
+                                Item_Code: item.Part_No || item.Item_Code,
+                                Quantity: item.Quantity,
+                                UnitPrice: item.UnitPrice,
+                                UnitId: item.UnitId,
+                                UnitName: item.UnitName,
+                                Description: item.Description,
+                                Discount: item.Discount || 0,
+                                Amount: item.Amount,
+                                TaxAmount: item.TaxAmount || 0,
+                                HSNCODE: item.HSNCODE
+                            }));
+                            this.Final_Amounts();
+                            this.issLoading = false;
+                        }, _err => { this.issLoading = false; });
                     }
-                });
+                }, _err => { this.issLoading = false; });
                 
                 localStorage.removeItem('Requirement_For_PriceRequest');
                 return;
@@ -345,6 +424,7 @@ Page_Load()
         } catch(e) { 
             console.error('Error parsing Requirement_For_PriceRequest', e);
             this.RequirementMaster_Id = 0; 
+            this.issLoading = false;
         }
         localStorage.removeItem('Requirement_For_PriceRequest');
     }
@@ -358,6 +438,24 @@ Page_Load()
         this.Load_Price_Request_Master();
     }
     //this.myDate=new Date();
+}
+
+Load_Next_Price_Request_No() {
+    // Only for new document; do not override while editing an existing Price Request
+    if (this.Price_Request_Master_ && Number(this.Price_Request_Master_.Price_Request_Master_Id || 0) > 0) return;
+
+    const dateParam = this.Price_Request_Master_ && this.Price_Request_Master_.EntryDate
+        ? moment(this.Price_Request_Master_.EntryDate).format('YYYY-MM-DD')
+        : moment(new Date()).format('YYYY-MM-DD');
+
+    this.Sales_Master_Service_.Get_Next_Price_Request_No(dateParam).subscribe({
+        next: (response: any) => {
+            const rows = response && response.success ? response.data : null;
+            const nextNo = rows && rows[0] ? Number(rows[0].NextNo || 0) : 0;
+            if (nextNo > 0) this.Price_Request_Master_.Price_RequestNo = String(nextNo);
+        },
+        error: () => { }
+    });
 }
 Load_Company() 
     {   
@@ -472,10 +570,16 @@ Create_New()
     this.deliveryPendingView = false;
     this.purchasePendingView = false;
     this.packingListPendingView = false;
+    this.Load_Next_Price_Request_No();
 }
 
 Close_Click()
 {
+    if (this.cameFromRequirement) {
+        this.cameFromRequirement = false;
+        this.router.navigateByUrl('/Requirement');
+        return;
+    }
     this.Entry_View = false;
     this.Edit_Sales=0;
     this.CGST_SUM=0;
@@ -844,6 +948,7 @@ Clr_Sales_Master()
     this.Price_Request_Master_.Address4="";
     this.Price_Request_Master_.Mobile="";
     this.Price_Request_Master_.Customer_Name="";
+    this.Price_Request_Master_.Email="";
     this.Price_Request_Master_.PinCode="";
     this.Price_Request_Master_.GSTNo="";    
     this.Price_Request_Master_.GrandTotal=0;
@@ -1341,6 +1446,8 @@ Customer_Change( Customer_T_)
     this.Price_Request_Master_.Address3 = this.Customer_.Address3;
     this.Price_Request_Master_.Address4 = this.Customer_.Address4;
     this.Price_Request_Master_.Mobile = this.Customer_.Mobile;
+    this.Price_Request_Master_.Mobile_No = this.Customer_.Mobile;
+    this.Price_Request_Master_.Email = this.Customer_.Email;
     this.Price_Request_Master_.PinCode=this.Customer_.PinCode;
     this.Price_Request_Master_.GSTNo=this.Customer_.GSTNo;
     this.Customer_Name = this.Price_Request_Master_.Customer_Name;
@@ -1362,6 +1469,8 @@ selectCustomer(){
     this.Price_Request_Master_.Address3 = this.Customer_.Address3;
     this.Price_Request_Master_.Address4 = this.Customer_.Address4;
     this.Price_Request_Master_.Mobile = this.Customer_.Mobile;
+    this.Price_Request_Master_.Mobile_No = this.Customer_.Mobile;
+    this.Price_Request_Master_.Email = this.Customer_.Email;
     this.Price_Request_Master_.PinCode=this.Customer_.PinCode;
     this.Price_Request_Master_.GSTNo=this.Customer_.GSTNo;
     this.Customer_Name = this.Price_Request_Master_.Customer_Name;
@@ -1546,13 +1655,6 @@ if(this.Price_Request_Details_.StockId>0)
     this.Price_Request_Details_.StockId=this.Price_Request_Details_.StockId;
 else
     this.Price_Request_Details_.StockId=0;
-// if(this.Item_==undefined || this.Item_==null ||this.Item_.ItemId==0 || this.Item_.ItemId==undefined)
-// {
-// const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Select Item Name',Type: "3" }});
-// return
-// } 
-// else
-    // Allow manual entry: either Item_Code or ItemName must be present
     const itemName = typeof this.Item_ === 'string' ? this.Item_ : (this.Item_ ? this.Item_.ItemName : '');
     const itemCode = typeof this.Barcode_ === 'string' ? this.Barcode_ : (this.Barcode_ ? this.Barcode_.Item_Code : '');
 
@@ -1563,18 +1665,18 @@ else
         });
         return;
     }
-if(this.Price_Request_Details_.Quantity==undefined || this.Price_Request_Details_.Quantity==null || this.Price_Request_Details_.Quantity==0)
-{
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Enter Quantity',Type: "3" }});
-return
-}
-else if(this.Price_Request_Details_.UnitPrice==undefined || this.Price_Request_Details_.UnitPrice==null || this.Price_Request_Details_.UnitPrice==0)
-{
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Enter Unit Price',Type: "3" }});
-return
-}
-else 
-{
+    if(this.Price_Request_Details_.Quantity==undefined || this.Price_Request_Details_.Quantity==null || this.Price_Request_Details_.Quantity==0)
+    {
+    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Enter Quantity',Type: "3" }});
+    return
+    }
+    // Set default unit price to 0 if not provided, since it's hidden.
+    if(this.Price_Request_Details_.UnitPrice==undefined || this.Price_Request_Details_.UnitPrice==null)
+    {
+        this.Price_Request_Details_.UnitPrice = 0;
+    }
+    else 
+    {
 if(this.Price_Request_Details_Data==undefined)
 this.Price_Request_Details_Data=[];
 if( this.Barcode_==null)
@@ -1632,18 +1734,24 @@ Save_Price_Request(Printstatus:number)
     }
 
 
-    // if(this.Customer_ == undefined || this.Customer_ == null)
-    // { }
-        if(this.Customer_.Client_Accounts_Id==0 || this.Customer_.Client_Accounts_Id==null || this.Customer_.Client_Accounts_Id==undefined){
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Choose Customer',Type:"3"}});
+    // Removed strict Customer object check, focus on Customer Name as required.
+    if(this.Price_Request_Master_.Customer_Name == undefined || this.Price_Request_Master_.Customer_Name == null || this.Price_Request_Master_.Customer_Name === '')
+    {
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Customer Name is required',Type:"3"}});
         return
-        }  
-    
-    debugger; 
-    if(this.currency.CurrencyDetails_Id == undefined || this.currency.CurrencyDetails_Id == 0 ){
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Choose currency',Type:"3"}});
+    }
+
+    if(this.Price_Request_Master_.EntryDate == undefined || this.Price_Request_Master_.EntryDate == null || this.Price_Request_Master_.EntryDate === '')
+    {
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Choose Date',Type:"3"}});
         return
-    }    
+    }
+
+    // Default Currency if not set
+    if((this.currency == undefined || this.currency == null || this.currency.CurrencyDetails_Id == undefined || this.currency.CurrencyDetails_Id == 0) && this.currencyData != undefined && this.currencyData != null && this.currencyData.length > 0)
+    {
+        this.currency = this.currencyData[0];
+    }
     this.Price_Request_Master_.Account_Party_Id=this.Customer_.Client_Accounts_Id;
     this.Price_Request_Master_.User_Id=Number(this.Login_User_Id);
     this.Price_Request_Master_.Price_Request_Details=this.Price_Request_Details_Data;
@@ -1658,6 +1766,11 @@ Save_Price_Request(Printstatus:number)
     this.Price_Request_Master_.PaymentTerms = this.Payment_Term.Payment_Term_Description;
     //this.Price_Request_Master_.EntryDate = this.formatDate(this.Price_Request_Master_.EntryDate);
     this.Price_Request_Master_.CurrencyId = this.currency.CurrencyDetails_Id;
+    this.Price_Request_Master_.AttendEmployee = this.Employee && typeof this.Employee === 'object' ? this.Employee.User_Details_Name : (typeof this.Employee === 'string' ? this.Employee : '');
+    this.Price_Request_Master_.AttendEmployeeId = this.Employee && typeof this.Employee === 'object' ? this.Employee.User_Details_Id : 0;
+    this.Price_Request_Master_.KindAttend = this.Attention && typeof this.Attention === 'object' ? this.Attention.User_Details_Name : (typeof this.Attention === 'string' ? this.Attention : '');
+    this.Price_Request_Master_.KindAttendId = this.Attention && typeof this.Attention === 'object' ? this.Attention.User_Details_Id : 0;
+
     console.log("Before Price Request API call");
     this.issLoading = true;
 
@@ -1702,9 +1815,15 @@ Save_Price_Request(Printstatus:number)
                     });
                 }
 
-                this.dialogBox.open(DialogBox_Component, {
+                const dialogRef = this.dialogBox.open(DialogBox_Component, {
                     panelClass: 'Dialogbox-Class',
                     data: { Message: 'Saved Successfully', Type: "false" }
+                });
+                dialogRef.afterClosed().subscribe(() => {
+                    if (this.cameFromRequirement) {
+                        this.cameFromRequirement = false;
+                        this.router.navigateByUrl('/Requirement');
+                    }
                 });
                 this.Edit_Sales = 1;
                 this.Sales_Print = true;

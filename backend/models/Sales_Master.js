@@ -402,7 +402,8 @@ var Sales_Master = {
                 Price_Request_Master_.charge1_Amount, Price_Request_Master_.Charge2, Price_Request_Master_.charge2_Amount, Price_Request_Master_.Discount_Description,
                 Price_Request_Master_.Additional_Discount, Price_Request_Master_.Description2, Price_Request_Master_.Amount_In_Words, Price_Request_Master_.PreparedBy,
                 Price_Request_Master_.Charge1per, Price_Request_Master_.Payment_Term_Description, Price_Request_Master_.VAT_Percentage, Price_Request_Master_.VAT_Amount, Price_Request_Master_.TaxableAmount,
-                Price_Request_Master_.KindAttend, Price_Request_Master_.PaymentTermValue, Price_Request_Master_.Supplier_Ref_No, Price_Request_Master_.Price_Request_Details,
+                Price_Request_Master_.KindAttend, Price_Request_Master_.PaymentTermValue, Price_Request_Master_.Supplier_Ref_No,
+                Price_Request_Master_.Mobile_No, Price_Request_Master_.Email, Price_Request_Master_.Price_Request_Details,
             ]);
             if (log) log.info("sp.call", { name: "Save_Price_Request" });
             return (new storedProcedure("Save_Price_Request", params, connection)).result();
@@ -428,6 +429,33 @@ var Sales_Master = {
 
     Load_Price_Request_Master: function (Price_Request_Master_Id_) {
         return db.promise().query("CALL Load_Price_Request_Master(@Price_Request_Master_Id_ :=?)", [Price_Request_Master_Id_]).then(r => r[0]);
+    },
+
+    Get_Next_Price_Request_No: async function (EntryDate_) {
+        const entryDate = EntryDate_ ? String(EntryDate_) : null;
+        // Determine the accounting year range for the given entry date
+        const [yrRows] = await db.promise().query(
+            "SELECT YearFrom, YearTo FROM Account_Years WHERE DATE(?) BETWEEN DATE(YearFrom) AND DATE(YearTo) LIMIT 1",
+            [entryDate || new Date()]
+        );
+
+        let yearFrom = null;
+        let yearTo = null;
+        if (Array.isArray(yrRows) && yrRows.length > 0) {
+            yearFrom = yrRows[0].YearFrom;
+            yearTo = yrRows[0].YearTo;
+        }
+
+        let maxQuery = "SELECT COALESCE(MAX(RequestNumber),0) AS MaxNo FROM price_request_master WHERE DeleteStatus = 0";
+        const params = [];
+        if (yearFrom && yearTo) {
+            maxQuery += " AND DATE(EntryDate) BETWEEN DATE(?) AND DATE(?)";
+            params.push(yearFrom, yearTo);
+        }
+
+        const [rows] = await db.promise().query(maxQuery, params);
+        const maxNo = rows && rows[0] ? Number(rows[0].MaxNo || 0) : 0;
+        return [{ NextNo: maxNo + 1 }];
     },
 
     Get_ReferenceId_ByQuotation: function (SalesQuotationMaster_Id_) {
