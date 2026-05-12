@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { payment_term_Service } from '../../../services/payment_term.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { payment_term } from '../../../models/payment_term';
 @Component({
 selector: 'app-Payment_Term',

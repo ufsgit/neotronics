@@ -4,7 +4,7 @@ import { finalize } from 'rxjs/operators';
 
 import { Lead_Service } from '../../../services/Lead.Service';
 import { Lead } from '../../../models/Lead';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { User_Details_Service } from '../../../services/User_Details.Service';
 import { Requirement_Master_Service } from '../../../services/Requirement_Master.Service';

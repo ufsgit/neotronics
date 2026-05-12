@@ -24,7 +24,7 @@ display: {
 dateInput: 'DD/MM/YYYY',monthYearLabel: 'MMM YYYY',dateA11yLabel: 'DD/MM/YYYY',monthYearA11yLabel: 'MMMM YYYY',
 },
 };
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatDialogConfig} from '@angular/material';@Component({
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';@Component({
 selector: 'app-Employee_Details',
 templateUrl: './Receipt_Voucher.component.html',
 styleUrls: ['./Receipt_Voucher.component.css'],

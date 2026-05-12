@@ -7,7 +7,8 @@ import{Stock_Take_Name_Service} from '../../../services/Stock_Take_Name.Service'
 import {Stock_Take_Master_Service} from '../../../services/Stock_Take_Master.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Stock } from '../../../models/Stock';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatDialogConfig, MatButtonToggleGroup} from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
+import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';

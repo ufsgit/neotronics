@@ -100,12 +100,12 @@
    [(ngModel)]="Client_Accounts_.PinCode" name="Client_Accounts_.PinCode" [ngModelOptions]="{standalone: true}">
     </div>
 
-<div class="col-md-12 alighyn-div-margin-search-item-group">                     
+<!-- <div class="col-md-12 alighyn-div-margin-search-item-group">                     
     <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> VATIN
     </label>
    <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
    [(ngModel)]="Client_Accounts_.GSTNo" name="Client_Accounts_.GSTNo" [ngModelOptions]="{standalone: true}">
-    </div>
+    </div> -->
  
                     
 <!-- <div class="col-md-12">
@@ -117,12 +117,12 @@
 
 </div>
     <div class="col-md-6">                    
-        <div class="col-md-12 alighyn-div-margin-search-item-group">                     
+        <!-- <div class="col-md-12 alighyn-div-margin-search-item-group">                     
             <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Country
             </label>
         <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
         [(ngModel)]="Client_Accounts_.Country" name="Client_Accounts_.Country" [ngModelOptions]="{standalone: true}">
-            </div>        
+            </div> -->        
         <div class="col-md-12 alighyn-div-margin-search-item-group">                     
             <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Phone
             </label>
@@ -155,12 +155,45 @@
         <option value="1">Debit</option>
         </select>
         </div> -->        
-        <div class="col-md-12 alighyn-div-margin-search-item-group">                     
-            <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Payment Term
-            </label>
-            <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-            [(ngModel)]="Client_Accounts_.Payment_Term " name="Client_Accounts_.Payment_Term" [ngModelOptions]="{standalone: true}">
-            </div>
+        <div class="col-md-12" style="margin-top: 15px;">
+    <h5 style="font-weight: bold; color: #333;">Contact Persons</h5>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead style="background-color: #f1f1f1;">
+                <tr>
+                    <th style="width: 40px;">#</th>
+                    <th>Contact Person</th>
+                    <th>Contact Number</th>
+                    <th>Designation</th>
+                    <th style="width: 50px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of Client_Accounts_.Contact_Person_Data; let i = index">
+                    <td>{{i + 1}}</td>
+                    <td>
+                        <input type="text" class="form-control" [(ngModel)]="item.contact_person" name="contact_person_{{i}}" [ngModelOptions]="{standalone: true}">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" [(ngModel)]="item.contact_number" name="contact_number_{{i}}" [ngModelOptions]="{standalone: true}">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" [(ngModel)]="item.designation" name="designation_{{i}}" [ngModelOptions]="{standalone: true}">
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-link btn-sm btn-just-icon" (click)="Remove_Contact_Person(i)">
+                            <i class="material-icons">close</i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-sm btn-primary" (click)="Add_Contact_Person()">
+            <i class="fa fa-plus"></i> Add Contact Person
+        </button>
+    </div>
+</div>
+
         <div class="col-md-12 butn-crct-alghn-dwnwrd-users-srch-new">
                 <button mat-raised-button type="button" [hidden]="Item_Save==false"id="Save_Button" [hidden]="Client_Accounts_Save==false" class="btn btn-danger pull-right"(click)="Save_Client_Accounts()">Save</button>
                 <button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>

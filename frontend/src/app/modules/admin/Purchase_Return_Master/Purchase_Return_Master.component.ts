@@ -23,7 +23,7 @@ export const MY_FORMATS = {
     },
     display: { dateInput: 'DD/MM/YYYY', monthYearLabel: 'MMM YYYY', dateA11yLabel: 'DD/MM/YYYY', monthYearA11yLabel: 'MMMM YYYY', },
 };
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
  @Component({
 selector: 'app-purchase_return_master',
 templateUrl: './purchase_return_master.component.html',

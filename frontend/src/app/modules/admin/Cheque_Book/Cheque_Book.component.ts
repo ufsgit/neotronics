@@ -10,7 +10,7 @@ import { Account_Group } from '../../../models/Account_Group';
 import { Cheque_Book } from '../../../models/Cheque_Book';
 import { Cheque_Leaves } from '../../../models/Cheque_Leaves';
 
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 @Component({
     selector: 'app-Cheque_Book',

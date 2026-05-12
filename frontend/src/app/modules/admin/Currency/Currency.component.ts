@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { currencydetails } from '../../../models/currencydetails';
 import { currencydetails_Service } from '../../../services/currencydetails.Service';
 @Component({

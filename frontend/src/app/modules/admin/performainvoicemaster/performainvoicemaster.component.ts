@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 // import { performainvoicemaster_Service } from '../../../services/performainvoicemaster.service';
 // import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { performainvoicemaster } from '../../../models/performainvoicemaster';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';import { performainvoicemaster_Service } from 'app/services/performainvoicemaster.Service';
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';import { performainvoicemaster_Service } from 'app/services/performainvoicemaster.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 // import { DialogBoxComponent } from 'app/components/dialog-box/dialog-box.component';
 @Component({

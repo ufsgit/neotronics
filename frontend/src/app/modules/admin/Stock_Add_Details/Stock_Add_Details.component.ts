@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Stock_Add_Details_Service } from '../../../services/Stock_Add_Details.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Stock_Add_Details } from '../../../models/Stock_Add_Details';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { Item_Group } from '../../../models/Item_Group';
 @Component({
 selector: 'app-Stock_Add_Details',

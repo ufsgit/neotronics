@@ -28,7 +28,7 @@ export const MY_FORMATS = {
           dateInput: 'LL', monthYearLabel: 'MMM YYYY',dateA11yLabel: 'LL',monthYearA11yLabel: 'MMMM YYYY',
         },
       };
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
 import { Stock } from '../../../models/Stock';
 
 @Component({

@@ -9,7 +9,7 @@ import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Journal_Entry } from '../../../models/Journal_Entry';
 import { Client_Accounts } from '../../../models/Client_Accounts';
 import { PaymentMode } from '../../../models/PaymentMode';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import {FormControl} from '@angular/forms';
 

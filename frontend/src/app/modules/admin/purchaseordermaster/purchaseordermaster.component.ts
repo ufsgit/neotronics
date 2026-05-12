@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 // import { purchaseordermaster_Service } from '../../../services/purchaseordermaster.service';
 // import { DialogBoxComponent } from '../DialogBox/DialogBox.component';
 import { purchaseordermaster } from '../../../models/purchaseordermaster';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';import { purchaseordermaster_Service } from 'app/services/purchaseordermaster.Service';
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';import { purchaseordermaster_Service } from 'app/services/purchaseordermaster.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 // import { DialogBoxComponent } from 'app/components/dialog-box/dialog-box.component';
 @Component({

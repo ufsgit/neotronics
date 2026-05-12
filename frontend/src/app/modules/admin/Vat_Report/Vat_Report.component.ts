@@ -23,7 +23,7 @@ export const MY_FORMATS = {
     dateInput: 'DD/MM/YYYY',monthYearLabel: 'MMM YYYY',dateA11yLabel: 'DD/MM/YYYY',monthYearA11yLabel: 'MMMM YYYY',
     },
     };
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
 import { debuglog } from 'util';
 import { Receipt_Voucher_Service } from 'app/services/Receipt_Voucher.Service';
 import { Client_Accounts_Service } from 'app/services/Client_Accounts.Service';

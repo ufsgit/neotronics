@@ -7,7 +7,7 @@ import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Company } from '../../../models/Company';
 import {Account_Group } from '../../../models/Account_Group';
 
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-Company',
 templateUrl: './Company.component.html',
 styleUrls: ['./Company.component.css']

@@ -21,7 +21,8 @@ export const MY_FORMATS = {
     },
     display: { dateInput: 'DD/MM/YYYY', monthYearLabel: 'MMM YYYY', dateA11yLabel: 'DD/MM/YYYY', monthYearA11yLabel: 'MMMM YYYY', },
 };
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Account_Group } from '../../../models/Account_Group';
 import { Item_Group_Service } from '../../../services/Item_Group.Service';
 import { Item_Group } from '../../../models/Item_Group';

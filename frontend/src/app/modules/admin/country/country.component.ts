@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 // import { country_Service } from '../../../services/country.service';
 // import { DialogBoxComponent } from '../DialogBox/DialogBox.component';
 import { country } from '../../../models/country';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';import { country_Service } from 'app/services/country.Service';
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';import { country_Service } from 'app/services/country.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 
 

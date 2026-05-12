@@ -9,7 +9,7 @@ import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Client_Accounts } from '../../../models/Client_Accounts';
 import {Account_Group } from '../../../models/Account_Group';
 
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-Bank',
 templateUrl: './Bank.component.html',
 styleUrls: ['./Bank.component.css']

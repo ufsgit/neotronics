@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 // import { salesquotationmaster_Service } from '../../../services/salesquotationmaster.service';
 // import { DialogBoxComponent } from '../DialogBox/DialogBox.component';
 import { salesquotationmaster } from '../../../models/salesquotationmaster';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';import { salesquotationmaster_Service } from 'app/services/salesquotationmaster.Service';
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';import { salesquotationmaster_Service } from 'app/services/salesquotationmaster.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 // import { DialogBoxComponent } from 'app/components/dialog-box/dialog-box.component';
 @Component({

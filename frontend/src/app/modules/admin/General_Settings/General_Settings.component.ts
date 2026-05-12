@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { General_Settings_Service } from '../../../services/General_Settings.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { General_Settings } from '../../../models/General_Settings';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-General_Settings',
 templateUrl: './General_Settings.component.html',
 styleUrls: ['./General_Settings.component.css']

@@ -6,7 +6,7 @@ import { User_Details } from '../../../models/User_Details';
 import { User_Menu_Selection } from '../../../models/User_Menu_Selection';
 import { User_Type } from '../../../models/User_Type';
 import { Client_Accounts } from '../../../models/Client_Accounts';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { Receipt_Voucher_Service } from '../../../services/Receipt_Voucher.Service';
 import { Working_Status } from '../../../models/Working_Status';
 @Component({

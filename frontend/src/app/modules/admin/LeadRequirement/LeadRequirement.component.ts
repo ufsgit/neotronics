@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Lead } from '../../../models/Lead';
 import { Lead_Service } from '../../../services/Lead.Service';
 import { LeadRequirementService } from '../../../services/LeadRequirement.Service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 
 type LeadRequirementDetailRow = {

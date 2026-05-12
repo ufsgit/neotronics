@@ -10,7 +10,7 @@ import { Brand } from '../../../models/Brand';
 import { HSN } from '../../../models/HSN';
 import { Under_Brand } from '../../../models/Under_Brand';
 // import { Brand_Group } from '../../../models/Brand_Group';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-Brand',
 templateUrl: './Brand.component.html',
 styleUrls: ['./Brand.component.css']

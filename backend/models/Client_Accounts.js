@@ -48,7 +48,49 @@ var Client_Accounts = {
 				Client_Accounts_.UserId,
 				Client_Accounts_.Employee_Id
 			],
-			callback
+			function (err, rows) {
+				console.log('Backend Save_Client_Accounts Rows:', rows);
+				if (err) {
+					return callback(err, rows);
+				}
+				if (rows && rows[0] && rows[0][0] && rows[0][0].Client_Accounts_Id_ > 0) {
+					var Client_Accounts_Id = rows[0][0].Client_Accounts_Id_;
+					var Contact_Person_Data = Client_Accounts_.Contact_Person_Data;
+					
+					db.query("DELETE FROM contact_person WHERE Client_Accounts_Id = ?", [Client_Accounts_Id], function (err2, result2) {
+						if (err2) {
+							console.log(err2);
+						}
+						if (Contact_Person_Data && Contact_Person_Data.length > 0) {
+							var values = [];
+							for (var i = 0; i < Contact_Person_Data.length; i++) {
+								if (Contact_Person_Data[i].contact_person != "" && Contact_Person_Data[i].contact_person != undefined) {
+									values.push([
+										Client_Accounts_Id,
+										Contact_Person_Data[i].contact_person,
+										Contact_Person_Data[i].contact_number,
+										Contact_Person_Data[i].designation
+									]);
+								}
+							}
+							if (values.length > 0) {
+								db.query("INSERT INTO contact_person (Client_Accounts_Id, contact_person, contact_number, designation) VALUES ?", [values], function (err3, result3) {
+									if (err3) {
+										console.log(err3);
+									}
+									callback(err, rows);
+								});
+							} else {
+								callback(err, rows);
+							}
+						} else {
+							callback(err, rows);
+						}
+					});
+				} else {
+					callback(err, rows);
+				}
+			}
 		);
 	},
 	Delete_Client_Accounts: function (Client_Accounts_Id_, callback) {
@@ -62,7 +104,20 @@ var Client_Accounts = {
 		return db.query(
 			"CALL Get_Client_Accounts(@Client_Accounts_Id_ :=?)",
 			[Client_Accounts_Id_],
-			callback
+			function (err, rows) {
+				if (err) {
+					return callback(err, rows);
+				}
+				db.query("SELECT * FROM contact_person WHERE Client_Accounts_Id = ?", [Client_Accounts_Id_], function (err2, rows2) {
+					if (err2) {
+						console.log(err2);
+					}
+					if (rows && rows[0] && rows[0][0]) {
+						rows[0][0].Contact_Person_Data = rows2;
+					}
+					callback(err, rows);
+				});
+			}
 		);
 	},
 	Search_Client_Accounts: function (

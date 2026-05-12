@@ -5,7 +5,7 @@ import { finalize } from 'rxjs/operators';
 import { Item_Group_Service } from '../../../services/Item_Group.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Item_Group } from '../../../models/Item_Group';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-Item_Group',
 templateUrl: './Item_Group.component.html',
 styleUrls: ['./Item_Group.component.css']

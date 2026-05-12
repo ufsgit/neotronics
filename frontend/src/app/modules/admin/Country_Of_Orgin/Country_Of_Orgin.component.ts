@@ -4,7 +4,7 @@ import { finalize } from 'rxjs/operators';
 
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { country } from '../../../models/country';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { country_Service } from '../../../services/country.Service';
 @Component({
 selector: 'app-Country_Of_Orgin',

@@ -17,11 +17,11 @@ export const MY_FORMATS = {
     dateInput: 'DD/MM/YYYY',monthYearLabel: 'MMM YYYY',dateA11yLabel: 'DD/MM/YYYY',monthYearA11yLabel: 'MMMM YYYY',
     },
     };
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 
 
-// import {MatDialog} from '@angular/material';
+// import { MatDialog } from '@angular/material/dialog';
 import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-Account_Years',
 templateUrl: './Account_Years.component.html',

@@ -20,7 +20,7 @@ parse: {
     },
   display: {dateInput: 'DD/MM/YYYY', monthYearLabel: 'MMM YYYY',  dateA11yLabel: 'DD/MM/YYYY',monthYearA11yLabel: 'MMMM YYYY',},
 };
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatDialogConfig} from '@angular/material';import { Employee_Details_Service } from 'app/services/Employee_Details.Service';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';import { Employee_Details_Service } from 'app/services/Employee_Details.Service';
 @Component({
 selector: 'app-Employee_Details',
 templateUrl: './Employee_Details.component.html',

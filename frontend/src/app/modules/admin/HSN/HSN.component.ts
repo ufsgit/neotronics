@@ -5,7 +5,7 @@ import { finalize } from 'rxjs/operators';
 import { HSN_Service } from '../../../services/HSN.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { HSN } from '../../../models/HSN';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-HSN',
 templateUrl: './HSN.component.html',
 styleUrls: ['./HSN.component.css']

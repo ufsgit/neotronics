@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Receipt_Reference_Service } from '../../../services/Receipt_Reference.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Receipt_Reference } from '../../../models/Receipt_Reference';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-Receipt_Reference',
 templateUrl: './Receipt_Reference.component.html',
 styleUrls: ['./Receipt_Reference.component.css']

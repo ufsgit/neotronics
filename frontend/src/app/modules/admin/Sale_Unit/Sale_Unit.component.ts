@@ -5,7 +5,7 @@ import { finalize } from 'rxjs/operators';
 import { Sale_Unit_Service } from '../../../services/Sale_Unit.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Sale_Unit } from '../../../models/Sale_Unit';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-Sale_Unit',
 templateUrl: './Sale_Unit.component.html',
 styleUrls: ['./Sale_Unit.component.css']

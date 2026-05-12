@@ -147,7 +147,8 @@ import { Location, LocationStrategy, PathLocationStrategy } from '@angular/commo
 import { UserData } from '../../services/user-data';
 import { Router } from '@angular/router';
 // import { ROUTES } from '../sidebar/sidebar.component';
-import { MatButtonModule, MatMenuModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 declare const $: any;
 declare interface RouteInfo {
   path: string;

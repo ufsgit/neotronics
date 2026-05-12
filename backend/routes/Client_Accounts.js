@@ -9,7 +9,7 @@ router.post("/Save_Client_Accounts/", asyncHandler(async function (req, res, nex
 			console.log(err);
 			res.json(err);
 		} else {
-			return sendSuccess(res, { message: "Saved", data: rows });
+			res.json(rows);
 		}
 	});
 }));

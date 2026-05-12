@@ -4,10 +4,10 @@ import { Client_Accounts_Service } from '../../../services/Client_Accounts.Servi
 import { Journal_Entry_Service } from '../../../services/Journal_Entry.Service';
 import { Account_Group_Service } from '../../../services/Account_Group.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
-import { Client_Accounts } from '../../../models/Client_Accounts';
+import { Client_Accounts, Contact_Person } from '../../../models/Client_Accounts';
 import {Account_Group } from '../../../models/Account_Group';
 
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-Client_Accounts',
 templateUrl: './Client_Accounts.component.html',
 styleUrls: ['./Client_Accounts.component.css']
@@ -186,6 +186,8 @@ this.Client_Accounts_.GSTNo="";
 this.Client_Accounts_.Opening_Balance=0;
 this.Client_Accounts_.UserId=0;
 this.Client_Accounts_.Payment_Term="";
+this.Client_Accounts_.Contact_Person_Data = [];
+this.Add_Contact_Person();
 }
 Search_Client_Accounts()
 {
@@ -299,26 +301,33 @@ this.Client_Accounts_.Account_Group_Id=this.Account_Group_.Account_Group_Id;
 this.Client_Accounts_.UserId=Number(this.Login_User);
 
 debugger
-this.Client_Accounts_Service_.Save_Client_Accounts(this.Client_Accounts_).subscribe(Save_status => {
-     debugger
-    Save_status=Save_status[0];
+this.Client_Accounts_Service_.Save_Client_Accounts(this.Client_Accounts_).subscribe((Save_status: any) => {
+    console.log('Save_Client_Accounts Response:', Save_status);
+    
+    let result_id = 0;
+    if (Save_status && Save_status[0] && Save_status[0][0]) {
+        result_id = Number(Save_status[0][0].Client_Accounts_Id_);
+    } else if (Save_status && Save_status.success && Save_status.data && Save_status.data[0] && Save_status.data[0][0]) {
+        // Fallback for sendSuccess format if it's still being used somewhere
+        result_id = Number(Save_status.data[0][0].Client_Accounts_Id_);
+    }
 
-    if(Number(Save_status[0].Client_Accounts_Id_)>0)
-{
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
-this.Search_Client_Accounts();
-this.Clr_Client_Accounts();
-}
-else if (Number(Save_status[0].Client_Accounts_Id_)==-1)
-{
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Acoount Name Already Exists',Type:"2"}});
-}
-else{
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-}
+    if(result_id > 0)
+    {
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
+        this.Search_Client_Accounts();
+        this.Clr_Client_Accounts();
+    }
+    else if (result_id == -1)
+    {
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Account Name Already Exists',Type:"2"}});
+    }
+    else{
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
+    }
 
-this.issLoading=false;
- },
+    this.issLoading=false;
+},
  Rows => { 
     this.issLoading=false;
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
@@ -326,6 +335,25 @@ const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogb
 
 this.Clr_Client_Accounts();
 }
+}
+
+Add_Contact_Person() {
+	if (this.Client_Accounts_.Contact_Person_Data == undefined) {
+		this.Client_Accounts_.Contact_Person_Data = [];
+	}
+	var new_contact = new Contact_Person();
+	new_contact.contact_person_id = 0;
+	new_contact.contact_person = "";
+	new_contact.contact_number = "";
+	new_contact.designation = "";
+	this.Client_Accounts_.Contact_Person_Data.push(new_contact);
+}
+
+Remove_Contact_Person(index) {
+	this.Client_Accounts_.Contact_Person_Data.splice(index, 1);
+	if (this.Client_Accounts_.Contact_Person_Data.length == 0) {
+		this.Add_Contact_Person();
+	}
 }
 Edit_Client_Accounts(Client_Accounts_e:Client_Accounts,index)
 {
@@ -347,6 +375,20 @@ this.Account_Group_=this.Account_Group_Temp;
 this.Employee_Details_Temp.Client_Accounts_Id=Client_Accounts_e.Employee_Id;
 this.Employee_Details_Temp.Client_Accounts_Name=Client_Accounts_e.Employee;
 this.Employee_=this.Employee_Details_Temp;
+
+this.issLoading = true;
+this.Client_Accounts_Service_.Get_Client_Accounts(Client_Accounts_e.Client_Accounts_Id).subscribe((Rows: any) => {
+	if (Rows != null) {
+		this.Client_Accounts_.Contact_Person_Data = Rows[0][0].Contact_Person_Data;
+		if (this.Client_Accounts_.Contact_Person_Data == undefined || this.Client_Accounts_.Contact_Person_Data.length == 0) {
+			this.Add_Contact_Person();
+		}
+	}
+	this.issLoading = false;
+},
+Rows => {
+	this.issLoading = false;
+});
 
 }
 }

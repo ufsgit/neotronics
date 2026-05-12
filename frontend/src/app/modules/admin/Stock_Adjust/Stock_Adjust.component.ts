@@ -5,7 +5,8 @@ import{Stock_Add_Master_Service} from '../../../services/Stock_Add_Master.Servic
 import { Sales_Master_Service } from '../../../services/Sales_Master.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Stock } from '../../../models/Stock';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatDialogConfig, MatButtonToggleGroup} from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
+import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';

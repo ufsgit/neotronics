@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 // import { currencydetails_Service } from '../../../services/currencydetails.service';
 // import { DialogBoxComponent } from '../DialogBox/DialogBox.component';
 import { currencydetails } from '../../../models/currencydetails';
-import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';import { currencydetails_Service } from 'app/services/currencydetails.Service';
+import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';import { currencydetails_Service } from 'app/services/currencydetails.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 // import { DialogBoxComponent } from 'app/components/dialog-box/dialog-box.component';
 @Component({

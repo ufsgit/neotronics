@@ -6,7 +6,7 @@ import { Stock_Add_Details } from '../../../models/Stock_Add_Details';
 import { User_Details } from '../../../models/User_Details';
  
 import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA,MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
 import {FormControl} from '@angular/forms';
  
 import { DialogBox_Component } from "../DialogBox/DialogBox.component";

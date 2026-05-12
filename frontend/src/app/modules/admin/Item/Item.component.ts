@@ -11,7 +11,7 @@ import { Item } from '../../../models/Item';
 import { HSN } from '../../../models/HSN';
 import { Sale_Unit } from '../../../models/Sale_Unit';
 import { Item_Group } from '../../../models/Item_Group';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 @Component({
 selector: 'app-Item',
