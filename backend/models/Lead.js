@@ -42,11 +42,16 @@ var Lead = {
         return db.query("CALL Get_Leads(?, ?)", [1, 1000000], callback);
     },
     Get_Dropdowns_Lead: function (callback) {
-        console.log("MODEL: Calling SP Get_Dropdowns_Lead");
         return db.query("CALL Get_Dropdowns_Lead()", [], (err, rows) => {
-            if (err) console.error("MODEL ERROR: Get_Dropdowns_Lead:", err);
-            else console.log("MODEL SUCCESS: Get_Dropdowns_Lead raw result:", rows ? "Data present" : "No data");
-            callback(err, rows);
+            if (err) return callback(err, rows);
+            let results = (rows && Array.isArray(rows[0])) ? rows : [rows];
+            db.query("SELECT Vertical_Id, Vertical_Name FROM Vertical WHERE DeleteStatus = 0 ORDER BY Vertical_Name", (vErr, vRows) => {
+                if (!vErr && vRows) results[3] = vRows;
+                db.query("SELECT Designation_Id, Designation_Name FROM Designation WHERE DeleteStatus = 0 ORDER BY Designation_Name", (dErr, dRows) => {
+                    if (!dErr && dRows) results[4] = dRows;
+                    callback(null, results);
+                });
+            });
         });
     },
     Delete_Lead: function (Lead_Id, callback) {

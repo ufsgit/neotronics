@@ -72,6 +72,11 @@ import { LeadRequirementComponent } from './LeadRequirement/LeadRequirement.comp
 import { LeadRequirementTransactionComponent } from './LeadRequirementTransaction/LeadRequirementTransaction.component';
 import { Price_RequestComponent } from './Price_Request/Price_Request.component';
 import { Price_ResponseComponent } from './Price_Response/Price_Response.component';
+import { VerticalComponent } from './Vertical/Vertical.component';
+import { DesignationComponent } from './Designation/Designation.component';
+import { User_RoleComponent } from './User_Role/User_Role.component';
+import { User_TypeComponent } from './User_Type/User_Type.component';
+import { Working_StatusComponent } from './Working_Status/Working_Status.component';
 
 export const AdminRoutes: Routes = [
 	{
@@ -149,6 +154,11 @@ export const AdminRoutes: Routes = [
 			{ path: 'SalesOrder', component: SalesOrderComponent },
 			{ path: "PriceRequest", component: Price_RequestComponent },
 			{ path: "PriceResponse", component: Price_ResponseComponent },
+			{ path: "Vertical", component: VerticalComponent },
+			{ path: "Designation", component: DesignationComponent },
+			{ path: "User_Role", component: User_RoleComponent },
+			{ path: "User_Type", component: User_TypeComponent },
+			{ path: "Working_Status", component: Working_StatusComponent },
 
 
 			{ path: "**", redirectTo: "/auth/login" },

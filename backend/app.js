@@ -96,6 +96,7 @@ var Stock = require('./routes/Stock');
 var User_Details = require('./routes/User_Details');
 var User_Menu_Selection = require('./routes/User_Menu_Selection');
 var User_Type = require('./routes/User_Type');
+var User_Role = require('./routes/User_Role');
 var Working_Status = require('./routes/Working_Status');
 var stock_take_name =  require('./routes/stock_take_name');
 var Stock_Take_Master=require('./routes/Stock_Take_Master');
@@ -105,6 +106,8 @@ var requirementmaster = require('./routes/requirementmaster');
 var requirementdetails = require('./routes/requirementdetails');
 var requirementworkflow = require('./routes/requirementworkflow');
 var Sales_Order_Master = require('./routes/sales_order_master');
+var Vertical = require('./routes/Vertical');
+var Designation = require('./routes/Designation');
 
 var app = express();
 var server = http.Server(app);
@@ -198,6 +201,7 @@ app.use('/Stock',Stock);
 app.use('/User_Details',User_Details);
 app.use('/User_Menu_Selection',User_Menu_Selection);
 app.use('/User_Type',User_Type);
+app.use('/User_Role',User_Role);
 app.use('/Working_Status',Working_Status);
 app.use('/stock_take_name',stock_take_name);
 app.use('/Stock_Take_Master',Stock_Take_Master);
@@ -207,6 +211,8 @@ app.use('/requirementmaster', requirementmaster);
 app.use('/requirementdetails', requirementdetails);
 app.use('/requirementworkflow', requirementworkflow);
 app.use('/Sales_Order_Master', Sales_Order_Master);
+app.use('/Vertical', Vertical);
+app.use('/Designation', Designation);
 app.use(errorHandler);
 
 app.use(function(req, res, next) {

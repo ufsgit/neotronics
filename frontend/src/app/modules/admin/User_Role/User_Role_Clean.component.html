@@ -1,0 +1,106 @@
+<div *ngIf="issLoading" class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+</div>
+
+<div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+    <div class="container-fluid">
+        <!-- Entry View Section -->
+        <div class="row mb-0" *ngIf="Entry_View" style="background-color: #f1f1f1;">
+            <div class="row mb-1 card-body">
+                <div class="card">
+                    <div class="card-body" style="background-color: #f1f1f1;">
+                        <div class="row">
+                            <div class="col-md-6 section-user-block-ne other-department-user-block">
+                                <div class="col-md-12 mb-2">
+                                    <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">User Role Name 
+                                        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span>
+                                    </label>
+                                    <mat-form-field class="col-md-9 margin-lh-rh-to-crect-textbox" 
+                                        style="border: 1px solid lightgrey !important; height: 47px;padding-left: 10px;">
+                                        <input matInput type="text" maxlength="50" [(ngModel)]="User_Role_Name" 
+                                            name="User_Role_Name" class="for-input-selct-tblelst">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <button mat-raised-button type="button" [hidden]="User_Role_Save==false" 
+                                        id="Save_Button" class="btn btn-danger pull-right" (click)="Save_User_Role()">Save</button>
+                                    <button mat-raised-button type="button" class="btn btn-danger pull-right" 
+                                        (click)="Close_Click()">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- List View Section -->
+        <div class="row col-md-12 mb-0" *ngIf="!Entry_View">
+            <div class="row mb-1 card-body" 
+                style="align-items: center; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; 
+                       background: #fff; width: 100%;padding: 3px;background-color: #f1f1f1;
+                       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);">
+                
+                <div class="col-md-3">
+                    <label class="col-md-4 padd-lft-crect-alighn-wole-div">User Role Name</label>
+                    <mat-form-field class="col-md-9 mb-1 margin-lh-rh-to-crect-textbox" 
+                        style="border: 1px solid lightgrey !important;background-color: #fff; height: 37px;padding-left: 10px;">
+                        <input matInput type="text" [(ngModel)]="Search_User_Role_Name_" name="Search_User_Role_Name_" 
+                            class="margin-lh-rh-to-crect-textbox input-text-item-group-diary">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-2">
+                    <button mat-raised-button type="button" 
+                        class="btn btn-danger buton-for-color button-to-crect-margin mt-0" (click)="Search_User_Role()">Search</button>
+                    <button mat-raised-button type="button" 
+                        class="btn btn-danger alighn-butn-user-page buton-for-color button-to-crect-margin mt-0" 
+                        (click)="Create_New()">Create New</button>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="table-responsive card">
+                    <div class="table-responsive" [style.height.px]="myInnerHeight" 
+                        style="overflow-y: scroll;background-color: #f1f1f1;">
+                        <table class="table table-hover">
+                            <thead class="thead">
+                                <th>Sl No</th>
+                                <th>User Role Name</th>
+                                <th [hidden]="User_Role_Edit==false">Edit</th>
+                                <th [hidden]="User_Role_Delete==false">Delete</th>
+                            </thead>
+                            <tr *ngFor="let User_Role1 of User_Role_Data; let i = index">
+                                <td style="padding-left:5px;">{{ i+1 }}</td>
+                                <td>{{User_Role1["User_Role_Name"]}}</td>
+                                <td>
+                                    <button [hidden]="User_Role_Edit==false" 
+                                        class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button mt-0" 
+                                        mat-raised-button mattooltip="Edit Task" type="button">
+                                        <span class="mat-button-wrapper">
+                                            <i class="material-icons" (click)="Edit_User_Role(User_Role1,i)">edit</i>
+                                        </span>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button [hidden]="User_Role_Delete==false" 
+                                        class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button mt-0" 
+                                        mat-raised-button mattooltip="Remove" type="button">
+                                        <span class="mat-button-wrapper">
+                                            <i class="material-icons" (click)="Delete_User_Role(User_Role1.User_Role_Id,i)">close</i>
+                                        </span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <label class="entry-num">Entries : {{Total_Entries}}</label>
+            </div>
+        </div>
+    </div>
+</div>

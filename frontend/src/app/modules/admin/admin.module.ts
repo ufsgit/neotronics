@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -102,6 +103,11 @@ import { LeadRequirementComponent } from './LeadRequirement/LeadRequirement.comp
 import { LeadRequirementTransactionComponent } from './LeadRequirementTransaction/LeadRequirementTransaction.component';
 import { Price_RequestComponent } from './Price_Request/Price_Request.component';
 import { Price_ResponseComponent } from './Price_Response/Price_Response.component';
+import { VerticalComponent } from './Vertical/Vertical.component';
+import { DesignationComponent } from './Designation/Designation.component';
+import { User_RoleComponent } from './User_Role/User_Role.component';
+import { User_TypeComponent } from './User_Type/User_Type.component';
+import { Working_StatusComponent } from './Working_Status/Working_Status.component';
 
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { RouterModule } from "@angular/router";
@@ -126,6 +132,7 @@ import { RouterModule } from "@angular/router";
 		MatAutocompleteModule,
 		MatProgressSpinnerModule,
 		MatFormFieldModule,
+		MatInputModule,
 		MatDatepickerModule,
 		ScrollingModule,
 		FormsModule,  
@@ -208,7 +215,12 @@ import { RouterModule } from "@angular/router";
 		LeadRequirementTransactionComponent,
 		SalesOrderComponent,
 		Price_RequestComponent,
-		Price_ResponseComponent
+		Price_ResponseComponent,
+		VerticalComponent,
+		DesignationComponent,
+		User_RoleComponent,
+		User_TypeComponent,
+		Working_StatusComponent
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],

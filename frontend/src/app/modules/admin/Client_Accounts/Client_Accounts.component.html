@@ -178,7 +178,13 @@
                         <input type="text" class="form-control" [(ngModel)]="item.contact_number" name="contact_number_{{i}}" [ngModelOptions]="{standalone: true}">
                     </td>
                     <td>
-                        <input type="text" class="form-control" [(ngModel)]="item.designation" name="designation_{{i}}" [ngModelOptions]="{standalone: true}">
+                        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: -1.25em;">
+                            <mat-select [(ngModel)]="item.designation" name="designation_{{i}}" [ngModelOptions]="{standalone: true}">
+                                <mat-option *ngFor="let d of Designation_Data" [value]="d.Designation_Name">
+                                    {{d.Designation_Name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </td>
                     <td class="text-center">
                         <button type="button" class="btn btn-danger btn-link btn-sm btn-just-icon" (click)="Remove_Contact_Person(i)">

@@ -6,6 +6,8 @@ import { Account_Group_Service } from '../../../services/Account_Group.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Client_Accounts, Contact_Person } from '../../../models/Client_Accounts';
 import {Account_Group } from '../../../models/Account_Group';
+import { Designation_Service } from '../../../services/Designation.Service';
+import { Designation } from '../../../models/Designation';
 
 import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-Client_Accounts',
@@ -44,7 +46,8 @@ Employee_Id:number;
 User_Type:number;
 Employee_Edit:boolean=false;
 Login_User:string="0";
-constructor(public Client_Accounts_Service_:Client_Accounts_Service,public Journal_Entry_Service_:Journal_Entry_Service, public Account_Group_Service_:Account_Group_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
+Designation_Data: Designation[] = [];
+constructor(public Client_Accounts_Service_:Client_Accounts_Service,public Journal_Entry_Service_:Journal_Entry_Service, public Account_Group_Service_:Account_Group_Service, public Designation_Service_: Designation_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
 ngOnInit() 
 {
 this.Permissions = Get_Page_Permission(9);
@@ -131,6 +134,16 @@ if (this.User_Type==2){
     this.Employee_.Client_Accounts_Name=this.Employee_Name;
     this.Employee_Edit=true;
 }
+this.Get_Designation();
+}
+Get_Designation() {
+    this.Designation_Service_.Search_Designation("").subscribe(Rows => {
+        if (Rows != null) {
+            this.Designation_Data = Rows;
+        }
+    }, error => {
+        console.error("Error loading designations", error);
+    });
 }
 Create_New()
 {

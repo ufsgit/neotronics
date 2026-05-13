@@ -50,9 +50,10 @@ User_Details_Delete:boolean;
 Client_Accounts_Data: Client_Accounts[]; 
 ToAccount_: Client_Accounts = new Client_Accounts();
 
-Working_Status_Temp:Working_Status= new Working_Status();
-Working_Status_:Working_Status= new Working_Status();
 Working_Status_Data:Working_Status[]
+User_Role_Data: any[] = [];
+User_Role_: any;
+User_Role_Temp: any = { User_Role_Id: 0, User_Role_Name: 'Select' };
 
 
 constructor(
@@ -124,11 +125,23 @@ this.User_Details_.Pincode="";
 this.User_Details_.Mobile="";
 this.User_Details_.Email="";
 this.Employee_=null;
-if(this.User_Type_Data!=null && this.User_Type_Data != undefined)
+if(this.User_Type_Data!=null && this.User_Type_Data != undefined && this.User_Type_Data.length > 0)
 this.User_Type_=this.User_Type_Data[0];
 
-if(this.Working_Status_Data!=null && this.Working_Status_Data != undefined)
-    this.Working_Status_=this.Working_Status_Data[0];
+if(this.Working_Status_Data!=null && this.Working_Status_Data.length > 0)
+    this.User_Details_.Working_Status_Id = this.Working_Status_Data[0].Working_Status_Id;
+else
+    this.User_Details_.Working_Status_Id = 0;
+
+if(this.User_Role_Data!=null && this.User_Role_Data.length > 0)
+    this.User_Details_.Role_Id = this.User_Role_Data[0].User_Role_Id;
+else
+    this.User_Details_.Role_Id = 0;
+
+if(this.User_Type_Data!=null && this.User_Type_Data.length > 0)
+    this.User_Details_.User_Type = this.User_Type_Data[0].User_Type_Id;
+else
+    this.User_Details_.User_Type = 0;
 
 if(this.User_Menu_Selection_Data!=undefined)//&& this.User_Menu_Selection_Data!=null&&this.User_Menu_Selection_Data!=""
 {
@@ -192,19 +205,20 @@ Load_Dropdowns()
     this.User_Details_Service_.Get_Users_Load_Data().subscribe(Rows =>
     {
           
-    this.User_Type_Data = Rows.User_Type;
+   this.User_Type_Data = Rows.User_Type;
    this.User_Menu_Selection_Data =  Rows.User_Menu_Selection; 
    this.Working_Status_Data =  Rows.Working_Status; 
 
-   this.User_Type_Temp.User_Type_Id = 0;
-   this.User_Type_Temp.User_Type_Name = "Select";
-   this.User_Type_Data.unshift(this.User_Type_Temp);
-   this.User_Type_ = this.User_Type_Data[0];
-
-   this.Working_Status_Temp.Working_Status_Id = 0;
-   this.Working_Status_Temp.Working_Status_Name = "Select";
-   this.Working_Status_Data.unshift(this.Working_Status_Temp);
-   this.Working_Status_ = this.Working_Status_Data[0];
+   console.log('Dropdown Rows:', Rows);
+   
+   if (Rows.User_Role) {
+       this.User_Role_Data = Rows.User_Role;
+       console.log('User_Role_Data loaded:', this.User_Role_Data.length, 'items');
+   } else {
+       console.error('User_Role data missing in response');
+       this.User_Role_Data = [];
+   }
+   console.log('Final User_Role_Data:', this.User_Role_Data);
    
     },
   Rows => { 
@@ -346,9 +360,7 @@ Save_User_Details()
     // }
     else{
          
-        this.User_Details_.User_Type = this.User_Type_.User_Type_Id;
-        this.User_Details_.Working_Status_Id = this.Working_Status_.Working_Status_Id;
-        this.User_Details_.Working_Status = this.Working_Status_.Working_Status_Name;
+        this.User_Details_.Working_Status = ""; // This is handled by ID now, but keeping for compatibility if needed
 
         this.User_Details_.Employee_Id=0;
         // this.User_Details_.Branch_Id = this.ToAccount_.Client_Accounts_Id;
@@ -438,6 +450,11 @@ for (var i = 0; i < this.User_Type_Data.length; i++) {
 for (var i = 0; i < this.Working_Status_Data.length; i++) {
     if (this.User_Details_.Working_Status_Id == this.Working_Status_Data[i].Working_Status_Id)
     this.Working_Status_=this.Working_Status_Data[i];
+}
+
+for (var i = 0; i < this.User_Role_Data.length; i++) {
+    if (this.User_Details_.Role_Id == this.User_Role_Data[i].User_Role_Id)
+    this.User_Role_=this.User_Role_Data[i];
 }
 
 

@@ -26,20 +26,34 @@
         </mat-form-field>
     </div>
         <div class="col-md-12 mb-2">
-        <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">User Type <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
-        <select [(ngModel)]="User_Type_" name="User_Type_" style="border: 1px solid lightgrey !important;
-        height: 47px;padding-left: 10px;" required class="col-md-9 margin-lh-rh-to-crect-textbox select-user-block">
-        <option *ngFor="let User_Type_T of User_Type_Data" [ngValue]="User_Type_T">{{User_Type_T.User_Type_Name}}</option>
-        </select>
+            <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">User Type <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+            <div class="col-md-9" style="padding: 0;">
+                <select [(ngModel)]="User_Details_.User_Type" name="User_Type_" required class="form-control" style="height: 40px !important; border: 1px solid #ccc !important; display: block !important; width: 100%; padding-left: 10px; background-color: white;">
+                    <option [ngValue]="0">Select Type</option>
+                    <option *ngFor="let User_Type_T of User_Type_Data" [ngValue]="User_Type_T.User_Type_Id">{{User_Type_T.User_Type_Name}}</option>
+                </select>
+            </div>
         </div>
 
         <div class="col-md-12 mb-2">
             <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">Working Status <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
-            <select [(ngModel)]="Working_Status_" name="Working_Status_" style="border: 1px solid lightgrey !important;
-            height: 47px;padding-left: 10px;" required class="col-md-9 margin-lh-rh-to-crect-textbox select-user-block">
-            <option *ngFor="let Working_Status_T of Working_Status_Data" [ngValue]="Working_Status_T">{{Working_Status_T.Working_Status_Name}}</option>
-            </select>
+            <div class="col-md-9" style="padding: 0;">
+                <select [(ngModel)]="User_Details_.Working_Status_Id" name="Working_Status_" required class="form-control" style="height: 40px !important; border: 1px solid #ccc !important; display: block !important; width: 100%; padding-left: 10px; background-color: white;">
+                    <option [ngValue]="0">Select Status</option>
+                    <option *ngFor="let Working_Status_T of Working_Status_Data" [ngValue]="Working_Status_T.Working_Status_Id">{{Working_Status_T.Working_Status_Name}}</option>
+                </select>
             </div>
+        </div>
+
+        <div class="col-md-12 mb-2">
+            <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">User Role <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
+            <div class="col-md-9" style="padding: 0;">
+                <select [(ngModel)]="User_Details_.Role_Id" name="User_Role_" required class="form-control" style="height: 40px !important; border: 1px solid #ccc !important; display: block !important; width: 100%; padding-left: 10px; background-color: white;">
+                    <option [ngValue]="0">Select Role</option>
+                    <option *ngFor="let User_Role_T of User_Role_Data" [ngValue]="User_Role_T.User_Role_Id">{{User_Role_T.User_Role_Name}}</option>
+                </select>
+            </div>
+        </div>
 
         <!-- <div class="col-md-12">
 
@@ -283,6 +297,8 @@ style="display: flex;align-items: center;"> -->
         <thead class="thead">
         <th>Sl No</th>
         <th>User Name</th>
+        <th>User Type</th>
+        <th>User Role</th>
         <th [hidden]="Users_Edit==false">Edit</th>
         <th [hidden]="Users_Delete==false">Delete</th>
         </thead>
@@ -290,6 +306,8 @@ style="display: flex;align-items: center;"> -->
         <tr *ngFor="let User_Menu1 of User_Details_Data; let i =index">
             <td style="padding-left:5px;">{{ i+1 }}</td>
             <td>{{User_Menu1["User_Details_Name"]}}</td>
+            <td>{{User_Menu1["User_Type_Name"]}}</td>
+            <td>{{User_Menu1["User_Role_Name"]}}</td>
             <td><button _ngcontent-jry-c5=""[hidden]="User_Details_Edit==false" _ngcontent-gxp-c5="" aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button mt-0" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_User_Details(User_Menu1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button></td>
             <td> 
             <button _ngcontent-gdi-c11="" [hidden]="User_Details_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button mt-0" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_User_Details(User_Menu1.User_Details_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>

@@ -15,6 +15,8 @@ import { TokenInterceptor } from './interceptor/http.interceptor';
 import { DialogBox_Component } from './modules/admin/DialogBox/DialogBox.component';
 import { CommonModule } from '@angular/common';
 import { DecimalPipe } from '@angular/common';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 
  
  
@@ -26,7 +28,7 @@ import { DecimalPipe } from '@angular/common';
 @NgModule({
   imports: [
     BrowserAnimationsModule,
-    FormsModule, MatExpansionModule, MatInputModule, CommonModule,
+    FormsModule, MatExpansionModule, MatInputModule, CommonModule, MatDialogModule, MatSelectModule,
     
     ReactiveFormsModule,
     HttpModule,

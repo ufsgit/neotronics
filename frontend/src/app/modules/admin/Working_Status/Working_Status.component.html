@@ -1,0 +1,84 @@
+<div class="wrapper">
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title">Working Status</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" *ngIf="Entry_View == true">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput placeholder="Working Status Name" [(ngModel)]="Working_Status_.Working_Status_Name" maxlength="100">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <button mat-raised-button color="primary" (click)="Save_Working_Status()" style="margin-right: 10px;">Save</button>
+                                            <button mat-raised-button color="accent" (click)="New_Working_Status()">New</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Search Working Status" [(ngModel)]="Search_Name" (keyup.enter)="Search_Working_Status()">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6">
+                                    <button mat-raised-button color="primary" (click)="Search_Working_Status()">Search</button>
+                                    <button mat-raised-button color="accent" (click)="New_Working_Status()" style="margin-left: 10px;">Add New</button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead class="text-primary">
+                                                <tr>
+                                                    <th>Sl.No</th>
+                                                    <th>Working Status Name</th>
+                                                    <th>Edit</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let Working_Status_e of Working_Status_Data; let i = index">
+                                                    <td>{{i + 1}}</td>
+                                                    <td>{{Working_Status_e.Working_Status_Name}}</td>
+                                                    <td>
+                                                        <button mat-icon-button color="primary" (click)="Edit_Working_Status(Working_Status_e, i)">
+                                                            <mat-icon>edit</mat-icon>
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <button mat-icon-button color="warn" (click)="Delete_Working_Status(Working_Status_e.Working_Status_Id, i)">
+                                                            <mat-icon>delete</mat-icon>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p>Total Entries: {{Total_Entries}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

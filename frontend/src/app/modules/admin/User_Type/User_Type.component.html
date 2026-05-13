@@ -1,0 +1,84 @@
+<div class="wrapper">
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title">User Type</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" *ngIf="Entry_View == true">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput placeholder="User Type Name" [(ngModel)]="User_Type_.User_Type_Name" maxlength="100">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <button mat-raised-button color="primary" (click)="Save_User_Type()" style="margin-right: 10px;">Save</button>
+                                            <button mat-raised-button color="accent" (click)="New_User_Type()">New</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Search User Type" [(ngModel)]="Search_Name" (keyup.enter)="Search_User_Type()">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6">
+                                    <button mat-raised-button color="primary" (click)="Search_User_Type()">Search</button>
+                                    <button mat-raised-button color="accent" (click)="New_User_Type()" style="margin-left: 10px;">Add New</button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead class="text-primary">
+                                                <tr>
+                                                    <th>Sl.No</th>
+                                                    <th>User Type Name</th>
+                                                    <th>Edit</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let User_Type_e of User_Type_Data; let i = index">
+                                                    <td>{{i + 1}}</td>
+                                                    <td>{{User_Type_e.User_Type_Name}}</td>
+                                                    <td>
+                                                        <button mat-icon-button color="primary" (click)="Edit_User_Type(User_Type_e, i)">
+                                                            <mat-icon>edit</mat-icon>
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <button mat-icon-button color="warn" (click)="Delete_User_Type(User_Type_e.User_Type_Id, i)">
+                                                            <mat-icon>delete</mat-icon>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p>Total Entries: {{Total_Entries}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

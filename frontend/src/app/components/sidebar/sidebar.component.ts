@@ -106,6 +106,42 @@ Menus:any[];
       Menu_Type: true,
     });
   }
+
+  private ensureVerticalMenuItem() {
+    if (!Array.isArray(this.menuItems)) this.menuItems = [];
+    const exists = this.menuItems.some((m: any) => (m && (m.path === '/Vertical' || m.path === 'Vertical')));
+    if (exists) return;
+    this.menuItems.push({
+      path: '/Vertical',
+      title: 'Vertical',
+      icon: 'layers',
+      class: '',
+      Menu_Id: '0',
+      View: 'true',
+      Save: 'true',
+      Edit: 'true',
+      Delete: 'true',
+      Menu_Type: true,
+    });
+  }
+
+  private ensureDesignationMenuItem() {
+    if (!Array.isArray(this.menuItems)) this.menuItems = [];
+    const exists = this.menuItems.some((m: any) => (m && (m.path === '/Designation' || m.path === 'Designation')));
+    if (exists) return;
+    this.menuItems.push({
+      path: '/Designation',
+      title: 'Designation',
+      icon: 'work',
+      class: '',
+      Menu_Id: '0',
+      View: 'true',
+      Save: 'true',
+      Edit: 'true',
+      Delete: 'true',
+      Menu_Type: true,
+    });
+  }
   constructor(
     public userData: UserData,
     public router: Router,
@@ -115,6 +151,8 @@ Menus:any[];
     this.menuItems= ROUTES.filter(menuItem => menuItem);
     this.ensurePriceRequestMenuItem();
     this.ensurePriceResponseMenuItem();
+    this.ensureVerticalMenuItem();
+    this.ensureDesignationMenuItem();
     // this.router.navigateByUrl('Leads');
    }
 
@@ -132,6 +170,8 @@ Pointer_Table=JSON.parse(retrievedPointer);
 this.menuItems= ROUTES.filter(menuItem => menuItem);
 this.ensurePriceRequestMenuItem();
 this.ensurePriceResponseMenuItem();
+this.ensureVerticalMenuItem();
+this.ensureDesignationMenuItem();
 
   }
   isMobileMenu() {
