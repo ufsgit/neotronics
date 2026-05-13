@@ -2,23 +2,16 @@ var db = require('../dbconnection');
 
 function ensureTermsTable(callback) {
     const createSql = `CREATE TABLE IF NOT EXISTS TermsAndCondition (
-        Terms_Condition_Id INT NOT NULL AUTO_INCREMENT,
-        Terms_Condition TEXT,
-        Terms_Condition_Description TEXT,
-        Terms_Condition_Caption VARCHAR(255) NOT NULL,
-        PRIMARY KEY (Terms_Condition_Id),
-        KEY idx_Terms_Caption (Terms_Condition_Caption)
+        Term_Id INT NOT NULL AUTO_INCREMENT,
+        Caption VARCHAR(255) NOT NULL,
+        Terms_Text TEXT,
+        Description TEXT,
+        PRIMARY KEY (Term_Id),
+        KEY idx_Terms_Caption (Caption)
     )`;
     db.query(createSql, function(err) {
         if (err) return callback(err);
-        // Migrate old columns if table existed with old schema
-        db.query("ALTER TABLE TermsAndCondition ADD COLUMN IF NOT EXISTS Terms_Condition TEXT NULL", [], function() {
-        db.query("ALTER TABLE TermsAndCondition ADD COLUMN IF NOT EXISTS Terms_Condition_Description TEXT NULL", [], function() {
-        db.query("ALTER TABLE TermsAndCondition ADD COLUMN IF NOT EXISTS Terms_Condition_Caption VARCHAR(255) NULL", [], function() {
-            callback(null);
-        });
-        });
-        });
+        callback(null);
     });
 }
 
@@ -31,8 +24,8 @@ var TermsAndCondition = {
 
         return ensureTermsTable(function (err) {
             if (err) return callback(err);
-            const sql = "INSERT INTO TermsAndCondition (Terms_Condition_Id, Terms_Condition, Terms_Condition_Description, Terms_Condition_Caption) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE Terms_Condition = VALUES(Terms_Condition), Terms_Condition_Description = VALUES(Terms_Condition_Description), Terms_Condition_Caption = VALUES(Terms_Condition_Caption)";
-            return db.query(sql, [termId, termsText, description, caption], function(err, result) {
+            const sql = "INSERT INTO TermsAndCondition (Term_Id, Caption, Terms_Text, Description) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE Caption = VALUES(Caption), Terms_Text = VALUES(Terms_Text), Description = VALUES(Description)";
+            return db.query(sql, [termId, caption, termsText, description], function(err, result) {
                 if (err) return callback(err);
                 var insertId = result ? (result.insertId || termId || 1) : 1;
                 callback(null, [[{ Term_Id_: insertId }]]);
@@ -46,7 +39,7 @@ var TermsAndCondition = {
         const searchValue = '%' + Caption_ + '%';
         return ensureTermsTable(function(err) {
             if (err) return callback(err);
-            const sql = "SELECT Terms_Condition_Id as Term_Id, Terms_Condition_Caption as Caption, Terms_Condition as Terms_Text, Terms_Condition_Description as Description FROM TermsAndCondition WHERE Terms_Condition_Caption LIKE ? OR Terms_Condition LIKE ? ORDER BY Terms_Condition_Id DESC";
+            const sql = "SELECT Term_Id, Caption, Terms_Text, Description FROM TermsAndCondition WHERE Caption LIKE ? OR Terms_Text LIKE ? ORDER BY Term_Id DESC";
             return db.query(sql, [searchValue, searchValue], function (err, rows) {
                 if (err) return callback(err);
                 callback(null, rows);

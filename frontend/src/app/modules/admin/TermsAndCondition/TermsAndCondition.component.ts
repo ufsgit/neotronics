@@ -129,11 +129,21 @@ export class TermsAndConditionComponent implements OnInit {
                 next: (Save_status: any) => {
                     console.log('Terms save response:', Save_status);
                     let savedId = 0;
-                    if (Array.isArray(Save_status) && Save_status[0] && Save_status[0][0]) {
-                        savedId = Number(Save_status[0][0].Term_Id_ || Save_status[0][0].Term_Id || 0);
-                    } else if (Save_status && Save_status.affectedRows) {
-                        savedId = Number(Save_status.insertId || this.Term_.Term_Id || 1);
+                    let actualData = Save_status;
+
+                    // Handle wrapped response from autoResponseWrapper
+                    if (Save_status && Save_status.success === true && Save_status.data) {
+                        actualData = Save_status.data;
                     }
+
+                    if (Array.isArray(actualData) && actualData[0] && actualData[0][0]) {
+                        savedId = Number(actualData[0][0].Term_Id_ || actualData[0][0].Term_Id || 0);
+                    } else if (Array.isArray(actualData) && actualData[0]) {
+                        savedId = Number(actualData[0].Term_Id_ || actualData[0].Term_Id || 0);
+                    } else if (actualData && actualData.affectedRows) {
+                        savedId = Number(actualData.insertId || this.Term_.Term_Id || 1);
+                    }
+
                     if (savedId > 0) {
                         this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: 'false' } });
                         this.Clr_Term();
