@@ -108,6 +108,7 @@ var requirementworkflow = require('./routes/requirementworkflow');
 var Sales_Order_Master = require('./routes/sales_order_master');
 var Vertical = require('./routes/Vertical');
 var Designation = require('./routes/Designation');
+var Company_Size = require('./routes/Company_Size');
 
 var app = express();
 var server = http.Server(app);
@@ -213,6 +214,7 @@ app.use('/requirementworkflow', requirementworkflow);
 app.use('/Sales_Order_Master', Sales_Order_Master);
 app.use('/Vertical', Vertical);
 app.use('/Designation', Designation);
+app.use('/Company_Size', Company_Size);
 app.use(errorHandler);
 
 app.use(function(req, res, next) {

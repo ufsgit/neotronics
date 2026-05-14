@@ -629,3 +629,70 @@ h6 {
     margin-bottom: 8px !important;
     margin-top: 0 !important;
 }
+
+/* ====================================
+   DYNAMIC CONTACT PERSON STYLING
+   ==================================== */
+.btn-add-contact-person {
+    background: #1a73e8 !important;
+    color: white !important;
+    padding: 2px 12px !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    border-radius: 4px !important;
+    height: 30px !important;
+    line-height: 26px !important;
+    text-transform: none !important;
+    box-shadow: 0 2px 4px rgba(26, 115, 232, 0.2) !important;
+    transition: all 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.btn-add-contact-person:hover {
+    background: #1557b0 !important;
+    box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3) !important;
+    transform: translateY(-1px);
+}
+
+.contact-person-entry {
+    background: #ffffff !important;
+    transition: all 0.2s ease;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+}
+
+.contact-person-entry:hover {
+    border-color: #1a73e8 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+.contact-persons-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.contact-persons-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.contact-persons-wrapper::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.contact-persons-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #1a73e8;
+}
+
+::ng-deep .contact-person-entry .mat-form-field-flex {
+    min-height: 40px !important;
+    margin-bottom: 5px;
+}
+
+::ng-deep .contact-person-entry .mat-error {
+    font-size: 10px !important;
+    margin-top: -5px;
+    margin-bottom: 5px;
+}

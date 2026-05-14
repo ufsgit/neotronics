@@ -51,6 +51,7 @@ Client_Accounts_Data: Client_Accounts[];
 ToAccount_: Client_Accounts = new Client_Accounts();
 
 Working_Status_Data:Working_Status[]
+Working_Status_: Working_Status;
 User_Role_Data: any[] = [];
 User_Role_: any;
 User_Role_Temp: any = { User_Role_Id: 0, User_Role_Name: 'Select' };
@@ -129,19 +130,37 @@ if(this.User_Type_Data!=null && this.User_Type_Data != undefined && this.User_Ty
 this.User_Type_=this.User_Type_Data[0];
 
 if(this.Working_Status_Data!=null && this.Working_Status_Data.length > 0)
+{
+    this.Working_Status_ = this.Working_Status_Data[0];
     this.User_Details_.Working_Status_Id = this.Working_Status_Data[0].Working_Status_Id;
+}
 else
+{
+    this.Working_Status_ = null;
     this.User_Details_.Working_Status_Id = 0;
+}
 
 if(this.User_Role_Data!=null && this.User_Role_Data.length > 0)
+{
+    this.User_Role_ = this.User_Role_Data[0];
     this.User_Details_.Role_Id = this.User_Role_Data[0].User_Role_Id;
+}
 else
+{
+    this.User_Role_ = null;
     this.User_Details_.Role_Id = 0;
+}
 
 if(this.User_Type_Data!=null && this.User_Type_Data.length > 0)
+{
+    this.User_Type_ = this.User_Type_Data[0];
     this.User_Details_.User_Type = this.User_Type_Data[0].User_Type_Id;
+}
 else
+{
+    this.User_Type_ = null;
     this.User_Details_.User_Type = 0;
+}
 
 if(this.User_Menu_Selection_Data!=undefined)//&& this.User_Menu_Selection_Data!=null&&this.User_Menu_Selection_Data!=""
 {
@@ -343,6 +362,10 @@ Save_User_Details()
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Working Status', Type: "3" } });
         }
 
+    else if (this.User_Role_ == undefined || this.User_Role_ == null || this.User_Role_.User_Role_Id == undefined || this.User_Role_.User_Role_Id==0) {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select User Role', Type: "3" } });
+        }
+
 	// else if (
     //     this.ToAccount_ == undefined ||
     //     this.ToAccount_ == null ||
@@ -360,6 +383,10 @@ Save_User_Details()
     // }
     else{
          
+        this.User_Details_.User_Type = this.User_Type_.User_Type_Id;
+        this.User_Details_.Working_Status_Id = this.Working_Status_.Working_Status_Id;
+        this.User_Details_.Role_Id = this.User_Role_.User_Role_Id;
+        
         this.User_Details_.Working_Status = ""; // This is handled by ID now, but keeping for compatibility if needed
 
         this.User_Details_.Employee_Id=0;

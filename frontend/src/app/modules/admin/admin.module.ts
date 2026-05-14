@@ -3,7 +3,7 @@
  * Declare all componets that is used in admin module
  */
 import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -108,6 +108,7 @@ import { DesignationComponent } from './Designation/Designation.component';
 import { User_RoleComponent } from './User_Role/User_Role.component';
 import { User_TypeComponent } from './User_Type/User_Type.component';
 import { Working_StatusComponent } from './Working_Status/Working_Status.component';
+import { Company_SizeComponent } from './Company_Size/Company_Size.component';
 
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { RouterModule } from "@angular/router";
@@ -136,6 +137,7 @@ import { RouterModule } from "@angular/router";
 		MatDatepickerModule,
 		ScrollingModule,
 		FormsModule,  
+		ReactiveFormsModule,
 		MatCheckboxModule,
 		CommonModule,
 		MatNativeDateModule,
@@ -220,7 +222,8 @@ import { RouterModule } from "@angular/router";
 		DesignationComponent,
 		User_RoleComponent,
 		User_TypeComponent,
-		Working_StatusComponent
+		Working_StatusComponent,
+		Company_SizeComponent
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],

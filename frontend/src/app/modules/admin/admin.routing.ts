@@ -77,6 +77,7 @@ import { DesignationComponent } from './Designation/Designation.component';
 import { User_RoleComponent } from './User_Role/User_Role.component';
 import { User_TypeComponent } from './User_Type/User_Type.component';
 import { Working_StatusComponent } from './Working_Status/Working_Status.component';
+import { Company_SizeComponent } from './Company_Size/Company_Size.component';
 
 export const AdminRoutes: Routes = [
 	{
@@ -159,6 +160,7 @@ export const AdminRoutes: Routes = [
 			{ path: "User_Role", component: User_RoleComponent },
 			{ path: "User_Type", component: User_TypeComponent },
 			{ path: "Working_Status", component: Working_StatusComponent },
+			{ path: "Company_Size", component: Company_SizeComponent },
 
 
 			{ path: "**", redirectTo: "/auth/login" },

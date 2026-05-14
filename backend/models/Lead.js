@@ -35,7 +35,36 @@ var Lead = {
 
         return db.query("CALL Save_Lead(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             params28, (err, rows) => {
-                return callback(err, rows);
+                if (err) return callback(err, rows);
+
+                // Extract the Lead_Id returned from the SP (for new records) or use the existing one
+                let savedLeadId = Lead_.Lead_Id;
+                if (!savedLeadId || savedLeadId === 0) {
+                    if (rows && rows[0] && rows[0][0]) {
+                        savedLeadId = rows[0][0].Lead_Id || rows[0][0].Key_Id || 0;
+                    }
+                }
+
+                // Persist the new extra fields via a supplementary UPDATE
+                if (savedLeadId > 0) {
+                    const extraParams = [
+                        Lead_.Project_Name || null,
+                        Lead_.POC_Name || null,
+                        Lead_.Company_Size_Id || 0,
+                        Lead_.Next_Call_Action ? 1 : 0,
+                        savedLeadId
+                    ];
+                    db.query(
+                        "UPDATE `Lead` SET Project_Name = ?, POC_Name = ?, Company_Size_Id = ?, Next_Call_Action = ? WHERE Lead_Id = ?",
+                        extraParams,
+                        (err2) => {
+                            if (err2) console.error('Error saving extra Lead fields:', err2);
+                            return callback(null, rows);
+                        }
+                    );
+                } else {
+                    return callback(null, rows);
+                }
             });
     },
     Get_Leads: function (callback) {

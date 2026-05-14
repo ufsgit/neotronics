@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 
 import { Lead_Service } from '../../../services/Lead.Service';
 import { Lead } from '../../../models/Lead';
@@ -8,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { User_Details_Service } from '../../../services/User_Details.Service';
 import { Requirement_Master_Service } from '../../../services/Requirement_Master.Service';
+import { Company_Size_Service } from '../../../services/Company_Size.Service';
 
 @Component({
   selector: 'app-Lead',
@@ -19,6 +21,7 @@ export class LeadComponent implements OnInit {
   Lead_Data: Lead[] = [];
   Entry_View: boolean = false;
   issLoading: boolean = false;
+  contactForm: FormGroup;
 
 
   Department_Data: any[] = [];
@@ -31,8 +34,9 @@ export class LeadComponent implements OnInit {
   Location_Data: any[] = [];
   Staff_Data: any[] = [];
   FollowUp_History: any[] = [];
+  Company_Size_Data: any[] = [];
 
-  Selected_Verticals: number[] = [];
+  Selected_Vertical: number = 0;
   Selected_Enquiry_For: number[] = [];
   Enquiry_For_Data: any[] = [];
 
@@ -43,9 +47,13 @@ export class LeadComponent implements OnInit {
     public Lead_Service_: Lead_Service,
     public User_Details_Service_: User_Details_Service,
     public Requirement_Master_Service_: Requirement_Master_Service,
+    public Company_Size_Service_: Company_Size_Service,
     public dialogBox: MatDialog,
-    private router: Router
-  ) { }
+    private router: Router,
+    private fb: FormBuilder
+  ) { 
+    this.Initialize_Contact_Form();
+  }
 
   ngOnInit() {
     this.Page_Load();
@@ -54,6 +62,19 @@ export class LeadComponent implements OnInit {
   Page_Load() {
     this.Get_Leads();
     this.Get_Dropdowns_Lead();
+    this.Get_Company_Sizes();
+  }
+
+  Get_Company_Sizes() {
+    this.Company_Size_Service_.Get_All_Company_Sizes().subscribe(Rows => {
+      if (Rows && Array.isArray(Rows)) {
+        this.Company_Size_Data = Rows;
+      } else {
+        this.Company_Size_Data = [];
+      }
+    }, err => {
+      console.error('Error loading Company Sizes:', err);
+    });
   }
 
   Get_Leads() {
@@ -147,7 +168,7 @@ export class LeadComponent implements OnInit {
   Create_New() {
     this.Entry_View = true;
     this.Lead_ = new Lead();
-    this.Selected_Verticals = [];
+    this.Selected_Vertical = 0;
     this.Selected_Enquiry_For = [];
     this.Enquiry_For_Data = [];
     // Initialize FollowUp_Date to current local time formatted for datetime-local input
@@ -155,12 +176,49 @@ export class LeadComponent implements OnInit {
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     this.Lead_.FollowUp_Date = now.toISOString().slice(0, 16);
     this.FollowUp_History = [];
+    
+    this.Initialize_Contact_Form();
+    this.addContact(); // Add at least one row
+  }
+
+  Initialize_Contact_Form() {
+    this.contactForm = this.fb.group({
+      contactPersons: this.fb.array([])
+    });
+  }
+
+  get contactPersons(): FormArray {
+    return this.contactForm.get('contactPersons') as FormArray;
+  }
+
+  createContactRow(contact?: any): FormGroup {
+    return this.fb.group({
+      Contact_Person: [contact ? contact.Contact_Person : '', Validators.required],
+      Contact_Number: [contact ? contact.Contact_Number : '', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(10)]],
+      Designation: [contact ? contact.Designation : 0],
+      Email: [contact ? contact.Email : '', [Validators.email]]
+    });
+  }
+
+  addContact() {
+    this.contactPersons.push(this.createContactRow());
+  }
+
+  removeContact(index: number) {
+    if (this.contactPersons.length > 1) {
+      this.contactPersons.removeAt(index);
+    } else {
+      this.dialogBox.open(DialogBox_Component, { 
+        panelClass: 'Dialogbox-Class', 
+        data: { Message: 'At least one contact person must remain.', Type: "3" } 
+      });
+    }
   }
 
   Close_Click() {
     this.Entry_View = false;
     this.Lead_ = new Lead();
-    this.Selected_Verticals = [];
+    this.Selected_Vertical = 0;
     this.Selected_Enquiry_For = [];
     this.Enquiry_For_Data = [];
     this.FollowUp_History = [];
@@ -192,16 +250,7 @@ export class LeadComponent implements OnInit {
   }
 
   onVerticalChange() {
-    // Enquiry For mirrors exactly the selected verticals from Vertical_Data
-    this.Enquiry_For_Data = this.Vertical_Data.filter(v =>
-      this.Selected_Verticals.includes(v.Vertical_Id)
-    );
-    // Reset enquiry selections that are no longer valid
-    this.Selected_Enquiry_For = this.Selected_Enquiry_For.filter(id =>
-      this.Enquiry_For_Data.find(v => v.Vertical_Id === id)
-    );
-    this.Lead_.Enquiry_For = this.Selected_Enquiry_For.join(',');
-    this.Lead_.Vertical = this.Selected_Verticals.join(',');
+    this.Lead_.Vertical = this.Selected_Vertical ? this.Selected_Vertical.toString() : '';
   }
 
   onEnquiryForChange() {
@@ -218,7 +267,26 @@ export class LeadComponent implements OnInit {
       return;
     }
 
+    if (this.contactForm.invalid) {
+      this.dialogBox.open(DialogBox_Component, { 
+        panelClass: 'Dialogbox-Class', 
+        data: { Message: 'Please fill all required contact person details correctly.', Type: "3" } 
+      });
+      return;
+    }
+
     let Lead_Copy = Object.assign({}, this.Lead_);
+    // Attach contact persons from the form array
+    (Lead_Copy as any).Contact_Person_Details = this.contactForm.value.contactPersons;
+    
+    // For backward compatibility with single contact fields if needed by backend
+    if (this.contactForm.value.contactPersons.length > 0) {
+      const firstContact = this.contactForm.value.contactPersons[0];
+      Lead_Copy.Contact_Person = firstContact.Contact_Person;
+      Lead_Copy.Contact_Number = firstContact.Contact_Number;
+      Lead_Copy.Designation = firstContact.Designation;
+      Lead_Copy.Email = firstContact.Email;
+    }
     (Lead_Copy as any).Is_FollowUp = Lead_Copy.Is_FollowUp ? 1 : 0;
 
     // Backward compatibility: some DBs still have Lead.Vertical as INT.
@@ -303,12 +371,13 @@ export class LeadComponent implements OnInit {
   Edit_Lead(lead_e: Lead) {
     this.Lead_ = Object.assign({}, lead_e);
     this.Lead_.Is_FollowUp = (this.Lead_.Is_FollowUp as any) == 1 ? true : false;
+    this.Lead_.Next_Call_Action = (this.Lead_.Next_Call_Action as any) == 1 ? true : false;
 
-    // Deserialize comma-separated Vertical string back to number array
+    // Deserialize comma-separated Vertical string back to a single number
     if (this.Lead_.Vertical && String(this.Lead_.Vertical).trim() !== '') {
-      this.Selected_Verticals = String(this.Lead_.Vertical).split(',').map(v => Number(v.trim())).filter(v => v > 0);
+      this.Selected_Vertical = Number(String(this.Lead_.Vertical).split(',')[0].trim());
     } else {
-      this.Selected_Verticals = [];
+      this.Selected_Vertical = 0;
     }
     this.onVerticalChange();
 
@@ -325,6 +394,24 @@ export class LeadComponent implements OnInit {
     if (this.Lead_.Status_Id > 0) this.Lead_.FollowUp_Status_Id = this.Lead_.Status_Id;
     if (this.Lead_.Location_Id > 0) this.Lead_.FollowUp_Location_Id = this.Lead_.Location_Id;
     
+    this.Initialize_Contact_Form();
+    // Assuming existing contact persons are stored in a property called Contact_Person_Details
+    // If not, we might need to fetch them or use the single fields as a fallback
+    const contacts = (this.Lead_ as any).Contact_Person_Details;
+    if (contacts && Array.isArray(contacts) && contacts.length > 0) {
+      contacts.forEach(c => {
+        this.contactPersons.push(this.createContactRow(c));
+      });
+    } else {
+      // Fallback to single fields if no multiple contacts exist
+      this.contactPersons.push(this.createContactRow({
+        Contact_Person: this.Lead_.Contact_Person,
+        Contact_Number: this.Lead_.Contact_Number,
+        Designation: this.Lead_.Designation,
+        Email: this.Lead_.Email
+      }));
+    }
+
     this.Get_Lead_FollowUp_History(this.Lead_.Lead_Id);
     this.Entry_View = true;
   }

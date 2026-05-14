@@ -13,6 +13,11 @@ export class Lead {
     Designation_Name: string;
     Email: string;
     Website: string;
+    Project_Name: string;
+    POC_Name: string;
+    Company_Size_Id: number;
+    Company_Size_Name: string;
+    Next_Call_Action: boolean;
     Address: string;
     Review: string;
     Rate: string;
@@ -42,6 +47,7 @@ export class Lead {
     Login_User_Id: number; // New Field for User ID
     FollowUp_Next_Date: any;
     Entry_Date: any;
+    Contact_Person_Details: any[] = [];
 
     constructor() {
         this.Lead_Id = 0;
@@ -54,6 +60,10 @@ export class Lead {
         this.Enquiry_For = '';
         this.Designation = 0;
         this.Email = "";
+        this.Project_Name = "";
+        this.POC_Name = "";
+        this.Company_Size_Id = 0;
+        this.Next_Call_Action = false;
         this.Website = "";
         this.Address = "";
         this.Review = "";
