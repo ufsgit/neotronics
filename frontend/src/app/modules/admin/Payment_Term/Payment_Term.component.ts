@@ -171,7 +171,7 @@ const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogb
 }
 Save_payment_term() {
     this.issLoading = true;
-    this.payment_term_Service_.Save_payment_term(this.payment_term_).subscribe(Save_status => {
+    this.payment_term_Service_.Save_payment_term(this.payment_term_).subscribe((Save_status: any) => {
         let savedId = 0;
         let actualData = Save_status;
 

@@ -1601,6 +1601,9 @@ Customer_Change( Customer_T_)
     this.Address3 = this.Sales_Order_Master_.Address3;
     this.Address4 = this.Sales_Order_Master_.Address4;
     this.Vatin = this.Sales_Order_Master_.GSTNo;
+    this.Sales_Order_Master_.Phone = this.Customer_.Phone;
+    this.Sales_Order_Master_.Email = this.Customer_.Email;
+    this.Sales_Order_Master_.WhatsApp = this.Customer_.Mobile;
 }
 
 selectCustomer(){
@@ -1622,6 +1625,9 @@ selectCustomer(){
     this.Address3 = this.Customer_.Address3;
     this.Address4 = this.Customer_.Address4;
     this.Vatin = this.Customer_.GSTNo;
+    this.Sales_Order_Master_.Phone = this.Customer_.Phone;
+    this.Sales_Order_Master_.Email = this.Customer_.Email;
+    this.Sales_Order_Master_.WhatsApp = this.Customer_.Mobile;
   
 }
 Item_Name_Change(Item_sl:Stock){
@@ -1651,6 +1657,8 @@ Item_Name_Change(Item_sl:Stock){
   this.Sales_Order_Details_.HSNCODE=Item_sl.HSNCODE;
   this.Sales_Order_Details_.Stock_Id=Item_sl.Stock_Id;
   this.Sales_Order_Details_.SaleTax=Item_sl.SaleTax; 
+  this.Sales_Order_Details_.Model_Name=Item_sl.Model_Name;
+  this.Sales_Order_Details_.Brand_Name=Item_sl.Brand_Name;
   this.Sales_Order_Details_.Quantity=0;
 }
 Barcode_Change()
@@ -1674,6 +1682,8 @@ Barcode_Change()
   this.Sales_Order_Details_.HSNMasterId=this.Barcode_.HSNMasterId;
   this.Sales_Order_Details_.Stock_Id=this.Barcode_.Stock_Id;
   this.Sales_Order_Details_.SaleTax=this.Barcode_.SaleTax;
+  this.Sales_Order_Details_.Model_Name=this.Barcode_.Model_Name;
+  this.Sales_Order_Details_.Brand_Name=this.Barcode_.Brand_Name;
   this.Sales_Order_Details_.Quantity=0;
 }
 Calculate_Sales_Details_Amount()

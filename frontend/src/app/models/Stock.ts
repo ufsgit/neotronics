@@ -26,6 +26,8 @@ Availability:number;
 Country_Id : number;
 Country_Name: string;
 StockId:number;
+Model_Name: string;
+Brand_Name: string;
 constructor(values: Object = {})  
 {
 Object.assign(this, values) 

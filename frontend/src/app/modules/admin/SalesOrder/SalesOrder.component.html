@@ -285,6 +285,21 @@
                       <input type="text" [(ngModel)]="Address4" readonly
                           class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                   </div>
+                  <div class="col-md-12 mb-1">
+                      <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Phone</label>
+                      <input type="text" [(ngModel)]="Sales_Order_Master_.Phone"
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                  </div>
+                  <div class="col-md-12 mb-1">
+                      <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Email</label>
+                      <input type="text" [(ngModel)]="Sales_Order_Master_.Email"
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                  </div>
+                  <div class="col-md-12 mb-1">
+                      <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">WhatsApp</label>
+                      <input type="text" [(ngModel)]="Sales_Order_Master_.WhatsApp"
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                  </div>
                   <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
                       <label
                           class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Delivery
@@ -505,6 +520,24 @@
                                           </mat-autocomplete>
                                       </div>
                                       <div
+                                          class="col-md-3 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Model
+                                              </label>
+                                          <input type="text" [(ngModel)]="Sales_Order_Details_.Model_Name" id="Model_Name" name="Model_Name"                                         
+                                              style="padding-left: 5px !important;" 
+                                              class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                      </div>
+                                      <div
+                                          class="col-md-3 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Brand
+                                              </label>
+                                          <input type="text" [(ngModel)]="Sales_Order_Details_.Brand_Name" id="Brand_Name" name="Brand_Name"                                         
+                                              style="padding-left: 5px !important;" 
+                                              class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
+                                      </div>
+                                      <div
                                           class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
                                           <label
                                               class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Uom
@@ -585,7 +618,7 @@
                                       </div>
                                       <div style="margin-top: 39px !important;" 
                                           class="col-md-1 alighn-right-inputs-sales-grid div-to-down-margin-crect-allighn-wole-scton">
-                                          <button mat-raised-button type="button" (click)="Plus_Sales_Order_Details($event)" style="border-radius: 5px;"
+                                          <button mat-raised-button type="button" (click)="Plus_Sales_Details($event)" style="border-radius: 5px;"
                                               class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes">
                                               Add</button>
                                       </div>
@@ -599,6 +632,8 @@
                                                       <th>No </th>
                                                       <th>Part Number</th>
                                                       <th>Description </th>
+                                                      <th>Model </th>
+                                                      <th>Brand </th>
                                                       <th>Uom</th>
                                                       <th>Qty</th>
                                                       <th>Unit Price</th>
@@ -612,6 +647,8 @@
                                                       <td>{{i+1}}</td>
                                                       <td>{{Sales_Order_Details_New["ItemCode"]}}</td>
                                                       <td [id]="'cell' + (i + 1)">{{Sales_Order_Details_New["ItemName"]}}</td>
+                                                      <td>{{Sales_Order_Details_New["Model_Name"]}}</td>
+                                                      <td>{{Sales_Order_Details_New["Brand_Name"]}}</td>
                                                       <td>{{Sales_Order_Details_New["UnitName"]}}</td>
                                                       <td>{{Sales_Order_Details_New["Quantity"] }}</td>
                                                       <td>{{Sales_Order_Details_New["UnitPrice"] | number: '1.3-3'}}</td>
@@ -629,7 +666,7 @@
                                                                       _ngcontent-jry-c5="" class="mat-button-wrapper">
                                                                       <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                                           class="material-icons"
-                                                                          (click)="Edit_Sales_Order_Detail(Sales_Order_Details_New,i)">edit</i></span>
+                                                                          (click)="Edit_Order_Sales_Detail(Sales_Order_Details_New,i)">edit</i></span>
                                                                   <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
                                                                       matripple="" ng-reflect-centered="false"
                                                                       ng-reflect-disabled="false"
@@ -650,7 +687,7 @@
                                                               ng-reflect-position="above" ng-reflect-message="Remove"><span
                                                                   class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
                                                                       class="material-icons"
-                                                                      (click)="Delete_Sales_Order_Detail(i)">close</i></span>
+                                                                      (click)="Delete_Order_Sales_Detail(i)">close</i></span>
                                                               <div class="mat-button-ripple mat-ripple" matripple=""
                                                                   ng-reflect-centered="false" ng-reflect-disabled="false"
                                                                   ng-reflect-trigger="[object HTMLButtonElement]"></div>

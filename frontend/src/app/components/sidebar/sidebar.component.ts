@@ -142,6 +142,27 @@ Menus:any[];
       Menu_Type: true,
     });
   }
+
+  private ensureSalesOrderMenuItem() {
+    if (!Array.isArray(this.menuItems)) this.menuItems = [];
+
+    const exists = this.menuItems.some((m: any) => (m && (m.path === '/SalesOrder' || m.path === 'SalesOrder')));
+    if (exists) return;
+
+    this.menuItems.push({
+      path: '/SalesOrder',
+      title: 'Sales Order',
+      icon: 'description',
+      class: '',
+      Menu_Id: '117',
+      View: 'true',
+      Save: 'true',
+      Edit: 'true',
+      Delete: 'true',
+      Menu_Type: true,
+    });
+  }
+
   constructor(
     public userData: UserData,
     public router: Router,
@@ -153,6 +174,7 @@ Menus:any[];
     this.ensurePriceResponseMenuItem();
     this.ensureVerticalMenuItem();
     this.ensureDesignationMenuItem();
+    this.ensureSalesOrderMenuItem();
     // this.router.navigateByUrl('Leads');
    }
 
@@ -172,6 +194,7 @@ this.ensurePriceRequestMenuItem();
 this.ensurePriceResponseMenuItem();
 this.ensureVerticalMenuItem();
 this.ensureDesignationMenuItem();
+this.ensureSalesOrderMenuItem();
 
   }
   isMobileMenu() {
