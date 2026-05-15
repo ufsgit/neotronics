@@ -19,13 +19,16 @@
                                     <div class="col-md-12 mt-2">
                                         <label class="label-field">Item Name <span class="required-star">*</span></label>
                                         <mat-form-field class="col-md-8 margin-textbox" style="border: 1px solid lightgrey; height: 40px; padding-left: 10px; margin-bottom: 0; background-color: #fff;">
-                                            <input matInput type="text" [(ngModel)]="Model_.Item_Name" name="Model_.Item_Name" class="input-text-field" (keyup)="Search_Item_Typeahead($event)" autocomplete="off">
+                                            <input matInput type="text" [matAutocomplete]="autoItem" [(ngModel)]="Item_" name="Item_" class="input-text-field" (input)="Search_Item_Typeahead($event)" (click)="Search_Item_Typeahead($event)" autocomplete="off">
+                                            <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item">
+                                                <mat-option *ngIf="issLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                                                <ng-container *ngIf="!issLoading">
+                                                    <mat-option *ngFor="let item of Item_Data" [value]="item">
+                                                        <span (click)="Select_Item(item)">{{ item.Item_Name || item.ItemName }}</span>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
                                         </mat-form-field>
-                                        <div class="typeahead-list" *ngIf="Item_Data?.length > 0">
-                                            <div class="typeahead-item" *ngFor="let item of Item_Data" (click)="Select_Item(item)">
-                                                {{ item.Item_Name }} ({{ item.Item_Id }})
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

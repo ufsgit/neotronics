@@ -343,6 +343,13 @@ const navbar: HTMLElement = this.element.nativeElement;
             titlee = titlee.slice(1);
         }
 
+        if (titlee === '/Terms_And_Condition' || titlee === 'Terms_And_Condition') {
+            return 'Terms & Condition';
+        }
+        if (titlee === '/Model' || titlee === 'Model') {
+            return 'Model';
+        }
+
         for (var item = 0; item < this.listTitles.length; item++) {
             if (this.listTitles[item].path === titlee) {
                 return this.listTitles[item].title;

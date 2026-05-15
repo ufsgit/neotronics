@@ -169,43 +169,37 @@ const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogb
 }
  });
 }
-Save_payment_term()
-{
-     
-   
-    if (this.payment_term_.Payment_Term_Description == undefined ||this.payment_term_.Payment_Term_Description == null || this.payment_term_.Payment_Term_Description == "") {
-        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Payment Term ', Type: "3" } });
-    } 
-    
-else
-{
-this.issLoading=true;
-// this.payment_term_.UnderGroupId=this.payment_term.payment_term_Id;
-this.payment_term_Service_.Save_payment_term(this.payment_term_).subscribe(Save_status => {
-     debugger;
-Save_status=Save_status[0];
-debugger;
-if(Number(Save_status[0][0].payment_Term_ID_)>0)
-{
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
-    this.Search_payment_term();
-    this.Clr_payment_term();
+Save_payment_term() {
+    this.issLoading = true;
+    this.payment_term_Service_.Save_payment_term(this.payment_term_).subscribe(Save_status => {
+        let savedId = 0;
+        let actualData = Save_status;
 
-}
-else if (Number(Save_status[0][0].payment_term_Id_)==-1)
-    {
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Item Group Already Exists',Type:"2"}});
-    }
+        if (Save_status && Save_status.success === true && Save_status.data) {
+            actualData = Save_status.data;
+        }
 
-else{
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-}
-this.issLoading=false;
- },
- Rows => { this.issLoading=false;
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
- });
-}
+        if (Array.isArray(actualData) && actualData[0] && actualData[0][0]) {
+            savedId = Number(actualData[0][0].payment_Term_ID_ || actualData[0][0].payment_term_Id_ || 0);
+        } else if (Array.isArray(actualData) && actualData[0]) {
+            savedId = Number(actualData[0].payment_Term_ID_ || actualData[0].payment_term_Id_ || 0);
+        }
+
+        if (savedId > 0) {
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
+            this.Search_payment_term();
+            this.Clr_payment_term();
+            this.Entry_View = false;
+        } else if (savedId == -1) {
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Already Exists', Type: "2" } });
+        } else {
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
+        }
+        this.issLoading = false;
+    }, error => {
+        this.issLoading = false;
+        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
+    });
 }
 Edit_payment_term(payment_term_e:payment_term,index)
 {   

@@ -9,30 +9,22 @@
                     <div class="card-body" style="background-color: #f1f1f1 !important;">
                         <form>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-8">
                                     <div class="col-md-12">
                                         <label class="label-field">Caption <span class="required-star">*</span></label>
-                                        <mat-form-field class="col-md-10 margin-textbox" style="width:100%; border: 1px solid lightgrey; background-color: #fff; padding: 10px;">
+                                        <mat-form-field class="col-md-12 margin-textbox" style="width:100%; border: 1px solid lightgrey; background-color: #fff; padding: 10px; margin-bottom: 0;">
                                             <input matInput type="text" [(ngModel)]="Term_.Caption" name="Term_.Caption" class="input-text-field">
                                         </mat-form-field>
                                     </div>
                                     <div class="col-md-12 mt-2">
-                                        <label class="label-field">Terms & Condition <span class="required-star">*</span></label>
-                                        <mat-form-field class="col-md-10 margin-textbox" style="width:100%; border: 1px solid lightgrey; background-color: #fff; padding: 10px;">
-                                            <textarea matInput rows="6" [(ngModel)]="Term_.Terms_Text" name="Term_.Terms_Text" class="input-text-field"></textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-12">
                                         <label class="label-field">Description</label>
-                                        <mat-form-field class="col-md-10 margin-textbox" style="width:100%; border: 1px solid lightgrey; background-color: #fff; padding: 10px;">
-                                            <textarea matInput rows="10" [(ngModel)]="Term_.Description" name="Term_.Description" class="input-text-field"></textarea>
+                                        <mat-form-field class="col-md-12 margin-textbox" style="width:100%; border: 1px solid lightgrey; background-color: #fff; padding: 10px; margin-bottom: 0;">
+                                            <textarea matInput rows="6" [(ngModel)]="Term_.Description" name="Term_.Description" class="input-text-field"></textarea>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-md-12 buttons-wrapper" style="margin-top: 20px;">
-                                        <button mat-raised-button type="button" [hidden]="Term_Save==false" id="Save_Button" class="btn btn-danger pull-right save-close-new-buttons" (click)="Save_Term()">Save</button>
-                                        <button mat-raised-button type="button" class="btn btn-danger pull-right save-close-new-buttons" (click)="Close_Click()">Close</button>
+                                    <div class="col-md-12 buttons-wrapper" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                                        <button mat-raised-button type="button" class="btn btn-danger save-close-new-buttons" (click)="Close_Click()" style="margin: 0;">Close</button>
+                                        <button mat-raised-button type="button" [hidden]="Term_Save==false" id="Save_Button" class="btn btn-danger save-close-new-buttons" (click)="Save_Term()" style="margin: 0;">Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +65,7 @@
                             <thead class="thead">
                                 <th class="table-header">Sl No</th>
                                 <th class="table-header">Caption</th>
-                                <th class="table-header">Terms & Condition</th>
+<!-- <th class="table-header">Terms & Condition</th> -->
                                 <th class="table-header">Description</th>
                                 <th class="table-header" [hidden]="Term_Edit==false">Edit</th>
                             </thead>
@@ -81,7 +73,7 @@
                                 <tr>
                                     <td style="padding-left:5px;">{{ i + 1 }}</td>
                                     <td>{{ term.Caption }}</td>
-                                    <td>{{ term.Terms_Text }}</td>
+<!-- <td>{{ term.Terms_Text }}</td> -->
                                     <td>{{ term.Description }}</td>
                                     <td>
                                         <button [hidden]="Term_Edit==false" class="btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" type="button" (click)="Edit_Term(term, i)">

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
 import { Brand_Service } from '../../../services/Brand.Service';
+import { Item_Service } from '../../../services/Item.Service';
 // import { Brand_Group_Service } from '../../../services/Brand_Group.Service';
 // import { Under_Brand_Service } from '../../../services/Under_Brand.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
@@ -40,7 +41,9 @@ Brand_Edit:boolean;
 Brand_Save:boolean;
 Brand_Delete:boolean;
 Check_Hide:boolean=true;
-constructor(public Brand_Service_:Brand_Service,  private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
+Item_Data: any[] = [];
+Item_: any;
+constructor(public Brand_Service_:Brand_Service, public Item_Service_:Item_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
 ngOnInit() 
 {
 this.Permissions = Get_Page_Permission(91);
@@ -78,6 +81,7 @@ Create_New()
 {
     this.Entry_View = true;
     this.Check_Hide = true;
+    this.Item_ = null;
     this.Clr_Brand();
 }
 Close_Click()
@@ -107,12 +111,49 @@ Clr_Brand()
    this.Brand_.Country_Name="";
    this.Brand_.Checkbox=false;
    this.Brand_.Is_Update=false;
+   this.Item_ = null;
    
    if(this.Under_Brand_Data!=null && this.Under_Brand_Data != undefined)
    this.Under_Brand=this.Under_Brand_Data[0];
    if(this.HSN_Data!=null && this.HSN_Data != undefined)
    this.HSNCODE=this.HSN_Data[0];
 }
+
+Search_Item_Typeahead(event: any) {
+    var Value = "";
+    if (event.target.value == "")
+        Value = "";
+    else
+        Value = event.target.value;
+
+    if (this.Item_Data == undefined || this.Item_Data.length == 0 || Value != "") {
+        this.issLoading = true;
+        this.Item_Service_.Item_Typeahead(Value).subscribe((response: any) => {
+            const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+            if (Rows != null) {
+                if (Array.isArray(Rows) && Array.isArray(Rows[0])) {
+                    this.Item_Data = Rows[0];
+                } else if (Array.isArray(Rows)) {
+                    this.Item_Data = Rows;
+                }
+            }
+            this.issLoading = false;
+        },
+            Rows => {
+                this.issLoading = false;
+            });
+    }
+}
+
+display_Item(Item_: any) {
+    if (Item_) { return Item_.Item_Name || Item_.ItemName; }
+}
+
+Item_Change(Item_: any) {
+    this.Brand_.Item_Id = Item_.Item_Id;
+    this.Brand_.Item_Name = Item_.Item_Name || Item_.ItemName;
+}
+
 // Search_Brand_Group() 
 // {
 //            this.issLoading=true;
@@ -330,6 +371,7 @@ Edit_Brand(Brand_e:Brand,index)
     debugger;
 this.Brand_=Brand_e;
 this.Brand_=Object.assign({},Brand_e);
+this.Item_ = { Item_Id: this.Brand_.Item_Id, ItemName: this.Brand_.Item_Name };
 for (var i = 0; i < this.Under_Brand_Data.length; i++) {
     if (Brand_e.under_brand_Id == this.Under_Brand_Data[i].under_brand_Id)
     this.Under_Brand = this.Under_Brand_Data[i];

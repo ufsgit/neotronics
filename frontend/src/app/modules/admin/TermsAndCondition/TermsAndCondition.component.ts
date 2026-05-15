@@ -115,10 +115,10 @@ export class TermsAndConditionComponent implements OnInit {
             this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Caption', Type: '3' } });
             return;
         }
-        if (!this.Term_.Terms_Text || this.Term_.Terms_Text.trim() === '') {
-            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Terms & Condition', Type: '3' } });
-            return;
-        }
+        // if (!this.Term_.Terms_Text || this.Term_.Terms_Text.trim() === '') {
+        //     this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Terms & Condition', Type: '3' } });
+        //     return;
+        // }
 
         this.issLoading = true;
         this.Terms_Service_.Save_TermsAndCondition(this.Term_)
