@@ -10,6 +10,7 @@ import { Employee_Details_Service } from '../../../services/Employee_Details.Ser
 import { Client_Accounts_Service } from '../../../services/Client_Accounts.Service';
 import { Stock_Service } from '../../../services/Stock.Service';
 import { Item_Group_Service } from '../../../services/Item_Group.Service';
+import { Item_Service } from '../../../services/Item.Service';
 import { payment_term_Service } from '../../../services/payment_term.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Quotation_Master } from '../../../models/Quotation_Master';
@@ -244,13 +245,39 @@ printAcknowledgeDiscount_Description:boolean = false;
 printAcknowledgeAdditional_Discount: boolean = false;
 printAcknowledgeRoundoff_Amt: boolean = false;
 printAcknowledgeTotalDiscount:boolean = false;
-Payment_Term_Description: string = '';
-blankItems: number[] = [];
-marginTopItemNameCount : boolean = false;
+    Payment_Term_Description: string = '';
+    blankItems: number[] = [];
+    marginTopItemNameCount : boolean = false;
+
+    Status_Data: any[] = [
+        { id: 1, name: 'Draft' },
+        { id: 2, name: 'Pending' },
+        { id: 3, name: 'Approved' },
+        { id: 4, name: 'Rejected' },
+        { id: 5, name: 'Confirmed' }
+    ];
+    Status_: any = this.Status_Data[0];
+
+    Pricing_Rates: any[] = [];
+    Selected_Rate: any;
+    Profit: number = 0;
+    ProfitOptions: any[] = [
+        { label: '0%', value: 0 },
+        { label: '5%', value: 5 },
+        { label: '10%', value: 10 },
+        { label: '15%', value: 15 },
+        { label: '20%', value: 20 },
+        { label: '25%', value: 25 },
+        { label: '30%', value: 30 },
+        { label: '35%', value: 35 },
+        { label: '40%', value: 40 },
+        { label: '45%', value: 45 },
+        { label: '50%', value: 50 }
+    ];
 breakPage: boolean = false;
 constructor(public Sales_Master_Service_: Sales_Master_Service, public currencydetails_Service_: currencydetails_Service, public User_Details_Service_: User_Details_Service, private route: ActivatedRoute, private router: Router, public dialogBox: MatDialog
         , private el: ElementRef, private zone: NgZone, private renderer: Renderer2, public purchaseordermaster_Service_: purchaseordermaster_Service, public Employee_Details_Service_: Employee_Details_Service, public Stock_Service_: Stock_Service,
-        public Item_Group_Service_: Item_Group_Service, public payment_term_Service_: payment_term_Service, public Client_Accounts_Service_:Client_Accounts_Service,
+        public Item_Group_Service_: Item_Group_Service, public Item_Service_: Item_Service, public payment_term_Service_: payment_term_Service, public Client_Accounts_Service_:Client_Accounts_Service,
         public Requirement_Master_Service_: Requirement_Master_Service,
         public RequirementWorkflowService_: RequirementWorkflowService,
         private cdr: ChangeDetectorRef
@@ -259,10 +286,13 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
         this.Load_Bill_Type();       
         this.Load_Currency();
         this.Load_Item_Group();
-        this.Load_Payment_Term();
-        
-        this.Load_Company() ;
-        this.Load_Vat_Percentage();        
+        this.Load_Vat_Percentage();
+        this.PaymentTermData = [
+            { payment_Term_ID: 1, Payment_Term_Description: 'Cash' },
+            { payment_Term_ID: 2, Payment_Term_Description: 'Advance Payment' },
+            { payment_Term_ID: 3, Payment_Term_Description: 'Credit 7 Days' },
+            { payment_Term_ID: 4, Payment_Term_Description: 'Credit 30 Days' }
+        ] as any;
     }
 
     compareCurrency(c1: any, c2: any): boolean {
@@ -472,7 +502,14 @@ Load_Company()
             this.Currency_Temp.CurrencyDetails_Id = 0;
             this.Currency_Temp.CurrecnyName = 'Select';
             this.currencyData.unshift(this.Currency_Temp);
-            this.currency = this.currencyData[0];
+            
+            // Automatically select first available currency if it exists
+            if (this.currencyData.length > 1) {
+                this.currency = this.currencyData[1];
+            } else {
+                this.currency = this.currencyData[0];
+            }
+            
             this.Currency_Search = this.currencyData[0];
             this.issLoading = false;
         },
@@ -1380,6 +1417,9 @@ Clr_Sales_Master()
     {
         this.Payment_Term = this.PaymentTermData[0];
     }
+    this.Status_ = this.Status_Data[0];
+    this.Quotation_Master_.Status = this.Status_.id;
+    this.Quotation_Master_.Status_Name = this.Status_.name;
 }
 Clr_Sales_Details()
 {
@@ -1407,6 +1447,10 @@ Clr_Sales_Details()
     this.Quotation_Details_.Discount=0;
     this.Quotation_Details_.NetValue=0;
     this.Quotation_Details_.Description="";    
+    this.Quotation_Details_.Profit=0;
+    this.Quotation_Details_.Model="";
+    this.Quotation_Details_.Brand="";
+    this.Quotation_Details_.SaleRate=0;
     this.UnitName = "";
     this.Quantity = 0;
     this.SaleRate = 0;
@@ -1415,6 +1459,7 @@ Clr_Sales_Details()
     this.TotalAmount = 0;
     this.Quotation_Details_.Availability = '';
     this.Barcode_=null;
+    this.Item_=null;
     this.ItemCodeData=null;
     this.Item_ =null;
     this.Barcode_ =null;
@@ -1689,31 +1734,39 @@ Search_Customer_Typeahead(event: any)
          const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
      });     
   }
-Search_Item_Typeahead(event: any)
-{
+Search_Item_Typeahead(event: any) {
     var Value = "";
-    if(this.Barcode_ == null || this.Barcode_ == undefined)
-         this.Barcode_ = new Quotation_Details();     
-     Value = event.target.value;
-     if(Value == null || Value == undefined || Value == "undefined" || Value == "null")
-         Value = "";
-if(this.Barcode_.Item_Code)
-{
-    this.Barcode_.ItemName=Value
-}   
-     this.Quotation_Details_.ItemName=Value;
-      this.issLoading = true;
-     this.Sales_Master_Service_.Search_Item_Typeahead(Value).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;    
-     if (Rows != null) {
-         this.Stock_Data = Rows[0];         
-     }
-     this.issLoading = false;
-     },
-     Rows => {      
-     this.issLoading = false;
-         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-     });
+    if (event && event.target && event.target.value != undefined) {
+        Value = event.target.value;
+    } else {
+        Value = this.Item_ && typeof this.Item_ === 'string' ? this.Item_ : '';
     }
+
+    this.isLoading = true;
+
+    // Subscription 1: Search by Name (Sales_Master_Service)
+    this.Sales_Master_Service_.Search_Item_Typeahead(Value).subscribe((response: any) => {
+        const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+        let resultsByName = (Rows && Rows[0]) ? Rows[0] : [];
+
+        // Subscription 2: Search by Part Number (Item_Service)
+        this.Item_Service_.Search_Item('', 0, Value).subscribe((response2: any) => {
+            const Rows2 = (response2 && typeof response2 === "object" && "success" in response2) ? response2.data : response2;
+            let resultsByCode = (Rows2 && Rows2[0]) ? Rows2[0] : [];
+
+            // Merge results and remove duplicates by ItemId
+            const combinedResults = [...resultsByName];
+            resultsByCode.forEach(itemCode => {
+                if (!combinedResults.some(itemByName => itemByName.ItemId === itemCode.ItemId)) {
+                    combinedResults.push(itemCode);
+                }
+            });
+
+            this.Stock_Data = combinedResults;
+            this.isLoading = false;
+        }, () => { this.isLoading = false; });
+    }, () => { this.isLoading = false; });
+}
 display_Item(Stock_e: Stock)
 {
      if (Stock_e) { return Stock_e.ItemName; }
@@ -1834,6 +1887,8 @@ Customer_Change( Customer_T_)
     this.Quotation_Master_.GSTNo=this.Customer_.GSTNo;
     this.Customer_Name = this.Quotation_Master_.Customer_Name;
 
+    this.Quotation_Master_.WhatsApp = this.Customer_.Mobile;
+    this.Quotation_Master_.Email = this.Customer_.Email;
     this.Address1 = this.Quotation_Master_.Address1;
     this.Address2 = this.Quotation_Master_.Address2;
     this.Address3 = this.Quotation_Master_.Address3;
@@ -1855,27 +1910,68 @@ selectCustomer(){
     this.Quotation_Master_.GSTNo=this.Customer_.GSTNo;
     this.Customer_Name = this.Quotation_Master_.Customer_Name;
 
+    this.Quotation_Master_.WhatsApp = this.Customer_.Mobile;
+    this.Quotation_Master_.Email = this.Customer_.Email;
     this.Address1 = this.Customer_.Address1;
     this.Address2 = this.Customer_.Address2;
     this.Address3 = this.Customer_.Address3;
     this.Address4 = this.Customer_.Address4;
     this.Vatin = this.Customer_.GSTNo;
 }
-Item_Name_Change(Item_sl:Quotation_Details){ 
-    debugger
-this.Quotation_Details_=Object.assign({},Item_sl);
-//  this.Item_Temp.StockId=Item_sl.StockId;
- this.Item_Temp.Item_Code=Item_sl.Item_Code;
-//  this.Item_Temp.ItemName =Item_sl.ItemName;
- this.Item_Temp.ItemId=Item_sl.ItemId;
- this.Barcode_=Object.assign({},this.Item_Temp);
- this.Quotation_Details_.StockId=Item_sl.StockId; 
- this.Quotation_Details_.Item_Code=Item_sl.Item_Code;
- this.Quotation_Details_.Item_Code=Item_sl.Item_Code;
- this.Quotation_Details_.ItemId=Item_sl.ItemId;
- this.Quotation_Details_.Quantity=0;
-//  this.Quotation_Details_.ItemName=Item_sl.ItemName;
- debugger;
+Item_Name_Change(Item_sl: any) {
+    if (!Item_sl) return;
+    
+    // Auto-populate fields from selected item
+    this.Quotation_Details_.Description = Item_sl.Description || Item_sl.ItemName || '';
+    this.Quotation_Details_.Model = Item_sl.ModelName || Item_sl.Model || '';
+    this.Quotation_Details_.Brand = Item_sl.BrandName || Item_sl.Brand || '';
+    this.Quotation_Details_.UnitName = Item_sl.UnitName || '';
+    this.Quotation_Details_.UnitId = Item_sl.UnitId;
+    
+    this.Quotation_Details_.StockId = Item_sl.StockId;
+    this.Quotation_Details_.Item_Code = Item_sl.Item_Code || Item_sl.ItemCode;
+    this.Quotation_Details_.ItemId = Item_sl.ItemId;
+    this.Quotation_Details_.Quantity = 1;
+    this.Quotation_Details_.ItemName = Item_sl.ItemName || Item_sl.Item_Name;
+    this.Quotation_Details_.MRP = Item_sl.MRP;
+    this.Quotation_Details_.PurchaseRate = Item_sl.PurchaseRate;
+    this.Quotation_Details_.GroupId = Item_sl.GroupId;
+    this.Quotation_Details_.GroupName = Item_sl.GroupName;
+    this.Quotation_Details_.HSNMasterId = Item_sl.HSNMasterId;
+    this.Quotation_Details_.HSNCODE = Item_sl.HSNCODE;
+    this.Quotation_Details_.Stock = Item_sl.Quantity || Item_sl.Stock;
+
+    // Multi-pricing rates
+    this.Pricing_Rates = [];
+    if (Item_sl.SaleRate) this.Pricing_Rates.push({ name: 'Retail', value: Item_sl.SaleRate });
+    if (Item_sl.b2b_rate) this.Pricing_Rates.push({ name: 'B2B', value: Item_sl.b2b_rate });
+    if (Item_sl.b2c_rate) this.Pricing_Rates.push({ name: 'B2C', value: Item_sl.b2c_rate });
+    if (Item_sl.MRP) this.Pricing_Rates.push({ name: 'MRP', value: Item_sl.MRP });
+
+    if (this.Pricing_Rates.length > 0) {
+        this.Selected_Rate = this.Pricing_Rates[0];
+        this.Quotation_Details_.UnitPrice = this.Selected_Rate.value;
+    } else {
+        this.Quotation_Details_.UnitPrice = Item_sl.UnitPrice || 0;
+    }
+
+    this.Calculate_Quotation_Details_Amount();
+
+    this.Item_ = Object.assign({}, this.Quotation_Details_);
+}
+
+OnStatusChange() {
+    if (this.Status_) {
+        this.Quotation_Master_.Status = this.Status_.id;
+        this.Quotation_Master_.Status_Name = this.Status_.name;
+    }
+}
+
+OnRateChange() {
+    if (this.Selected_Rate) {
+        this.Quotation_Details_.UnitPrice = this.Selected_Rate.value;
+    }
+    this.Calculate_Quotation_Details_Amount();
 }
 Barcode_Change(Barcode_sl:Quotation_Details)
 {    
@@ -1897,10 +1993,15 @@ Calculate_Quotation_Details_Amount()
 {
     debugger
     if(this.Quotation_Details_.Quantity == undefined || this.Quotation_Details_.Quantity == null)
-    this.Quotation_Details_.Quantity = 0;
+        this.Quotation_Details_.Quantity = 0;
     if(this.Quotation_Details_.UnitPrice == undefined || this.Quotation_Details_.UnitPrice == null)
-    this.Quotation_Details_.UnitPrice = 0;
- this.Calculate_Total_Amount();
+        this.Quotation_Details_.UnitPrice = 0;
+
+    // Line Total = Unit Price * Quantity
+    this.Quotation_Details_.Amount = Number(this.Quotation_Details_.Quantity) * Number(this.Quotation_Details_.UnitPrice);
+    this.Quotation_Details_.Amount = Number(this.Quotation_Details_.Amount.toFixed(3));
+
+    this.Calculate_Total_Amount();
 }
 Calculate_Total_Amount()
 { 
@@ -1938,6 +2039,20 @@ Round_Off_Calculation()
 checkbox_Click()
 { 
     this.Final_Amounts();
+}
+OnHeaderProfitChange() {
+    if (this.Quotation_Details_Data) {
+        this.Quotation_Details_Data.forEach(item => {
+            item.Profit = this.Profit;
+            // Recalculate for each item: Sales Rate = Price + (Price * Profit / 100)
+            item.SaleRate = Number(item.UnitPrice) + (Number(item.UnitPrice) * Number(item.Profit) / 100);
+            item.SaleRate = Number(item.SaleRate.toFixed(3));
+            // Line Total = Sales Rate * Quantity
+            item.Amount = Number(item.Quantity) * Number(item.SaleRate);
+            item.Amount = Number(item.Amount.toFixed(3));
+        });
+        this.Final_Amounts();
+    }
 }
 safeNumber(value) {
     return isNaN(value) ? 0 : Number(value);
@@ -2121,18 +2236,13 @@ Save_Quotation(Printstatus:number)
     }
 
 
-    // if(this.Customer_ == undefined || this.Customer_ == null)
-    // { }
-        if(this.Customer_.Client_Accounts_Id==0 || this.Customer_.Client_Accounts_Id==null || this.Customer_.Client_Accounts_Id==undefined){
+    if(this.Customer_ == undefined || this.Customer_ == null || this.Customer_.Client_Accounts_Id == 0 || this.Customer_.Client_Accounts_Id == null || this.Customer_.Client_Accounts_Id == undefined){
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Choose Customer',Type:"3"}});
         return
-        }  
+    }  
     
     debugger; 
-    if(this.currency.CurrencyDetails_Id == undefined || this.currency.CurrencyDetails_Id == 0 ){
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Choose currency',Type:"3"}});
-        return
-    }    
+
     this.Quotation_Master_.Account_Party_Id=this.Customer_.Client_Accounts_Id;
     this.Quotation_Master_.User_Id=Number(this.Login_User_Id);
     this.Quotation_Master_.Quotation_Details=this.Quotation_Details_Data;
@@ -2465,6 +2575,10 @@ Get_Stock_Item() {
                 this.Quotation_Details_.PurchaseRate=this.Item_.PurchaseRate;
                 this.Quotation_Details_.Stock=this.Item_.Quantity;
                 this.Quotation_Details_.UnitPrice=this.Item_.SaleRate;
+                const itemAny: any = this.Item_ as any;
+                this.Quotation_Details_.Description = itemAny.Description || itemAny.ItemName || '';
+                this.Quotation_Details_.Model = itemAny.ModelName || itemAny.Model || '';
+                this.Quotation_Details_.Brand = itemAny.BrandName || itemAny.Brand || '';
                 this.Quotation_Details_.ItemName=this.Item_.ItemName;
                 this.Quotation_Details_.GroupId=this.Item_.GroupId;
                 this.Quotation_Details_.GroupName=this.Item_.GroupName;

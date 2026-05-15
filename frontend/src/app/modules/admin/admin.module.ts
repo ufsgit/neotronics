@@ -109,6 +109,9 @@ import { User_RoleComponent } from './User_Role/User_Role.component';
 import { User_TypeComponent } from './User_Type/User_Type.component';
 import { Working_StatusComponent } from './Working_Status/Working_Status.component';
 import { Company_SizeComponent } from './Company_Size/Company_Size.component';
+import { Quotation_ConfirmationComponent } from './Quotation_Confirmation/Quotation_Confirmation.component';
+import { DepartmentComponent } from './Department/Department.component';
+import { DepartmentStatusComponent } from './DepartmentStatus/DepartmentStatus.component';
 
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { RouterModule } from "@angular/router";
@@ -223,7 +226,10 @@ import { RouterModule } from "@angular/router";
 		User_RoleComponent,
 		User_TypeComponent,
 		Working_StatusComponent,
-		Company_SizeComponent
+		Company_SizeComponent,
+		Quotation_ConfirmationComponent,
+		DepartmentComponent,
+		DepartmentStatusComponent
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],

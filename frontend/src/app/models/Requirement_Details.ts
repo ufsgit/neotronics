@@ -39,6 +39,8 @@ export class Requirement_Details {
     PurchaseRate: number;
     MRP: number;
     Description: string;
+    Model: string;
+    Brand: string;
     SaleTax: number;
     Expiry_Date: Date;
 

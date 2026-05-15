@@ -109,6 +109,10 @@ var Sales_Order_Master = require('./routes/sales_order_master');
 var Vertical = require('./routes/Vertical');
 var Designation = require('./routes/Designation');
 var Company_Size = require('./routes/Company_Size');
+var Department = require('./routes/Department');
+var DepartmentStatus = require('./routes/DepartmentStatus');
+var Price_Response = require('./routes/Price_Response');
+
 
 var app = express();
 var server = http.Server(app);
@@ -215,6 +219,10 @@ app.use('/Sales_Order_Master', Sales_Order_Master);
 app.use('/Vertical', Vertical);
 app.use('/Designation', Designation);
 app.use('/Company_Size', Company_Size);
+app.use('/Department', Department);
+app.use('/DepartmentStatus', DepartmentStatus);
+app.use('/Price_Response', Price_Response);
+
 app.use(errorHandler);
 
 app.use(function(req, res, next) {

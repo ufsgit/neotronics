@@ -36,9 +36,9 @@ Unit_Discount:number;
     // Sale_Tax: number;
     Item_Discount_Amount:number;
     Expiry_Date:Date;
+    Profit:number;
 constructor(values: Object = {})  
 {
 Object.assign(this, values) 
 }
 }
-

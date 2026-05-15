@@ -140,7 +140,7 @@ Total_Entries: number=0;
 color = 'primary';
 mode = 'indeterminate';
 value = 50;
-issLoading: boolean;
+// isLoading: boolean;
 Permissions: any;
 Sales_Master_Edit:boolean;
 Sales_Master_Save:boolean;
@@ -343,7 +343,7 @@ call_api()
   this.Requirement_Master_Service_.Get_Location().subscribe(Save_location => {   
     },
     Rows => {
-        this.issLoading=false;         
+        this.isLoading=false;         
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error',Type:"2"}});
     });
 }
@@ -442,10 +442,10 @@ Load_Company()
             this.Company_ = rawData[0][0];
             this.Bank_ = rawData[1] || [];
         }
-        this.issLoading = false;
+        this.isLoading = false;
     },
     Rows => {
-        this.issLoading = false;
+        this.isLoading = false;
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error loading Company',Type:"2"}});
     });
 }
@@ -462,10 +462,10 @@ Load_Company()
             this.currencyData.unshift(this.Currency_Temp);
             this.currency = this.currencyData[0];
             this.Currency_Search = this.currencyData[0];
-            this.issLoading = false;
+            this.isLoading = false;
         },
             err => {
-                this.issLoading = false;
+                this.isLoading = false;
                 this.currencyData = this.currencyData || [];
                 const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error loading Currency', Type: "2" } });
             });
@@ -483,10 +483,10 @@ Load_Company()
             this.itemGroup_Temp.Item_Group_Name = 'Select';
             this.itemGroupData.unshift(this.itemGroup_Temp);
             this.Item_Group_Search = this.itemGroupData[0];
-            this.issLoading = false;
+            this.isLoading = false;
         },
             err => {
-                this.issLoading = false;
+                this.isLoading = false;
                 this.itemGroupData = this.itemGroupData || [];
                 const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error loading Item Group', Type: "2" } });
             });
@@ -501,10 +501,10 @@ Load_Company()
     //                 this.Employee_Search = this.EmployeeData[0];
     
     //             }
-    //             this.issLoading = false;
+    //             this.isLoading = false;
     //         },
     //             Rows => {
-    //                 this.issLoading = false;
+    //                 this.isLoading = false;
     //                 const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
     //             });
     // }
@@ -520,10 +520,10 @@ Load_Company()
             this.Payment_Term_Temp.Payment_Term_Description = 'Select';
             this.PaymentTermData.unshift(this.Payment_Term_Temp);
             this.Payment_Term = this.PaymentTermData[0];
-            this.issLoading = false;
+            this.isLoading = false;
         },
             err => {
-                this.issLoading = false;
+                this.isLoading = false;
                 this.PaymentTermData = this.PaymentTermData || [];
                 const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error loading Payment Term', Type: "2" } });
             });
@@ -720,9 +720,9 @@ Generate_Professional_PDF(mode: string) {
         return;
     }
 
-    this.issLoading = true;
+    this.isLoading = true;
     this.Requirement_Master_Service_.Print_Requirement(id).subscribe(blob => {
-        this.issLoading = false;
+        this.isLoading = false;
         console.log("Received PDF blob size:", blob.size);
         const url = window.URL.createObjectURL(blob);
         
@@ -738,7 +738,7 @@ Generate_Professional_PDF(mode: string) {
         
         setTimeout(() => window.URL.revokeObjectURL(url), 10000);
     }, err => {
-        this.issLoading = false;
+        this.isLoading = false;
         console.error('Print error:', err);
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error generating professional PDF.', Type: "2" } });
     });
@@ -1340,7 +1340,7 @@ Change_Bill_Status(Sales_Master_Id,BillType,index)
    {
    if(result=='Yes')
    {
-   this.issLoading=true;   
+   this.isLoading=true;   
    this.Requirement_Master_Service_.Change_Bill_Status(Sales_Master_Id,BillType).subscribe(Status => {       
     Status=Status[0];
    if(Status[0].Sales_Master_Id_>0){
@@ -1352,10 +1352,10 @@ Change_Bill_Status(Sales_Master_Id,BillType,index)
    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"false"}});
    }
    this.Search_Requirement();
-   this.issLoading=false;
+   this.isLoading=false;
    },
    Rows => {
-       this.issLoading=false;
+       this.isLoading=false;
    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error',Type:"2"}});
    });
    }
@@ -1369,7 +1369,7 @@ Delete_Requirement_Master(RequirementMaster_Id,index)
     {    
     if(result=='Yes')
     {
-    this.issLoading=true;
+    this.isLoading=true;
     debugger
     this.Requirement_Master_Service_.Delete_Requirement_Master(RequirementMaster_Id).subscribe((Delete_status: any) => {    
         debugger   
@@ -1381,7 +1381,7 @@ Delete_Requirement_Master(RequirementMaster_Id,index)
 
         if(Status_Row && Status_Row.RequirementMaster_Id_==-1){
             const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Cannot Delete',Type:"3"}});
-            this.issLoading=false;           
+            this.isLoading=false;           
             return;
           }
         else if(Status_Row && Status_Row.RequirementMaster_Id_>0){
@@ -1396,10 +1396,10 @@ Delete_Requirement_Master(RequirementMaster_Id,index)
             const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
             this.Search_Requirement();
         }
-        this.issLoading=false;
+        this.isLoading=false;
     },
     Rows => {
-        this.issLoading=false;
+        this.isLoading=false;
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error',Type:"2"}});
     });
     }
@@ -1422,10 +1422,10 @@ Load_Bill_Type()
             this.Bill_Type_Search=this.Bill_Type_Data[0];
             this.Bill_Type_=this.Bill_Type_Data[1];
         }
-        this.issLoading = false;
+        this.isLoading = false;
     },
     Rows => {
-        this.issLoading = false;
+        this.isLoading = false;
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error loading Bill Type',Type:"2"}});
     });
 }
@@ -1439,10 +1439,10 @@ Load_Bill_Mode()
         this.Bill_Mode_Data.unshift(this.Bill_Mode_Temp);
         this.Bill_Mode_=this.Bill_Mode_Data[0];
         }
-        this.issLoading = false;
+        this.isLoading = false;
         },
         Rows => {
-        this.issLoading = false;
+        this.isLoading = false;
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
         });
 }
@@ -1453,10 +1453,10 @@ Load_Cess()
          //   Rows=0;//Rows[0];
             this.Cess = 0;//Rows[0].Cess;
         }
-        this.issLoading = false;
+        this.isLoading = false;
     },
         Rows => {
-            this.issLoading = false;
+            this.isLoading = false;
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
         });
 }
@@ -1472,10 +1472,10 @@ Load_Company_bank()
             if (Rows[1] != null)
                 this.Company_ = Rows[1][0];
         }
-        this.issLoading = false;
+        this.isLoading = false;
     },
         Rows => {
-            this.issLoading = false;
+            this.isLoading = false;
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
         });
 }
@@ -1488,7 +1488,7 @@ Search_Customer_Typeahead(event: any)
     else
         Value = event.target.value;
       {
-     this.issLoading = true;
+     this.isLoading = true;
      debugger
     this.Requirement_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39',Value).subscribe(Rows => {   
         debugger;  
@@ -1496,11 +1496,11 @@ Search_Customer_Typeahead(event: any)
         debugger;  
         this.Customer_Data = Rows[0];
     }
-    this.issLoading = false;
+    this.isLoading = false;
     },
     Rows => {
      
-    this.issLoading = false;
+    this.isLoading = false;
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });
     }
@@ -1510,15 +1510,15 @@ Search_Customer_Typeahead(event: any)
 {
     var Value = "";    
     Value = event.target.value;      
-     this.issLoading = true;
+     this.isLoading = true;
     this.purchaseordermaster_Service_.Search_PurchaseOrderNumber_Typeahead(Value).subscribe(Rows => {     
     if (Rows != null && Rows[0] != null) {
         this.PurchaseOrder_Data = Rows[0];
     }
-    this.issLoading = false;
+    this.isLoading = false;
     },
     Rows => {     
-    this.issLoading = false;
+    this.isLoading = false;
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });    
  }
@@ -1526,15 +1526,15 @@ Search_Customer_Typeahead(event: any)
  {
      var Value = "";     
      Value = event.target.value;       
-      this.issLoading = true;
+      this.isLoading = true;
      this.User_Details_Service_.Search_User_Details(Value,this.User_Type,this.Login_User_Id).subscribe(Rows => {     
      if (Rows != null && Rows[0] != null) {
          this.EmployeeData = Rows[0];
      }
-     this.issLoading = false;
+     this.isLoading = false;
      },
      Rows => {
-       this.issLoading = false;
+       this.isLoading = false;
          const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
      });     
   }
@@ -1543,44 +1543,72 @@ Search_Customer_Typeahead(event: any)
      var Value = "";     
      Value = event.target.value;
        console.log(Value)
-      this.issLoading = true;
+      this.isLoading = true;
      // Fetch part numbers from Item Master (item table)
      this.Item_Service_.Search_Item('', 0, Value).subscribe(Rows => {     
         if (Rows != null && Rows[0] != null) {
             this.ItemCodeData = Rows[0];
         }
-        this.issLoading = false;
+        this.isLoading = false;
       },
       _Rows => {      
-        this.issLoading = false;
+        this.isLoading = false;
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
       });     
   }
-Search_Item_Typeahead(event: any)
-{
-    var Value = "";
-    if(this.Barcode_ == null || this.Barcode_ == undefined)
-         this.Barcode_ = new Requirement_Details();     
-     Value = event.target.value;
-     if(Value == null || Value == undefined || Value == "undefined" || Value == "null")
-         Value = "";
-if(this.Barcode_.Item_Code)
-{
-    this.Barcode_.ItemName=Value
-}   
-     this.Requirement_Details_.ItemName=Value;
-      this.issLoading = true;
-     this.Requirement_Master_Service_.Search_Item_Typeahead(Value).subscribe(Rows => {    
-     if (Rows != null && Rows[0] != null) {
-         this.Stock_Data = Rows[0];         
-     }
-     this.issLoading = false;
-     },
-     Rows => {      
-     this.issLoading = false;
-         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-     });
+Search_Item_Typeahead(event: any) {
+    let Value = "";
+    if (event && event.target && event.target.value) {
+        Value = event.target.value;
     }
+    
+    this.isLoading = true;
+    // Merged search: First search by Item Name
+    this.Requirement_Master_Service_.Search_Item_Typeahead(Value).subscribe({
+        next: (Rows) => {
+            let combinedData = [];
+            if (Rows != null && Rows[0] != null) {
+                Rows[0].forEach(item => {
+                    item.ItemId = item.ItemId || item.Item_Id || 0;
+                    item.ItemName = item.ItemName || item.Item_Name || '';
+                    item.Quantity = item.Quantity || 0;
+                    combinedData.push(item);
+                });
+            }
+            
+            // Then search by Item Code (Part Number) from Item Master to ensure thorough results
+            this.Item_Service_.Search_Item('', 0, Value).subscribe({
+                next: (codeRows) => {
+                    if (codeRows != null && codeRows[0] != null) {
+                        // Merge results, avoiding duplicates by ItemId
+                        codeRows[0].forEach(item => {
+                            const normalizedItem = {
+                                ...item,
+                                ItemId: item.ItemId || item.Item_Id || 0,
+                                ItemName: item.ItemName || item.Item_Name || '',
+                                Quantity: item.Quantity || 0
+                            };
+                            if (!combinedData.find(d => (d.ItemId === normalizedItem.ItemId && d.ItemId !== 0))) {
+                                combinedData.push(normalizedItem);
+                            }
+                        });
+                    }
+                    this.Stock_Data = combinedData;
+                    this.isLoading = false;
+                },
+                error: () => {
+                    this.Stock_Data = combinedData;
+                    this.isLoading = false;
+                }
+            });
+        },
+        error: (err) => {
+            this.isLoading = false;
+            this.Stock_Data = [];
+            const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured during item search', Type: "2" } });
+        }
+    });
+}
 display_Item(Stock_e: Stock)
 {
      if (Stock_e) { return Stock_e.ItemName; }
@@ -1600,16 +1628,16 @@ Search_Barcode_Typeahead(event: any)
     else
         Value = event.target.value;
         {
-        this.issLoading = true;
+        this.isLoading = true;
         this.Requirement_Master_Service_.Search_Barcode_Typeahead(Value).subscribe(Rows => {
             if (Rows != null && Rows[0] != null) 
             {
                 this.Barcode_Data = Rows[0];
             }
-            this.issLoading = false;
+            this.isLoading = false;
         },
         Rows => {     
-            this.issLoading = false;
+            this.isLoading = false;
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
         });
     }
@@ -1633,15 +1661,15 @@ Search_Customer_Typeahead(event: any)
        // if(this.Item_Data==undefined || this.Item_Data.length==0)
             
             //  var Temp_Group_Id='3,'+this.Employee_Id
-            this.issLoading = true;
+            this.isLoading = true;
     this.Requirement_Master_Service_.Search_Customer_Typeahead('1,3',Value).subscribe(Rows => {   
         if (Rows != null) {
             this.Customer_Data = Rows[0];
     }
-        this.issLoading = false;
+        this.isLoading = false;
     },
         Rows => {      
-            this.issLoading = false;
+            this.isLoading = false;
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
         }
         );  
@@ -1668,15 +1696,15 @@ Employee_Typeahead(event: any)
          Value = event.target.value;             
         // if(this.Item_Data==undefined || this.Item_Data.length==0)
          {             
-             this.issLoading = true;
+             this.isLoading = true;
      this.User_Details_Service_.Employee_Typeahead(2,Value).subscribe(Rows => {   
          if (Rows != null && Rows[0] != null) {
              this.Employee_Data = Rows[0];
               }
-              this.issLoading = false;
+              this.isLoading = false;
      },
          Rows => {            
-             this.issLoading = false;
+             this.isLoading = false;
      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
          });
      }
@@ -1741,6 +1769,11 @@ Item_Name_Change(Item_sl:Requirement_Details){
     this.Requirement_Details_.ItemName = item.Item_Name || item.ItemName || '';
     this.Requirement_Details_.ItemId = item.Item_Id || item.ItemId || 0;
     this.Requirement_Details_.StockId = item.StockId || 0;
+    this.Requirement_Details_.Description = item.Description || '';
+    this.Requirement_Details_.Model = item.ModelName || item.Model || '';
+    this.Requirement_Details_.Brand = item.BrandName || item.Brand || '';
+    this.Requirement_Details_.UnitName = item.UnitName || '';
+    this.Requirement_Details_.UnitId = item.UnitId || 0;
 
     this.Item_Temp.Item_Code = this.Requirement_Details_.Item_Code;
     this.Item_Temp.ItemId = this.Requirement_Details_.ItemId;
@@ -1757,24 +1790,24 @@ Set_Workflow_Tab(tab: 'Requirement' | 'PriceRequestPending' | 'QuotationPending'
 }
 
 Load_Price_Request_Pending() {
-    this.issLoading = true;
+    this.isLoading = true;
     this.RequirementWorkflowService_.List('price_request_pending').subscribe(rows => {
         this.Price_Request_Pending_Data = (rows && rows[0]) ? rows[0] : [];
-        this.issLoading = false;
+        this.isLoading = false;
     }, _err => {
         this.Price_Request_Pending_Data = [];
-        this.issLoading = false;
+        this.isLoading = false;
     });
 }
 
 Load_Quotation_Pending() {
-    this.issLoading = true;
+    this.isLoading = true;
     this.RequirementWorkflowService_.List('quotation_pending').subscribe(rows => {
         this.Quotation_Pending_Data = (rows && rows[0]) ? rows[0] : [];
-        this.issLoading = false;
+        this.isLoading = false;
     }, _err => {
         this.Quotation_Pending_Data = [];
-        this.issLoading = false;
+        this.isLoading = false;
     });
 }
 
@@ -1825,24 +1858,24 @@ Create_Quotation_Click(master: any) {
 }
 
 Load_Quotation_Requirement_Details(id: number) {
-    this.issLoading = true;
+    this.isLoading = true;
     this.Requirement_Master_Service_.Get_Quotation_Requirement_Details(id).subscribe(rows => {
         this.Quotation_Data = (rows && rows[0]) ? rows[0] : [];
-        this.issLoading = false;
+        this.isLoading = false;
     }, _err => {
         this.Quotation_Data = [];
-        this.issLoading = false;
+        this.isLoading = false;
     });
 }
 
 Load_PriceRequest_Requirement_Details(id: number) {
-    this.issLoading = true;
+    this.isLoading = true;
     this.Requirement_Master_Service_.Get_PriceRequest_Requirement_Details(id).subscribe(rows => {
         this.Price_Request_Data = (rows && rows[0]) ? rows[0] : [];
-        this.issLoading = false;
+        this.isLoading = false;
     }, _err => {
         this.Price_Request_Data = [];
-        this.issLoading = false;
+        this.isLoading = false;
     });
 }
 
@@ -1864,10 +1897,10 @@ Quotation_Pending_Click(master: any) {
     this.purchasePendingView = false;
     this.packingListPendingView = false;
     
-    this.issLoading = true;
+    this.isLoading = true;
     this.Requirement_Master_Service_.Get_Quotation_Pending_Items(id).subscribe(rows => {
         this.quotationPendingData = (rows && rows[0]) ? rows[0] : [];
-        this.issLoading = false;
+        this.isLoading = false;
         setTimeout(() => {
             if (this.bottomDiv9) {
                 this.bottomDiv9.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1875,7 +1908,7 @@ Quotation_Pending_Click(master: any) {
         }, 100);
     }, _err => {
         this.quotationPendingData = [];
-        this.issLoading = false;
+        this.isLoading = false;
     });
 }
 
@@ -1897,10 +1930,10 @@ PriceRequest_Pending_Click(master: any) {
     this.purchasePendingView = false;
     this.packingListPendingView = false;
 
-    this.issLoading = true;
+    this.isLoading = true;
     this.Requirement_Master_Service_.Get_PriceRequest_Pending_Items(id).subscribe(rows => {
         this.priceRequestPendingData = (rows && rows[0]) ? rows[0] : [];
-        this.issLoading = false;
+        this.isLoading = false;
         setTimeout(() => {
             if (this.bottomDiv10) {
                 this.bottomDiv10.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1908,7 +1941,7 @@ PriceRequest_Pending_Click(master: any) {
         }, 100);
     }, _err => {
         this.priceRequestPendingData = [];
-        this.issLoading = false;
+        this.isLoading = false;
     });
 }
 
@@ -1965,14 +1998,14 @@ makePriceRequest() {
     const id = this.Requirement_Master_.RequirementMaster_Id;
     if (!id) return;
     // For now navigating to a placeholder route or handled by service
-    this.issLoading = true;
+    this.isLoading = true;
     this.RequirementWorkflowService_.InitiatePriceRequest(id).subscribe(_ => {
-        this.issLoading = false;
+        this.isLoading = false;
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Price Request Initiated', Type: "false" } });
         this.priceRequestListView = false;
         this.Search_Requirement();
     }, _err => {
-        this.issLoading = false;
+        this.isLoading = false;
     });
 }
 
@@ -2129,7 +2162,7 @@ Search_Requirement()
         User_Details_Id_=0;
     else
         User_Details_Id_=this.Employee_Search.User_Details_Id;        
-    this.issLoading=true;    
+    this.isLoading=true;    
     this.QuotNo = this.QuotNo == "" ? undefined : this.QuotNo
     this.partNo = this.partNo == "" ? undefined : this.partNo
     debugger
@@ -2151,10 +2184,10 @@ Search_Requirement()
     if (this.Requirement_Master_Data.length == 0) {
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
     }
-    this.issLoading=false;
+    this.isLoading=false;
     },
     Rows => {
-        this.issLoading=false;
+        this.isLoading=false;
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });
 }
@@ -2287,7 +2320,7 @@ Save_Requirement(Printstatus:number)
     //this.Requirement_Master_.EntryDate = this.formatDate(this.Requirement_Master_.EntryDate);
     this.Requirement_Master_.CurrencyId = (this.currency && this.currency.CurrencyDetails_Id) ? this.currency.CurrencyDetails_Id : 0;
     console.log("Before Requirement API call");
-    this.issLoading = true;
+    this.isLoading = true;
     const saveButton = document.getElementById("Save_Button");
     if (saveButton) saveButton.hidden = true;
     
@@ -2297,7 +2330,7 @@ Save_Requirement(Printstatus:number)
     this.Requirement_Master_Service_.Save_Requirement(this.Requirement_Master_)
     .pipe(
         finalize(() => {
-            this.issLoading = false;
+            this.isLoading = false;
             if (saveButton) saveButton.hidden = false;
         })
     )
@@ -2389,7 +2422,7 @@ Edit_Requirement_Master(Sales_Master_e,index)
     this.Entry_View=true;
     this.Edit_Sales=1;
     this.Sales_Print = false;
-    this.issLoading = true;
+    this.isLoading = true;
     this.Requirement_Master_Index=index;
     this.Requirement_Master_=Object.assign({},Sales_Master_e); 
     this.RequirementMaster_Id_Edit = Sales_Master_e.RequirementMaster_Id;
@@ -2509,10 +2542,10 @@ debugger;
             this.Final_Amounts();
             this.addBlankRows();        
         }
-        this.issLoading = false;
+        this.isLoading = false;
     },
     Rows => {
-        this.issLoading = false;
+        this.isLoading = false;
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });   
 }
@@ -3002,10 +3035,10 @@ debugger;
 //                 this.Delivery_Order_Details_Data = Rows[0];
 //                 this.Final_Amounts();                
 //                 }
-//                    this.issLoading = false;
+//                    this.isLoading = false;
 //                },
 //              Rows => {
-//                     this.issLoading = false;
+//                     this.isLoading = false;
 //                const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
 //             });
 //     })
@@ -3015,7 +3048,7 @@ debugger;
     {
         debugger;
         this.Entry_View=true;
-        this.issLoading = true
+        this.isLoading = true;
 debugger;
         this.Requirement_Master_Service_.Load_RequirementMaster(this.RequirementMaster_Id).subscribe(result=>{
             this.Requirement_Master_=new Requirement_Master();
@@ -3119,10 +3152,10 @@ debugger;
             this.Final_Amounts();
             this.addBlankRows();        
             }
-            this.issLoading = false;
+            this.isLoading = false;
         },
         Rows => {
-                this.issLoading = false;
+                this.isLoading = false;
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
         });   
     })
@@ -3329,10 +3362,10 @@ debugger;
               debugger;
               this.Default_Vat_Percentage = rawData[0][0].vat_percentage;
           }
-          this.issLoading = false;
+          this.isLoading = false;
       },
       Rows => {
-          this.issLoading = false;
+          this.isLoading = false;
           const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error loading VAT',Type:"2"}});
       });
   }

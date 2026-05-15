@@ -1,4 +1,4 @@
-﻿<div *ngIf="issLoading" class="overlay">
+<div *ngIf="isLoading" class="overlay">
     <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
     </mat-progress-spinner>
 </div>
@@ -59,7 +59,7 @@
                         class="col-md-9 " style="height: 40px;border: 1px solid #b1b1b1;">
                     <mat-autocomplete #auto_Customer="matAutocomplete" [displayWith]="display_Customer">
                         <mat-option *ngIf="isLoading">
-                            <mat-spinner diameter="500"></mat-spinner>
+                            <mat-spinner diameter="20"></mat-spinner>
                         </mat-option>
                         <ng-container *ngIf="!isLoading">
                             <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
@@ -282,7 +282,7 @@
                             (input)="Search_Customer_Typeahead($event)"
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
                         <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Customer">
-                            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
                             <ng-container *ngIf="!isLoading">
                                 <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
                                     <span (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
@@ -378,10 +378,13 @@
                                             style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
                                             class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
                                         <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
-                                            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
                                             <ng-container *ngIf="!isLoading">
                                                 <mat-option *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
-                                                    <span (click)="Item_Name_Change(Itemstock)">{{Itemstock.ItemName}}-{{Itemstock.Item_Code}} - {{Itemstock.Quantity}}</span>
+                                                    <span (click)="Item_Name_Change(Itemstock)">
+                                                        {{Itemstock.Item_Code || '---'}} - {{Itemstock.Quantity || 0}} - {{Itemstock.ItemName || Itemstock.Item_Name || '---'}} 
+                                                        <ng-container *ngIf="Itemstock.ModelName"> . Model: {{Itemstock.ModelName}}</ng-container>
+                                                    </span>
                                                 </mat-option>
                                             </ng-container>
                                         </mat-autocomplete>
@@ -440,7 +443,7 @@
                                             (input)="Get_Stock_Item_Code_Typeahead($event)"
                                             (keyup.enter)="Plus_Requirement_Details($event)" />
                                         <mat-autocomplete #auto42="matAutocomplete" [displayWith]="display_ItemCode">
-                                            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
                                             <ng-container *ngIf="!isLoading">
                                                 <mat-option *ngFor="let Item of ItemCodeData; let i = index" [value]="Item">
                                                     <span><div (click)="Barcode_Change(Item)">{{Item.Item_Code}} - {{Item.Item_Name || Item.ItemName}}</div></span>

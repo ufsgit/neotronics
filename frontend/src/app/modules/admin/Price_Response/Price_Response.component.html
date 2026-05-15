@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="col-md-5 row mb-1" style="align-items: center;">
-                    <label class="col-md-3 mb-0" style="text-align: end;">Customer</label>
+                    <label class="col-md-3 mb-0" style="text-align: end;">Supplier</label>
                     <input type="text" [matAutocomplete]="auto_Customer" [(ngModel)]="Search_Customer" name="Customer"
                         (click)="Search_Customer_Typeahead($event)" (input)="Search_Customer_Typeahead($event)"
                         class="col-md-9 " style="height: 40px;border: 1px solid #b1b1b1;">
@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="col-md-3 row  mb-1" style="align-items: center;">
-                    <label class="col-md-6 mb-0" style="text-align: end;">Price_Request No</label>
+                    <label class="col-md-6 mb-0" style="text-align: end;">Price Response No</label>
                     <input type="text" class="col-md-6 " [(ngModel)]="QuotNo" [ngModelOptions]="{standalone: true}"
                         style="height: 40px;border: 1px solid #b1b1b1;">
                 </div>
@@ -105,7 +105,7 @@
                     <!-- <button mat-raised-button type="button" class="btn btn-danger pull-right mt-0 mb-0"  (click)="Print_Search_Click()">
                                         <i class="fa fa-print" aria-hidden="true"></i>
                                     </button> -->
-                    <button mat-raised-button type="button" (click)="Search_Price_Request()"
+                    <button mat-raised-button type="button" (click)="Search_Price_Response()"
                         style="margin-top: -1px !important;"
                         class="btn btn-danger mb-0 pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
                         <i class="fa fa-search" aria-hidden="true"></i>
@@ -135,16 +135,16 @@
                         <table class="table table-hover">
                             <thead class="thead">
                                 <th>Sl No</th>
-                                <th>Customer Name</th>
-                                <th>Price_Request No</th>
+                                <th>Supplier Name</th>
+                                <th>Price Response No</th>
                                 <th>Date</th>
                                 <th>Amount</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </thead>
                             <!-- <ng-container
-                                        *cdkVirtualFor="let Sales_Master of Price_Request_Master_Data; let i =index"> -->
-                            <tr *ngFor="let Sales_Master of Price_Request_Master_Data; let i =index">
+                                        *cdkVirtualFor="let Sales_Master of Price_Response_Master_Data; let i =index"> -->
+                            <tr *ngFor="let Sales_Master of Price_Response_Master_Data; let i =index">
                                 <td style="    padding: 0px;
                                             padding-left: 5px;
                                             vertical-align: middle;">{{ i+1 }}</td>
@@ -169,7 +169,7 @@
                                         ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span
                                                 _ngcontent-jry-c5="" class="mat-button-wrapper">
                                                 <i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons"
-                                                    (click)="Edit_Price_Request_Master(Sales_Master,i)">edit</i></span>
+                                                    (click)="Edit_Price_Response_Master(Sales_Master,i)">edit</i></span>
                                             <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple=""
                                                 ng-reflect-centered="false" ng-reflect-disabled="false"
                                                 ng-reflect-trigger="[object HTMLButtonElement]"></div>
@@ -189,7 +189,7 @@
                                         aria-describedby="cdk-describedby-message-1" cdk-describedby-host=""
                                         ng-reflect-position="above" ng-reflect-message="Remove"><span
                                             class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"
-                                                (click)="Delete_Price_Request_Master(Sales_Master.Price_Request_Master_Id,i)">close</i></span>
+                                                (click)="Delete_Price_Response_Master(Sales_Master.Price_Response_Master_Id,i)">close</i></span>
                                         <div class="mat-button-ripple mat-ripple" matripple=""
                                             ng-reflect-centered="false" ng-reflect-disabled="false"
                                             ng-reflect-trigger="[object HTMLButtonElement]"></div>
@@ -201,7 +201,7 @@
         mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" 
         cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper">
             <i _ngcontent-gdi-c11="" class="material-icons"  
-            (click)="Change_Bill_Status(Sales_Master.Price_Request_Master_Id,Sales_Master.BillType,i)" >trending_flat</i></span>
+            (click)="Change_Bill_Status(Sales_Master.Price_Response_Master_Id,Sales_Master.BillType,i)" >trending_flat</i></span>
             <div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" 
             ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"></div></button>
         </td> -->
@@ -221,730 +221,242 @@
             <!-- </div> -->
         </div>
 
-        <div class="row mt-2" *ngIf="Entry_View" style="background-color: #f1f1f1;">
-            <div class="container-fluid" #topDiv>
-                <div class="col-md-6 croct-float-purchase-master-section ">
-                    <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
-                            <span style="color:#ef071e; ">*</span></label>
-                        <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer"
-                            (ngModelChange)="selectCustomer()" (click)="Search_Customer_Typeahead($event)"
-                            (input)="Search_Customer_Typeahead($event)"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
-                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Customer">
-                            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
-                            <ng-container *ngIf="!isLoading">
-                                <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
-                                    <span
-                                        (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
-                                </mat-option>
-                            </ng-container>
-                        </mat-autocomplete>
-                    </div>
-                    <div class="col-md-12 mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer Name
-                            <span style="color:#ef071e; ">*</span></label>
-                        <input type="text" name="Customer_Name_Display" [(ngModel)]="Price_Request_Master_.Customer_Name" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address</label>
-                        <input type="text" [(ngModel)]="Address1" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" [(ngModel)]="Address2" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" [(ngModel)]="Address3" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" [(ngModel)]="Address4" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">WhatsApp Number</label>
-                        <input type="text" name="Mobile_No_WA" [(ngModel)]="Price_Request_Master_.Mobile_No"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Email</label>
-                        <input type="text" name="Email_Field" [(ngModel)]="Price_Request_Master_.Email"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div style="display:none">
-                        <input type="text" name="Delivery_Address1" [(ngModel)]="Price_Request_Master_.Delivery_Address1">
-                        <input type="text" name="Delivery_Address2" [(ngModel)]="Price_Request_Master_.Delivery_Address2">
-                        <input type="text" name="Delivery_Address3" [(ngModel)]="Price_Request_Master_.Delivery_Address3">
-                        <input type="text" name="Delivery_Address4" [(ngModel)]="Price_Request_Master_.Delivery_Address4">
-                    </div>
+        <div class="row mt-0" *ngIf="Entry_View" style="background-color: #f1f1f1;">
+            <div class="container-fluid p-0">
+                <!-- Dashboard Header -->
+                <div class="dashboard-header">
+                    <h2>Price Response Dashboard</h2>
+                    <p>Create and manage your price responses efficiently</p>
                 </div>
-                <div class="col-md-6 croct-float-purchase-master-section">
-                    <div class="col-md-12 mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date
-                            <span style="color:#ef071e; ">*</span></label>
-                        <mat-form-field
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            style="height: 47px !important">
-                            <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate"
-                                [(ngModel)]="Price_Request_Master_.EntryDate">
-                            <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
-                            <mat-datepicker #dpdate></mat-datepicker>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Price_Request
-                            No</label>
-                        <input type="text" name="Price_RequestNo" [(ngModel)]="Price_Request_Master_.Price_RequestNo" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1" style="display:none">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Currency
-                            <span style="color:#ef071e; ">*</span>
-                        </label>
-                        <select
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            name="currency" id="currency" [(ngModel)]="currency" [compareWith]="compareCurrency" (ngModelChange)="Final_Amounts()">
-                            <option *ngFor="let curr of currencyData" [ngValue]="curr">
-                                {{curr.CurrecnyName}}</option>
-                        </select>
 
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1" style="display:none">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">PO
-                            Number
-                        </label>
-                        <input type="text" name="POnumber" [(ngModel)]="Price_Request_Master_.POnumber"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1" style="display:none">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
-                            Ref No
-                        </label>
-                        <input type="text" name="Supplier_Ref_No" [(ngModel)]="Price_Request_Master_.Supplier_Ref_No"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1" style="display:none">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Attention
-                        </label>
+                <div class="main-container">
+                    <div class="row g-4">
+                        <!-- Left Side: Supplier Information -->
+                        <div class="col-lg-6">
+                            <div class="info-card">
+                                <h5>Supplier Information</h5>
+                                
+                                <div class="mb-3">
+                                    <label class="standard-label">Supplier Name <span class="required-star">*</span></label>
+                                    <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer"
+                                        (ngModelChange)="selectCustomer()" (click)="Search_Customer_Typeahead($event)"
+                                        (input)="Search_Customer_Typeahead($event)"
+                                        class="form-control-standard" placeholder="Search and select supplier..." />
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Customer">
+                                        <mat-option *ngIf="isLoading"><mat-spinner diameter="30"></mat-spinner></mat-option>
+                                        <ng-container *ngIf="!isLoading">
+                                            <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
+                                                <span (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-autocomplete>
+                                </div>
 
-                        <input type="text" name="KindAttend" [(ngModel)]="Price_Request_Master_.KindAttend"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1" style="display:none">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Employee
-                        </label>
+                                <div class="mb-3">
+                                    <label class="standard-label">Address</label>
+                                    <textarea class="form-control-standard" rows="3" [(ngModel)]="Address1" readonly placeholder="Address will be auto-filled..." style="height: auto;"></textarea>
+                                </div>
 
-                        <input type="text" name="AttendEmployee" [(ngModel)]="Price_Request_Master_.AttendEmployee"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Reference</label>
-                        <input type="text" name="Mobile_No" [(ngModel)]="Price_Request_Master_.Description2"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Profit</label>
-                        <select class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            name="Profit" [(ngModel)]="Profit">
-                            <option *ngFor="let p of ProfitOptions" [ngValue]="p.value">{{p.label}}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row" style="background-color: #f1f1f1;">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body" style="background-color: #f1f1f1;">
-
-                            <div class="row">
-                                <div class="col-md-12" style="display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; margin-bottom: 10px;">
-                                    <div
-                                        class="col-md-4 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" *ngIf="false">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Part
-                                            Number
-                                            <span style="color:#ef071e; ">*</span>
-                                        </label>
-                                        <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto42"
-                                            style="padding-left: 5px !important;" [(ngModel)]="Barcode_"
-                                            (click)="Get_Stock_Item_Code_Typeahead($event)"
-                                            (input)="Get_Stock_Item_Code_Typeahead($event)"
-                                            (ngModelChange)="Get_Stock()" (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched" />
-                                        <mat-autocomplete #auto42="matAutocomplete" [displayWith]="display_ItemCode">
-                                            <mat-option *ngIf="isLoading"><mat-spinner
-                                                    diameter="500"></mat-spinner></mat-option>
-                                            <ng-container *ngIf="!isLoading">
-                                                <mat-option *ngFor="let Item of ItemCodeData; let i = index"
-                                                    [value]="Item">
-                                                    <span>
-                                                        <div (click)="Barcode_Change(Item)">{{Item.Item_Code}} -
-                                                            {{Item.Quantity}} - {{Item.ItemName}} </div>
-                                                    </span>
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-autocomplete>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="standard-label">Phone Number</label>
+                                        <input type="text" [(ngModel)]="Price_Response_Master_.PhoneNo" class="form-control-standard" placeholder="Phone number" />
                                     </div>
-                                    <div
-                                        class="tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" style="flex: 0 0 calc(33.33% - 12px); min-width: 260px;">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item
-                                            <span style="color:#ef071e; "></span>
-                                        </label>
-
-                                        <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_" name="Item"
-                                            (input)="Search_Item_Typeahead($event)"
-                                            (click)="Search_Item_Typeahead($event)" (ngModelChange)="Get_Stock_Item()"
-                                            (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
-                                        <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
-                                            <mat-option *ngIf="isLoading"><mat-spinner
-                                                    diameter="500"></mat-spinner></mat-option>
-                                            <ng-container *ngIf="!isLoading">
-                                                <mat-option *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
-                                                    <span
-                                                        (click)="Item_Name_Change(Itemstock)">{{Itemstock.ItemName}}-{{Itemstock.Item_Code}}
-                                                        - {{Itemstock.Quantity}}</span>
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-autocomplete>
-                                    </div>
-                                    <div class="tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" style="flex: 0 0 calc(22% - 12px); min-width: 220px;">
-                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Description</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Details_.Description"
-                                            (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
-                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
-                                    </div>
-                                    <div class="tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" style="flex: 0 0 calc(12% - 12px); min-width: 140px;">
-                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Model</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Details_.Model"
-                                            (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
-                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
-                                    </div>
-                                    <div class="tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" style="flex: 0 0 calc(15% - 12px); min-width: 160px;">
-                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Brand</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Details_.Brand"
-                                            (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
-                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
-                                    </div>
-                                    <div
-                                        class="tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" *ngIf="false" style="flex: 0 0 120px;">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Uom
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="text" [(ngModel)]="Price_Request_Details_.UnitName"
-                                            style="padding-left: 5px !important;" id="Price_Request_Details_.UnitName"
-                                            name="Price_Request_Details_.UnitName"
-                                            (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
-                                    </div>
-                                    <div
-                                        class="tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" style="flex: 0 0 calc(8% - 12px); min-width: 110px;">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty
-                                            <span style="color:#ef071e; ">*</span></label>
-                                        <input type="number" [(ngModel)]="Price_Request_Details_.Quantity"
-                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;" id="Price_Request_Details_.Quantity"
-                                            name="Price_Request_Details_.Quantity"
-                                            (ngModelChange)="Calculate_Price_Request_Details_Amount()"
-                                            (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
-                                    </div>
-                                    <div class="tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" style="flex: 0 0 calc(8% - 12px); min-width: 110px;">
-                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Unit</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Details_.UnitName"
-                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;" id="Price_Request_Details_.UnitName"
-                                            name="Price_Request_Details_.UnitName"
-                                            (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" *ngIf="false">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Unit
-                                            Price
-                                            <span style="color:#ef071e; ">*</span></label>
-                                        <input type="number" [(ngModel)]="Price_Request_Details_.UnitPrice" style="display:none;padding-left: 5px !important;"
-                                            id="Price_Request_Details_.UnitPrice"
-                                            name="Price_Request_Details_.UnitPrice"
-                                            (ngModelChange)="Calculate_Price_Request_Details_Amount()"
-                                            (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
-                                    </div>
-
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" *ngIf="false">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Discount
-                                            %
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="number" [(ngModel)]="Price_Request_Details_.Discount" style="display:none;padding-left: 5px !important;"
-                                            id="Price_Request_Details_.Discount"
-                                            name="Price_Request_Details_.Discount"
-                                            (ngModelChange)="Calculate_Price_Request_Details_Amount()"
-                                            (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" *ngIf="false">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Unit
-                                            Discount
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="number" [(ngModel)]="Price_Request_Details_.Unit_Discount" style="display:none;padding-left: 5px !important;"
-                                            id="Price_Request_Details_.Unit_Discount"
-                                            name="Price_Request_Details_.Unit_Discount"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid"
-                                            readonly />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" *ngIf="false">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Total
-                                            Price <span style="color:#ef071e; "></span></label>
-                                        <input type="number" [(ngModel)]="Price_Request_Details_.NetValue" style="display:none;padding-left: 5px !important;"
-                                            id="Price_Request_Details_.NetValue" name="Price_Request_Details_.NetValue"
-                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched"
-                                            readonly />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" *ngIf="false">
-                                        <label
-                                            class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Availability
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="text" style="display:none;padding-left: 5px !important;"
-                                            [(ngModel)]="Price_Request_Details_.Availability"
-                                            (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            id="Price_Request_Details_.Availability" name="Price_Request_Details_.Availability"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
-                                    </div>
-                                    <div style="flex: 0 0 auto; padding-bottom: 2px;">
-                                        <button mat-raised-button type="button" (click)="Plus_Price_Request_Details($event)"
-                                            class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes"
-                                            style="border-radius: 5px !important; padding: 8px 18px; min-width: auto;">
-                                            Add</button>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="standard-label">WhatsApp Number</label>
+                                        <input type="text" [(ngModel)]="Price_Response_Master_.Mobile_No" class="form-control-standard" placeholder="WhatsApp number" />
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover table-for-sale-search-section-diary">
-                                                <thead class="bg-col-stock-add-diary">
-                                                    <th>No </th>
-                                                    <th>Item</th>
-                                                    <th>Description</th>
-                                                    <th>Model</th>
-                                                    <th>Qty</th>
-                                                    <th>Unit</th>
-                                                    <th>Brand</th>
-                                                    <th></th>
-                                                </thead>
-                                                <tbody class="bk_tb_bg"
-                                                    *ngFor="let Sales_Details of Price_Request_Details_Data; let i = index">
-                                                    <td>{{i+1}}</td>
-                                                    <td [id]="'cell' + (i + 1)">{{ Sales_Details["ItemName"] }}</td>
-                                                    <td>{{Sales_Details["Description"]}}</td>
-                                                    <td>{{Sales_Details["Model"]}}</td>
-                                                    <td>{{Sales_Details["Quantity"]}}</td>
-                                                    <td>{{Sales_Details["UnitName"]}}</td>
-                                                    <td>{{Sales_Details["Brand"]}}</td>
-                                                    <td style="width:75px;">
-                                                        <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
-                                                            [hidden]="Sales_Master_Edit==false"
-                                                            aria-describedby="cdk-describedby-message-0"
-                                                            cdk-describedby-host=""
-                                                            class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
-                                                            mat-raised-button="" mattooltip="Edit Task"
-                                                            ng-reflect-message="Edit Task" ng-reflect-position="above"
-                                                            type="button"><span class="mat-button-wrapper"><span
-                                                                    _ngcontent-jry-c5="" class="mat-button-wrapper">
-                                                                    <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
-                                                                        class="material-icons"
-                                                                        (click)="Edit_Price_Request_Detail(Sales_Details,i)">edit</i></span>
-                                                                <div _ngcontent-jry-c5=""
-                                                                    class="mat-button-ripple mat-ripple" matripple=""
-                                                                    ng-reflect-centered="false"
-                                                                    ng-reflect-disabled="false"
-                                                                    ng-reflect-trigger="[object HTMLButtonElement]">
-                                                                </div>
-                                                                <div _ngcontent-jry-c5=""
-                                                                    class="mat-button-focus-overlay">
-                                                                </div>
-                                                            </span>
-                                                            <div class="mat-button-ripple mat-ripple" matripple=""
-                                                                ng-reflect-centered="false" ng-reflect-disabled="false"
-                                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
-                                                            <div class="mat-button-focus-overlay"></div>
-                                                        </button>
 
-                                                        <button _ngcontent-gdi-c11=""
-                                                            [hidden]="Sales_Master_Delete==false"
-                                                            class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
-                                                            mat-raised-button="" mattooltip="Remove" type="button"
-                                                            aria-describedby="cdk-describedby-message-1"
-                                                            cdk-describedby-host="" ng-reflect-position="above"
-                                                            ng-reflect-message="Remove"><span
-                                                                class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
-                                                                    class="material-icons"
-                                                                    (click)="Delete_Price_Request_Detail(i)">close</i></span>
-                                                            <div class="mat-button-ripple mat-ripple" matripple=""
-                                                                ng-reflect-centered="false" ng-reflect-disabled="false"
-                                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
-                                                            <div class="mat-button-focus-overlay"></div>
-                                                        </button>
-                                                    </td>
+                                <div class="mb-3">
+                                    <label class="standard-label">Email</label>
+                                    <input type="email" [(ngModel)]="Price_Response_Master_.Email" class="form-control-standard" placeholder="Supplier email address" />
+                                </div>
+                            </div>
+                        </div>
 
-                                                </tbody>
-                                            </table>
+                        <!-- Right Side: Response Information -->
+                        <div class="col-lg-6">
+                            <div class="info-card">
+                                <h5>Response Information</h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="standard-label">Date <span class="required-star">*</span></label>
+                                        <div class="input-group">
+                                            <input class="form-control-standard" [matDatepicker]="dpdate" [(ngModel)]="Price_Response_Master_.EntryDate" placeholder="MM/DD/YYYY">
+                                            <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
+                                            <mat-datepicker #dpdate></mat-datepicker>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-12 mt-5">
-                                    <h4 style="font-weight: bold;">Terms & Conditions</h4>
-                                </div>
-
-                                <!-- <div class="col-md-6">
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-4 label-to-crect-all-names-to-div-tre-prt-sles">T&amp;S</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Master_.Description1"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                </div> -->
-                                <div class="col-md-6">
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment Term</label>
-                                        <select [(ngModel)]="Payment_Term" id="Payment_Term" name="Payment_Term" [compareWith]="comparePaymentTerm"
-                                            class="for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe ng-pristine ng-valid ng-touched"
-                                            style="width: 37%;border: 1px solid lightgrey; border-radius: 5px;padding-left: 5px !important;height: 36px;">
-                                            <option *ngFor="let PaymentTerm of PaymentTermData" [ngValue]="PaymentTerm">
-                                                {{PaymentTerm.Payment_Term_Description}}</option>
-                                        </select>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="standard-label">Response No</label>
+                                        <input type="text" [(ngModel)]="Price_Response_Master_.Price_RequestNo" readonly class="form-control-standard bg-light fw-bold" placeholder="Auto-generated" />
                                     </div>
                                 </div>
 
-                                <div class="col-md-4" style="display:none">
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Brand</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Master_.Brand"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Price
-                                            Basis</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Master_.PriceBasis"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment
-                                            Term</label>
-                                        <input type="number" [(ngModel)]="Price_Request_Master_.PaymentTermValue" style="width: 12%;border: 1px solid lightgrey;
-                                            border-radius: 5px;padding-left: 5px !important;height: 36px;"
-                                            class="mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                        <select [(ngModel)]="Payment_Term" id="Payment_Term" name="Payment_Term" [compareWith]="comparePaymentTerm"
-                                            class="for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe ng-pristine ng-valid ng-touched"
-                                            style="width: 37%;border: 1px solid lightgrey;
-                                            border-radius: 5px;padding-left: 5px !important;height: 36px;">
-                                            <option *ngFor="let PaymentTerm of PaymentTermData" [ngValue]="PaymentTerm">
-                                                {{PaymentTerm.Payment_Term_Description}}</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Delivery</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Master_.Delivery "
-                                            id="Price_Request_Master_.Delivery" name="Price_Request_Master_.Delivery"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Validity</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Master_.Validity "
-                                            id="Price_Request_Master_.Validity" name="Price_Request_Master_.Validity"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Notes</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Master_.Description1"
-                                            id="Price_Request_Master_.Description1" name="Price_Request_Master_.Description1"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class=" label-to-crect-all-names-to-div-tre-prt-sles">Print
-                                            Letterhead</label>
-
-
-                                        <input style="margin-left: 4%;" type='checkbox' class="form-check-input"
-                                            id="Price_Request_Master_.printLetterhead"
-                                            name="Price_Request_Master_.printLetterhead" [(ngModel)]="printLetterhead" />
-                                        <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9=""
-                                                class="check"></span>
-                                        </span>
-
-                                    </div>
-                                </div>
-                                <div class="col-md-4" style="display:none">
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1"
-                                        style="visibility: hidden;">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles"></label>
-                                        <input type="number"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Discount
-                                            %</label>
-                                        <input type="number" id="Price_Request_Master_.Discount_Description"
-                                            name="Price_Request_Master_.Discount_Description"
-                                            [(ngModel)]="Price_Request_Master_.Discount_Description"
-                                            (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Description
-                                            %</label>
-                                        <input type="text" name="Description1" [(ngModel)]="Price_Request_Master_.Charge1"
-                                            class="col-md-3"
-                                            style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important;height: 36px;">
-                                        <input type="number" class="col-md-3"
-                                            style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important;height: 36px;"
-                                            [(ngModel)]="Price_Request_Master_.Charge1per" id="Price_Request_Master_.Charge1per"
-                                            name="Price_Request_Master_.Charge1per" (ngModelChange)="Final_Amounts()">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Description</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Master_.Charge2"
-                                            id="Price_Request_Master_.Charge2" name="Price_Request_Master_.Charge2"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Prepared
-                                            By</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Master_.PreparedBy"
-                                            id="Price_Request_Master_.PreparedBy" name="Price_Request_Master_.PreparedBy"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1"
-                                        style="visibility: hidden;">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles"></label>
-                                        <input type="number"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Vat
-                                            %</label>
-                                        <input type="number" [(ngModel)]="Price_Request_Master_.VAT_Percentage"
-                                            id="Price_Request_Master_.VAT_Percentage"
-                                            name="Price_Request_Master_.VAT_Percentage" (ngModelChange)="Final_Amounts()"
-                                            name="Price_Request_Master_.Handling_"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
+                                <div class="mb-3">
+                                    <label class="standard-label">Reference No</label>
+                                    <input type="text" [(ngModel)]="Price_Response_Master_.Description2" class="form-control-standard" placeholder="Enter reference number if any" />
                                 </div>
 
-                                <div class="col-md-4" style="display:none">
-                                    <!-- Sub Total -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Sub
-                                            Total</label>
-                                        <input type="text" [ngModel]="Price_Request_Master_.TotalAmount | number:'1.3-3'"
-                                            id="Price_Request_Master_.TotalAmount" name="Price_Request_Master_.TotalAmount"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Additional Discount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amounts</label>
-                                        <input type="number" [(ngModel)]="Price_Request_Master_.Additional_Discount"
-                                            id="Price_Request_Master_.Additional_Discount"
-                                            name="Price_Request_Master_.Additional_Discount"
-                                            (ngModelChange)="Calculate_Discount_Percent();"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- Charge 1 Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amount</label>
-                                        <input type="text" [ngModel]="Price_Request_Master_.charge1_Amount | number:'1.3-3'"
-                                            id="Price_Request_Master_.charge1_Amount"
-                                            name="Price_Request_Master_.charge1_Amount" (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Charge 2 Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amount</label>
-                                        <input type="number" [(ngModel)]="Price_Request_Master_.charge2_Amount"
-                                            id="Price_Request_Master_.charge2_Amount"
-                                            name="Price_Request_Master_.charge2_Amount" (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- Total Discount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total
-                                            Discount</label>
-                                        <input type="text" [ngModel]="Price_Request_Master_.TotalDiscount | number:'1.3-3'"
-                                            id="Price_Request_Master_.TotalDiscount" name="Price_Request_Master_.TotalDiscount"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Total -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total</label>
-                                        <input type="text" [ngModel]="Total | number:'1.3-3'"
-                                            id="Price_Request_Master_.Total" name="Price_Request_Master_.Total"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- VAT Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">VAT
-                                            Amount</label>
-                                        <input type="text" [ngModel]="Price_Request_Master_.VAT_Amount | number:'1.3-3'"
-                                            id="Price_Request_Master_.VAT_Amount" name="Price_Request_Master_.VAT_Amount"
-                                            (ngModelChange)="Final_Amounts()" readonly
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- Total Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total
-                                            Amount</label>
-                                        <input type="text" [ngModel]="Price_Request_Master_.Total_Amount | number:'1.3-3'"
-                                            id="Price_Request_Master_.Total_Amount" name="Price_Request_Master_.Total_Amount"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Roundoff Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Additional
-                                            Discount</label>
-                                        <input type="number" [(ngModel)]="Price_Request_Master_.Roundoff_Amt"
-                                            id="Price_Request_Master_.Roundoff_Amt" name="Price_Request_Master_.Roundoff_Amt"
-                                            (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- NET Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">NET
-                                            Amount</label>
-                                        <input type="text" [ngModel]="Price_Request_Master_.NetTotal | number:'1.3-3'"
-                                            id="Price_Request_Master_.NetTotal" name="Price_Request_Master_.NetTotal"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
+                                <div class="mb-3">
+                                    <label class="standard-label">Default Profit (%)</label>
+                                    <select class="form-control-standard" [(ngModel)]="Profit" (ngModelChange)="OnHeaderProfitChange()">
+                                        <option *ngFor="let p of ProfitOptions" [ngValue]="p.value">{{p.label}}</option>
+                                    </select>
+                                    <small class="text-muted">Changes profit for all items below</small>
                                 </div>
                             </div>
-                            <div class="col-md-12" style="display:none">
-                                <div class="col-md-4">
-                                </div>
-                                <div class="col-md-8">
-                                    <label class=" col-md-2 label-to-crect-all-names-to-div-tre-prt-sles">In
-                                        words</label>
-                                    <input type="text"
-                                        style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important; height: 36px;"
-                                        class="col-md-10 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                        [(ngModel)]="Price_Request_Master_.Amount_In_Words" id="Price_Request_Master_.Delivery"
-                                        name="Price_Request_Master_.Amount_In_Words">
-                                </div>
-                            </div>
+                        </div>
+                    </div>
 
-                            <div class="col-md-12">
-                                <!-- <button mat-raised-button type="button" id="Tab_Edit" (click)="Edit_Button_Click()" class="btn btn-danger pull-right">Edit</button> -->
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
-                                    (click)="Close_Click();">Close</button>
-                                <button mat-raised-button type="button" id="Save_Button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
-                                    [hidden]="Sales_Master_Save==false" (click)="Save_Price_Response(0)">Save</button>
-                                <button mat-raised-button type="button" [hidden]="Sales_Print"
-                                    class="btn btn-danger pull-right" (click)="Print_Click()">
-                                    <i class="fa fa-print" aria-hidden="true"></i></button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="printAcknowledgment()">ACKNOWLEDGEMENT</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="newPrice_Request()">New</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="duplicate()">Duplicate</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="PackingList_Click()">Packing List</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="PO_Click()">PO</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="DO_Click()">DO</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="Invoice_Click()">Invoice</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="Proforma_Click(Price_Request_Master_Id_Edit)">Proforma</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="Purchase_Pending_Click()">PO Pending</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="Delivery_Pending_Click()">Delivery Pending</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="Invoice_Pending_Click()">Invoice Pending</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="Proforma_Pending_Click()">Proforma Pending</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="PackingList_Pending_Click()">Packing List Pending</button>
+                    <!-- Item Entry Section -->
+                    <div class="item-entry-container">
+                        <h5 class="mb-3" style="color: #0061f2; font-weight: 600;">Item Entry Section</h5>
+                        <div class="flex-entry-row">
+                            <div class="flex-item" style="flex: 2; min-width: 250px;">
+                                <label class="standard-label">Item Name</label>
+                                <input type="text" [matAutocomplete]="autoItem" [(ngModel)]="Item_" name="Item"
+                                    (input)="Search_Item_Typeahead($event)"
+                                    (click)="Search_Item_Typeahead($event)" (ngModelChange)="Get_Stock_Item()"
+                                    (keyup.enter)="Plus_Price_Response_Details($event)"
+                                    class="form-control-standard" placeholder="Search item..." />
+                                <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item">
+                                    <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                                    <ng-container *ngIf="!isLoading">
+                                        <mat-option *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
+                                            <span (click)="Item_Name_Change(Itemstock)">
+                                                {{Itemstock.Item_Code || '---'}} - {{Itemstock.ItemName || Itemstock.Item_Name || '---'}} 
+                                            </span>
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-autocomplete>
                             </div>
-                            <div class="clearfix"></div>
+                            <div class="flex-item" style="flex: 1.5; min-width: 180px;">
+                                <label class="standard-label">Description</label>
+                                <input type="text" [(ngModel)]="Price_Response_Details_.Description" class="form-control-standard" />
+                            </div>
+                            <div class="flex-item" style="flex: 1; min-width: 120px;">
+                                <label class="standard-label">Model</label>
+                                <input type="text" [(ngModel)]="Price_Response_Details_.Model" class="form-control-standard" />
+                            </div>
+                            <div class="flex-item" style="flex: 1; min-width: 120px;">
+                                <label class="standard-label">Brand</label>
+                                <input type="text" [(ngModel)]="Price_Response_Details_.Brand" class="form-control-standard" />
+                            </div>
+                            <div class="flex-item" style="flex: 0.8; min-width: 100px;">
+                                <label class="standard-label">Price</label>
+                                <input type="number" [(ngModel)]="Price_Response_Details_.UnitPrice" (ngModelChange)="Calculate_Price_Response_Details_Amount()" class="form-control-standard" />
+                            </div>
+                            <div class="flex-item" style="flex: 0.6; min-width: 80px;">
+                                <label class="standard-label">Qty</label>
+                                <input type="number" [(ngModel)]="Price_Response_Details_.Quantity" (ngModelChange)="Calculate_Price_Response_Details_Amount()" class="form-control-standard" />
+                            </div>
+                            <div class="flex-item" style="flex: 1; min-width: 110px;">
+                                <label class="standard-label">Profit %</label>
+                                <select [(ngModel)]="Price_Response_Details_.Profit" (ngModelChange)="Calculate_Price_Response_Details_Amount()" class="form-control-standard">
+                                    <option *ngFor="let p of ProfitOptions" [ngValue]="p.value">{{p.label}}</option>
+                                </select>
+                            </div>
+                            <div class="flex-item" style="flex: 1; min-width: 110px;">
+                                <label class="standard-label">Sales Rate</label>
+                                <input type="number" [(ngModel)]="Price_Response_Details_.SaleRate" readonly class="form-control-standard bg-light" />
+                            </div>
+                            <div class="flex-item">
+                                <button mat-raised-button class="btn btn-primary" (click)="Plus_Price_Response_Details($event)" style="height: 38px; background-color: #0061f2;">
+                                    <i class="fa fa-plus"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item Grid -->
+                    <div class="table-container">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;" class="text-center">No</th>
+                                        <th>Item Details</th>
+                                        <th class="text-end" style="width: 120px;">Price</th>
+                                        <th class="text-center" style="width: 100px;">Profit %</th>
+                                        <th class="text-end" style="width: 120px;">Sales Rate</th>
+                                        <th class="text-center" style="width: 100px;">Quantity</th>
+                                        <th class="text-end" style="width: 120px;">Total</th>
+                                        <th class="text-center" style="width: 100px;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of Price_Response_Details_Data; let i = index">
+                                        <td class="text-center">{{i + 1}}</td>
+                                        <td>
+                                            <div class="fw-bold text-primary">{{item.ItemName}}</div>
+                                            <div class="small text-muted">{{item.Description}}</div>
+                                            <div class="mt-1">
+                                                <span class="badge bg-light text-dark border me-1" *ngIf="item.Model">Model: {{item.Model}}</span>
+                                                <span class="badge bg-light text-dark border" *ngIf="item.Brand">Brand: {{item.Brand}}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">{{item.UnitPrice | number:'1.3-3'}}</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-success" *ngIf="item.Profit > 0">+{{item.Profit}}%</span>
+                                            <span class="text-muted" *ngIf="!item.Profit || item.Profit === 0">0%</span>
+                                        </td>
+                                        <td class="text-end fw-bold text-success">{{item.SaleRate | number:'1.3-3'}}</td>
+                                        <td class="text-center">{{item.Quantity}}</td>
+                                        <td class="text-end fw-bold">{{item.Amount | number:'1.3-3'}}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <button class="btn btn-outline-primary btn-sm me-1" (click)="Edit_Price_Response_Detail(item, i)">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger btn-sm" (click)="Delete_Price_Response_Detail(i)">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="Price_Response_Details_Data.length === 0">
+                                        <td colspan="8" class="text-center py-4 text-muted">
+                                            No items added yet. Search and add items to get started.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot *ngIf="Price_Response_Details_Data.length > 0">
+                                    <tr class="table-light">
+                                        <td colspan="6" class="text-end fw-bold">Grand Total:</td>
+                                        <td class="text-end fw-bold text-primary" style="font-size: 1.1rem;">
+                                            {{Price_Response_Master_.TotalAmount | number:'1.3-3'}}
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                 </div>
+
+                <!-- Sticky Footer -->
+                <div class="sticky-footer">
+                    <button class="btn btn-outline-secondary px-4" (click)="Print_Click()" [hidden]="Sales_Print">
+                        <i class="fa fa-print"></i> Print
+                    </button>
+                    <div class="dropdown" *ngIf="Edit_Sales > 0">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="moreActions" data-bs-toggle="dropdown">
+                            More Actions
+                        </button>
+                        <ul class="dropdown-menu shadow">
+                            <li><a class="dropdown-item" (click)="duplicate()"><i class="fa fa-copy me-2"></i> Duplicate</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" (click)="Create_New()"><i class="fa fa-plus me-2"></i> New Response</a></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-cancel-resp" (click)="Close_Click()">Cancel</button>
+                    <button class="btn btn-save-resp" *ngIf="Edit_Sales === 0" (click)="Save_Price_Response(0)">Save Response</button>
+                    <button class="btn btn-save-resp" *ngIf="Edit_Sales === 1" (click)="Save_Price_Response(1)">Update Response</button>
+                </div>
             </div>
+
             <div class="container-fluid mt-1" *ngIf="proformaListView" #bottomDiv>
                 <div class="col-md-12">
                     <div class="card" style="background-color: #f1f1f1;">
@@ -1509,7 +1021,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 </div>
 <div id="Print_Div" style="display:none;">
@@ -1526,15 +1037,15 @@
             </caption>
             <tr style="margin-bottom: 1px;">
                 <td colspan="3" rowspan="3">
-                    <span style="font-size:19px;font-weight: bold;">{{Price_Request_Master_.Customer_Name}}</span><br>
-                    {{Price_Request_Master_.Address1}} {{Price_Request_Master_.Address2}}<br>
-                    {{Price_Request_Master_.Address3}} {{Price_Request_Master_.Address4}}-{{Price_Request_Master_.PinCode}}<br>
-                    <b>IN/UIN:{{Price_Request_Master_.No}}</b>
+                    <span style="font-size:19px;font-weight: bold;">{{Price_Response_Master_.Customer_Name}}</span><br>
+                    {{Price_Response_Master_.Address1}} {{Price_Response_Master_.Address2}}<br>
+                    {{Price_Response_Master_.Address3}} {{Price_Response_Master_.Address4}}-{{Price_Response_Master_.PinCode}}<br>
+                    <b>IN/UIN:{{Price_Response_Master_.No}}</b>
                 </td>
                 <td colspan="4" rowspan="3" style="text-align: center;">
                     Delivery Address<br>
-                    {{Price_Request_Master_.Delivery_Address1}} {{Price_Request_Master_.Delivery_Address2}}<br>
-                    {{Price_Request_Master_.Delivery_Address3}} {{Price_Request_Master_.Delivery_Address4}}
+                    {{Price_Response_Master_.Delivery_Address1}} {{Price_Response_Master_.Delivery_Address2}}<br>
+                    {{Price_Response_Master_.Delivery_Address3}} {{Price_Response_Master_.Delivery_Address4}}
                 </td>
                 <td rowspan="3">
                     Invoice No<br>
@@ -1544,11 +1055,11 @@
                     Mobile
                 </td>
                 <td colspan="2" rowspan="3" style="text-align: right;">
-                    {{Price_Request_Master_.Price_RequestNo}}<br>
-                    {{Price_Request_Master_.EntryDate }}<br>
-                    {{Price_Request_Master_.Vehicle_No}}<br>
-                    {{Price_Request_Master_.Driver_Name}}<br>
-                    {{Price_Request_Master_.Mobile_No}}
+                    {{Price_Response_Master_.Price_RequestNo}}<br>
+                    {{Price_Response_Master_.EntryDate }}<br>
+                    {{Price_Response_Master_.Vehicle_No}}<br>
+                    {{Price_Response_Master_.Driver_Name}}<br>
+                    {{Price_Response_Master_.Mobile_No}}
                 </td>
             </tr>
             <tbody>
@@ -1564,34 +1075,34 @@
                     <td style="padding:5px;border:1px solid #333;width:150px;">S</td>
                     <td style="padding:5px;border:1px solid #333;width:185px;">Total</td>
                 </tr>
-                <tr *ngFor="let Price_Request_Details_ of Price_Request_Details_Data; let i =index">
+                <tr *ngFor="let Price_Response_Details_ of Price_Response_Details_Data; let i =index">
                     <td style="padding:5px;border-left:1px solid #333;border-right:1px solid #333;width:25px;">{{i+1}}
                     </td>
                     <td style="padding:5px;border-right:1px solid #333;width:350px;">
-                        {{Price_Request_Details_.ItemName}}<br>{{Price_Request_Details_.Description}}</td>
+                        {{Price_Response_Details_.ItemName}}<br>{{Price_Response_Details_.Description}}</td>
                     <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
-                        {{Price_Request_Details_.HSNCODE}}</td>
+                        {{Price_Response_Details_.HSNCODE}}</td>
                     <td style="padding:5px;border-right:1px solid #333;width:100px;text-align: center;">
-                        {{Price_Request_Details_.SaleTax}}</td>
+                        {{Price_Response_Details_.SaleTax}}</td>
                     <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
-                        {{Price_Request_Details_.SaleRate}}</td>
+                        {{Price_Response_Details_.SaleRate}}</td>
                     <td style="padding:5px;border-right:1px solid #333;width:120px;text-align: center;">
-                        {{Price_Request_Details_.Quantity}}</td>
+                        {{Price_Response_Details_.Quantity}}</td>
                     <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
-                        {{Price_Request_Details_.NetValue}}</td>
+                        {{Price_Response_Details_.NetValue}}</td>
                     <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
-                        {{Price_Request_Details_.CAMT}}</td>
+                        {{Price_Response_Details_.CAMT}}</td>
                     <td style="padding:5px;border-right:1px solid #333;width:150px;text-align: center;">
-                        {{Price_Request_Details_.SAMT}}</td>
+                        {{Price_Response_Details_.SAMT}}</td>
                     <td style="padding:5px;border-right:1px solid #333;width:185px;text-align: center;">
-                        {{Price_Request_Details_.TotalAmount}}</td>
+                        {{Price_Response_Details_.TotalAmount}}</td>
                 </tr>
                 <tr style="padding:5px;border:1px solid #333;">
                     <td colspan="6" style="padding:5px;border:1px solid #333;width:100px;">Total</td>
-                    <td style="padding:5px;border:1px solid #333;width:185px;">{{Price_Request_Master_.NetTotal}}</td>
-                    <td style="padding:5px;border:1px solid #333;width:150px;">{{Price_Request_Master_.TotalC}}</td>
-                    <td style="padding:5px;border:1px solid #333;width:150px;">{{Price_Request_Master_.ToalS}}</td>
-                    <td style="padding:5px;border:1px solid #333;width:185px;">{{Price_Request_Master_.TotalAmount}}</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">{{Price_Response_Master_.NetTotal}}</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">{{Price_Response_Master_.TotalC}}</td>
+                    <td style="padding:5px;border:1px solid #333;width:150px;">{{Price_Response_Master_.ToalS}}</td>
+                    <td style="padding:5px;border:1px solid #333;width:185px;">{{Price_Response_Master_.TotalAmount}}</td>
                 </tr>
 
                 <tr>
@@ -1613,10 +1124,10 @@
                     <td colspan="2" style="border-left:1px solid #333;"></td>
                     <td colspan="3" style="border-right:1px solid #333;">
                         Transportation Charge <span
-                            style="margin-left: 25px;">{{Price_Request_Master_.Transportation_Total}}</span><br>
-                        Handling Charge <span style="margin-left: 60px;">{{Price_Request_Master_.Handling_Total}}</span><br>
-                        Round Off <span style="margin-left: 95px;">{{Price_Request_Master_.RoundOff}}</span><br>
-                        Total Amount <span style="margin-left: 80px;">{{Price_Request_Master_.GrandTotal}}</span>
+                            style="margin-left: 25px;">{{Price_Response_Master_.Transportation_Total}}</span><br>
+                        Handling Charge <span style="margin-left: 60px;">{{Price_Response_Master_.Handling_Total}}</span><br>
+                        Round Off <span style="margin-left: 95px;">{{Price_Response_Master_.RoundOff}}</span><br>
+                        Total Amount <span style="margin-left: 80px;">{{Price_Response_Master_.GrandTotal}}</span>
                     </td>
                 </tr>
                 <tr style="padding:5px;border:1px solid #333;">
@@ -1634,7 +1145,7 @@
                     <td style="padding:5;border:1px solid #333;text-align: center;">%</td>
                     <td style="padding:5;border:1px solid #333;text-align: center;"></td>
                 </tr>
-                <tr *ngFor="let Sales_Details1_ of Price_Request_Details_Data1; let n =index">
+                <tr *ngFor="let Sales_Details1_ of Price_Response_Details_Data1; let n =index">
                     <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">
                         {{Sales_Details1_.HSNCODE}}</td>
                     <td colspan="2" style="padding:5;border:1px solid #333;text-align: center;">
@@ -1646,21 +1157,21 @@
                     <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.SaleTax}}</td>
                     <td style="padding:5;border:1px solid #333;text-align: center;">{{Sales_Details1_.TaxAmount}}</td>
                 </tr>
-                <tr *ngFor="let Price_Request_Master_1 of Price_Request_Master_Data; let n =index">
+                <tr *ngFor="let Price_Response_Master_1 of Price_Response_Master_Data; let n =index">
                     <td colspan="2" style="padding:5;border:1px solid #333;width:185px;text-align: center;">
-                        {{Price_Request_Master_1.HSNCODE}}</td>
+                        {{Price_Response_Master_1.HSNCODE}}</td>
                     <td colspan="2" style="padding:5;border:1px solid #333;width:185px;text-align: center;">
-                        {{Price_Request_Master_1.NetValue}}</td>
-                    <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">{{Price_Request_Master_1.C}}
+                        {{Price_Response_Master_1.NetValue}}</td>
+                    <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">{{Price_Response_Master_1.C}}
                     </td>
                     <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
-                        {{Price_Request_Master_1.CAMT}}</td>
-                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Price_Request_Master_1.S}}</td>
+                        {{Price_Response_Master_1.CAMT}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Price_Response_Master_1.S}}</td>
                     <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
-                        {{Price_Request_Master_1.SAMT}}</td>
-                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Price_Request_Master_1.SaleTax}}</td>
+                        {{Price_Response_Master_1.SAMT}}</td>
+                    <td style="padding:5;border:1px solid #333;text-align: center;">{{Price_Response_Master_1.SaleTax}}</td>
                     <td style="padding:5;border:1px solid #333;width:185px;text-align: center;">
-                        {{Price_Request_Master_1.TaxAmount}}</td>
+                        {{Price_Response_Master_1.TaxAmount}}</td>
                 </tr>
                 <tr class="border" style="padding:12px;border:1px solid #333;">
                     <th colspan="6" class="top-none" style="padding:5;border:1px solid #333;width:185px;">
@@ -1704,7 +1215,7 @@
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">Date:</p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
-            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">{{ Price_Request_Master_.PrintDate }}</p>
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">{{ Price_Response_Master_.PrintDate }}</p>
         </div>
     </div>
 
@@ -1717,7 +1228,7 @@
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">Price_Request Number: </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
-            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">{{ Price_Request_Master_.Price_RequestNo }}</p>
+            <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">{{ Price_Response_Master_.Price_RequestNo }}</p>
         </div>
     </div>
 
@@ -1746,14 +1257,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">                   
                 <span style="font-weight: normal;">
-                    <span *ngIf="Price_Request_Master_.POnumber"> Po Number :</span>
+                    <span *ngIf="Price_Response_Master_.POnumber"> Po Number :</span>
                 </span> 
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;">
-                    <span *ngIf="Price_Request_Master_.POnumber">{{ Price_Request_Master_.POnumber }}</span> 
+                    <span *ngIf="Price_Response_Master_.POnumber">{{ Price_Response_Master_.POnumber }}</span> 
                 </span>                 
             </p>
         </div>
@@ -1769,14 +1280,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">                   
                 <span style="font-weight: normal;">
-                    <span *ngIf="Price_Request_Master_.KindAttend"> Attention :</span>
+                    <span *ngIf="Price_Response_Master_.KindAttend"> Attention :</span>
                 </span> 
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;">
-                    <span *ngIf="Price_Request_Master_.KindAttend">{{ Price_Request_Master_.KindAttend }}</span> 
+                    <span *ngIf="Price_Response_Master_.KindAttend">{{ Price_Response_Master_.KindAttend }}</span> 
                 </span>                 
             </p>
         </div>
@@ -1792,14 +1303,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">                   
                 <span style="font-weight: normal;">
-                    <span *ngIf="Price_Request_Master_.AttendEmployee"> Employee :</span>
+                    <span *ngIf="Price_Response_Master_.AttendEmployee"> Employee :</span>
                 </span> 
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;">
-                    <span *ngIf="Price_Request_Master_.AttendEmployee">{{ Price_Request_Master_.AttendEmployee }}</span> 
+                    <span *ngIf="Price_Response_Master_.AttendEmployee">{{ Price_Response_Master_.AttendEmployee }}</span> 
                 </span>                 
             </p>
         </div>
@@ -1816,14 +1327,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">                   
                 <span style="font-weight: normal;">
-                    <span *ngIf="Price_Request_Master_.Description2"> Reference :</span>
+                    <span *ngIf="Price_Response_Master_.Description2"> Reference :</span>
                 </span> 
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;">
-                    <span *ngIf="Price_Request_Master_.Description2">{{ Price_Request_Master_.Description2 }}</span> 
+                    <span *ngIf="Price_Response_Master_.Description2">{{ Price_Response_Master_.Description2 }}</span> 
                 </span>                 
             </p>
         </div>
@@ -1850,22 +1361,22 @@
       <div style="width: 65%; display: flex; flex-direction: column; ">
         <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
     margin-bottom: 3px !important;">Customer Address</h5>
-        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Price_Request_Master_.Customer_Name }}</p>
+        <p style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Price_Response_Master_.Customer_Name }}</p>
         <p *ngIf="Address1" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Address1 }}</p>
         <p *ngIf="Address2" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Address2 }}</p>
         <p *ngIf="Address3" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Address3 }}</p>
         <p *ngIf="Address4" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Address4 }}</p>
         <p *ngIf="Vatin" style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;">VATIN {{ Vatin }}</p>
 
-        <p style="margin-top: 0 !important;"><span style="text-decoration: underline; font-weight: bold;">Attention:</span> <span style="white-space: nowrap;">{{ Price_Request_Master_.KindAttend }}</span></p>
+        <p style="margin-top: 0 !important;"><span style="text-decoration: underline; font-weight: bold;">Attention:</span> <span style="white-space: nowrap;">{{ Price_Response_Master_.KindAttend }}</span></p>
       </div>
       <div style="width: 35%; display: flex; flex-direction: column; gap: 3px;text-align: end;">
         <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
     margin-bottom: 3px !important;">Delivery Address</h5>
-        <p *ngIf="Price_Request_Master_.Delivery_Address1" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Price_Request_Master_.Delivery_Address1 }}</p>
-        <p  *ngIf="Price_Request_Master_.Delivery_Address2" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Price_Request_Master_.Delivery_Address2 }}</p>
-        <p  *ngIf="Price_Request_Master_.Delivery_Address3" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Price_Request_Master_.Delivery_Address3 }}</p>
-        <p  *ngIf="Price_Request_Master_.Delivery_Address4" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Price_Request_Master_.Delivery_Address4 }}</p>
+        <p *ngIf="Price_Response_Master_.Delivery_Address1" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Price_Response_Master_.Delivery_Address1 }}</p>
+        <p  *ngIf="Price_Response_Master_.Delivery_Address2" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Price_Response_Master_.Delivery_Address2 }}</p>
+        <p  *ngIf="Price_Response_Master_.Delivery_Address3" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Price_Response_Master_.Delivery_Address3 }}</p>
+        <p  *ngIf="Price_Response_Master_.Delivery_Address4" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; ">{{ Price_Response_Master_.Delivery_Address4 }}</p>
       </div>
     </div>
     <table style="width: 100%; border-collapse: collapse; margin-bottom: 1px;">
@@ -1885,7 +1396,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of Price_Request_Details_Data; let i = index">
+        <tr *ngFor="let item of Price_Response_Details_Data; let i = index">
           <td style="width:1% !important;border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 11px;">{{ i + 1 }}</td>
           <td style="width:15% !important;border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 11px;">{{ item.Item_Code }}</td>
           <td style="width:25% !important;border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 11px;">{{ item.ItemName }}</td>
@@ -1904,32 +1415,32 @@
     <div style="display: flex; justify-content: space-between; margin-bottom: 1px;">
         <div style="margin-bottom: 1px;width: 65%;" >
 
-            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Brand:</span> {{ Price_Request_Master_.Brand }}</p>
-            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Price Basis:</span> {{ Price_Request_Master_.PriceBasis }}</p>
-            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Delivery:</span> {{ Price_Request_Master_.Delivery }}</p>
-            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Validity:</span> {{ Price_Request_Master_.Validity }}</p>
-            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;  width:100%  !important;"><span style="font-weight: bold;">Payment Term:</span> {{ Price_Request_Master_.PaymentTermValue }} <span *ngIf="Payment_Term.payment_Term_ID > 0">
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Brand:</span> {{ Price_Response_Master_.Brand }}</p>
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Price Basis:</span> {{ Price_Response_Master_.PriceBasis }}</p>
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Delivery:</span> {{ Price_Response_Master_.Delivery }}</p>
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Validity:</span> {{ Price_Response_Master_.Validity }}</p>
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;  width:100%  !important;"><span style="font-weight: bold;">Payment Term:</span> {{ Price_Response_Master_.PaymentTermValue }} <span *ngIf="Payment_Term.payment_Term_ID > 0">
                                                                                                                                                                                 {{ Payment_Term.Payment_Term_Description}}</span></p>
-            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Note:</span> {{ Price_Request_Master_.Description1 }}</p> 
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Note:</span> {{ Price_Response_Master_.Description1 }}</p> 
         </div>
     
         <div style=" margin-bottom: 1px;width: 35%;text-align: right;">
-            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Sub Total:</span> {{ Price_Request_Master_.TotalAmount | number:'1.3-3'}}</p> 
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Sub Total:</span> {{ Price_Response_Master_.TotalAmount | number:'1.3-3'}}</p> 
             
             <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;">
                 <span style="font-weight: bold;">
-                    <span *ngIf="Price_Request_Master_.Charge1">{{ Price_Request_Master_.Charge1 }}</span> 
-                    <span *ngIf="printAcknowledgeCharge1per" >({{Price_Request_Master_.Charge1per}}):</span>
+                    <span *ngIf="Price_Response_Master_.Charge1">{{ Price_Response_Master_.Charge1 }}</span> 
+                    <span *ngIf="printAcknowledgeCharge1per" >({{Price_Response_Master_.Charge1per}}):</span>
                 </span> 
-                <span *ngIf="printAcknowledgeChargeAmount1; else noAmount3">{{ Price_Request_Master_.charge1_Amount | number:'1.3-3'}}</span>
+                <span *ngIf="printAcknowledgeChargeAmount1; else noAmount3">{{ Price_Response_Master_.charge1_Amount | number:'1.3-3'}}</span>
                 <ng-template #noAmount3>
                     <span style="width: 60px;  display: inline-block;"></span>
                   </ng-template>
             </p>            
             <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;">
-                <span style="font-weight: bold;" *ngIf="Price_Request_Master_.Charge2">{{ Price_Request_Master_.Charge2 }} :</span>
+                <span style="font-weight: bold;" *ngIf="Price_Response_Master_.Charge2">{{ Price_Response_Master_.Charge2 }} :</span>
                 <span *ngIf="printAcknowledgeChargeAmount2; else noAmount4">
-                  {{ Price_Request_Master_.charge2_Amount | number:'1.3-3' }}
+                  {{ Price_Response_Master_.charge2_Amount | number:'1.3-3' }}
                 </span>
                 <ng-template #noAmount4>
                   <span style="width: 50px;  display: inline-block;"></span>
@@ -1937,23 +1448,23 @@
               </p>            
               
               <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;">
-                <span *ngIf="printAcknowledgeAdditional_Discount" style="font-weight: bold;">Discount {{ Price_Request_Master_.Discount_Description }}% :</span> 
-                <span *ngIf="printAcknowledgeAdditional_Discount">{{ Price_Request_Master_.Additional_Discount  | number:'1.3-3' }}</span>
+                <span *ngIf="printAcknowledgeAdditional_Discount" style="font-weight: bold;">Discount {{ Price_Response_Master_.Discount_Description }}% :</span> 
+                <span *ngIf="printAcknowledgeAdditional_Discount">{{ Price_Response_Master_.Additional_Discount  | number:'1.3-3' }}</span>
             </p>
 
-            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Total Discount:</span> {{ Price_Request_Master_.TotalDiscount | number:'1.3-3'}}</p>
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Total Discount:</span> {{ Price_Response_Master_.TotalDiscount | number:'1.3-3'}}</p>
             <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Total:</span> {{ Total | number:'1.3-3'}}</p>
 
             <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;">
-                <span *ngIf="Price_Request_Master_.VAT_Percentage" style="font-weight: bold;">Vat {{ Price_Request_Master_.VAT_Percentage }}% :</span> 
-                <span *ngIf="printAcknowledgeVAT_Amount">{{ Price_Request_Master_.VAT_Amount  | number:'1.3-3' }}</span>
+                <span *ngIf="Price_Response_Master_.VAT_Percentage" style="font-weight: bold;">Vat {{ Price_Response_Master_.VAT_Percentage }}% :</span> 
+                <span *ngIf="printAcknowledgeVAT_Amount">{{ Price_Response_Master_.VAT_Amount  | number:'1.3-3' }}</span>
             </p>
 
             
-            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Total Amount:</span> {{ Price_Request_Master_.Total_Amount | number:'1.3-3'}}</p>
-            <p *ngIf="printAcknowledgeRoundoff_Amt" style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Additional Discount :</span> {{ Price_Request_Master_.Roundoff_Amt | number:'1.3-3' }}</p>
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Total Amount:</span> {{ Price_Response_Master_.Total_Amount | number:'1.3-3'}}</p>
+            <p *ngIf="printAcknowledgeRoundoff_Amt" style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Additional Discount :</span> {{ Price_Response_Master_.Roundoff_Amt | number:'1.3-3' }}</p>
 
-            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Net Amount:</span> {{ Price_Request_Master_.NetTotal | number:'1.3-3'}}</p>
+            <p style="font-size: 12px;margin-top: 3px !important; margin-bottom: 0px !important;"><span style="font-weight: bold;">Net Amount:</span> {{ Price_Response_Master_.NetTotal | number:'1.3-3'}}</p>
         </div>
     </div>
   
@@ -1966,7 +1477,7 @@
             <span style="font-weight: bold;">Notes:</span> <br />
             <span style="font-size: 11px; color: grey;">{{ Print_Company_.Note }}</span>
           </p>
-          <p style="font-size: 12px;margin-top: 0 !important; margin-bottom: 0 !important;"><span style="font-weight: bold;">Amount in Words:</span> {{ Price_Request_Master_.Amount_In_Words }}</p>
+          <p style="font-size: 12px;margin-top: 0 !important; margin-bottom: 0 !important;"><span style="font-weight: bold;">Amount in Words:</span> {{ Price_Response_Master_.Amount_In_Words }}</p>
       
         </div>
      
@@ -1974,7 +1485,7 @@
       <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%; align-items: center;">
 
         <p style="font-size: 12px;  width:50%">
-            <span style="font-weight: bold; margin-top: 5px !important; margin-bottom: 0 !important;">Prepared By:</span> {{ Price_Request_Master_.PreparedBy }}
+            <span style="font-weight: bold; margin-top: 5px !important; margin-bottom: 0 !important;">Prepared By:</span> {{ Price_Response_Master_.PreparedBy }}
           </p>
           <div >
             <p style=" border-top: 1px solid #000; display: inline-block; padding-top: 5px;">
@@ -2007,7 +1518,7 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p
                 style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
-                {{ Price_Request_Master_.PrintDate }}</p>
+                {{ Price_Response_Master_.PrintDate }}</p>
         </div>
     </div>
 
@@ -2024,7 +1535,7 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p
                 style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
-                {{ Price_Request_Master_.Price_RequestNo }}</p>
+                {{ Price_Response_Master_.Price_RequestNo }}</p>
         </div>
     </div>
     <div style="display: flex; justify-content: space-between; 
@@ -2058,14 +1569,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.POnumber"> Po Number :</span>
+                    <span *ngIf="Price_Response_Master_.POnumber"> Po Number :</span>
                 </span>
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px; ">
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.POnumber">{{ Price_Request_Master_.POnumber }}</span>
+                    <span *ngIf="Price_Response_Master_.POnumber">{{ Price_Response_Master_.POnumber }}</span>
                 </span>
             </p>
         </div>
@@ -2081,14 +1592,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.KindAttend"> Attention :</span>
+                    <span *ngIf="Price_Response_Master_.KindAttend"> Attention :</span>
                 </span>
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.KindAttend">{{ Price_Request_Master_.KindAttend }}</span>
+                    <span *ngIf="Price_Response_Master_.KindAttend">{{ Price_Response_Master_.KindAttend }}</span>
                 </span>
             </p>
         </div>
@@ -2104,14 +1615,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.AttendEmployee"> Employee :</span>
+                    <span *ngIf="Price_Response_Master_.AttendEmployee"> Employee :</span>
                 </span>
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.AttendEmployee">{{ Price_Request_Master_.AttendEmployee }}</span>
+                    <span *ngIf="Price_Response_Master_.AttendEmployee">{{ Price_Response_Master_.AttendEmployee }}</span>
                 </span>
             </p>
         </div>
@@ -2127,14 +1638,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.Description2"> Reference :</span>
+                    <span *ngIf="Price_Response_Master_.Description2"> Reference :</span>
                 </span>
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.Description2">{{ Price_Request_Master_.Description2 }}</span>
+                    <span *ngIf="Price_Response_Master_.Description2">{{ Price_Response_Master_.Description2 }}</span>
                 </span>
             </p>
         </div>
@@ -2160,7 +1671,7 @@
             <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
               margin-bottom: 3px !important;font-family: arial, sans-serif;">Customer Address</h5>
             <p style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{
-                Price_Request_Master_.Customer_Name }}</p>
+                Price_Response_Master_.Customer_Name }}</p>
             <p *ngIf="Address1"
                 style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Address1
                 }}</p>
@@ -2179,24 +1690,24 @@
             <p style="margin-top: 0px !important;font-family: arial, sans-serif;">
                 <span
                     style="text-decoration: underline; font-weight: bold;font-family: arial, sans-serif;">Attention:</span>
-                {{ Price_Request_Master_.KindAttend }}
+                {{ Price_Response_Master_.KindAttend }}
             </p>
         </div>
         <div style="width: 35%; display: flex; flex-direction: column; gap: 3px; text-align: end;">
             <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
               margin-bottom: 3px !important;font-family: arial, sans-serif;">Delivery Address</h5>
-            <p *ngIf="Price_Request_Master_.Delivery_Address1"
+            <p *ngIf="Price_Response_Master_.Delivery_Address1"
                 style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
-                Price_Request_Master_.Delivery_Address1 }}</p>
-            <p *ngIf="Price_Request_Master_.Delivery_Address2"
+                Price_Response_Master_.Delivery_Address1 }}</p>
+            <p *ngIf="Price_Response_Master_.Delivery_Address2"
                 style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
-                Price_Request_Master_.Delivery_Address2 }}</p>
-            <p *ngIf="Price_Request_Master_.Delivery_Address3"
+                Price_Response_Master_.Delivery_Address2 }}</p>
+            <p *ngIf="Price_Response_Master_.Delivery_Address3"
                 style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
-                Price_Request_Master_.Delivery_Address3 }}</p>
-            <p *ngIf="Price_Request_Master_.Delivery_Address4"
+                Price_Response_Master_.Delivery_Address3 }}</p>
+            <p *ngIf="Price_Response_Master_.Delivery_Address4"
                 style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
-                Price_Request_Master_.Delivery_Address4 }}</p>
+                Price_Response_Master_.Delivery_Address4 }}</p>
 
         </div>
     </div>
@@ -2240,7 +1751,7 @@
         </thead>
         <tbody>
 
-            <tr style=" page-break-inside: avoid;" *ngFor="let item of Price_Request_Details_Data; let i = index">
+            <tr style=" page-break-inside: avoid;" *ngFor="let item of Price_Response_Details_Data; let i = index">
                 <td
                     style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px; height: auto;font-family:arial, sans-serif; ">
                     {{ i + 1 }}</td>
@@ -2282,24 +1793,24 @@
             <td style="border: none; height: 1px !important; padding: 0 !important;"></td>
         </tr>
     </table>
-    <!-- (Price_Request_Details_Data.length > 3 ? 0:
-      (Price_Request_Details_Data.length < 2 ? 40 : 10)
+    <!-- (Price_Response_Details_Data.length > 3 ? 0:
+      (Price_Response_Details_Data.length < 2 ? 40 : 10)
     ) -->
 
     <table style="font-size: 12px !important; page-break-inside: avoid;width:100% !important" [style.margin-top.px]="breakPage ?
  
-                                       (Price_Request_Details_Data.length < 33 ? (marginTopItemNameCount ? 145 : 70) : 
-                                  (Price_Request_Details_Data.length < 55 ? (marginTopItemNameCount ? 215 : 150) : 
-                                      (Price_Request_Details_Data.length < 75 ? 305 : 365)
+                                       (Price_Response_Details_Data.length < 33 ? (marginTopItemNameCount ? 145 : 70) : 
+                                  (Price_Response_Details_Data.length < 55 ? (marginTopItemNameCount ? 215 : 150) : 
+                                      (Price_Response_Details_Data.length < 75 ? 305 : 365)
                                   )
                               )                                
                                   : 
                                 
-                                  (Price_Request_Details_Data.length > 15 ? (marginTopItemNameCount ? -30 : -100) :
-                                  (Price_Request_Details_Data.length > 11 ? (marginTopItemNameCount ? -10 : -80) :
-                                  (Price_Request_Details_Data.length > 4 ? (marginTopItemNameCount ? 50 : -20) :
-                                     (Price_Request_Details_Data.length > 3 ? (marginTopItemNameCount ? 90 : 70) :
-                                     (Price_Request_Details_Data.length < 2 ? (marginTopItemNameCount ? 100 : 80) : (marginTopItemNameCount ? 100 : 80) 
+                                  (Price_Response_Details_Data.length > 15 ? (marginTopItemNameCount ? -30 : -100) :
+                                  (Price_Response_Details_Data.length > 11 ? (marginTopItemNameCount ? -10 : -80) :
+                                  (Price_Response_Details_Data.length > 4 ? (marginTopItemNameCount ? 50 : -20) :
+                                     (Price_Response_Details_Data.length > 3 ? (marginTopItemNameCount ? 90 : 70) :
+                                     (Price_Response_Details_Data.length < 2 ? (marginTopItemNameCount ? 100 : 80) : (marginTopItemNameCount ? 100 : 80) 
                                      )
                                      ))
                                  ))
@@ -2319,63 +1830,63 @@
 
         <tr>
             <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;"><b>Brand:</b>{{
-                Price_Request_Master_.Brand }}</td>
+                Price_Response_Master_.Brand }}</td>
             <td style="width:35%;font-family: arial, sans-serif;font-size: 12px;">
                 <b>Sub Total</b>
             </td>
             <td
                 style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
-                {{ Price_Request_Master_.TotalAmount | number:'1.3-3'}}
+                {{ Price_Response_Master_.TotalAmount | number:'1.3-3'}}
             </td>
         </tr>
 
         <tr>
             <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;"><b>Price Basis </b> {{
-                Price_Request_Master_.PriceBasis }}</td>
+                Price_Response_Master_.PriceBasis }}</td>
             <td style="width: 35%;">
-                <b><span *ngIf="Price_Request_Master_.Charge1" style="font-family: arial, sans-serif;font-size: 12px;">{{
-                        Price_Request_Master_.Charge1 }}</span>
+                <b><span *ngIf="Price_Response_Master_.Charge1" style="font-family: arial, sans-serif;font-size: 12px;">{{
+                        Price_Response_Master_.Charge1 }}</span>
                     <span *ngIf="printAcknowledgeCharge1per"
-                        style="font-family: arial, sans-serif;font-size: 12px;">({{Price_Request_Master_.Charge1per}})%:</span></b>
+                        style="font-family: arial, sans-serif;font-size: 12px;">({{Price_Response_Master_.Charge1per}})%:</span></b>
             </td>
             <td style="width:15%;padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;">
                 <span *ngIf="printAcknowledgeChargeAmount1;" style="font-family: arial, sans-serif;font-size: 12px;">{{
-                    Price_Request_Master_.charge1_Amount | number:'1.3-3'}}</span>
+                    Price_Response_Master_.charge1_Amount | number:'1.3-3'}}</span>
             </td>
         </tr>
 
         <tr>
             <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;"><b>Delivery </b> {{
-                Price_Request_Master_.Delivery }}</td>
+                Price_Response_Master_.Delivery }}</td>
             <td style="width:35%;font-family: arial, sans-serif;">
-                <span *ngIf="Price_Request_Master_.Charge2" style="font-family: arial, sans-serif;font-size: 12px;">{{
-                    Price_Request_Master_.Charge2 }} :</span>
+                <span *ngIf="Price_Response_Master_.Charge2" style="font-family: arial, sans-serif;font-size: 12px;">{{
+                    Price_Response_Master_.Charge2 }} :</span>
             </td>
             <td style="width:15%;padding-right:10px; text-align: right !important;font-family: arial, sans-serif;">
                 <span *ngIf="printAcknowledgeChargeAmount2;"
-                    style="font-family: arial, sans-serif;font-size: 12px;">{{Price_Request_Master_.charge2_Amount |
+                    style="font-family: arial, sans-serif;font-size: 12px;">{{Price_Response_Master_.charge2_Amount |
                     number:'1.3-3'}}</span>
             </td>
         </tr>
 
         <tr>
-            <td style="width: 50%;font-family: arial, sans-serif;"><b>Validity </b> {{Price_Request_Master_.Validity}}</td>
+            <td style="width: 50%;font-family: arial, sans-serif;"><b>Validity </b> {{Price_Response_Master_.Validity}}</td>
             <td style="width:35%;font-family: arial, sans-serif;"><b>
                     <span *ngIf="printAcknowledgeAdditional_Discount"
                         style="font-family: arial, sans-serif;font-size: 12px;">
-                        Discount {{ Price_Request_Master_.Discount_Description }}% :
+                        Discount {{ Price_Response_Master_.Discount_Description }}% :
                     </span></b>
             </td>
             <td style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;">
                 <span *ngIf="printAcknowledgeAdditional_Discount"
-                    style="font-family: arial, sans-serif;font-size: 12px;">{{ Price_Request_Master_.Additional_Discount |
+                    style="font-family: arial, sans-serif;font-size: 12px;">{{ Price_Response_Master_.Additional_Discount |
                     number:'1.3-3' }}</span>
             </td>
         </tr>
 
         <tr>
             <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;">
-                <b>Payment Term: </b> {{ Price_Request_Master_.PaymentTermValue }}
+                <b>Payment Term: </b> {{ Price_Response_Master_.PaymentTermValue }}
                 <span *ngIf="Payment_Term.payment_Term_ID > 0" style="font-family: arial, sans-serif;font-size: 12px;">
                     {{ Payment_Term.Payment_Term_Description}}</span>
             </td>
@@ -2384,20 +1895,20 @@
             </td>
             <td style="width:15%; padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;">
                 <span *ngIf="printAcknowledgeTotalDiscount" style="font-family: arial, sans-serif;font-size: 12px;"> {{
-                    Price_Request_Master_.TotalDiscount | number:'1.3-3' }} </span>
+                    Price_Response_Master_.TotalDiscount | number:'1.3-3' }} </span>
             </td>
         </tr>
         <!--   
        <tr>
         <td style="width: 85%;">
-            <b>Payment Term: </b>  {{ Price_Request_Master_.PaymentTermValue }} 
+            <b>Payment Term: </b>  {{ Price_Response_Master_.PaymentTermValue }} 
             <span *ngIf="Payment_Term.payment_Term_ID > 0"> {{ Payment_Term.Payment_Term_Description}}</span>
         </td>
        <td style="width:31%;">
             <b><span *ngIf="printAcknowledgeTotalDiscount">Total Discount :</span></b>
         </td>
         <td style="width:15%; padding-right: 10px; text-align: right !important;">
-            <b><span *ngIf="printAcknowledgeTotalDiscount"> {{ Price_Request_Master_.TotalDiscount | number:'1.3-3' }} </span></b>
+            <b><span *ngIf="printAcknowledgeTotalDiscount"> {{ Price_Response_Master_.TotalDiscount | number:'1.3-3' }} </span></b>
         </td> 
     </tr> -->
         <tr>
@@ -2413,16 +1924,16 @@
         <tr>
             <td style="width: 50%;font-family: arial, sans-serif;"><b> <span style="font-size: 12px;"> Notes </span>
                 </b>
-                <span style="font-size: 9px;">{{ Price_Request_Master_.Description1 }}</span>
+                <span style="font-size: 9px;">{{ Price_Response_Master_.Description1 }}</span>
             </td>
             <td style="width: 35%;font-family: arial, sans-serif;font-size: 12px;">
-                <b><span *ngIf="Price_Request_Master_.VAT_Percentage"> Vat {{ Price_Request_Master_.VAT_Percentage }}% :
+                <b><span *ngIf="Price_Response_Master_.VAT_Percentage"> Vat {{ Price_Response_Master_.VAT_Percentage }}% :
                     </span></b>
 
             </td>
             <td
                 style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
-                <span *ngIf="printAcknowledgeVAT_Amount">{{ Price_Request_Master_.VAT_Amount | number:'1.3-3' }}</span>
+                <span *ngIf="printAcknowledgeVAT_Amount">{{ Price_Response_Master_.VAT_Amount | number:'1.3-3' }}</span>
             </td>
         </tr>
 
@@ -2433,7 +1944,7 @@
             </td>
             <td
                 style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
-                {{ Price_Request_Master_.Total_Amount | number:'1.3-3' }}
+                {{ Price_Response_Master_.Total_Amount | number:'1.3-3' }}
             </td>
         </tr>
 
@@ -2444,7 +1955,7 @@
             </td>
             <td
                 style="width:15%; padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
-                <span *ngIf="printAcknowledgeRoundoff_Amt"> {{ Price_Request_Master_.Roundoff_Amt | number:'1.3-3' }}
+                <span *ngIf="printAcknowledgeRoundoff_Amt"> {{ Price_Response_Master_.Roundoff_Amt | number:'1.3-3' }}
                 </span>
             </td>
         </tr>
@@ -2456,7 +1967,7 @@
             </td>
             <td
                 style="width:15%; padding-right: 10px; font-size: 12px; text-align:right !important;font-family: arial, sans-serif;">
-                {{ Price_Request_Master_.NetTotal | number:'1.3-3' }}
+                {{ Price_Response_Master_.NetTotal | number:'1.3-3' }}
             </td>
         </tr>
 
@@ -2467,7 +1978,7 @@
 
         <tr>
             <td style="font-family: arial, sans-serif;font-size: 12px"><b>Amount In Words </b> {{
-                Price_Request_Master_.Amount_In_Words }}</td>
+                Price_Response_Master_.Amount_In_Words }}</td>
         </tr>
         <!-- <tr style="height:5px">
           <td>
@@ -2475,7 +1986,7 @@
       </tr> -->
 
         <tr style="padding-top:50px;">
-            <td style="width: 75%;font-size: 12px;"><b>Prepared By </b> {{ Price_Request_Master_.PreparedBy }} </td>
+            <td style="width: 75%;font-size: 12px;"><b>Prepared By </b> {{ Price_Response_Master_.PreparedBy }} </td>
             <td
                 style="width:20%;white-space:nowrap; font-size: 12px;float:right;text-align: right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;margin-right: 40px; ">
                 <b>Authorised Signatory</b> </td>
@@ -2484,7 +1995,7 @@
     <!-- <table style="font-size: 12px !important; page-break-inside: avoid;width:100% !important;position:absolute;bottom: 0px !important;font-family: arial, sans-serif;" >
       <tr>
 
-        <td style="width: 50%;position:absolute;bottom: 0px !important;font-family: arial, sans-serif;"><b>Prepared By </b> {{ Price_Request_Master_.PreparedBy }}  </td>
+        <td style="width: 50%;position:absolute;bottom: 0px !important;font-family: arial, sans-serif;"><b>Prepared By </b> {{ Price_Response_Master_.PreparedBy }}  </td>
         <td colspan="2" style="width:50%; padding-right: 10px; text-align:right !important;position:sticky;bottom: 0px !important;font-family: arial, sans-serif;">
             <b>Authorised Signatory</b>
         </td>
@@ -2521,7 +2032,7 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p
                 style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
-                {{ Price_Request_Master_.PrintDate }}</p>
+                {{ Price_Response_Master_.PrintDate }}</p>
         </div>
     </div>
 
@@ -2538,7 +2049,7 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p
                 style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">
-                {{ Price_Request_Master_.Price_RequestNo }}</p>
+                {{ Price_Response_Master_.Price_RequestNo }}</p>
         </div>
     </div>
     <div style="display: flex; justify-content: space-between; 
@@ -2572,14 +2083,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.POnumber"> Po Number :</span>
+                    <span *ngIf="Price_Response_Master_.POnumber"> Po Number :</span>
                 </span>
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px; ">
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.POnumber">{{ Price_Request_Master_.POnumber }}</span>
+                    <span *ngIf="Price_Response_Master_.POnumber">{{ Price_Response_Master_.POnumber }}</span>
                 </span>
             </p>
         </div>
@@ -2595,14 +2106,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.KindAttend"> Attention :</span>
+                    <span *ngIf="Price_Response_Master_.KindAttend"> Attention :</span>
                 </span>
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.KindAttend">{{ Price_Request_Master_.KindAttend }}</span>
+                    <span *ngIf="Price_Response_Master_.KindAttend">{{ Price_Response_Master_.KindAttend }}</span>
                 </span>
             </p>
         </div>
@@ -2618,14 +2129,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.AttendEmployee"> Employee :</span>
+                    <span *ngIf="Price_Response_Master_.AttendEmployee"> Employee :</span>
                 </span>
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.AttendEmployee">{{ Price_Request_Master_.AttendEmployee }}</span>
+                    <span *ngIf="Price_Response_Master_.AttendEmployee">{{ Price_Response_Master_.AttendEmployee }}</span>
                 </span>
             </p>
         </div>
@@ -2641,14 +2152,14 @@
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.Description2"> Reference :</span>
+                    <span *ngIf="Price_Response_Master_.Description2"> Reference :</span>
                 </span>
             </p>
         </div>
         <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
             <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                 <span style="font-weight: normal;font-family: arial, sans-serif;">
-                    <span *ngIf="Price_Request_Master_.Description2">{{ Price_Request_Master_.Description2 }}</span>
+                    <span *ngIf="Price_Response_Master_.Description2">{{ Price_Response_Master_.Description2 }}</span>
                 </span>
             </p>
         </div>
@@ -2674,7 +2185,7 @@
             <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
               margin-bottom: 3px !important;font-family: arial, sans-serif;">Customer Address</h5>
             <p style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;">{{
-                Price_Request_Master_.Customer_Name }}</p>
+                Price_Response_Master_.Customer_Name }}</p>
             <p *ngIf="Address1"
                 style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif; ">{{ Address1
                 }}</p>
@@ -2693,24 +2204,24 @@
             <p style="margin-top: 0px !important;font-family: arial, sans-serif;">
                 <span
                     style="text-decoration: underline; font-weight: bold;font-family: arial, sans-serif;">Attention:</span>
-                {{ Price_Request_Master_.KindAttend }}
+                {{ Price_Response_Master_.KindAttend }}
             </p>
         </div>
         <div style="width: 35%; display: flex; flex-direction: column; gap: 3px; text-align: end;">
             <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
               margin-bottom: 3px !important;font-family: arial, sans-serif;">Delivery Address</h5>
-            <p *ngIf="Price_Request_Master_.Delivery_Address1"
+            <p *ngIf="Price_Response_Master_.Delivery_Address1"
                 style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
-                Price_Request_Master_.Delivery_Address1 }}</p>
-            <p *ngIf="Price_Request_Master_.Delivery_Address2"
+                Price_Response_Master_.Delivery_Address1 }}</p>
+            <p *ngIf="Price_Response_Master_.Delivery_Address2"
                 style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
-                Price_Request_Master_.Delivery_Address2 }}</p>
-            <p *ngIf="Price_Request_Master_.Delivery_Address3"
+                Price_Response_Master_.Delivery_Address2 }}</p>
+            <p *ngIf="Price_Response_Master_.Delivery_Address3"
                 style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
-                Price_Request_Master_.Delivery_Address3 }}</p>
-            <p *ngIf="Price_Request_Master_.Delivery_Address4"
+                Price_Response_Master_.Delivery_Address3 }}</p>
+            <p *ngIf="Price_Response_Master_.Delivery_Address4"
                 style="font-size: 12px;margin-bottom: 0px;margin-top: 0px; font-family: arial, sans-serif;">{{
-                Price_Request_Master_.Delivery_Address4 }}</p>
+                Price_Response_Master_.Delivery_Address4 }}</p>
 
         </div>
     </div>
@@ -2754,7 +2265,7 @@
         </thead>
         <tbody>
 
-            <tr style=" page-break-inside: avoid;" *ngFor="let item of Price_Request_Details_Data; let i = index">
+            <tr style=" page-break-inside: avoid;" *ngFor="let item of Price_Response_Details_Data; let i = index">
                 <td
                     style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px; height: auto;font-family:arial, sans-serif; ">
                     {{ i + 1 }}</td>
@@ -2796,24 +2307,24 @@
             <td style="border: none; height: 1px !important; padding: 0 !important;"></td>
         </tr>
     </table>
-    <!-- (Price_Request_Details_Data.length > 3 ? 0:
-      (Price_Request_Details_Data.length < 2 ? 40 : 10)
+    <!-- (Price_Response_Details_Data.length > 3 ? 0:
+      (Price_Response_Details_Data.length < 2 ? 40 : 10)
     ) -->
 
     <table style="font-size: 12px !important; page-break-inside: avoid;width:100% !important" [style.margin-top.px]="breakPage ?
  
-                                       (Price_Request_Details_Data.length < 33 ? (marginTopItemNameCount ? 145 : 70) : 
-                                  (Price_Request_Details_Data.length < 55 ? (marginTopItemNameCount ? 215 : 150) : 
-                                      (Price_Request_Details_Data.length < 75 ? 305 : 365)
+                                       (Price_Response_Details_Data.length < 33 ? (marginTopItemNameCount ? 145 : 70) : 
+                                  (Price_Response_Details_Data.length < 55 ? (marginTopItemNameCount ? 215 : 150) : 
+                                      (Price_Response_Details_Data.length < 75 ? 305 : 365)
                                   )
                               )                                
                                   : 
                                 
-                                  (Price_Request_Details_Data.length > 15 ? (marginTopItemNameCount ? -30 : -100) :
-                                  (Price_Request_Details_Data.length > 11 ? (marginTopItemNameCount ? -10 : -80) :
-                                  (Price_Request_Details_Data.length > 4 ? (marginTopItemNameCount ? 50 : -20) :
-                                     (Price_Request_Details_Data.length > 3 ? (marginTopItemNameCount ? 90 : 70) :
-                                     (Price_Request_Details_Data.length < 2 ? (marginTopItemNameCount ? 100 : 80) : (marginTopItemNameCount ? 100 : 80) 
+                                  (Price_Response_Details_Data.length > 15 ? (marginTopItemNameCount ? -30 : -100) :
+                                  (Price_Response_Details_Data.length > 11 ? (marginTopItemNameCount ? -10 : -80) :
+                                  (Price_Response_Details_Data.length > 4 ? (marginTopItemNameCount ? 50 : -20) :
+                                     (Price_Response_Details_Data.length > 3 ? (marginTopItemNameCount ? 90 : 70) :
+                                     (Price_Response_Details_Data.length < 2 ? (marginTopItemNameCount ? 100 : 80) : (marginTopItemNameCount ? 100 : 80) 
                                      )
                                      ))
                                  ))
@@ -2833,63 +2344,63 @@
 
         <tr>
             <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;"><b>Brand:</b>{{
-                Price_Request_Master_.Brand }}</td>
+                Price_Response_Master_.Brand }}</td>
             <td style="width:35%;font-family: arial, sans-serif;font-size: 12px;">
                 <b>Sub Total</b>
             </td>
             <td
                 style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
-                {{ Price_Request_Master_.TotalAmount | number:'1.3-3'}}
+                {{ Price_Response_Master_.TotalAmount | number:'1.3-3'}}
             </td>
         </tr>
 
         <tr>
             <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;"><b>Price Basis </b> {{
-                Price_Request_Master_.PriceBasis }}</td>
+                Price_Response_Master_.PriceBasis }}</td>
             <td style="width: 35%;">
-                <b><span *ngIf="Price_Request_Master_.Charge1" style="font-family: arial, sans-serif;font-size: 12px;">{{
-                        Price_Request_Master_.Charge1 }}</span>
+                <b><span *ngIf="Price_Response_Master_.Charge1" style="font-family: arial, sans-serif;font-size: 12px;">{{
+                        Price_Response_Master_.Charge1 }}</span>
                     <span *ngIf="printAcknowledgeCharge1per"
-                        style="font-family: arial, sans-serif;font-size: 12px;">({{Price_Request_Master_.Charge1per}})%:</span></b>
+                        style="font-family: arial, sans-serif;font-size: 12px;">({{Price_Response_Master_.Charge1per}})%:</span></b>
             </td>
             <td style="width:15%;padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;">
                 <span *ngIf="printAcknowledgeChargeAmount1;" style="font-family: arial, sans-serif;font-size: 12px;">{{
-                    Price_Request_Master_.charge1_Amount | number:'1.3-3'}}</span>
+                    Price_Response_Master_.charge1_Amount | number:'1.3-3'}}</span>
             </td>
         </tr>
 
         <tr>
             <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;"><b>Delivery </b> {{
-                Price_Request_Master_.Delivery }}</td>
+                Price_Response_Master_.Delivery }}</td>
             <td style="width:35%;font-family: arial, sans-serif;">
-                <span *ngIf="Price_Request_Master_.Charge2" style="font-family: arial, sans-serif;font-size: 12px;">{{
-                    Price_Request_Master_.Charge2 }} :</span>
+                <span *ngIf="Price_Response_Master_.Charge2" style="font-family: arial, sans-serif;font-size: 12px;">{{
+                    Price_Response_Master_.Charge2 }} :</span>
             </td>
             <td style="width:15%;padding-right:10px; text-align: right !important;font-family: arial, sans-serif;">
                 <span *ngIf="printAcknowledgeChargeAmount2;"
-                    style="font-family: arial, sans-serif;font-size: 12px;">{{Price_Request_Master_.charge2_Amount |
+                    style="font-family: arial, sans-serif;font-size: 12px;">{{Price_Response_Master_.charge2_Amount |
                     number:'1.3-3'}}</span>
             </td>
         </tr>
 
         <tr>
-            <td style="width: 50%;font-family: arial, sans-serif;"><b>Validity </b> {{Price_Request_Master_.Validity}}</td>
+            <td style="width: 50%;font-family: arial, sans-serif;"><b>Validity </b> {{Price_Response_Master_.Validity}}</td>
             <td style="width:35%;font-family: arial, sans-serif;"><b>
                     <span *ngIf="printAcknowledgeAdditional_Discount"
                         style="font-family: arial, sans-serif;font-size: 12px;">
-                        Discount {{ Price_Request_Master_.Discount_Description }}% :
+                        Discount {{ Price_Response_Master_.Discount_Description }}% :
                     </span></b>
             </td>
             <td style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;">
                 <span *ngIf="printAcknowledgeAdditional_Discount"
-                    style="font-family: arial, sans-serif;font-size: 12px;">{{ Price_Request_Master_.Additional_Discount |
+                    style="font-family: arial, sans-serif;font-size: 12px;">{{ Price_Response_Master_.Additional_Discount |
                     number:'1.3-3' }}</span>
             </td>
         </tr>
 
         <tr>
             <td style="width: 50%;font-family: arial, sans-serif;font-size: 12px;">
-                <b>Payment Term: </b> {{ Price_Request_Master_.PaymentTermValue }}
+                <b>Payment Term: </b> {{ Price_Response_Master_.PaymentTermValue }}
                 <span *ngIf="Payment_Term.payment_Term_ID > 0" style="font-family: arial, sans-serif;font-size: 12px;">
                     {{ Payment_Term.Payment_Term_Description}}</span>
             </td>
@@ -2898,20 +2409,20 @@
             </td>
             <td style="width:15%; padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;">
                 <span *ngIf="printAcknowledgeTotalDiscount" style="font-family: arial, sans-serif;font-size: 12px;"> {{
-                    Price_Request_Master_.TotalDiscount | number:'1.3-3' }} </span>
+                    Price_Response_Master_.TotalDiscount | number:'1.3-3' }} </span>
             </td>
         </tr>
         <!--   
        <tr>
         <td style="width: 85%;">
-            <b>Payment Term: </b>  {{ Price_Request_Master_.PaymentTermValue }} 
+            <b>Payment Term: </b>  {{ Price_Response_Master_.PaymentTermValue }} 
             <span *ngIf="Payment_Term.payment_Term_ID > 0"> {{ Payment_Term.Payment_Term_Description}}</span>
         </td>
        <td style="width:31%;">
             <b><span *ngIf="printAcknowledgeTotalDiscount">Total Discount :</span></b>
         </td>
         <td style="width:15%; padding-right: 10px; text-align: right !important;">
-            <b><span *ngIf="printAcknowledgeTotalDiscount"> {{ Price_Request_Master_.TotalDiscount | number:'1.3-3' }} </span></b>
+            <b><span *ngIf="printAcknowledgeTotalDiscount"> {{ Price_Response_Master_.TotalDiscount | number:'1.3-3' }} </span></b>
         </td> 
     </tr> -->
         <tr>
@@ -2926,16 +2437,16 @@
 
         <tr>
             <td style="width: 50%;font-family: arial, sans-serif;"><b><span style="font-size: 12px;"> Notes </span></b>
-                <span style="font-size: 9px;">{{ Price_Request_Master_.Description1 }}</span>
+                <span style="font-size: 9px;">{{ Price_Response_Master_.Description1 }}</span>
             </td>
             <td style="width: 35%;font-family: arial, sans-serif;font-size: 12px;">
-                <b><span *ngIf="Price_Request_Master_.VAT_Percentage"> Vat {{ Price_Request_Master_.VAT_Percentage }}% :
+                <b><span *ngIf="Price_Response_Master_.VAT_Percentage"> Vat {{ Price_Response_Master_.VAT_Percentage }}% :
                     </span></b>
 
             </td>
             <td
                 style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
-                <span *ngIf="printAcknowledgeVAT_Amount">{{ Price_Request_Master_.VAT_Amount | number:'1.3-3' }}</span>
+                <span *ngIf="printAcknowledgeVAT_Amount">{{ Price_Response_Master_.VAT_Amount | number:'1.3-3' }}</span>
             </td>
         </tr>
 
@@ -2946,7 +2457,7 @@
             </td>
             <td
                 style="width:15%; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
-                {{ Price_Request_Master_.Total_Amount | number:'1.3-3' }}
+                {{ Price_Response_Master_.Total_Amount | number:'1.3-3' }}
             </td>
         </tr>
 
@@ -2957,7 +2468,7 @@
             </td>
             <td
                 style="width:15%; padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;font-size: 12px;">
-                <span *ngIf="printAcknowledgeRoundoff_Amt"> {{ Price_Request_Master_.Roundoff_Amt | number:'1.3-3' }}
+                <span *ngIf="printAcknowledgeRoundoff_Amt"> {{ Price_Response_Master_.Roundoff_Amt | number:'1.3-3' }}
                 </span>
             </td>
         </tr>
@@ -2969,7 +2480,7 @@
             </td>
             <td
                 style="width:15%; padding-right: 10px; font-size: 12px; text-align:right !important;font-family: arial, sans-serif;">
-                {{ Price_Request_Master_.NetTotal | number:'1.3-3' }}
+                {{ Price_Response_Master_.NetTotal | number:'1.3-3' }}
             </td>
         </tr>
 
@@ -2980,7 +2491,7 @@
 
         <tr>
             <td style="font-family: arial, sans-serif;font-size: 12px;"><b>Amount In Words </b> {{
-                Price_Request_Master_.Amount_In_Words }}</td>
+                Price_Response_Master_.Amount_In_Words }}</td>
         </tr>
         <!-- <tr style="height:5px">
           <td>
@@ -2989,7 +2500,7 @@
 
         <tr style="padding-top:50px;">
             <td style="width: 75%;font-size: 12px;font-family: arial, sans-serif;"><b>Prepared By </b> {{
-                Price_Request_Master_.PreparedBy }} </td>
+                Price_Response_Master_.PreparedBy }} </td>
             <td
                 style="width:20%;white-space:nowrap; font-size: 12px;float: right;text-align: right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;margin-right: 40px; ">
                 <b>Authorised Signatory</b> </td>
@@ -2998,7 +2509,7 @@
     <!-- <table style="font-size: 12px !important; page-break-inside: avoid;width:100% !important;position:absolute;bottom: 0px !important;font-family: arial, sans-serif;" >
       <tr>
 
-        <td style="width: 50%;position:absolute;bottom: 0px !important;font-family: arial, sans-serif;"><b>Prepared By </b> {{ Price_Request_Master_.PreparedBy }}  </td>
+        <td style="width: 50%;position:absolute;bottom: 0px !important;font-family: arial, sans-serif;"><b>Prepared By </b> {{ Price_Response_Master_.PreparedBy }}  </td>
         <td colspan="2" style="width:50%; padding-right: 10px; text-align:right !important;position:sticky;bottom: 0px !important;font-family: arial, sans-serif;">
             <b>Authorised Signatory</b>
         </td>
@@ -3035,7 +2546,7 @@
                 <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Date:</p>
             </div>
             <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
-                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Price_Request_Master_.PrintDate }}</p>
+                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Price_Response_Master_.PrintDate }}</p>
             </div>
         </div>            
         <div style="display: flex; justify-content: space-between; margin-bottom: 0px; width: 100%;">
@@ -3046,7 +2557,7 @@
                 <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">Price_Request Number: </p>
             </div>
             <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
-                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Price_Request_Master_.Price_RequestNo }}</p>
+                <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Price_Response_Master_.Price_RequestNo }}</p>
             </div>
         </div>    
         <div style="display: flex; justify-content: space-between; 
@@ -3076,14 +2587,14 @@
             <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
                 <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">                   
                     <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
-                        <span *ngIf="Price_Request_Master_.POnumber"> Po Number :</span>
+                        <span *ngIf="Price_Response_Master_.POnumber"> Po Number :</span>
                     </span> 
                 </p>
             </div>
             <div style="width: 20%; display: flex; flex-direction: column; gap: 3px; " >
                 <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                     <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
-                        <span *ngIf="Price_Request_Master_.POnumber">{{ Price_Request_Master_.POnumber }}</span> 
+                        <span *ngIf="Price_Response_Master_.POnumber">{{ Price_Response_Master_.POnumber }}</span> 
                     </span>                 
                 </p>
             </div>
@@ -3098,14 +2609,14 @@
             <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
                 <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">                   
                     <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
-                        <span *ngIf="Price_Request_Master_.KindAttend"> Attention :</span>
+                        <span *ngIf="Price_Response_Master_.KindAttend"> Attention :</span>
                     </span> 
                 </p>
             </div>
             <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
                 <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                     <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
-                        <span *ngIf="Price_Request_Master_.KindAttend">{{ Price_Request_Master_.KindAttend }}</span> 
+                        <span *ngIf="Price_Response_Master_.KindAttend">{{ Price_Response_Master_.KindAttend }}</span> 
                     </span>                 
                 </p>
             </div>
@@ -3120,14 +2631,14 @@
             <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
                 <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;">                   
                     <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
-                        <span *ngIf="Price_Request_Master_.AttendEmployee"> Employee :</span>
+                        <span *ngIf="Price_Response_Master_.AttendEmployee"> Employee :</span>
                     </span> 
                 </p>
             </div>
             <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
                 <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                     <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
-                        <span *ngIf="Price_Request_Master_.AttendEmployee">{{ Price_Request_Master_.AttendEmployee }}</span> 
+                        <span *ngIf="Price_Response_Master_.AttendEmployee">{{ Price_Response_Master_.AttendEmployee }}</span> 
                     </span>                 
                 </p>
             </div>
@@ -3142,14 +2653,14 @@
             <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;">
                 <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">                   
                     <span style="font-weight: normal;">
-                        <span *ngIf="Price_Request_Master_.Description2"> Reference :</span>
+                        <span *ngIf="Price_Response_Master_.Description2"> Reference :</span>
                     </span> 
                 </p>
             </div>
             <div style="width: 20%; display: flex; flex-direction: column; gap: 3px;" >
                 <p style="font-size: 12px;text-align:right; margin-bottom: 0px; margin-top: 0px;">
                     <span style="font-weight: normal;font-family: arial, sans-serif;padding-bottom: 3px;">
-                        <span *ngIf="Price_Request_Master_.Description2">{{ Price_Request_Master_.Description2 }}</span> 
+                        <span *ngIf="Price_Response_Master_.Description2">{{ Price_Response_Master_.Description2 }}</span> 
                     </span>                 
                 </p>
             </div>
@@ -3173,22 +2684,22 @@
       <div style="width: 65%; display: flex; flex-direction: column; ">
         <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
             margin-bottom: 3px !important;font-family: arial, sans-serif;padding-bottom: 3px;">Customer Address</h5>
-        <p style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Price_Request_Master_.Customer_Name }}</p>
+        <p style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Price_Response_Master_.Customer_Name }}</p>
         <p *ngIf="Address1" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Address1 }}</p>
         <p *ngIf="Address2" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Address2 }}</p>
         <p *ngIf="Address3" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Address3 }}</p>
         <p *ngIf="Address4" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Address4 }}</p>
         <p *ngIf="Vatin" style="font-size: 12px; margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">VATIN {{ Vatin }}</p>
         <p style="margin-top: 0px !important;font-family: arial, sans-serif;">
-            <span style="text-decoration: underline; font-weight: bold;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">Attention:</span> {{ Price_Request_Master_.KindAttend }}</p>
+            <span style="text-decoration: underline; font-weight: bold;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">Attention:</span> {{ Price_Response_Master_.KindAttend }}</p>
       </div>
       <div style="width: 35%; display: flex; flex-direction: column; gap: 3px; text-align: end;">
         <h5 style="text-decoration: underline; font-weight: bold; margin-top: 12px !important; 
             margin-bottom: 3px !important;font-family: arial, sans-serif;padding-bottom: 3px;">Delivery Address</h5>
-        <p *ngIf="Price_Request_Master_.Delivery_Address1" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Price_Request_Master_.Delivery_Address1 }}</p>
-        <p  *ngIf="Price_Request_Master_.Delivery_Address2" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Price_Request_Master_.Delivery_Address2 }}</p>
-        <p  *ngIf="Price_Request_Master_.Delivery_Address3" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Price_Request_Master_.Delivery_Address3 }}</p>
-        <p  *ngIf="Price_Request_Master_.Delivery_Address4" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Price_Request_Master_.Delivery_Address4 }}</p>
+        <p *ngIf="Price_Response_Master_.Delivery_Address1" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px;">{{ Price_Response_Master_.Delivery_Address1 }}</p>
+        <p  *ngIf="Price_Response_Master_.Delivery_Address2" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Price_Response_Master_.Delivery_Address2 }}</p>
+        <p  *ngIf="Price_Response_Master_.Delivery_Address3" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Price_Response_Master_.Delivery_Address3 }}</p>
+        <p  *ngIf="Price_Response_Master_.Delivery_Address4" style="font-size: 12px;margin-bottom: 0px;margin-top: 0px;font-family: arial, sans-serif;padding-bottom: 3px; ">{{ Price_Response_Master_.Delivery_Address4 }}</p>
      
       </div>
     </div>
@@ -3209,7 +2720,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr style=" page-break-inside: avoid;" *ngFor="let item of Price_Request_Details_Data; let i = index">
+        <tr style=" page-break-inside: avoid;" *ngFor="let item of Price_Response_Details_Data; let i = index">
           <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif; ">{{ i + 1 }}</td>
           <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px; font-family:arial, sans-serif; ">{{ item.Item_Code }}</td>
           <td style="border: 1px solid #ccc; padding: 2px; text-align: left; font-size: 12px;font-family:arial, sans-serif;  ">{{ item.ItemName }}</td>
@@ -3231,18 +2742,18 @@
 
     <table style="font-size: 12px !important; page-break-inside: avoid;width: 100% !important;" 
            [style.margin-top.px]="breakPage ? 
-                                  (Price_Request_Details_Data.length < 33 ? (marginTopItemNameCount ? 140 : 65) : 
-                                  (Price_Request_Details_Data.length < 55 ? (marginTopItemNameCount ? 210 : 145) : 
-                                      (Price_Request_Details_Data.length < 75 ? 300 : 360)
+                                  (Price_Response_Details_Data.length < 33 ? (marginTopItemNameCount ? 140 : 65) : 
+                                  (Price_Response_Details_Data.length < 55 ? (marginTopItemNameCount ? 210 : 145) : 
+                                      (Price_Response_Details_Data.length < 75 ? 300 : 360)
                                   )
                               )                                
                                   : 
                                 
-                                  (Price_Request_Details_Data.length > 15 ? (marginTopItemNameCount ? -30 : -100) :
-                                  (Price_Request_Details_Data.length > 11 ? (marginTopItemNameCount ? -10 : -80) :
-                                  (Price_Request_Details_Data.length > 4 ? (marginTopItemNameCount ? 50 : -20) :
-                                     (Price_Request_Details_Data.length > 3 ? (marginTopItemNameCount ? 90 : 70) :
-                                     (Price_Request_Details_Data.length < 2 ? (marginTopItemNameCount ? 100 : 80) : (marginTopItemNameCount ? 100 : 80) 
+                                  (Price_Response_Details_Data.length > 15 ? (marginTopItemNameCount ? -30 : -100) :
+                                  (Price_Response_Details_Data.length > 11 ? (marginTopItemNameCount ? -10 : -80) :
+                                  (Price_Response_Details_Data.length > 4 ? (marginTopItemNameCount ? 50 : -20) :
+                                     (Price_Response_Details_Data.length > 3 ? (marginTopItemNameCount ? 90 : 70) :
+                                     (Price_Response_Details_Data.length < 2 ? (marginTopItemNameCount ? 100 : 80) : (marginTopItemNameCount ? 100 : 80) 
                                      )
                                      ))
                                  ))
@@ -3256,56 +2767,56 @@
             </td>
         </tr>
     <tr>
-        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Brand:</b>{{ Price_Request_Master_.Brand }}</td>
+        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Brand:</b>{{ Price_Response_Master_.Brand }}</td>
         <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
             <b>Sub Total</b>
         </td>
         <td style="width:15%;font-size: 12px; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
-            {{ Price_Request_Master_.TotalAmount | number:'1.3-3'}}
+            {{ Price_Response_Master_.TotalAmount | number:'1.3-3'}}
         </td>
     </tr>
 
     <tr>
-        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Price Basis </b> {{ Price_Request_Master_.PriceBasis }}</td>
+        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Price Basis </b> {{ Price_Response_Master_.PriceBasis }}</td>
         <td style="width: 31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
-            <b><span *ngIf="Price_Request_Master_.Charge1">{{ Price_Request_Master_.Charge1 }}</span>
-                <span *ngIf="printAcknowledgeCharge1per">({{Price_Request_Master_.Charge1per}})%:</span></b>
+            <b><span *ngIf="Price_Response_Master_.Charge1">{{ Price_Response_Master_.Charge1 }}</span>
+                <span *ngIf="printAcknowledgeCharge1per">({{Price_Response_Master_.Charge1per}})%:</span></b>
         </td>
         <td style="width:15%;font-size: 12px;padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
-            <span *ngIf="printAcknowledgeChargeAmount1">{{ Price_Request_Master_.charge1_Amount | number:'1.3-3'}}</span>
+            <span *ngIf="printAcknowledgeChargeAmount1">{{ Price_Response_Master_.charge1_Amount | number:'1.3-3'}}</span>
         </td>
     </tr>
 
     <tr>
-        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Delivery </b> {{ Price_Request_Master_.Delivery }}</td>
+        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Delivery </b> {{ Price_Response_Master_.Delivery }}</td>
         <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
-            <b><span *ngIf="Price_Request_Master_.Charge2">{{ Price_Request_Master_.Charge2 }} :</span></b>
+            <b><span *ngIf="Price_Response_Master_.Charge2">{{ Price_Response_Master_.Charge2 }} :</span></b>
         </td>
         <td style="width:15%;font-size: 12px;padding-right:10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
-            <span  *ngIf="printAcknowledgeChargeAmount2;">{{Price_Request_Master_.charge2_Amount | number:'1.3-3'}}</span>
+            <span  *ngIf="printAcknowledgeChargeAmount2;">{{Price_Response_Master_.charge2_Amount | number:'1.3-3'}}</span>
         </td>
     </tr>
 
     <tr>
-        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Validity </b> {{Price_Request_Master_.Validity}}</td>
+        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Validity </b> {{Price_Response_Master_.Validity}}</td>
         <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b><span *ngIf="printAcknowledgeAdditional_Discount">
-            Discount  {{ Price_Request_Master_.Discount_Description }}% :
+            Discount  {{ Price_Response_Master_.Discount_Description }}% :
         </span></b></td>
         <td style="width:15%;font-size: 12px; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
-            <span *ngIf="printAcknowledgeAdditional_Discount">{{ Price_Request_Master_.Additional_Discount  | number:'1.3-3' }}</span>
+            <span *ngIf="printAcknowledgeAdditional_Discount">{{ Price_Response_Master_.Additional_Discount  | number:'1.3-3' }}</span>
         </td>
     </tr>
 
     <tr>
         <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
-            <b>Payment Term: </b>  {{ Price_Request_Master_.PaymentTermValue }} 
+            <b>Payment Term: </b>  {{ Price_Response_Master_.PaymentTermValue }} 
             <span *ngIf="Payment_Term.payment_Term_ID > 0"> {{ Payment_Term.Payment_Term_Description}}</span>
         </td>
         <td style="width:31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
             <b><span *ngIf="printAcknowledgeTotalDiscount">Total Discount :</span></b>
         </td>
         <td style="width:15%;font-size: 12px; padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
-        <span *ngIf="printAcknowledgeTotalDiscount"> {{ Price_Request_Master_.TotalDiscount | number:'1.3-3' }} </span>
+        <span *ngIf="printAcknowledgeTotalDiscount"> {{ Price_Response_Master_.TotalDiscount | number:'1.3-3' }} </span>
         </td>
     </tr>
 
@@ -3320,12 +2831,12 @@
     </tr>
 
     <tr>
-        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Notes </b> {{ Price_Request_Master_.Description1 }}</td>
+        <td style="width: 85%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;"><b>Notes </b> {{ Price_Response_Master_.Description1 }}</td>
         <td style="width: 31%;font-size: 12px;font-family: arial, sans-serif;padding-bottom: 3px;">
-            <b><span *ngIf="Price_Request_Master_.VAT_Percentage"> Vat {{ Price_Request_Master_.VAT_Percentage }}% : </span></b>
+            <b><span *ngIf="Price_Response_Master_.VAT_Percentage"> Vat {{ Price_Response_Master_.VAT_Percentage }}% : </span></b>
         </td>
         <td style="width:15%;font-size: 12px; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;">
-        <span  *ngIf="printAcknowledgeVAT_Amount">{{ Price_Request_Master_.VAT_Amount  | number:'1.3-3' }}</span>
+        <span  *ngIf="printAcknowledgeVAT_Amount">{{ Price_Response_Master_.VAT_Amount  | number:'1.3-3' }}</span>
         </td>
     </tr>
     
@@ -3335,7 +2846,7 @@
             <b>Total Amount</b>
         </td>
         <td style="width:15%;font-size: 12px; padding-right:10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
-             {{ Price_Request_Master_.Total_Amount | number:'1.3-3' }}
+             {{ Price_Response_Master_.Total_Amount | number:'1.3-3' }}
         </td>
     </tr>
 
@@ -3345,7 +2856,7 @@
             <b><span *ngIf="printAcknowledgeRoundoff_Amt">Additional Discount :</span></b>
         </td>
         <td style="width:15%;font-size: 12px; padding-right: 10px; text-align: right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
-            <span *ngIf="printAcknowledgeRoundoff_Amt">{{ Price_Request_Master_.Roundoff_Amt | number:'1.3-3' }}</span>
+            <span *ngIf="printAcknowledgeRoundoff_Amt">{{ Price_Response_Master_.Roundoff_Amt | number:'1.3-3' }}</span>
         </td>
     </tr>
 
@@ -3355,7 +2866,7 @@
             <b>Net Amount </b>
         </td>
         <td style="width:15%;font-size: 12px; padding-right: 10px; text-align:right !important;font-family: arial, sans-serif;padding-bottom: 3px;">
-         {{ Price_Request_Master_.NetTotal | number:'1.3-3' }}
+         {{ Price_Response_Master_.NetTotal | number:'1.3-3' }}
         </td>
     </tr>
 
@@ -3364,7 +2875,7 @@
     </tr>
 
     <tr>
-        <td style="font-family: arial, sans-serif;padding-bottom: 3px;"><b>Amount In Words </b> {{ Price_Request_Master_.Amount_In_Words }}</td>
+        <td style="font-family: arial, sans-serif;padding-bottom: 3px;"><b>Amount In Words </b> {{ Price_Response_Master_.Amount_In_Words }}</td>
     </tr>
     <tr style="height:5px">
         <td>
@@ -3372,7 +2883,7 @@
     </tr>
 
     <tr style="padding-top:50px;padding-bottom: 3px;">
-        <td style="width: 85%;font-size: 12px;"><b>Prepared By </b> {{ Price_Request_Master_.PreparedBy }} </td>
+        <td style="width: 85%;font-size: 12px;"><b>Prepared By </b> {{ Price_Response_Master_.PreparedBy }} </td>
         
         <td style="text-align: right;font-size: 12px;padding-top:20px;width:15%;padding-bottom: 3px; "><b>AuthorisedSignatory</b> </td>
     </tr>

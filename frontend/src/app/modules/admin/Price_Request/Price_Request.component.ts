@@ -33,6 +33,7 @@ import { payment_term } from '../../../models/payment_term';
 import { Sales_Master_Service } from '../../../services/Sales_Master.Service';
 import { Requirement_Master_Service } from '../../../services/Requirement_Master.Service';
 import { RequirementWorkflowService } from '../../../services/RequirementWorkflow.Service';
+import { Item_Service } from '../../../services/Item.Service';
 import { CommonModule } from '@angular/common';
 import { DecimalPipe } from '@angular/common';
 import { WorkDocs } from 'aws-sdk';
@@ -251,7 +252,8 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
         public Item_Group_Service_: Item_Group_Service, public payment_term_Service_: payment_term_Service, public Client_Accounts_Service_:Client_Accounts_Service,
         private cdr: ChangeDetectorRef,
         public Requirement_Master_Service_: Requirement_Master_Service,
-        public RequirementWorkflowService_: RequirementWorkflowService
+        public RequirementWorkflowService_: RequirementWorkflowService,
+        public Item_Service_: Item_Service
         // public decimalPipe: DecimalPipe
     ) { 
         this.Load_Bill_Type();       
@@ -1306,34 +1308,62 @@ Search_Customer_Typeahead(event: any)
          const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
      });     
   }
-Search_Item_Typeahead(event: any)
-{
-    var Value = "";
-    if(this.Barcode_ == null || this.Barcode_ == undefined)
-         this.Barcode_ = new Price_Request_Details();     
-     Value = event.target.value;
-     if(Value == null || Value == undefined || Value == "undefined" || Value == "null")
-         Value = "";
-if(this.Barcode_.Item_Code)
-{
-    this.Barcode_.ItemName=Value
-}   
-     this.Price_Request_Details_.ItemName=Value;
-      this.issLoading = true;
-     this.Sales_Master_Service_.Search_Item_Typeahead(Value).subscribe(Rows => {    
-     if (Rows != null) {
-         this.Stock_Data = Rows[0];         
-     }
-     this.issLoading = false;
-     },
-     Rows => {      
-     this.issLoading = false;
-         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-     });
+Search_Item_Typeahead(event: any) {
+    let Value = "";
+    if (event && event.target && event.target.value) {
+        Value = event.target.value;
     }
+    
+    this.isLoading = true;
+    // Merged search: First search by Item Name
+    this.Sales_Master_Service_.Search_Item_Typeahead(Value).subscribe({
+        next: (Rows) => {
+            let combinedData = [];
+            if (Rows != null && Rows[0] != null) {
+                Rows[0].forEach(item => {
+                    item.ItemId = item.ItemId || item.Item_Id || 0;
+                    item.ItemName = item.ItemName || item.Item_Name || '';
+                    item.Quantity = item.Quantity || 0;
+                    combinedData.push(item);
+                });
+            }
+            
+            // Then search by Item Code (Part Number) from Item Master to ensure thorough results
+            this.Item_Service_.Search_Item('', 0, Value).subscribe({
+                next: (codeRows) => {
+                    if (codeRows != null && codeRows[0] != null) {
+                        // Merge results, avoiding duplicates by ItemId
+                        codeRows[0].forEach(item => {
+                            const normalizedItem = {
+                                ...item,
+                                ItemId: item.ItemId || item.Item_Id || 0,
+                                ItemName: item.ItemName || item.Item_Name || '',
+                                Quantity: item.Quantity || 0
+                            };
+                            if (!combinedData.find(d => (d.ItemId === normalizedItem.ItemId && d.ItemId !== 0))) {
+                                combinedData.push(normalizedItem);
+                            }
+                        });
+                    }
+                    this.Stock_Data = combinedData;
+                    this.isLoading = false;
+                },
+                error: () => {
+                    this.Stock_Data = combinedData;
+                    this.isLoading = false;
+                }
+            });
+        },
+        error: (err) => {
+            this.isLoading = false;
+            this.Stock_Data = [];
+            const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured during item search', Type: "2" } });
+        }
+    });
+}
 display_Item(Stock_e: Stock)
 {
-     if (Stock_e) { return Stock_e.ItemName; }
+     if (Stock_e) { return Stock_e.ItemName || (Stock_e as any).Item_Name; }
 }
 Barcode_keyup(event: any)
 {
@@ -1484,19 +1514,26 @@ selectCustomer(){
 }
 Item_Name_Change(Item_sl:Price_Request_Details){ 
     debugger
-this.Price_Request_Details_=Object.assign({},Item_sl);
-//  this.Item_Temp.StockId=Item_sl.StockId;
- this.Item_Temp.Item_Code=Item_sl.Item_Code;
-//  this.Item_Temp.ItemName =Item_sl.ItemName;
- this.Item_Temp.ItemId=Item_sl.ItemId;
- this.Barcode_=Object.assign({},this.Item_Temp);
- this.Price_Request_Details_.StockId=Item_sl.StockId; 
- this.Price_Request_Details_.Item_Code=Item_sl.Item_Code;
- this.Price_Request_Details_.Item_Code=Item_sl.Item_Code;
- this.Price_Request_Details_.ItemId=Item_sl.ItemId;
- this.Price_Request_Details_.Quantity=0;
-//  this.Price_Request_Details_.ItemName=Item_sl.ItemName;
- debugger;
+    const item: any = Item_sl as any;
+    this.Price_Request_Details_Temp_.ItemId = item.Item_Id || item.ItemId || 0;
+    this.Price_Request_Details_Temp_.ItemName = item.Item_Name || item.ItemName || '';
+    this.Item_ = Object.assign({}, this.Price_Request_Details_Temp_);
+
+    this.Price_Request_Details_.Item_Code = item.Item_Code || item.ItemCode || '';
+    this.Price_Request_Details_.ItemName = item.Item_Name || item.ItemName || '';
+    this.Price_Request_Details_.ItemId = item.Item_Id || item.ItemId || 0;
+    this.Price_Request_Details_.StockId = item.StockId || 0;
+    this.Price_Request_Details_.Description = item.Description || '';
+    this.Price_Request_Details_.Model = item.ModelName || item.Model || '';
+    this.Price_Request_Details_.Brand = item.BrandName || item.Brand || '';
+    this.Price_Request_Details_.UnitName = item.UnitName || '';
+    this.Price_Request_Details_.UnitId = item.UnitId || 0;
+
+    this.Item_Temp.Item_Code = this.Price_Request_Details_.Item_Code;
+    this.Item_Temp.ItemId = this.Price_Request_Details_.ItemId;
+    this.Barcode_ = Object.assign({}, this.Item_Temp);
+
+    this.Price_Request_Details_.Quantity=0;
 }
 Barcode_Change(Barcode_sl:Price_Request_Details)
 {    
@@ -2037,6 +2074,10 @@ Get_Stock(){
     this.Price_Request_Details_.UnitName=this.Barcode_.UnitName;
     this.Price_Request_Details_.MRP=this.Barcode_.MRP;
     this.Price_Request_Details_.PurchaseRate=this.Barcode_.PurchaseRate;
+    const barcodeAny: any = this.Barcode_ as any;
+    this.Price_Request_Details_.Description=barcodeAny.Description || '';
+    this.Price_Request_Details_.Model=barcodeAny.ModelName || barcodeAny.Model || '';
+    this.Price_Request_Details_.Brand=barcodeAny.BrandName || barcodeAny.Brand || '';
     this.Price_Request_Details_.Stock=this.Barcode_.Quantity;
     this.Price_Request_Details_.UnitPrice=this.Barcode_.SaleRate;
     this.Price_Request_Details_.ItemName=this.Barcode_.ItemName;
@@ -2071,6 +2112,10 @@ Get_Stock_Item() {
                 this.Price_Request_Details_.UnitName=this.Item_.UnitName;
                 this.Price_Request_Details_.MRP=this.Item_.MRP;
                 this.Price_Request_Details_.PurchaseRate=this.Item_.PurchaseRate;
+                const itemAny: any = this.Item_ as any;
+                this.Price_Request_Details_.Description=itemAny.Description || '';
+                this.Price_Request_Details_.Model=itemAny.ModelName || itemAny.Model || '';
+                this.Price_Request_Details_.Brand=itemAny.BrandName || itemAny.Brand || '';
                 this.Price_Request_Details_.Stock=this.Item_.Quantity;
                 this.Price_Request_Details_.UnitPrice=this.Item_.SaleRate;
                 this.Price_Request_Details_.ItemName=this.Item_.ItemName;

@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="col-md-5 row mb-1" style="align-items: center;">
-                    <label class="col-md-3 mb-0" style="text-align: end;">Customer</label>
+                    <label class="col-md-3 mb-0" style="text-align: end;">Supplier</label>
                     <input type="text" [matAutocomplete]="auto_Customer" [(ngModel)]="Search_Customer" name="Customer"
                         (click)="Search_Customer_Typeahead($event)" (input)="Search_Customer_Typeahead($event)"
                         class="col-md-9 " style="height: 40px;border: 1px solid #b1b1b1;">
@@ -135,7 +135,7 @@
                         <table class="table table-hover">
                             <thead class="thead">
                                 <th>Sl No</th>
-                                <th>Customer Name</th>
+                                <th>Supplier Name</th>
                                 <th>Price_Request No</th>
                                 <th>Date</th>
                                 <th>Amount</th>
@@ -226,7 +226,7 @@
                 <div class="col-md-6 croct-float-purchase-master-section ">
                     <div class="col-md-12 mb-1">
                         <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Supplier
                             <span style="color:#ef071e; ">*</span></label>
                         <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer"
                             (ngModelChange)="selectCustomer()" (click)="Search_Customer_Typeahead($event)"
@@ -243,7 +243,7 @@
                         </mat-autocomplete>
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer Name
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Supplier Name
                             <span style="color:#ef071e; ">*</span></label>
                         <input type="text" name="Customer_Name_Display" [(ngModel)]="Price_Request_Master_.Customer_Name" readonly
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
@@ -330,7 +330,7 @@
                     </div>
                     <div class="col-md-12 wole-div-margin-to-down-proper mb-1" style="display:none">
                         <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
+                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Supplier
                             Ref No
                         </label>
                         <input type="text" name="Supplier_Ref_No" [(ngModel)]="Price_Request_Master_.Supplier_Ref_No"
@@ -408,13 +408,13 @@
                                             style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
                                             class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
                                         <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
-                                            <mat-option *ngIf="isLoading"><mat-spinner
-                                                    diameter="500"></mat-spinner></mat-option>
+                                            <mat-option *ngIf="isLoading"><mat-spinner diameter="50"></mat-spinner></mat-option>
                                             <ng-container *ngIf="!isLoading">
                                                 <mat-option *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
-                                                    <span
-                                                        (click)="Item_Name_Change(Itemstock)">{{Itemstock.ItemName}}-{{Itemstock.Item_Code}}
-                                                        - {{Itemstock.Quantity}}</span>
+                                                    <span (click)="Item_Name_Change(Itemstock)">
+                                                        {{Itemstock.Item_Code || '---'}} - {{Itemstock.Quantity || 0}} - {{Itemstock.ItemName || Itemstock.Item_Name || '---'}} 
+                                                        <ng-container *ngIf="Itemstock.ModelName"> . Model: {{Itemstock.ModelName}}</ng-container>
+                                                    </span>
                                                 </mat-option>
                                             </ng-container>
                                         </mat-autocomplete>

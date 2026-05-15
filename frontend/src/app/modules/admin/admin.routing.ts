@@ -78,6 +78,9 @@ import { User_RoleComponent } from './User_Role/User_Role.component';
 import { User_TypeComponent } from './User_Type/User_Type.component';
 import { Working_StatusComponent } from './Working_Status/Working_Status.component';
 import { Company_SizeComponent } from './Company_Size/Company_Size.component';
+import { Quotation_ConfirmationComponent } from './Quotation_Confirmation/Quotation_Confirmation.component';
+import { DepartmentComponent } from './Department/Department.component';
+import { DepartmentStatusComponent } from './DepartmentStatus/DepartmentStatus.component';
 
 export const AdminRoutes: Routes = [
 	{
@@ -161,6 +164,9 @@ export const AdminRoutes: Routes = [
 			{ path: "User_Type", component: User_TypeComponent },
 			{ path: "Working_Status", component: Working_StatusComponent },
 			{ path: "Company_Size", component: Company_SizeComponent },
+			{ path: "Quotation_Confirmation", component: Quotation_ConfirmationComponent },
+			{ path: "Department", component: DepartmentComponent },
+			{ path: "DepartmentStatus", component: DepartmentStatusComponent },
 
 
 			{ path: "**", redirectTo: "/auth/login" },

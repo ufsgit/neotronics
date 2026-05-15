@@ -91,15 +91,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-2 row  mb-1" style="align-items: center;">
-                    <label class="col-md-5 mb-0 " style="text-align: end;">Currency</label>
-                    <select [(ngModel)]="Currency_Search" id="Currency_Search" name="Currency_Search" required
-                        class="col-md-7 " style="height: 40px;border: 1px solid #b1b1b1;">
-                        <option *ngFor="let currency of currencyData" [ngValue]="currency">
-                            {{currency?.CurrecnyName}}
-                        </option>
-                    </select>
-                </div>
+
 
                 <div class="col-md-3 row mb-1" style="align-items: center; justify-content: center;">
                     <!-- <button mat-raised-button type="button" class="btn btn-danger pull-right mt-0 mb-0"  (click)="Print_Search_Click()">
@@ -221,700 +213,257 @@
             <!-- </div> -->
         </div>
 
-        <div class="row mt-2" *ngIf="Entry_View" style="background-color: #f1f1f1;">
+        <div class="row mt-2" *ngIf="Entry_View" style="background-color: #f1f1f1; padding: 15px;">
             <div class="container-fluid" #topDiv>
-                <div class="col-md-6 croct-float-purchase-master-section ">
+                <div class="col-md-6 croct-float-purchase-master-section">
                     <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
-                            <span style="color:#ef071e; ">*</span></label>
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer</label>
                         <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer"
                             (ngModelChange)="selectCustomer()" (click)="Search_Customer_Typeahead($event)"
                             (input)="Search_Customer_Typeahead($event)"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                            class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" placeholder="Search Customer..." />
                         <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Customer">
-                            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
                             <ng-container *ngIf="!isLoading">
                                 <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
-                                    <span
-                                        (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
+                                    <span (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
                                 </mat-option>
                             </ng-container>
                         </mat-autocomplete>
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" [(ngModel)]="Address1" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer Name <span style="color:#ef071e; ">*</span></label>
+                        <input type="text" [(ngModel)]="Quotation_Master_.Customer_Name" readonly name="Customer_Name_Display"
+                            class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" [(ngModel)]="Address2" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address</label>
+                        <textarea rows="2" [(ngModel)]="Address1" readonly
+                            class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: auto;"></textarea>
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" [(ngModel)]="Address3" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Phone</label>
+                        <input type="text" [(ngModel)]="Quotation_Master_.Mobile" 
+                            class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" [(ngModel)]="Address4" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Email</label>
+                        <input type="email" [(ngModel)]="Quotation_Master_.Email" 
+                            class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Delivery
-                            Address</label>
-                        <input type="text" name="Delivery_Address1" [(ngModel)]="Quotation_Master_.Delivery_Address1"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" name="Delivery_Address1" [(ngModel)]="Quotation_Master_.Delivery_Address2"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" name="Delivery_Address3" [(ngModel)]="Quotation_Master_.Delivery_Address3"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
-                        <input type="text" name="Delivery_Address4" [(ngModel)]="Quotation_Master_.Delivery_Address4"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    <div class="col-md-12 mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">WhatsApp</label>
+                        <input type="text" [(ngModel)]="Quotation_Master_.WhatsApp" 
+                            class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
                 </div>
+
                 <div class="col-md-6 croct-float-purchase-master-section">
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date
-                            <span style="color:#ef071e; ">*</span></label>
-                        <mat-form-field
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            style="height: 47px !important">
-                            <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate"
-                                [(ngModel)]="Quotation_Master_.EntryDate">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date <span style="color:#ef071e; ">*</span></label>
+                        <mat-form-field class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px !important; border: 1px solid #b1b1b1; border-radius: 4px; background: white;">
+                            <input matInput [matDatepicker]="dpdate" name="EntryDate" [(ngModel)]="Quotation_Master_.EntryDate">
                             <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
                             <mat-datepicker #dpdate></mat-datepicker>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Quotation
-                            No</label>
-                        <input type="text" name="QuotationNo" [(ngModel)]="Quotation_Master_.QuotationNo" readonly
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    <div class="col-md-12 mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Quotation No</label>
+                        <input type="text" [(ngModel)]="Quotation_Master_.QuotationNo" readonly
+                            class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn bg-light">
                     </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Currency
-                            <span style="color:#ef071e; ">*</span>
-                        </label>
-                        <select
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            name="currency" id="currency" [(ngModel)]="currency" [compareWith]="compareCurrency" (ngModelChange)="Final_Amounts()">
-                            <option *ngFor="let curr of currencyData" [ngValue]="curr">
-                                {{curr.CurrecnyName}}</option>
+                    <div class="col-md-12 mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Reference No</label>
+                        <input type="text" [(ngModel)]="Quotation_Master_.Supplier_Ref_No"
+                            class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Status</label>
+                        <select class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" [(ngModel)]="Status_" (ngModelChange)="OnStatusChange()" style="height: 40px; border: 1px solid #b1b1b1;">
+                            <option *ngFor="let s of Status_Data" [ngValue]="s">{{s.name}}</option>
                         </select>
-
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">PO
-                            Number
-                        </label>
-                        <input type="text" name="POnumber" [(ngModel)]="Quotation_Master_.POnumber"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
-                            Ref No
-                        </label>
-                        <input type="text" name="Supplier_Ref_No" [(ngModel)]="Quotation_Master_.Supplier_Ref_No"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Attention
-                        </label>
-
-                        <input type="text" name="KindAttend" [(ngModel)]="Quotation_Master_.KindAttend"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Employee
-                        </label>
-
-                        <input type="text" name="AttendEmployee" [(ngModel)]="Quotation_Master_.AttendEmployee"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                    </div>
-                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                        <label
-                            class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Reference</label>
-                        <input type="text" name="Mobile_No" [(ngModel)]="Quotation_Master_.Description2"
-                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
                 </div>
             </div>
-            <div class="row" style="background-color: #f1f1f1;">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body" style="background-color: #f1f1f1;">
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div
-                                        class="col-md-4 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Part
-                                            Number
-                                            <span style="color:#ef071e; ">*</span>
-                                        </label>
-                                        <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto42"
-                                            style="padding-left: 5px !important;" [(ngModel)]="Barcode_"
-                                            (click)="Get_Stock_Item_Code_Typeahead($event)"
-                                            (input)="Get_Stock_Item_Code_Typeahead($event)"
-                                            (ngModelChange)="Get_Stock()" (keyup.enter)="Plus_Quotation_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched" />
-                                        <mat-autocomplete #auto42="matAutocomplete" [displayWith]="display_ItemCode">
-                                            <mat-option *ngIf="isLoading"><mat-spinner
-                                                    diameter="500"></mat-spinner></mat-option>
-                                            <ng-container *ngIf="!isLoading">
-                                                <mat-option *ngFor="let Item of ItemCodeData; let i = index"
-                                                    [value]="Item">
-                                                    <span>
-                                                        <div (click)="Barcode_Change(Item)">{{Item.Item_Code}} -
-                                                            {{Item.Quantity}} - {{Item.ItemName}} </div>
-                                                    </span>
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-autocomplete>
-                                    </div>
-                                    <div
-                                        class="col-md-5 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item
-                                            & Description
-                                            <span style="color:#ef071e; "></span>
-                                        </label>
-
-                                        <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_" name="Item"
-                                            (input)="Search_Item_Typeahead($event)"
-                                            (click)="Search_Item_Typeahead($event)" (ngModelChange)="Get_Stock_Item()"
-                                            (keyup.enter)="Plus_Quotation_Details($event)"
-                                            style="padding-left: 5px !important;"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
-                                        <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
-                                            <mat-option *ngIf="isLoading"><mat-spinner
-                                                    diameter="500"></mat-spinner></mat-option>
-                                            <ng-container *ngIf="!isLoading">
-                                                <mat-option *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
-                                                    <span
-                                                        (click)="Item_Name_Change(Itemstock)">{{Itemstock.ItemName}}-{{Itemstock.Item_Code}}
-                                                        - {{Itemstock.Quantity}}</span>
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-autocomplete>
-                                    </div>
-                                    <div
-                                        class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Uom
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="text" [(ngModel)]="Quotation_Details_.UnitName"
-                                            style="padding-left: 5px !important;" id="Quotation_Details_.UnitName"
-                                            name="Quotation_Details_.UnitName"
-                                            (keyup.enter)="
-                            ($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty
-                                            <span style="color:#ef071e; ">*</span></label>
-                                        <input type="number" [(ngModel)]="Quotation_Details_.Quantity"
-                                            style="padding-left: 5px !important;" id="Quotation_Details_.Quantity"
-                                            name="Quotation_Details_.Quantity"
-                                            (ngModelChange)="Calculate_Quotation_Details_Amount()"
-                                            (keyup.enter)="Plus_Quotation_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Unit
-                                            Price
-                                            <span style="color:#ef071e; ">*</span></label>
-                                        <input type="number" [(ngModel)]="Quotation_Details_.UnitPrice"
-                                            style="padding-left: 5px !important;" id="Quotation_Details_.UnitPrice"
-                                            name="Quotation_Details_.UnitPrice"
-                                            (ngModelChange)="Calculate_Quotation_Details_Amount()"
-                                            (keyup.enter)="Plus_Quotation_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
-                                    </div>
-
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Discount
-                                            %
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="number" [(ngModel)]="Quotation_Details_.Discount"
-                                            style="padding-left: 5px !important;" id="Quotation_Details_.Discount"
-                                            name="Quotation_Details_.Discount"
-                                            (ngModelChange)="Calculate_Quotation_Details_Amount()"
-                                            (keyup.enter)="Plus_Quotation_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Unit
-                                            Discount
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="number" [(ngModel)]="Quotation_Details_.Unit_Discount"
-                                            style="padding-left: 5px !important;" id="Quotation_Details_.Unit_Discount"
-                                            name="Quotation_Details_.Unit_Discount"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid"
-                                            readonly />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Total
-                                            Price <span style="color:#ef071e; "></span></label>
-                                        <input type="number" [(ngModel)]="Quotation_Details_.NetValue"
-                                            id="Quotation_Details_.NetValue" name="Quotation_Details_.NetValue"
-                                            style="padding-left: 5px !important;"
-                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched"
-                                            readonly />
-                                    </div>
-                                    <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Availability
-                                            <span style="color:#ef071e; "></span></label>
-                                        <input type="text" style="padding-left: 5px !important;"
-                                            [(ngModel)]="Quotation_Details_.Availability"
-                                            (keyup.enter)="Plus_Quotation_Details($event)"
-                                            id="Quotation_Details_.Availability" name="Quotation_Details_.Availability"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
-                                    </div>
-                                    <div style="margin-top: 39px !important;"
-                                        class="col-md-1 alighn-right-inputs-sales-grid div-to-down-margin-crect-allighn-wole-scton">
-                                        <button mat-raised-button type="button" (click)="Plus_Quotation_Details($event)"
-                                            class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes"
-                                            style="border-radius: 5px !important;">
-                                            Add</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover table-for-sale-search-section-diary">
-                                                <thead class="bg-col-stock-add-diary">
-                                                    <th>No </th>
-                                                    <th>Part Number</th>
-                                                    <th>Item & Description </th>
-                                                    <th>Uom</th>
-                                                    <th>Qty</th>
-                                                    <th>Unit Price</th>
-                                                    <th>Discount %</th>
-                                                    <th>Unit Discount</th>
-                                                    <th>Total Price</th>
-                                                    <th>Availability</th>
-                                                    <th></th>
-                                                </thead>
-                                                <tbody class="bk_tb_bg"
-                                                    *ngFor="let Sales_Details of Quotation_Details_Data; let i = index">
-                                                    <td>{{i+1}}</td>
-                                                    <td>{{Sales_Details["Item_Code"]}}</td>
-                                                    <td [id]="'cell' + (i + 1)">
-                                                        {{ Sales_Details["ItemName"] }}
-                                                    </td>
-                                                    <td>{{Sales_Details["UnitName"]}}</td>
-                                                    <td>{{Sales_Details["Quantity"]}}</td>
-                                                    <td>{{Sales_Details["UnitPrice"] | number: '1.3-3'}}</td>
-                                                    <td>{{Sales_Details["Discount"] | number: '1.3-3'}}</td>
-                                                    <td>{{Sales_Details["Unit_Discount"] | number: '1.3-3'}}</td>
-                                                    <td>{{Sales_Details["NetValue"] | number: '1.3-3'}}</td>
-                                                    <td>{{Sales_Details["Availability"]}}</td>
-                                                    <td style="width:75px;">
-                                                        <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
-                                                            [hidden]="Sales_Master_Edit==false"
-                                                            aria-describedby="cdk-describedby-message-0"
-                                                            cdk-describedby-host=""
-                                                            class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
-                                                            mat-raised-button="" mattooltip="Edit Task"
-                                                            ng-reflect-message="Edit Task" ng-reflect-position="above"
-                                                            type="button"><span class="mat-button-wrapper"><span
-                                                                    _ngcontent-jry-c5="" class="mat-button-wrapper">
-                                                                    <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
-                                                                        class="material-icons"
-                                                                        (click)="Edit_Quotation_Detail(Sales_Details,i)">edit</i></span>
-                                                                <div _ngcontent-jry-c5=""
-                                                                    class="mat-button-ripple mat-ripple" matripple=""
-                                                                    ng-reflect-centered="false"
-                                                                    ng-reflect-disabled="false"
-                                                                    ng-reflect-trigger="[object HTMLButtonElement]">
-                                                                </div>
-                                                                <div _ngcontent-jry-c5=""
-                                                                    class="mat-button-focus-overlay">
-                                                                </div>
-                                                            </span>
-                                                            <div class="mat-button-ripple mat-ripple" matripple=""
-                                                                ng-reflect-centered="false" ng-reflect-disabled="false"
-                                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
-                                                            <div class="mat-button-focus-overlay"></div>
-                                                        </button>
-
-                                                        <button _ngcontent-gdi-c11=""
-                                                            [hidden]="Sales_Master_Delete==false"
-                                                            class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
-                                                            mat-raised-button="" mattooltip="Remove" type="button"
-                                                            aria-describedby="cdk-describedby-message-1"
-                                                            cdk-describedby-host="" ng-reflect-position="above"
-                                                            ng-reflect-message="Remove"><span
-                                                                class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
-                                                                    class="material-icons"
-                                                                    (click)="Delete_Quotation_Detail(i)">close</i></span>
-                                                            <div class="mat-button-ripple mat-ripple" matripple=""
-                                                                ng-reflect-centered="false" ng-reflect-disabled="false"
-                                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
-                                                            <div class="mat-button-focus-overlay"></div>
-                                                        </button>
-                                                    </td>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 mt-5">
-                                    <h4 style="font-weight: bold;">Terms & Conditions</h4>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Brand</label>
-                                        <input type="text" [(ngModel)]="Quotation_Master_.Brand"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Price
-                                            Basis</label>
-                                        <input type="text" [(ngModel)]="Quotation_Master_.PriceBasis"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment
-                                            Term</label>
-                                        <input type="number" [(ngModel)]="Quotation_Master_.PaymentTermValue" style="width: 12%;border: 1px solid lightgrey;
-                                            border-radius: 5px;padding-left: 5px !important;height: 36px;"
-                                            class="mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                        <select [(ngModel)]="Payment_Term" id="Payment_Term" name="Payment_Term" [compareWith]="comparePaymentTerm"
-                                            class="for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe ng-pristine ng-valid ng-touched"
-                                            style="width: 37%;border: 1px solid lightgrey;
-                                            border-radius: 5px;padding-left: 5px !important;height: 36px;">
-                                            <option *ngFor="let PaymentTerm of PaymentTermData" [ngValue]="PaymentTerm">
-                                                {{PaymentTerm.Payment_Term_Description}}</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Delivery</label>
-                                        <input type="text" [(ngModel)]="Quotation_Master_.Delivery "
-                                            id="Quotation_Master_.Delivery" name="Quotation_Master_.Delivery"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Validity</label>
-                                        <input type="text" [(ngModel)]="Quotation_Master_.Validity "
-                                            id="Quotation_Master_.Validity" name="Quotation_Master_.Validity"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Notes</label>
-                                        <input type="text" [(ngModel)]="Quotation_Master_.Description1"
-                                            id="Quotation_Master_.Description1" name="Quotation_Master_.Description1"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class=" label-to-crect-all-names-to-div-tre-prt-sles">Print
-                                            Letterhead</label>
-
-
-                                        <input style="margin-left: 4%;" type='checkbox' class="form-check-input"
-                                            id="Quotation_Master_.printLetterhead"
-                                            name="Quotation_Master_.printLetterhead" [(ngModel)]="printLetterhead" />
-                                        <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9=""
-                                                class="check"></span>
-                                        </span>
-
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1"
-                                        style="visibility: hidden;">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles"></label>
-                                        <input type="number"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Discount
-                                            %</label>
-                                        <input type="number" id="Quotation_Master_.Discount_Description"
-                                            name="Quotation_Master_.Discount_Description"
-                                            [(ngModel)]="Quotation_Master_.Discount_Description"
-                                            (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Description
-                                            %</label>
-                                        <input type="text" name="Description1" [(ngModel)]="Quotation_Master_.Charge1"
-                                            class="col-md-3"
-                                            style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important;height: 36px;">
-                                        <input type="number" class="col-md-3"
-                                            style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important;height: 36px;"
-                                            [(ngModel)]="Quotation_Master_.Charge1per" id="Quotation_Master_.Charge1per"
-                                            name="Quotation_Master_.Charge1per" (ngModelChange)="Final_Amounts()">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Description</label>
-                                        <input type="text" [(ngModel)]="Quotation_Master_.Charge2"
-                                            id="Quotation_Master_.Charge2" name="Quotation_Master_.Charge2"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Prepared
-                                            By</label>
-                                        <input type="text" [(ngModel)]="Quotation_Master_.PreparedBy"
-                                            id="Quotation_Master_.PreparedBy" name="Quotation_Master_.PreparedBy"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1"
-                                        style="visibility: hidden;">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles"></label>
-                                        <input type="number"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Vat
-                                            %</label>
-                                        <input type="number" [(ngModel)]="Quotation_Master_.VAT_Percentage"
-                                            id="Quotation_Master_.VAT_Percentage"
-                                            name="Quotation_Master_.VAT_Percentage" (ngModelChange)="Final_Amounts()"
-                                            name="Quotation_Master_.Handling_"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <!-- Sub Total -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Sub
-                                            Total</label>
-                                        <input type="text" [ngModel]="Quotation_Master_.TotalAmount | number:'1.3-3'"
-                                            id="Quotation_Master_.TotalAmount" name="Quotation_Master_.TotalAmount"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Additional Discount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amounts</label>
-                                        <input type="number" [(ngModel)]="Quotation_Master_.Additional_Discount"
-                                            id="Quotation_Master_.Additional_Discount"
-                                            name="Quotation_Master_.Additional_Discount"
-                                            (ngModelChange)="Calculate_Discount_Percent();"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- Charge 1 Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amount</label>
-                                        <input type="text" [ngModel]="Quotation_Master_.charge1_Amount | number:'1.3-3'"
-                                            id="Quotation_Master_.charge1_Amount"
-                                            name="Quotation_Master_.charge1_Amount" (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Charge 2 Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Amount</label>
-                                        <input type="number" [(ngModel)]="Quotation_Master_.charge2_Amount"
-                                            id="Quotation_Master_.charge2_Amount"
-                                            name="Quotation_Master_.charge2_Amount" (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- Total Discount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total
-                                            Discount</label>
-                                        <input type="text" [ngModel]="Quotation_Master_.TotalDiscount | number:'1.3-3'"
-                                            id="Quotation_Master_.TotalDiscount" name="Quotation_Master_.TotalDiscount"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Total -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label
-                                            class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total</label>
-                                        <input type="text" [ngModel]="Total | number:'1.3-3'"
-                                            id="Quotation_Master_.Total" name="Quotation_Master_.Total"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- VAT Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">VAT
-                                            Amount</label>
-                                        <input type="text" [ngModel]="Quotation_Master_.VAT_Amount | number:'1.3-3'"
-                                            id="Quotation_Master_.VAT_Amount" name="Quotation_Master_.VAT_Amount"
-                                            (ngModelChange)="Final_Amounts()" readonly
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- Total Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total
-                                            Amount</label>
-                                        <input type="text" [ngModel]="Quotation_Master_.Total_Amount | number:'1.3-3'"
-                                            id="Quotation_Master_.Total_Amount" name="Quotation_Master_.Total_Amount"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-
-                                    <!-- Roundoff Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Additional
-                                            Discount</label>
-                                        <input type="number" [(ngModel)]="Quotation_Master_.Roundoff_Amt"
-                                            id="Quotation_Master_.Roundoff_Amt" name="Quotation_Master_.Roundoff_Amt"
-                                            (ngModelChange)="Final_Amounts()"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
-                                    </div>
-
-                                    <!-- NET Amount -->
-                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">NET
-                                            Amount</label>
-                                        <input type="text" [ngModel]="Quotation_Master_.NetTotal | number:'1.3-3'"
-                                            id="Quotation_Master_.NetTotal" name="Quotation_Master_.NetTotal"
-                                            class="mrgn-crct-input-text-div-tre-prt-sles mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                            readonly>
-                                    </div>
-                                </div>
+            <!-- Item Entry Section (Requirement Style) -->
+            <div class="col-md-12 mt-3">
+                <div class="card" style="background-color: #f1f1f1; border: none; box-shadow: none;">
+                    <div class="card-body p-0">
+                        <div style="display: flex; gap: 8px; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap;">
+                            <!-- Item Name -->
+                            <div style="flex: 0 0 250px;">
+                                <label class="label-to-crect-all-names-to-divs">Item Name</label>
+                                <input type="text" [matAutocomplete]="autoItem" [(ngModel)]="Item_"
+                                    (input)="Search_Item_Typeahead($event)"
+                                    (click)="Search_Item_Typeahead($event)" (ngModelChange)="Get_Stock_Item()"
+                                    class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" 
+                                    style="height: 40px; margin-bottom: 0;" placeholder="Search Item...">
+                                <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item" (optionSelected)="Item_Name_Change($event.option.value)">
+                                    <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                                    <ng-container *ngIf="!isLoading">
+                                        <mat-option *ngFor="let stock of Stock_Data" [value]="stock">
+                                            <div style="display: flex; flex-direction: column; line-height: 1.3; padding: 5px 0;">
+                                                <span style="font-weight: 600;">{{stock.Item_Code || '---'}} - {{stock.ItemName || '---'}}</span>
+                                                <small class="text-muted">Stock: {{stock.Quantity || stock.Stock || 0}} | Model: {{stock.ModelName || '---'}}</small>
+                                            </div>
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-autocomplete>
                             </div>
-                            <div class="col-md-12" style="display: flex;justify-content: flex-end;">
-                                <div class="col-md-4">
-                                </div>
-                                <div class="col-md-8">
-                                    <label class=" col-md-2 label-to-crect-all-names-to-div-tre-prt-sles">In
-                                        words</label>
-                                    <input type="text"
-                                        style="border: 1px solid lightgrey;border-radius: 5px;padding-left: 5px !important; height: 36px;"
-                                        class="col-md-10 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                        [(ngModel)]="Quotation_Master_.Amount_In_Words" id="Quotation_Master_.Delivery"
-                                        name="Quotation_Master_.Amount_In_Words">
-                                </div>
+                            <!-- Model -->
+                            <div style="flex: 0 0 120px;">
+                                <label class="label-to-crect-all-names-to-divs">Model</label>
+                                <input type="text" [(ngModel)]="Quotation_Details_.Model" class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px; margin-bottom: 0;">
                             </div>
+                            <!-- Brand -->
+                            <div style="flex: 0 0 120px;">
+                                <label class="label-to-crect-all-names-to-divs">Brand</label>
+                                <input type="text" [(ngModel)]="Quotation_Details_.Brand" class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px; margin-bottom: 0;">
+                            </div>
+                            <!-- UOM -->
+                            <div style="flex: 0 0 80px;">
+                                <label class="label-to-crect-all-names-to-divs">UOM</label>
+                                <input type="text" [(ngModel)]="Quotation_Details_.UnitName" readonly class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn bg-light" style="height: 40px; margin-bottom: 0; text-align: center;">
+                            </div>
+                            <!-- Qty -->
+                            <div style="flex: 0 0 80px;">
+                                <label class="label-to-crect-all-names-to-divs">Qty</label>
+                                <input type="number" [(ngModel)]="Quotation_Details_.Quantity" (ngModelChange)="Calculate_Quotation_Details_Amount()" class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px; margin-bottom: 0; text-align: center;">
+                            </div>
+                            <!-- Sales Rate (Multi Selection) -->
+                            <div style="flex: 0 0 180px;">
+                                <label class="label-to-crect-all-names-to-divs">Sales Rate</label>
+                                <select class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" [(ngModel)]="Selected_Rate" (ngModelChange)="OnRateChange()" style="height: 40px; margin-bottom: 0;">
+                                    <option *ngFor="let rate of Pricing_Rates" [ngValue]="rate">{{rate.name}} - {{rate.value}}</option>
+                                    <option [ngValue]="null">Custom Rate...</option>
+                                </select>
+                            </div>
+                            <!-- Rate (Visible if Custom) -->
+                            <div style="flex: 0 0 100px;" *ngIf="!Selected_Rate">
+                                <label class="label-to-crect-all-names-to-divs">Rate</label>
+                                <input type="number" [(ngModel)]="Quotation_Details_.UnitPrice" (ngModelChange)="Calculate_Quotation_Details_Amount()" class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px; margin-bottom: 0;">
+                            </div>
+                            <!-- Amount -->
+                            <div style="flex: 0 0 120px;">
+                                <label class="label-to-crect-all-names-to-divs">Amount</label>
+                                <input type="number" [(ngModel)]="Quotation_Details_.Amount" readonly class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn bg-light" style="height: 40px; margin-bottom: 0; text-align: right; font-weight: bold;">
+                            </div>
+                            <!-- Add Button -->
+                            <div style="flex: 0 0 auto;">
+                                <button mat-raised-button type="button" (click)="Plus_Quotation_Details($event)" class="btn btn-danger" style="height: 40px; border-radius: 4px;">Add</button>
+                            </div>
+                        </div>
 
-                            <div class="col-md-12">
-                                <!-- <button mat-raised-button type="button" id="Tab_Edit" (click)="Edit_Button_Click()" class="btn btn-danger pull-right">Edit</button> -->
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print"
-                                    (click)="Close_Click();">Close</button>
-                                <button mat-raised-button type="button" id="Save_Button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print"
-                                    [hidden]="Sales_Master_Save==false" (click)="Save_Quotation(0)">Save</button>
-                                <button mat-raised-button type="button" [hidden]="Sales_Print"
-                                    class="btn btn-danger pull-right no-print" (click)="Print_Click()" title="Professional Print">
-                                    <i class="fa fa-print" aria-hidden="true"></i> Print</button>
-                                <button mat-raised-button type="button" [hidden]="Sales_Print"
-                                    class="btn btn-danger pull-right no-print" (click)="Preview_PDF()" title="Preview PDF">
-                                    <i class="fa fa-eye" aria-hidden="true"></i> Preview</button>
-                                <button mat-raised-button type="button" [hidden]="Sales_Print"
-                                    class="btn btn-danger pull-right no-print" (click)="Download_PDF()" title="Download PDF">
-                                    <i class="fa fa-download" aria-hidden="true"></i> Download</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    (click)="printAcknowledgment()">ACKNOWLEDGEMENT</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    (click)="newQuotation()">New</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    (click)="duplicate()">Duplicate</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    (click)="PackingList_Click()">Packing List</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    (click)="PO_Click()">PO</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    (click)="DO_Click()">DO</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    [disabled]="!HasPurchaseOrder"
-                                    (click)="Invoice_Click()">Invoice</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    (click)="Proforma_Click(SalesQuotationMaster_Id_Edit)">Proforma</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    (click)="Purchase_Pending_Click()">PO Pending</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    (click)="Delivery_Pending_Click()">Delivery Pending</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    [disabled]="!HasPurchaseOrder"
-                                    (click)="Invoice_Pending_Click()">Invoice Pending</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    (click)="Proforma_Pending_Click()">Proforma Pending</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr no-print" *ngIf="Edit_Sales>0"
-                                    (click)="PackingList_Pending_Click()">Packing List Pending</button>
-                            </div>
-                            <div class="clearfix"></div>
+                        <!-- Item Table -->
+                        <div class="table-responsive" style="background: white; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                            <table class="table table-hover table-for-sale-search-section-diary">
+                                <thead class="bg-col-stock-add-diary">
+                                    <th width="50">No</th>
+                                    <th>Item Details</th>
+                                    <th width="80" class="text-center">UOM</th>
+                                    <th width="80" class="text-center">Qty</th>
+                                    <th width="120" class="text-right">Rate</th>
+                                    <th width="120" class="text-right">Amount</th>
+                                    <th width="100" class="text-center">Action</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let detail of Quotation_Details_Data; let i = index" [id]="'cell' + (i + 1)">
+                                        <td class="text-center">{{i+1}}</td>
+                                        <td>
+                                            <div style="font-weight: 600;">{{detail.ItemName}}</div>
+                                            <div class="text-muted small">{{detail.Item_Code}} <span *ngIf="detail.Model">| {{detail.Model}}</span> <span *ngIf="detail.Brand">| {{detail.Brand}}</span></div>
+                                        </td>
+                                        <td class="text-center">{{detail.UnitName}}</td>
+                                        <td class="text-center">{{detail.Quantity}}</td>
+                                        <td class="text-right">{{detail.UnitPrice | number:'1.3-3'}}</td>
+                                        <td class="text-right">{{detail.Amount | number:'1.3-3'}}</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-link btn-sm text-primary p-0 mr-2" (click)="Edit_Sales_Details(detail, i)"><i class="fa fa-edit"></i></button>
+                                            <button class="btn btn-link btn-sm text-danger p-0" (click)="Delete_Quotation_Detail(i)"><i class="fa fa-close"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="!Quotation_Details_Data || Quotation_Details_Data.length === 0">
+                                        <td colspan="7" class="text-center py-4 text-muted">No items added.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Footer Section -->
+            <div class="col-md-12 mt-4">
+                <div class="row">
+                    <!-- Terms -->
+                    <div class="col-md-7">
+                        <div class="col-md-12 mb-2">
+                            <label class="label-to-crect-all-names-to-div-tre-prt-sles">Payment Term</label>
+                            <select [(ngModel)]="Payment_Term" [compareWith]="comparePaymentTerm" class="for-input-selct-tblelst" style="width: 100%; border-radius: 4px; height: 36px;">
+                                <option *ngFor="let pt of PaymentTermData" [ngValue]="pt">{{pt.Payment_Term_Description}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="label-to-crect-all-names-to-div-tre-prt-sles">Terms & Conditions</label>
+                            <textarea rows="5" [(ngModel)]="Quotation_Master_.Description1" class="for-input-selct-tblelst" style="width: 100%; border-radius: 4px; padding: 10px !important;" placeholder="Enter Terms & Conditions..."></textarea>
+                        </div>
+                    </div>
+                    <!-- Totals -->
+                    <div class="col-md-5">
+                        <div class="col-md-12 d-flex justify-content-between mb-2">
+                            <label class="font-weight-bold">Sub Total</label>
+                            <span class="font-weight-bold">{{ Quotation_Master_.TotalAmount | number:'1.3-3' }}</span>
+                        </div>
+                        <div class="col-md-12 d-flex justify-content-between align-items-center mb-2">
+                            <label>Discount (%)</label>
+                            <input type="number" [(ngModel)]="Quotation_Master_.Discount_Description" (ngModelChange)="Final_Amounts()" class="text-right" style="width: 80px; border: 1px solid #b1b1b1; border-radius: 4px; height: 32px;">
+                        </div>
+                        <div class="col-md-12 d-flex justify-content-between align-items-center mb-2">
+                            <label>VAT / Tax (%)</label>
+                            <input type="number" [(ngModel)]="Quotation_Master_.VAT_Percentage" (ngModelChange)="Final_Amounts()" class="text-right" style="width: 80px; border: 1px solid #b1b1b1; border-radius: 4px; height: 32px;">
+                        </div>
+                        <div class="col-md-12 d-flex justify-content-between py-2 border-top mt-2" style="background: #eee; border-radius: 4px;">
+                            <label class="font-weight-bold mb-0">Grand Total</label>
+                            <span class="font-weight-bold" style="font-size: 1.2rem; color: #ef071e;">{{ Quotation_Master_.NetTotal | number:'1.3-3' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="col-md-12 mt-4" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
+                <button mat-raised-button type="button" class="btn btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Close_Click();">Close</button>
+                
+                <!-- Workflow Buttons (Visible when editing an existing Quotation) -->
+                <ng-container *ngIf="Edit_Sales > 0">
+                    <button mat-raised-button type="button" class="btn btn-info div-rspnsv-pstn-crct-sls-mstr" (click)="PackingList_Pending_Click()">Packing List Pending</button>
+                    <button mat-raised-button type="button" class="btn btn-primary div-rspnsv-pstn-crct-sls-mstr" (click)="PackingList_Click()">Packing List</button>
+                    
+                    <button mat-raised-button type="button" class="btn btn-info div-rspnsv-pstn-crct-sls-mstr" (click)="Purchase_Pending_Click()">Purchase Pending</button>
+                    <button mat-raised-button type="button" class="btn btn-primary div-rspnsv-pstn-crct-sls-mstr" (click)="PO_Click()">Purchase Order</button>
+                    
+                    <button mat-raised-button type="button" class="btn btn-info div-rspnsv-pstn-crct-sls-mstr" (click)="Delivery_Pending_Click()">Delivery Pending</button>
+                    <button mat-raised-button type="button" class="btn btn-primary div-rspnsv-pstn-crct-sls-mstr" (click)="DO_Click()">Delivery Order</button>
+                    
+                    <button mat-raised-button type="button" class="btn btn-info div-rspnsv-pstn-crct-sls-mstr" (click)="Invoice_Pending_Click()">Invoice Pending</button>
+                    <button mat-raised-button type="button" class="btn btn-primary div-rspnsv-pstn-crct-sls-mstr" (click)="Invoice_Click()">Invoice</button>
+                    
+                    <button mat-raised-button type="button" class="btn btn-info div-rspnsv-pstn-crct-sls-mstr" (click)="Proforma_Pending_Click()">Proforma Pending</button>
+                    <button mat-raised-button type="button" class="btn btn-primary div-rspnsv-pstn-crct-sls-mstr" (click)="Proforma_Click()">Proforma</button>
+                </ng-container>
+
+                <button mat-raised-button type="button" class="btn btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Save_Quotation(0)">Save</button>
+                <button mat-raised-button type="button" class="btn btn-info div-rspnsv-pstn-crct-sls-mstr" (click)="Save_Quotation(1)"><i class="fa fa-print mr-1"></i> Save & Print</button>
+                
+                <!-- Print and PDF Actions -->
+                <button mat-raised-button type="button" class="btn btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Print_Click()"><i class="fa fa-print mr-1"></i> Print</button>
+                <button mat-raised-button type="button" class="btn btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Preview_PDF()"><i class="fa fa-eye mr-1"></i> Preview</button>
+                <button mat-raised-button type="button" class="btn btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Download_PDF()"><i class="fa fa-download mr-1"></i> Download</button>
+            </div>
+        </div>
+
+
             <div class="container-fluid mt-1" *ngIf="proformaListView" #bottomDiv>
                 <div class="col-md-12">
                     <div class="card" style="background-color: #f1f1f1;">
@@ -1479,7 +1028,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 </div>
 <div id="Print_Div" style="display:none;">

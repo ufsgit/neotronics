@@ -87,7 +87,10 @@ Roundoff_Amt:number;
     Total_Quantity: number;
 Supplier_Ref_No: string;
 
-    
+    Status: number;
+    Status_Name: string;
+    Email: string;
+    WhatsApp: string;
 constructor(values: Object = {})  
 {
 Object.assign(this, values) 
