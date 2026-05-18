@@ -17,6 +17,7 @@ export class ModelComponent implements OnInit {
     Model_Data: Model[] = [];
     Model_: Model = new Model();
     Item_Data: any[] = [];
+    Item_: any;
     Search_Model_: string;
     myInnerHeight: number;
     Entry_View: boolean = true;
@@ -67,6 +68,7 @@ export class ModelComponent implements OnInit {
     Create_New() {
         this.Entry_View = true;
         this.Check_Hide = true;
+        this.Item_ = null;
         this.Clr_Model();
     }
 
@@ -85,6 +87,7 @@ export class ModelComponent implements OnInit {
         this.Model_.Is_Update = false;
         this.Model_.Checkbox = false;
         this.Item_Data = [];
+        this.Item_ = null;
     }
 
     private normalizeArrayResponse(response: any): any[] {
@@ -117,27 +120,39 @@ export class ModelComponent implements OnInit {
         );
     }
 
-    Search_Item_Typeahead(event) {
-        const term = this.Model_.Item_Name;
-        if (!term || term.length < 2) {
-            this.Item_Data = [];
-            return;
+    Search_Item_Typeahead(event: any) {
+        var Value = "";
+        if (event && event.target && event.target.value) {
+            Value = event.target.value;
         }
-        this.Item_Service_.Item_Typeahead(term).subscribe(
-            Rows => {
-                this.Item_Data = this.normalizeArrayResponse(Rows);
+
+        if (this.Item_Data == undefined || this.Item_Data.length == 0 || Value != "") {
+            this.issLoading = true;
+            this.Item_Service_.Item_Typeahead(Value).subscribe((response: any) => {
+                const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+                if (Rows != null) {
+                    if (Array.isArray(Rows) && Array.isArray(Rows[0])) {
+                        this.Item_Data = Rows[0];
+                    } else if (Array.isArray(Rows)) {
+                        this.Item_Data = Rows;
+                    }
+                }
+                this.issLoading = false;
             },
-            error => {
-                this.Item_Data = [];
-            }
-        );
+                error => {
+                    this.issLoading = false;
+                });
+        }
     }
 
-    Select_Item(item) {
+    display_Item(Item_: any) {
+        if (Item_) { return Item_.Item_Name || Item_.ItemName; }
+    }
+
+    Select_Item(item: any) {
         if (!item) return;
         this.Model_.Item_Id = item.Item_Id || 0;
-        this.Model_.Item_Name = item.Item_Name || item.Item_Name;
-        this.Item_Data = [];
+        this.Model_.Item_Name = item.Item_Name || item.ItemName;
     }
 
     Save_Model() {
@@ -194,6 +209,7 @@ export class ModelComponent implements OnInit {
         this.Entry_View = true;
         this.Check_Hide = false;
         this.Model_ = Object.assign({}, model);
+        this.Item_ = { Item_Id: this.Model_.Item_Id, Item_Name: this.Model_.Item_Name };
         this.Item_Data = [];
     }
 }

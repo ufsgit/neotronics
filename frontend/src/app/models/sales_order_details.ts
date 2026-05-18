@@ -30,6 +30,8 @@ Stock:number;
 Description:string;
 Item_Discount_Amount:number;
 GSTA:number;
+Model_Name:string;
+Brand_Name:string;
     Country_Id: number;
     Country_Name: string;
 

@@ -25,7 +25,16 @@
     <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Item Name <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>   
   <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
   height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-    <input matInput type="text" [(ngModel)]="Brand_.Item_Name" name="Brand_.Item_Name" class="input-text-Brand-group-diary">
+    <input matInput type="text" [matAutocomplete]="autoItem" [(ngModel)]="Item_" name="Item_" 
+    (input)="Search_Item_Typeahead($event)" (click)="Search_Item_Typeahead($event)" class="input-text-Brand-group-diary">
+    <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item">
+        <mat-option *ngIf="issLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+        <ng-container *ngIf="!issLoading">
+            <mat-option *ngFor="let Item of Item_Data" [value]="Item">
+                <span (click)="Item_Change(Item)">{{Item.Item_Name || Item.ItemName}}</span>
+            </mat-option>
+        </ng-container>
+    </mat-autocomplete>
   </mat-form-field>
   </div>     
    

@@ -24,6 +24,9 @@ Branch_Id:number;
 Branch_Name:string;
 /*************/
 
+Department_Id:number;
+Department_Name:string;
+
 
 User_Menu_Selection_Data:User_Menu_Selection[];
 constructor(values: Object = {})  

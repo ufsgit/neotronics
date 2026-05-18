@@ -23,6 +23,7 @@ var Sales_Order_Master=
                 Sales_Order_Master_.Payment_Term_Description, Sales_Order_Master_.VAT_percentage, Sales_Order_Master_.VAT_Amount, Sales_Order_Master_.TaxableAmount, Sales_Order_Master_.KindAttend, Sales_Order_Master_.PaymentTermValue, Sales_Order_Master_.Sales_Details,
                 Sales_Order_Master_.SalesQuotationMaster_Id,
                 Sales_Order_Master_.PerformaInvoiceMaster_Id, Sales_Order_Master_.DeliveryOrderMaster_Id,
+                Sales_Order_Master_.Phone, Sales_Order_Master_.Email, Sales_Order_Master_.WhatsApp
             ]);
             if (log) log.info("sp.call", { name: "Save_Sales_Order_Master" });
             return (new storedProcedure("Save_Sales_Order_Master", params, connection)).result();

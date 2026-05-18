@@ -12,38 +12,33 @@
     
     <div class="card-body" style="background-color: #f1f1f1 !important;">
     <form>
-    <div class="row" style="display: flex;">
-    <div class="col-md-6">
-    <div class="col-md-12" style="display: flex;" >
-    <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Payment Term <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
-    <mat-form-field class="col-md-8" style="border: 1px solid lightgrey;background-color: #fff;
-    height: 40px;">
-    <input matInput type="text" [(ngModel)]="payment_term_.Payment_Term_Description" name="payment_term_.Payment_Term_Description">
-    </mat-form-field>
-    </div>
-    <div class="col-md-12" style="display: flex;" >
-    <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Description </label>
-    <mat-form-field class="col-md-8" style="border: 1px solid lightgrey;background-color: #fff;
-    height: 40px;">
-    <input matInput type="text" [(ngModel)]="payment_term_.Description" name="payment_term_.Description">
-    </mat-form-field>
-    </div>
-    <div class="col-md-12" style="display: flex;" >
-    <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Caption </label>
-    <mat-form-field class="col-md-8" style="border: 1px solid lightgrey;background-color: #fff;
-    height: 40px;">
-    <input matInput type="text" [(ngModel)]="payment_term_.Caption" name="payment_term_.Caption">
-    </mat-form-field>
-    </div>
-
-    </div>
-    <div class="col-md-6">
-        
-<button mat-raised-button type="button" [hidden]="payment_term_Save==false"id="Save_Button"class="btn btn-danger pull-right"(click)="Save_payment_term()">Save</button>
-<button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>
-    </div>
-    </div>
-    <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="col-md-12">
+                    <label class="label-field">Caption </label>
+                    <mat-form-field class="col-md-12 margin-textbox" style="width:100%; border: 1px solid lightgrey; background-color: #fff; padding: 10px; margin-bottom: 0;">
+                        <input matInput type="text" [(ngModel)]="payment_term_.Caption" name="payment_term_.Caption" class="input-text-field">
+                    </mat-form-field>
+                </div>
+                <div class="col-md-12 mt-2">
+                    <label class="label-field">Description</label>
+                    <mat-form-field class="col-md-12 margin-textbox" style="width:100%; border: 1px solid lightgrey; background-color: #fff; padding: 10px; margin-bottom: 0;">
+                        <textarea matInput rows="6" [(ngModel)]="payment_term_.Description" name="payment_term_.Description" class="input-text-field"></textarea>
+                    </mat-form-field>
+                </div>
+                <!-- <div class="col-md-12 mt-2">
+                    <label class="label-field">Payment Term <span class="required-star" style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+                    <mat-form-field class="col-md-10 margin-textbox" style="width:100%; border: 1px solid lightgrey; background-color: #fff; padding: 10px;">
+                        <textarea matInput rows="6" [(ngModel)]="payment_term_.Payment_Term_Description" name="payment_term_.Payment_Term_Description" class="input-text-field"></textarea>
+                    </mat-form-field>
+                </div> -->
+                <div class="col-md-12 buttons-wrapper" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button mat-raised-button type="button" class="btn btn-danger save-close-new-buttons" (click)="Close_Click()" style="margin: 0;">Close</button>
+                    <button mat-raised-button type="button" [hidden]="payment_term_Save==false" id="Save_Button" class="btn btn-danger save-close-new-buttons" (click)="Save_payment_term()" style="margin: 0;">Save</button>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
     </form>
     </div>
     </div>
@@ -91,9 +86,9 @@
     <th>
     Sl No
     </th>
-    <th>
+    <!-- <th>
         Payment Term
-    </th>
+    </th> -->
     <th>Description</th>
     <th>Caption</th>
    <th [hidden]="payment_term_Edit==false">
@@ -106,7 +101,7 @@
     <!-- <ng-container *cdkVirtualFor="let payment_term_1 of payment_term_Data; let i = index"> -->
     <tr *ngFor="let payment_term_1 of payment_term_Data; let i =index">
     <td style="padding-left:5px;">{{ i+1 }}</td>
-    <td>{{payment_term_1["Payment_Term_Description"]}}</td>
+    <!-- <td>{{payment_term_1["Payment_Term_Description"]}}</td> -->
     <td>{{payment_term_1["Description"]}}</td>
     <td>{{payment_term_1["Caption"]}}</td>
     <td>

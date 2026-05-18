@@ -56,6 +56,8 @@ User_Role_Data: any[] = [];
 User_Role_: any;
 User_Role_Temp: any = { User_Role_Id: 0, User_Role_Name: 'Select' };
 
+Department_Data: any[] = [];
+Department_: any;
 
 constructor(
     public User_Details_Service_:User_Details_Service, 
@@ -162,6 +164,21 @@ else
     this.User_Details_.User_Type = 0;
 }
 
+if(this.Department_Data!=null && this.Department_Data.length > 0)
+{
+    this.Department_ = this.Department_Data[0];
+    this.User_Details_.Department_Id = this.Department_Data[0].Department_Id;
+}
+else
+{
+    this.Department_ = null;
+    this.User_Details_.Department_Id = 0;
+}
+
+this.ToAccount_ = new Client_Accounts();
+this.ToAccount_.Client_Accounts_Id = 0;
+this.ToAccount_.Client_Accounts_Name = "";
+
 if(this.User_Menu_Selection_Data!=undefined)//&& this.User_Menu_Selection_Data!=null&&this.User_Menu_Selection_Data!=""
 {
 for(var i=0;i<this.User_Menu_Selection_Data.length;i++)
@@ -227,6 +244,7 @@ Load_Dropdowns()
    this.User_Type_Data = Rows.User_Type;
    this.User_Menu_Selection_Data =  Rows.User_Menu_Selection; 
    this.Working_Status_Data =  Rows.Working_Status; 
+   this.Department_Data = Rows.Department;
 
    console.log('Dropdown Rows:', Rows);
    
@@ -365,33 +383,22 @@ Save_User_Details()
     else if (this.User_Role_ == undefined || this.User_Role_ == null || this.User_Role_.User_Role_Id == undefined || this.User_Role_.User_Role_Id==0) {
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select User Role', Type: "3" } });
         }
+    else if (this.Department_ == undefined || this.Department_ == null || this.Department_.Department_Id == undefined || this.Department_.Department_Id==0) {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Department', Type: "3" } });
+        }
 
-	// else if (
-    //     this.ToAccount_ == undefined ||
-    //     this.ToAccount_ == null ||
-    //     this.ToAccount_.Client_Accounts_Id == undefined ||
-    //     this.ToAccount_.Client_Accounts_Id == 0
-    // ) {
-    //     const dialogRef = this.dialogBox.open(DialogBox_Component, {
-    //         panelClass: "Dialogbox-Class",
-    //         data: { Message: "Select The Branch", Type: "3" },
-    //     });
-    //     return;
-    // }     else if (this.Employee_==null || this.Employee_.Client_Accounts_Id==undefined || this.Employee_==undefined||this.Employee_.Client_Accounts_Id==0 ){
-   
-    //     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Select Employee',Type: "3" }});   
-    // }
     else{
          
         this.User_Details_.User_Type = this.User_Type_.User_Type_Id;
         this.User_Details_.Working_Status_Id = this.Working_Status_.Working_Status_Id;
         this.User_Details_.Role_Id = this.User_Role_.User_Role_Id;
+        this.User_Details_.Department_Id = this.Department_.Department_Id;
         
         this.User_Details_.Working_Status = ""; // This is handled by ID now, but keeping for compatibility if needed
 
         this.User_Details_.Employee_Id=0;
-        // this.User_Details_.Branch_Id = this.ToAccount_.Client_Accounts_Id;
-		// this.User_Details_.Branch_Name = this.ToAccount_.Client_Accounts_Name;
+        this.User_Details_.Branch_Id = 0;
+		this.User_Details_.Branch_Name = "";
         this.User_Menu_Selection_Data_Temp=[]; 
         for (var i = 0; i< this.User_Menu_Selection_Data.length; i++) {
 
@@ -483,6 +490,18 @@ for (var i = 0; i < this.User_Role_Data.length; i++) {
     if (this.User_Details_.Role_Id == this.User_Role_Data[i].User_Role_Id)
     this.User_Role_=this.User_Role_Data[i];
 }
+
+if (this.Department_Data != null && this.Department_Data.length > 0) {
+    for (var i = 0; i < this.Department_Data.length; i++) {
+        if (this.User_Details_.Department_Id == this.Department_Data[i].Department_Id) {
+            this.Department_ = this.Department_Data[i];
+        }
+    }
+}
+
+this.ToAccount_ = new Client_Accounts();
+this.ToAccount_.Client_Accounts_Id = this.User_Details_.Branch_Id;
+this.ToAccount_.Client_Accounts_Name = this.User_Details_.Branch_Name;
 
 
     this.Employee_Temp.Client_Accounts_Id=User_Details_e.Employee_Id;

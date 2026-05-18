@@ -147,60 +147,6 @@ Menus:any[];
       Menu_Type: true,
     });
   }
-
-  private ensureQuotationConfirmationMenuItem() {
-    if (!Array.isArray(this.menuItems)) this.menuItems = [];
-    const exists = this.menuItems.some((m: any) => (m && (m.path === '/Quotation_Confirmation' || m.path === 'Quotation_Confirmation')));
-    if (exists) return;
-    this.menuItems.push({
-      path: '/Quotation_Confirmation',
-      title: 'Quotation Confirmation',
-      icon: 'check_circle',
-      class: '',
-      Menu_Id: '0',
-      View: 'true',
-      Save: 'true',
-      Edit: 'true',
-      Delete: 'true',
-      Menu_Type: true,
-    });
-  }
-
-  private ensureDepartmentMenuItem() {
-    if (!Array.isArray(this.menuItems)) this.menuItems = [];
-    const exists = this.menuItems.some((m: any) => (m && (m.path === '/Department' || m.path === 'Department')));
-    if (exists) return;
-    this.menuItems.push({
-      path: '/Department',
-      title: 'Department',
-      icon: 'business',
-      class: '',
-      Menu_Id: '0',
-      View: 'true',
-      Save: 'true',
-      Edit: 'true',
-      Delete: 'true',
-      Menu_Type: true,
-    });
-  }
-
-  private ensureDepartmentStatusMenuItem() {
-    if (!Array.isArray(this.menuItems)) this.menuItems = [];
-    const exists = this.menuItems.some((m: any) => (m && (m.path === '/DepartmentStatus' || m.path === 'DepartmentStatus')));
-    if (exists) return;
-    this.menuItems.push({
-      path: '/DepartmentStatus',
-      title: 'Department Status',
-      icon: 'rule',
-      class: '',
-      Menu_Id: '0',
-      View: 'true',
-      Save: 'true',
-      Edit: 'true',
-      Delete: 'true',
-      Menu_Type: true,
-    });
-  }
   constructor(
     public userData: UserData,
     public router: Router,
@@ -212,9 +158,6 @@ Menus:any[];
     this.ensurePriceResponseMenuItem();
     this.ensureVerticalMenuItem();
     this.ensureDesignationMenuItem();
-    this.ensureQuotationConfirmationMenuItem();
-    this.ensureDepartmentMenuItem();
-    this.ensureDepartmentStatusMenuItem();
     // this.router.navigateByUrl('Leads');
    }
 
@@ -234,9 +177,6 @@ this.ensurePriceRequestMenuItem();
 this.ensurePriceResponseMenuItem();
 this.ensureVerticalMenuItem();
 this.ensureDesignationMenuItem();
-this.ensureQuotationConfirmationMenuItem();
-this.ensureDepartmentMenuItem();
-this.ensureDepartmentStatusMenuItem();
 
   }
   isMobileMenu() {
