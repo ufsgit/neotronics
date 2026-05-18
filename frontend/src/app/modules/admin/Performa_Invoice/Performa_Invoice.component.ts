@@ -132,6 +132,8 @@ Cess:number;
 CGST_SUM:number=0;
 SGST_SUM:number=0;
 GST_Sum:number=0;
+Customer_Email: string = '';
+Customer_WhatsApp: string = '';
 Tot_discount:number=0;
 Tot_Cess:number=0;
 Tot_Amount:number=0;
@@ -1650,6 +1652,8 @@ Customer_Change( Customer_T_)
     this.performainvoicemaster_.Mobile = this.Customer_.Mobile;
     this.performainvoicemaster_.PinCode=this.Customer_.PinCode;
     this.performainvoicemaster_.Vatin=this.Customer_.GSTNo;
+    this.Customer_Email = ((this.Customer_ as any) && ((this.Customer_ as any).Email || (this.Customer_ as any).EmailId)) || '';
+    this.Customer_WhatsApp = ((this.Customer_ as any) && ((this.Customer_ as any).WhatsApp || (this.Customer_ as any).WhatsAppNo || (this.Customer_ as any).WhatsApp_Number)) || '';
 
     this.Customer_Name = this.Quotation_Master_.Customer_Name;
 
@@ -1674,6 +1678,8 @@ selectCustomer(){
     this.performainvoicemaster_.Mobile = this.Customer_.Mobile;
     this.performainvoicemaster_.PinCode=this.Customer_.PinCode;
     this.performainvoicemaster_.Vatin=this.Customer_.GSTNo;
+    this.Customer_Email = ((this.Customer_ as any) && ((this.Customer_ as any).Email || (this.Customer_ as any).EmailId)) || '';
+    this.Customer_WhatsApp = ((this.Customer_ as any) && ((this.Customer_ as any).WhatsApp || (this.Customer_ as any).WhatsAppNo || (this.Customer_ as any).WhatsApp_Number)) || '';
 
     this.Customer_Name = this.Quotation_Master_.Customer_Name;
 
@@ -3316,16 +3322,26 @@ debugger
 Final_Amounts()
 {      
     this.Tot_Gross=0,this.Tot_discount=0,this.Tot_Net=0,this.performainvoicemaster_.TotalAmount=0;this.performainvoicemaster_.Basic_Discount=0
+    this.performainvoicemaster_.TaxableAmount = 0;
+    this.GST_Sum = 0;
+    this.CGST_SUM = 0;
+    this.SGST_SUM = 0;
     for(var i = 0; i< this.performainvoicedetails_Data.length ; i++)
     {
         this.performainvoicemaster_.TotalAmount = Number(this.performainvoicemaster_.TotalAmount) + Number(this.performainvoicedetails_Data[i].Amount);
 
         this.Tot_discount = Number(this.Tot_discount)+  (Number(this.performainvoicedetails_Data[i].Unit_Discount) * Number(this.performainvoicedetails_Data[i].Quantity) );
         this.performainvoicemaster_.Basic_Discount = this.performainvoicemaster_.Basic_Discount + Number(this.performainvoicedetails_Data[i].Item_Discount_Amount)
+        this.performainvoicemaster_.TaxableAmount = Number(this.performainvoicemaster_.TaxableAmount) + Number(this.performainvoicedetails_Data[i].TaxableAmount || 0);
+        this.GST_Sum = Number(this.GST_Sum) + Number(this.performainvoicedetails_Data[i].TaxAmount || 0);
         
     }
     this.performainvoicemaster_.TotalAmount = Number(this.performainvoicemaster_.TotalAmount.toFixed(3));
     this.Tot_discount = Number(this.Tot_discount.toFixed(3));
+    this.performainvoicemaster_.TaxableAmount = Number(this.performainvoicemaster_.TaxableAmount.toFixed(3));
+    this.GST_Sum = Number(this.GST_Sum.toFixed(3));
+    this.CGST_SUM = Number((this.GST_Sum / 2).toFixed(3));
+    this.SGST_SUM = Number((this.GST_Sum / 2).toFixed(3));
 
     debugger;
 

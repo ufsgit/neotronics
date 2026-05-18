@@ -190,6 +190,8 @@ Accounttype: accounttype = new accounttype();
 PaymentTerm: payment_term = new payment_term();
 PaymentTerm_Data: payment_term[];
 PaymentTerm_Temp: payment_term = new payment_term();
+Customer_Email: string = '';
+Customer_WhatsApp: string = '';
 
 DeliveryOrderMaster_Id: number;
 
@@ -1676,6 +1678,8 @@ Customer_Change( Customer_T_)
     this.Sales_Master_.Mobile = this.Customer_.Mobile;
     this.Sales_Master_.PinCode=this.Customer_.PinCode;
     this.Sales_Master_.GSTNo=this.Customer_.GSTNo;
+    this.Customer_Email = ((this.Customer_ as any) && ((this.Customer_ as any).Email || (this.Customer_ as any).EmailId)) || '';
+    this.Customer_WhatsApp = ((this.Customer_ as any) && ((this.Customer_ as any).WhatsApp || (this.Customer_ as any).WhatsAppNo || (this.Customer_ as any).WhatsApp_Number)) || '';
     this.Customer_Name = this.Sales_Master_.Customer_Name;
 
     this.Address1 = this.Sales_Master_.Address1;
@@ -1697,6 +1701,8 @@ selectCustomer(){
     this.Sales_Master_.Mobile = this.Customer_.Mobile;
     this.Sales_Master_.PinCode=this.Customer_.PinCode;
     this.Sales_Master_.GSTNo=this.Customer_.GSTNo;
+    this.Customer_Email = ((this.Customer_ as any) && ((this.Customer_ as any).Email || (this.Customer_ as any).EmailId)) || '';
+    this.Customer_WhatsApp = ((this.Customer_ as any) && ((this.Customer_ as any).WhatsApp || (this.Customer_ as any).WhatsAppNo || (this.Customer_ as any).WhatsApp_Number)) || '';
     this.Customer_Name = this.Sales_Master_.Customer_Name;
 
     this.Address1 = this.Customer_.Address1;

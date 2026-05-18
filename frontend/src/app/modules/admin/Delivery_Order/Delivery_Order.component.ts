@@ -186,6 +186,11 @@ Sales_Master_Data1:[];UnitName="";Quantity=0;SaleRate=0;discount=0;unitDiscount=
 POnumber;QuotNo;partNo;
 Sales_Master_1:Quotation_Master= new Quotation_Master();printLetterhead = false;
 Address1 ='';Address2 ='';Address3 ='';Address4 ='';Mobile="";PinCode="";GSTNo="";
+Customer_Email: string = '';
+Customer_WhatsApp: string = '';
+Delivery_Order_Status: string = '';
+Upload1_Name: string = '';
+Upload2_Name: string = '';
 currencyData:currencydetails[];
 Attention;Employee;totalAmount=0;Total=0;totalDiscount=0;amount1=0;amount2=0;amount3=0;
 itemGroupData:Item_Group [];
@@ -1728,6 +1733,8 @@ Customer_Change( Customer_T_)
     this.Delivery_Order_Master_.Mobile = this.Customer_.Mobile;
     this.Delivery_Order_Master_.PinCode=this.Customer_.PinCode;
     this.Delivery_Order_Master_.GSTNo=this.Customer_.GSTNo;
+    this.Customer_Email = ((this.Customer_ as any) && ((this.Customer_ as any).Email || (this.Customer_ as any).EmailId)) || '';
+    this.Customer_WhatsApp = ((this.Customer_ as any) && ((this.Customer_ as any).WhatsApp || (this.Customer_ as any).WhatsAppNo || (this.Customer_ as any).WhatsApp_Number)) || '';
 
     this.Address1 = this.Customer_.Address1;
     this.Address2 = this.Customer_.Address2;
@@ -1749,6 +1756,8 @@ selectCustomer(){
     this.Delivery_Order_Master_.Mobile = this.Customer_.Mobile;
     this.Delivery_Order_Master_.PinCode=this.Customer_.PinCode;
     this.Delivery_Order_Master_.GSTNo=this.Customer_.GSTNo;
+    this.Customer_Email = ((this.Customer_ as any) && ((this.Customer_ as any).Email || (this.Customer_ as any).EmailId)) || '';
+    this.Customer_WhatsApp = ((this.Customer_ as any) && ((this.Customer_ as any).WhatsApp || (this.Customer_ as any).WhatsAppNo || (this.Customer_ as any).WhatsApp_Number)) || '';
 
     this.Address1 = this.Customer_.Address1;
     this.Address2 = this.Customer_.Address2;
@@ -3622,4 +3631,13 @@ addBlankRows(): void {
     // }
   }
 
+  onUpload1Change(event: any) {
+      const file = event && event.target && event.target.files && event.target.files[0] ? event.target.files[0] : null;
+      this.Upload1_Name = file ? file.name : '';
+  }
+
+  onUpload2Change(event: any) {
+      const file = event && event.target && event.target.files && event.target.files[0] ? event.target.files[0] : null;
+      this.Upload2_Name = file ? file.name : '';
+  }
 }

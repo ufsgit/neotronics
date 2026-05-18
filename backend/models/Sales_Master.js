@@ -152,7 +152,22 @@ var Sales_Master = {
                 Quotation_Master_.KindAttend, Quotation_Master_.PaymentTermValue, Quotation_Master_.Supplier_Ref_No, Quotation_Master_.Quotation_Details,
             ]);
             if (log) log.info("sp.call", { name: "Save_Quotation" });
-            return (new storedProcedure("Save_Quotation", params, connection)).result();
+            const result = await (new storedProcedure("Save_Quotation", params, connection)).result();
+            let qid = Quotation_Master_.SalesQuotationMaster_Id;
+            if (!qid && result && result[0] && result[0][0]) {
+                qid = result[0][0].SalesQuotationMaster_Id_;
+            }
+            if (qid) {
+                const status = Quotation_Master_.Status || 1;
+                let statusStr = 'DRAFT';
+                if (status == 3) statusStr = 'APPROVED';
+                else if (status == 5) statusStr = 'CONFIRMED';
+                else if (status == 2) statusStr = 'PENDING';
+                else if (status == 4) statusStr = 'REJECTED';
+                
+                await connection.query("UPDATE salesquotationmaster SET Status = ?, workflow_status = ? WHERE SalesQuotationMaster_Id = ?", [status, statusStr, qid]);
+            }
+            return result;
         }, { log });
     },
     Search_Quotation: function (Is_Date_Check_, FromDate_, ToDate_, Account_Party_Id_, Quot_No_, Part_No_, Item_Group_Id_, CurrencyDetails_Id_, User_Details_Id_, User_Type_, Login_User_Id_) {
@@ -495,7 +510,15 @@ var Sales_Master = {
             )
         `);
         await db.promise().query("INSERT INTO quotation_workflow_status (quotation_id, status_code) VALUES (?, ?)", [qid, status]);
-        await db.promise().query("UPDATE salesquotationmaster SET workflow_status = ? WHERE SalesQuotationMaster_Id = ?", [status, qid]);
+        
+        let statusInt = 1;
+        if (status === 'APPROVED') statusInt = 3;
+        else if (status === 'CONFIRMED') statusInt = 5;
+        else if (status === 'PENDING') statusInt = 2;
+        else if (status === 'REJECTED') statusInt = 4;
+        else if (status === 'DRAFT') statusInt = 1;
+
+        await db.promise().query("UPDATE salesquotationmaster SET workflow_status = ?, Status = ? WHERE SalesQuotationMaster_Id = ?", [status, statusInt, qid]);
         return [{ ok: 1 }];
     },
 

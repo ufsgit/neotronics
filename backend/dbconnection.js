@@ -7,9 +7,7 @@ var connection = mysql.createPool({
   // database: "perfecthills_db_v1" 
   host: "localhost",
   user: "root",
-  password: "root",
-  database: "neotronics_1" 
-  //  password: "root123",
-  // database: "neotronics_db" 
+  password: "root123",
+  database: "neotronics_db" 
 });
 module.exports = connection;

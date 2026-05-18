@@ -10,7 +10,7 @@ function log(msg) {
     console.log(msg);
 }
 
-var sqlFile = path.join(__dirname, 'requirement_db_update.sql');
+var sqlFile = path.join(__dirname, 'db_migration_2026_05_07_fix_tax_columns.sql');
 var sql = fs.readFileSync(sqlFile, 'utf8');
 
 var statements = [];

@@ -1792,6 +1792,15 @@ Save_Price_Response(Printstatus:number)
     this.Price_Response_Master_.Price_Response_Details = this.Price_Response_Details_Data;
     this.Price_Response_Master_.EntryDate = this.New_Date(new Date(moment(this.Price_Response_Master_.EntryDate).format('YYYY-MM-DD')));
     this.Price_Response_Master_.Currency_Id = this.currency.CurrencyDetails_Id;
+
+    // Header fields
+    if (this.Payment_Term && this.Payment_Term.payment_Term_ID && this.Payment_Term.payment_Term_ID > 0) {
+        this.Price_Response_Master_.Payment_Term_Description = this.Payment_Term.payment_Term_ID;
+        this.Price_Response_Master_.PaymentTerms = this.Payment_Term.Payment_Term_Description || '';
+    } else {
+        this.Price_Response_Master_.Payment_Term_Description = 0;
+        this.Price_Response_Master_.PaymentTerms = '';
+    }
     
     // Net total and other amounts
     this.Price_Response_Master_.Total_Amount = this.Price_Response_Master_.TotalAmount || 0;

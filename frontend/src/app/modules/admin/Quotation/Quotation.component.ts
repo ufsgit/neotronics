@@ -1469,8 +1469,10 @@ Clr_Sales_Details()
         // if (this.ItemCodeData != null && this.ItemCodeData != undefined)    
         //     this.Item_ = new [];
 
-        // if (this.ItemCodeData != null && this.ItemCodeData != undefined)    
-        //   this.Barcode_ = []  
+    // if (this.ItemCodeData != null && this.ItemCodeData != undefined)    
+    //   this.Barcode_ = []  
+    this.Pricing_Rates = [];
+    this.Selected_Rate = null;
 }
 Clr_Sales_Edit_Data()
 {
@@ -2304,7 +2306,9 @@ Save_Quotation(Printstatus:number)
                             data: { Message: 'Saved Successfully', Type: "false" }
                         });
                         dialogRef.afterClosed().subscribe(() => {
-                            if (this.cameFromRequirement) {
+                            if (this.Quotation_Master_.Status == 3 || (this.Status_ && this.Status_.id == 3)) {
+                                this.router.navigateByUrl('/Quotation_Confirmation');
+                            } else if (this.cameFromRequirement) {
                                 this.cameFromRequirement = false;
                                 this.router.navigateByUrl('/Requirement');
                             }
@@ -2524,8 +2528,50 @@ Edit_Sales_Details(Quotation_Details_e:Quotation_Details,index)
     this.Edit_Net=this.Quotation_Details_.NetValue;
     this.Quotation_Details_=Object.assign({},Quotation_Details_e);
     this.Sale_Detail_Quantity=this.Quotation_Details_.Quantity;
-    this.Edit_Stock_-this.Quotation_Details_.Stock;
+    this.Edit_Stock_=this.Quotation_Details_.Stock;
     this.Quotation_Details_Description=this.Quotation_Details_.Description;
+
+    // Set autocomplete text input value
+    this.Item_ = Object.assign({}, Quotation_Details_e);
+
+    // Load multiple pricing rates for the item being edited
+    this.Pricing_Rates = [];
+    this.Selected_Rate = null;
+
+    if (Quotation_Details_e.ItemName) {
+        this.Sales_Master_Service_.Search_Item_Typeahead(Quotation_Details_e.ItemName).subscribe((response: any) => {
+            const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+            let resultsByName = (Rows && Rows[0]) ? Rows[0] : [];
+
+            this.Item_Service_.Search_Item('', 0, Quotation_Details_e.ItemName).subscribe((response2: any) => {
+                const Rows2 = (response2 && typeof response2 === "object" && "success" in response2) ? response2.data : response2;
+                let resultsByCode = (Rows2 && Rows2[0]) ? Rows2[0] : [];
+
+                const combinedResults = [...resultsByName];
+                resultsByCode.forEach(itemCode => {
+                    if (!combinedResults.some(itemByName => itemByName.ItemId === itemCode.ItemId)) {
+                        combinedResults.push(itemCode);
+                    }
+                });
+
+                const matchedItem = combinedResults.find(item => item.ItemId === Quotation_Details_e.ItemId);
+                if (matchedItem) {
+                    this.Pricing_Rates = [];
+                    if (matchedItem.SaleRate) this.Pricing_Rates.push({ name: 'Retail', value: matchedItem.SaleRate });
+                    if (matchedItem.b2b_rate) this.Pricing_Rates.push({ name: 'B2B', value: matchedItem.b2b_rate });
+                    if (matchedItem.b2c_rate) this.Pricing_Rates.push({ name: 'B2C', value: matchedItem.b2c_rate });
+                    if (matchedItem.MRP) this.Pricing_Rates.push({ name: 'MRP', value: matchedItem.MRP });
+
+                    const matchedRate = this.Pricing_Rates.find(r => Number(r.value) === Number(Quotation_Details_e.UnitPrice));
+                    if (matchedRate) {
+                        this.Selected_Rate = matchedRate;
+                    } else {
+                        this.Selected_Rate = null; // Custom Rate
+                    }
+                }
+            });
+        });
+    }
 }
 
 Get_Stock(){
@@ -3030,6 +3076,12 @@ debugger;
             this.Quotation_Master_=Object.assign({},result[0][0]); 
             this.Quotation_Master_.PaymentTermValue=result[0][0].PaymentTermValue
             this.Quotation_Master_.POnumber = result[0][0].POnumber;          
+            if (this.Quotation_Master_.Status) {
+                const foundStatus = this.Status_Data.find(s => s.id == this.Quotation_Master_.Status);
+                if (foundStatus) {
+                    this.Status_ = foundStatus;
+                }
+            }
         this.Edit_Sales=1;
         this.Sales_Print = false;    
         this.Customer_Temp.Client_Accounts_Id=result[0][0].Account_Party_Id;

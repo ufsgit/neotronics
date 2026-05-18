@@ -23,21 +23,24 @@ input {
 }
 
 .dashboard-header {
-    background-color: #0061f2;
-    color: white;
+    background-color: white;
+    color: #1f2937;
     padding: 1.5rem 2rem;
     margin-bottom: 0;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .dashboard-header h2 {
     margin: 0;
     font-size: 1.8rem;
-    font-weight: 500;
+    font-weight: 600;
+    color: #0061f2;
 }
 
 .dashboard-header p {
     margin-top: 5px;
     font-size: 1rem;
+    color: #6b7280;
 }
 
 .main-container {
