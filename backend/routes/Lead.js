@@ -98,7 +98,7 @@ router.get('/Delete_Lead/:Lead_Id', function (req, res, next) {
     try {
         Lead.Delete_Lead(req.params.Lead_Id, function (err, rows) {
             if (err) {
-                res.json(err);
+                return res.status(500).json({ success: false, message: "Database error", error: err.message });
             }
             else {
                 res.json(rows);
@@ -124,6 +124,71 @@ router.get('/Get_Lead_FollowUp_History/:Lead_Id', function (req, res, next) {
     }
     catch (e) {
         console.error("Exception in Get_Lead_FollowUp_History:", e);
+        res.status(500).json({ error: e.message || String(e) });
+    }
+});
+
+router.get('/Get_Lead_Activity_Log/:Lead_Id', function (req, res, next) {
+    try {
+        Lead.Get_Lead_Activity_Log(req.params.Lead_Id, function (err, rows) {
+            if (err) {
+                res.json(err);
+            }
+            else {
+                res.json(rows);
+            }
+        });
+    }
+    catch (e) {
+        console.error("Exception in Get_Lead_Activity_Log:", e);
+        res.status(500).json({ error: e.message || String(e) });
+    }
+});
+
+router.post('/Save_Lead_Meeting/', function (req, res, next) {
+    try {
+        Lead.Save_Lead_Meeting(req.body, function (err, rows) {
+            if (err) return res.status(500).json({ success: false, message: "Database error", error: err.message });
+            res.json(rows);
+        });
+    }
+    catch (e) {
+        res.status(500).json({ success: false, message: "Internal server error", error: e.message });
+    }
+});
+
+router.get('/Get_Lead_Meetings/:Lead_Id', function (req, res, next) {
+    try {
+        Lead.Get_Lead_Meetings(req.params.Lead_Id, function (err, rows) {
+            if (err) res.json(err);
+            else res.json(rows);
+        });
+    }
+    catch (e) {
+        res.status(500).json({ error: e.message || String(e) });
+    }
+});
+
+router.post('/Save_Lead_Quote_Tracking/', function (req, res, next) {
+    try {
+        Lead.Save_Lead_Quote_Tracking(req.body, function (err, rows) {
+            if (err) return res.status(500).json({ success: false, message: "Database error", error: err.message });
+            res.json(rows);
+        });
+    }
+    catch (e) {
+        res.status(500).json({ success: false, message: "Internal server error", error: e.message });
+    }
+});
+
+router.get('/Get_Lead_Quote_Tracking/:Lead_Id', function (req, res, next) {
+    try {
+        Lead.Get_Lead_Quote_Tracking(req.params.Lead_Id, function (err, rows) {
+            if (err) res.json(err);
+            else res.json(rows);
+        });
+    }
+    catch (e) {
         res.status(500).json({ error: e.message || String(e) });
     }
 });

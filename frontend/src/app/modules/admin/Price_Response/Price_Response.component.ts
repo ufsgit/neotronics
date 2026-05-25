@@ -12,6 +12,8 @@ import { Client_Accounts_Service } from '../../../services/Client_Accounts.Servi
 import { Stock_Service } from '../../../services/Stock.Service';
 import { Item_Group_Service } from '../../../services/Item_Group.Service';
 import { payment_term_Service } from '../../../services/payment_term.Service';
+import { Brand_Service } from '../../../services/Brand.Service';
+import { Model_Service } from '../../../services/Model.Service';
 import { Price_Response_Master } from '../../../models/Price_Response_Master';
 import { Price_Response_Details } from '../../../models/Price_Response_Details';
 import { Price_Response_Service } from '../../../services/Price_Response.Service';
@@ -118,6 +120,8 @@ Customer_Temp:Client_Accounts= new Client_Accounts();
 Barcode_Data:Stock[]
 Stock_Data:Stock[]
 Stock_Data_Filter: Stock[];
+BrandData: any[] = [];
+ModelData: any[] = [];
 Stock_:Stock= new Stock();
 Stock_Temp:Stock= new Stock();
 Barcode_Temp:Stock= new Stock();
@@ -262,7 +266,9 @@ constructor(public Price_Response_Service_: Price_Response_Service, public Sales
         private cdr: ChangeDetectorRef,
         public Requirement_Master_Service_: Requirement_Master_Service,
         public RequirementWorkflowService_: RequirementWorkflowService,
-        public Item_Service_: Item_Service
+        public Item_Service_: Item_Service,
+        public Brand_Service_: Brand_Service,
+        public Model_Service_: Model_Service
     ) { 
         this.Load_Bill_Type();       
         this.Load_Currency();
@@ -323,6 +329,8 @@ Page_Load()
     this.Clr_Sales_Details();
     this.Sales_Print=true;
     this.Entry_View=false;
+    this.Load_Brand_Dropdown();
+    this.Load_Model_Dropdown();
 
     // Check if navigated from Requirement module
     const reqData = localStorage.getItem('Requirement_For_PriceRequest');
@@ -461,9 +469,23 @@ Load_Next_Price_Request_No() {
 
     this.Price_Response_Service_.Get_Next_Price_Response_No(dateParam).subscribe({
         next: (response: any) => {
-            const rows = response && response.success ? response.data : null;
-            const nextNo = rows && rows[0] ? Number(rows[0].NextNo || 0) : 0;
-            if (nextNo > 0) this.Price_Response_Master_.Price_RequestNo = String(nextNo);
+            let nextNo = 0;
+            if (response) {
+                if (response.success && response.data) {
+                    const rows = response.data;
+                    nextNo = rows && rows[0] ? Number(rows[0].NextNo || 0) : 0;
+                } else if (Array.isArray(response)) {
+                    const firstEl = response[0];
+                    if (Array.isArray(firstEl) && firstEl[0]) {
+                        nextNo = Number(firstEl[0].NextNo || 0);
+                    } else if (firstEl) {
+                        nextNo = Number(firstEl.NextNo || 0);
+                    }
+                }
+            }
+            if (nextNo > 0) {
+                this.Price_Response_Master_.Price_RequestNo = String(nextNo);
+            }
         },
         error: () => { }
     });
@@ -472,10 +494,11 @@ Load_Company()
     {   
     this.Sales_Master_Service_.Load_Company().subscribe(Rows => {    
     if (Rows != null) {
-        debugger;
-    this.Print_Company_ = Rows[0][0];
-    this.Company_ = Rows[0][0];
-    this.Bank_ = Rows[1];
+    const companyRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : [];
+    const bankRows = Array.isArray(Rows) && Array.isArray(Rows[1]) ? Rows[1] : [];
+    this.Print_Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
+    this.Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
+    this.Bank_ = bankRows;
  }
  this.issLoading = false;
  },
@@ -1223,14 +1246,14 @@ Load_Cess()
 }
 Load_Company_bank()
 {
-    debugger;
     this.Sales_Master_Service_.Load_Company_Bank().subscribe((response: any) => {   
       if (response != null) {
-            debugger;
             const Rows = response.success ? response.data : response;
-            this.Bank_Data=Rows[0];
-            this.Bank_ = this.Bank_Data[0]
-            this.Company_ = Rows[1][0]
+            const bankRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : [];
+            const companyRows = Array.isArray(Rows) && Array.isArray(Rows[1]) ? Rows[1] : [];
+            this.Bank_Data = bankRows;
+            this.Bank_ = bankRows.length > 0 ? bankRows[0] : null;
+            this.Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
         }
         this.issLoading = false;
     },
@@ -1661,10 +1684,11 @@ Search_Price_Response()
     this.Price_Response_Service_.Search_Price_Response(look_In_Date_Value, moment(this.Search_FromDate).format('YYYY-MM-DD'), 
     moment(this.Search_ToDate).format('YYYY-MM-DD'), SupplierId_, this.QuotNo).subscribe({
         next: (response: any) => {
-            const Rows = response.success ? response.data : response;
+            const Rows = response.success ? response.data : (Array.isArray(response) ? response : []);
             this.Price_Response_Master_Data = Rows[0];
             if (this.Price_Response_Master_Data && this.Price_Response_Master_Data.length > 0) {
                 for (var i = 0; i < this.Price_Response_Master_Data.length; i++) {
+                    this.Price_Response_Master_Data[i].Price_RequestNo = this.Price_Response_Master_Data[i].Price_Response_No;
                     this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Price_Response_Master_Data[i].Net_Amount);
                 }
                 this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount.toFixed(3));
@@ -1789,6 +1813,7 @@ Save_Price_Response(Printstatus:number)
         return
     }
 
+    this.Price_Response_Master_.Price_Response_No = this.Price_Response_Master_.Price_RequestNo;
     this.Price_Response_Master_.Price_Response_Details = this.Price_Response_Details_Data;
     this.Price_Response_Master_.EntryDate = this.New_Date(new Date(moment(this.Price_Response_Master_.EntryDate).format('YYYY-MM-DD')));
     this.Price_Response_Master_.Currency_Id = this.currency.CurrencyDetails_Id;
@@ -1889,6 +1914,7 @@ Edit_Price_Response_Master(Sales_Master_e,index)
     this.issLoading = true;
     this.Price_Response_Master_Index=index;
     this.Price_Response_Master_=Object.assign({},Sales_Master_e); 
+    this.Price_Response_Master_.Price_RequestNo = this.Price_Response_Master_.Price_Response_No;
     this.Price_Response_Master_Id_Edit = Sales_Master_e.Price_Response_Master_Id;
     this.Customer_Temp.Client_Accounts_Id=Sales_Master_e.Account_Party_Id;
     this.Customer_Temp.Client_Accounts_Name=Sales_Master_e.Customer;
@@ -2502,21 +2528,25 @@ debugger;
 /**** Added on 15-10-2024 */
     Load_Price_Response_Master()
     {
-        debugger;
         this.Entry_View=true;
         this.issLoading = true
-debugger;
         this.Price_Response_Service_.Get_Price_Response(this.Price_Response_Master_Id).subscribe((response: any)=>{
             this.Price_Response_Master_=new Price_Response_Master();
-            const Rows = response.success ? response.data : [];
+            const Rows = response.success ? response.data : (Array.isArray(response) ? response : []);
+            if (!Rows || !Rows[0] || !Rows[0][0]) {
+                this.issLoading = false;
+                return;
+            }
+            const masterRow = Rows[0][0];
             this.Price_Response_Master_Data=Rows[0];
-            this.Price_Response_Master_=Object.assign({},Rows[0][0]); 
-            this.Price_Response_Master_.PaymentTermValue=Rows[0][0].PaymentTermValue
-            this.Price_Response_Master_.POnumber = Rows[0][0].POnumber;          
+            this.Price_Response_Master_=Object.assign({},masterRow); 
+            this.Price_Response_Master_.Price_RequestNo = this.Price_Response_Master_.Price_Response_No;
+            this.Price_Response_Master_.PaymentTermValue=masterRow.PaymentTermValue
+            this.Price_Response_Master_.POnumber = masterRow.POnumber;          
         this.Edit_Sales=1;
         this.Sales_Print = false;    
-        this.Customer_Temp.Client_Accounts_Id=Rows[0][0].Account_Party_Id;
-        this.Customer_Temp.Client_Accounts_Name=Rows[0][0].Customer;
+        this.Customer_Temp.Client_Accounts_Id=masterRow.Account_Party_Id;
+        this.Customer_Temp.Client_Accounts_Name=masterRow.Customer;
         this.Customer_=this.Customer_Temp;
         this.Price_Response_Master_.Customer_Name=this.Customer_.Client_Accounts_Name;
         this.Price_Response_Master_.Customer=this.Price_Response_Master_.Customer_Name; 
@@ -2586,7 +2616,7 @@ debugger;
         }
         }
     console.log("QUO - Outside Get_Price_Response_Details ");
-    this.Price_Response_Service_.Get_Price_Response(Rows[0][0].Price_Response_Master_Id).subscribe((response: any) => { 
+    this.Price_Response_Service_.Get_Price_Response(masterRow.Price_Response_Master_Id).subscribe((response: any) => { 
         const Rows_Details = response.success ? response.data[1] : (response[1] || []);        debugger;
         console.log("QUO - Inside Get_Price_Response_Details ");
         console.log('QUO - Rows 1: ', response);
@@ -2802,8 +2832,8 @@ debugger;
       {   
       this.Sales_Master_Service_.Load_Vat_Percentage().subscribe(Rows => {    
       if (Rows != null) {
-          debugger;
-      this.Default_Vat_Percentage = Rows[0][0].vat_percentage;
+      const vatRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : [];
+      this.Default_Vat_Percentage = vatRows.length > 0 ? vatRows[0].vat_percentage : 0;
    }
    this.issLoading = false;
    },
@@ -3251,5 +3281,25 @@ debugger;
         //   printDiv.style.display = 'none';
         // }
       }
+  
+  Load_Brand_Dropdown() {
+      this.Brand_Service_.Search_Brand('').subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.BrandData = (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error('Error loading brands:', err);
+          this.BrandData = [];
+      });
+  }
+
+  Load_Model_Dropdown() {
+      this.Model_Service_.Search_Model('').subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.ModelData = (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error('Error loading models:', err);
+          this.ModelData = [];
+      });
+  }
 }
 

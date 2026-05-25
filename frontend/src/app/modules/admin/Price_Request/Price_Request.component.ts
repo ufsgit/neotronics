@@ -12,6 +12,8 @@ import { Client_Accounts_Service } from '../../../services/Client_Accounts.Servi
 import { Stock_Service } from '../../../services/Stock.Service';
 import { Item_Group_Service } from '../../../services/Item_Group.Service';
 import { payment_term_Service } from '../../../services/payment_term.Service';
+import { Brand_Service } from '../../../services/Brand.Service';
+import { Model_Service } from '../../../services/Model.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Price_Request_Master } from '../../../models/Price_Request_Master';
 import { Company } from '../../../models/Company';
@@ -119,6 +121,8 @@ Customer_Temp:Client_Accounts= new Client_Accounts();
 Barcode_Data:Stock[]
 Stock_Data:Stock[]
 Stock_Data_Filter: Stock[];
+BrandData: any[] = [];
+ModelData: any[] = [];
 Stock_:Stock= new Stock();
 Stock_Temp:Stock= new Stock();
 Barcode_Temp:Stock= new Stock();
@@ -253,7 +257,9 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
         private cdr: ChangeDetectorRef,
         public Requirement_Master_Service_: Requirement_Master_Service,
         public RequirementWorkflowService_: RequirementWorkflowService,
-        public Item_Service_: Item_Service
+        public Item_Service_: Item_Service,
+        public Brand_Service_: Brand_Service,
+        public Model_Service_: Model_Service
         // public decimalPipe: DecimalPipe
     ) { 
         this.Load_Bill_Type();       
@@ -273,7 +279,7 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
     }
     ngOnInit() 
 {
-    debugger;
+
     this.User_Type=(localStorage.getItem('User_Type'));
     this.User_Type_Id=Number(localStorage.getItem('User_Type_Id'));
     this.Login_User_Id=localStorage.getItem('Login_User');
@@ -315,6 +321,8 @@ Page_Load()
     this.Clr_Sales_Details();
     this.Sales_Print=true;
     this.Entry_View=false;
+    this.Load_Brand_Dropdown();
+    this.Load_Model_Dropdown();
 
     // Check if navigated from Requirement module
     const reqData = localStorage.getItem('Requirement_For_PriceRequest');
@@ -437,7 +445,7 @@ Page_Load()
         this.Entry_View=true;
         this.Edit_Sales=1;
         this.Sales_Print = false;
-        debugger;
+
         this.Load_Price_Request_Master();
     }
     //this.myDate=new Date();
@@ -464,10 +472,11 @@ Load_Company()
     {   
     this.Sales_Master_Service_.Load_Company().subscribe(Rows => {    
     if (Rows != null) {
-        debugger;
-    this.Print_Company_ = Rows[0][0];
-    this.Company_ = Rows[0][0];
-    this.Bank_ = Rows[1];
+    const companyRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : [];
+    const bankRows = Array.isArray(Rows) && Array.isArray(Rows[1]) ? Rows[1] : [];
+    this.Print_Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
+    this.Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
+    this.Bank_ = bankRows;
  }
  this.issLoading = false;
  },
@@ -709,7 +718,7 @@ numberToEnglish(n, custom_join_character) {
 //var Amount_Paid = (Receipt_Array.Amount);
 New_Date_Format(Date_)
 {
-    debugger;
+
         this.date=Date_;
         this.year = this.date.getFullYear();
         this.month = this.date.getMonth() + 1;
@@ -734,7 +743,7 @@ Print_Click()
     this.printAcknowledgeAdditional_Discount = false;
     this.printAcknowledgeRoundoff_Amt = false;
     this.printAcknowledgeTotalDiscount=false;
-    debugger;
+
     if(this.Price_Request_Master_.Charge1per != '')
         if(this.Price_Request_Master_.Charge1per != null )
            if(this.Price_Request_Master_.Charge1per != undefined )
@@ -745,7 +754,7 @@ Print_Click()
                         {
                             this.printAcknowledgeCharge1per = true;
                         }
-                        debugger;
+
    if(this.Price_Request_Master_.charge1_Amount != 0)
        if(this.Price_Request_Master_.charge1_Amount != null)
            if(this.Price_Request_Master_.charge1_Amount != undefined )
@@ -756,7 +765,7 @@ Print_Click()
     {
         this.printAcknowledgeChargeAmount1 = true;
     }
-debugger;
+
    if(this.Price_Request_Master_.charge2_Amount != 0)
        if(this.Price_Request_Master_.charge2_Amount != null)
            if(this.Price_Request_Master_.charge2_Amount != undefined )
@@ -767,7 +776,7 @@ debugger;
     {
         this.printAcknowledgeChargeAmount2 = true;
     }
-    debugger;
+
     if(this.Price_Request_Master_.TotalDiscount != 0)
         if(this.Price_Request_Master_.TotalDiscount != null )
            if(this.Price_Request_Master_.TotalDiscount != undefined )
@@ -778,7 +787,7 @@ debugger;
                         {
                             this.printAcknowledgeTotalDiscount = true;
                         }
-                        debugger;
+
     if(this.Price_Request_Master_.VAT_Amount != 0)
         if(this.Price_Request_Master_.VAT_Amount != null )
            if(this.Price_Request_Master_.VAT_Amount != undefined )
@@ -849,7 +858,7 @@ debugger;
 //         this.printChargeAmount1 = true;
 //     }
 
-// debugger;
+//
 //     if(this.Price_Request_Master_.charge2_Amount != 0 &&
 //         this.Price_Request_Master_.charge2_Amount != null &&
 //         this.Price_Request_Master_.charge2_Amount.toString() != 'null'&&
@@ -996,7 +1005,7 @@ Clr_Sales_Master()
 }
 Clr_Sales_Details()
 {
-    debugger
+
     this.Price_Request_Details_Index=-1;
     this.Price_Request_Details_.Price_Request_Details_Id=0;
     this.Price_Request_Details_.Price_Request_Master_Id=0;
@@ -1033,7 +1042,7 @@ Clr_Sales_Details()
     this.Barcode_ =null;
     // this.Item_.ItemName="";
     // this.Barcode_.Item_Code=""; 
-    debugger;
+
         // if (this.ItemCodeData != null && this.ItemCodeData != undefined)    
         //     this.Item_ = new [];
 
@@ -1130,9 +1139,9 @@ Delete_Price_Request_Master(Price_Request_Master_Id,index)
     if(result=='Yes')
     {
     this.issLoading=true;
-    debugger
+
     this.Sales_Master_Service_.Delete_Price_Request_Master(Price_Request_Master_Id).subscribe((response: any) => {    
-        debugger   
+
         const Delete_status = response.success ? response.data : null;
         if(!Delete_status || !Delete_status[0] || Delete_status[0][0].Price_Request_Master_Id_==-1){
             const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Cannot Delete',Type:"3"}});
@@ -1161,7 +1170,7 @@ Delete_Price_Request_Master(Price_Request_Master_Id,index)
 
 Load_Bill_Type()
 {
-    debugger;
+
     var value=1;
         this.Sales_Master_Service_.Load_Bill_Type(value).subscribe((response: any) => {    
         if (response != null) {
@@ -1170,7 +1179,7 @@ Load_Bill_Type()
             this.Bill_Type_Temp.Bill_Type_Id = 0;
             this.Bill_Type_Temp.Bill_Type_Name = "Select";
             this.Bill_Type_Data.unshift(this.Bill_Type_Temp);
-            debugger;
+
             this.Bill_Type_Search=this.Bill_Type_Data[0];
             this.Bill_Type_=this.Bill_Type_Data[1];
         }
@@ -1215,14 +1224,14 @@ Load_Cess()
 }
 Load_Company_bank()
 {
-    debugger;
     this.Sales_Master_Service_.Load_Company_Bank().subscribe((response: any) => {   
       if (response != null) {
-            debugger;
             const Rows = response.success ? response.data : response;
-            this.Bank_Data=Rows[0];
-            this.Bank_ = this.Bank_Data[0]
-            this.Company_ = Rows[1][0]
+            const bankRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : [];
+            const companyRows = Array.isArray(Rows) && Array.isArray(Rows[1]) ? Rows[1] : [];
+            this.Bank_Data = bankRows;
+            this.Bank_ = bankRows.length > 0 ? bankRows[0] : null;
+            this.Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
         }
         this.issLoading = false;
     },
@@ -1241,11 +1250,11 @@ Search_Customer_Typeahead(event: any)
         Value = event.target.value;
       {
      this.issLoading = true;
-     debugger
+
     this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39',Value).subscribe(Rows => {   
-        debugger;  
+
     if (Rows != null) {
-        debugger;  
+
         this.Customer_Data = Rows[0];
     }
     this.issLoading = false;
@@ -1256,7 +1265,7 @@ Search_Customer_Typeahead(event: any)
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });
     }
-    debugger;  
+
  }
  Search_PurchaseOrderNumber_Typeahead(event: any)
 {
@@ -1298,7 +1307,7 @@ Search_Customer_Typeahead(event: any)
       this.issLoading = true;
      this.Sales_Master_Service_.Get_Purchase_Item_Code_Typeahead(Value).subscribe(Rows => {     
      if (Rows != null) {
-        debugger
+
          this.ItemCodeData = Rows[0];
      }
      this.issLoading = false;
@@ -1308,6 +1317,52 @@ Search_Customer_Typeahead(event: any)
          const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
      });     
   }
+Search_Brand_Typeahead(event: any) {
+      let Value = "";
+      if (event && event.target && event.target.value != undefined) {
+          Value = event.target.value;
+      } else {
+          Value = this.Price_Request_Details_.Brand && typeof this.Price_Request_Details_.Brand === 'string' ? this.Price_Request_Details_.Brand : '';
+      }
+      this.Brand_Service_.Search_Brand(Value).subscribe(response => {
+          const rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+          this.BrandData = (rows && rows[0]) ? rows[0] : [];
+      }, err => {
+          console.error(err);
+      });
+  }
+
+  displayFnBrand(brand?: any): string | undefined {
+      return brand ? brand.Brand_Name : undefined;
+  }
+
+  selectBrand(brand: any) {
+      this.Price_Request_Details_.Brand = brand.Brand_Name;
+  }
+
+  Search_Model_Typeahead(event: any) {
+      let Value = "";
+      if (event && event.target && event.target.value != undefined) {
+          Value = event.target.value;
+      } else {
+          Value = this.Price_Request_Details_.Model && typeof this.Price_Request_Details_.Model === 'string' ? this.Price_Request_Details_.Model : '';
+      }
+      this.Model_Service_.Search_Model(Value).subscribe(response => {
+          const rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+          this.ModelData = (rows && rows[0]) ? rows[0] : [];
+      }, err => {
+          console.error(err);
+      });
+  }
+
+  displayFnModel(model?: any): string | undefined {
+      return model ? model.Model_Name : undefined;
+  }
+
+  selectModel(model: any) {
+      this.Price_Request_Details_.Model = model.Model_Name;
+  }
+
 Search_Item_Typeahead(event: any) {
     let Value = "";
     if (event && event.target && event.target.value) {
@@ -1513,7 +1568,7 @@ selectCustomer(){
     this.Vatin = this.Customer_.GSTNo;
 }
 Item_Name_Change(Item_sl:Price_Request_Details){ 
-    debugger
+
     const item: any = Item_sl as any;
     this.Price_Request_Details_Temp_.ItemId = item.Item_Id || item.ItemId || 0;
     this.Price_Request_Details_Temp_.ItemName = item.Item_Name || item.ItemName || '';
@@ -1537,7 +1592,7 @@ Item_Name_Change(Item_sl:Price_Request_Details){
 }
 Barcode_Change(Barcode_sl:Price_Request_Details)
 {    
-      debugger
+
     this.Price_Request_Details_=Object.assign({},Barcode_sl);
     this.Price_Request_Details_Temp_.ItemId=Barcode_sl.ItemId;
     this.Price_Request_Details_Temp_.ItemName=Barcode_sl.ItemName;
@@ -1553,7 +1608,7 @@ Barcode_Change(Barcode_sl:Price_Request_Details)
 }
 Calculate_Price_Request_Details_Amount()
 {
-    debugger
+
     if(this.Price_Request_Details_.Quantity == undefined || this.Price_Request_Details_.Quantity == null)
     this.Price_Request_Details_.Quantity = 0;
     if(this.Price_Request_Details_.UnitPrice == undefined || this.Price_Request_Details_.UnitPrice == null)
@@ -1562,7 +1617,7 @@ Calculate_Price_Request_Details_Amount()
 }
 Calculate_Total_Amount()
 { 
-    debugger;
+
     if(this.Price_Request_Details_.Discount == undefined || this.Price_Request_Details_.Discount == null)
         this.Price_Request_Details_.Discount = 0;
     if(this.Price_Request_Details_.Item_Discount_Amount == undefined || this.Price_Request_Details_.Item_Discount_Amount == null)
@@ -1647,7 +1702,7 @@ Search_Price_Request()
     this.issLoading=true;    
     this.QuotNo = this.QuotNo == "" ? undefined : this.QuotNo
     this.partNo = this.partNo == "" ? undefined : this.partNo
-    debugger
+
     this.Sales_Master_Service_.Search_Price_Request(look_In_Date_Value,moment(this.Search_FromDate).format('YYYY-MM-DD'), 
     moment(this.Search_ToDate).format('YYYY-MM-DD'),CustomerId_,this.QuotNo,this.partNo,Item_Group_Id_,
                                                             CurrencyDetails_Id_,User_Details_Id_,
@@ -1655,7 +1710,12 @@ Search_Price_Request()
                                                     this.Login_User_Id).subscribe({
         next: (response: any) => {
             if (response.success) {
-                this.Price_Request_Master_Data = response.data[0];
+                this.Price_Request_Master_Data = (response.data[0] || []).map(row => {
+                    const normalized = Object.assign({}, row);
+                    normalized.Price_Request_Master_Id = this.Get_Price_Request_Master_Id(normalized);
+                    normalized.Price_RequestNo = normalized.Price_RequestNo || normalized.RequestNumber || normalized.RequestNo || '';
+                    return normalized;
+                });
                 if (this.Price_Request_Master_Data && this.Price_Request_Master_Data.length > 0) {
                     for (var i = 0; i < this.Price_Request_Master_Data.length; i++) {
                         this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Price_Request_Master_Data[i].NetTotal);
@@ -1754,7 +1814,7 @@ if( this.Item_==null)
     {
         this.Price_Request_Details_Data.push(Object.assign({}, this.Price_Request_Details_));
     }
-    debugger
+
    // console.log('this.Price_Request_Details_Data: ', this.Price_Request_Details_Data);
     this.addBlankRows();
     this.Price_Request_Details_Index=-1;
@@ -1764,7 +1824,7 @@ if( this.Item_==null)
 }
 Save_Price_Request(Printstatus:number)
 {
-    debugger;
+
     if(this.Price_Request_Details_Data == undefined || this.Price_Request_Details_Data == null || this.Price_Request_Details_Data.length == 0 || this.Price_Request_Details_Data.length == undefined )
     {
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Add atleast one Item',Type:"3"}});
@@ -1793,12 +1853,12 @@ Save_Price_Request(Printstatus:number)
     this.Price_Request_Master_.Account_Party_Id=this.Customer_.Client_Accounts_Id;
     this.Price_Request_Master_.User_Id=Number(this.Login_User_Id);
     this.Price_Request_Master_.Price_Request_Details=this.Price_Request_Details_Data;
-    debugger
+
     if(this.Price_Request_Master_.Price_RequestNo == '' || this.Price_Request_Master_.Price_RequestNo == null || this.Price_Request_Master_.Price_RequestNo == undefined)
     {
         this.Price_Request_Master_.Price_RequestNo = "0";
     }
-    debugger;
+
     this.Price_Request_Master_.EntryDate = this.New_Date(new Date(moment(this.Price_Request_Master_.EntryDate).format('YYYY-MM-DD')));
     this.Price_Request_Master_.Payment_Term_Description = this.Payment_Term.payment_Term_ID;
     this.Price_Request_Master_.PaymentTerms = this.Payment_Term.Payment_Term_Description;
@@ -1810,6 +1870,10 @@ Save_Price_Request(Printstatus:number)
     this.Price_Request_Master_.KindAttendId = this.Attention && typeof this.Attention === 'object' ? this.Attention.User_Details_Id : 0;
 
     console.log("Before Price Request API call");
+    const activeElement = document.activeElement as HTMLElement;
+    if (activeElement && activeElement.blur) {
+        activeElement.blur();
+    }
     this.issLoading = true;
 
     this.Sales_Master_Service_.Save_Price_Request(this.Price_Request_Master_)
@@ -1927,31 +1991,57 @@ Disable_Tab_Permission()
     this.Sale_Permission_Edit= false;
     this.Enable_Disable_Permission();
 }
+
+Get_Price_Request_Master_Id(row: any): number {
+    if (!row) return 0;
+    return Number(
+        row.Price_Request_Master_Id ||
+        row.price_request_master_Id ||
+        row.PriceRequestMaster_Id ||
+        row.price_request_master_id ||
+        row.Price_Request_Master_Id_ ||
+        row.PriceRequestMaster_Id_ ||
+        row.Price_RequestMaster_Id ||
+        row.priceRequestMasterId ||
+        0
+    );
+}
+
 Edit_Price_Request_Master(Sales_Master_e,index)
 { 
-    debugger;
+
+    const priceRequestMasterId = this.Get_Price_Request_Master_Id(Sales_Master_e);
+    if (!priceRequestMasterId) {
+        this.dialogBox.open(DialogBox_Component, {
+            panelClass:'Dialogbox-Class',
+            data:{Message:'Price Request Id missing', Type:"2"}
+        });
+        return;
+    }
+
     this.Entry_View=true;
     this.Edit_Sales=1;
     this.Sales_Print = false;
     this.issLoading = true;
     this.Price_Request_Master_Index=index;
     this.Price_Request_Master_=Object.assign({},Sales_Master_e); 
-    this.Price_Request_Master_Id_Edit = Sales_Master_e.Price_Request_Master_Id;
+    this.Price_Request_Master_.Price_Request_Master_Id = priceRequestMasterId;
+    this.Price_Request_Master_Id_Edit = priceRequestMasterId;
     this.Customer_Temp.Client_Accounts_Id=Sales_Master_e.Account_Party_Id;
     this.Customer_Temp.Client_Accounts_Name=Sales_Master_e.Customer;
     this.Customer_=this.Customer_Temp;
     console.log(this.Customer_Data)
-debugger;
+
     this.Customer_Name=Sales_Master_e.Customer;
     this.Price_Request_Master_.Customer_Name=this.Customer_.Client_Accounts_Name;
     this.Price_Request_Master_.Customer=this.Price_Request_Master_.Customer_Name; 
     this.Customer_.Client_Accounts_Id=Sales_Master_e.Account_Party_Id;
     this.Customer_Temp.Client_Accounts_Name=Sales_Master_e.Customer;
-    debugger;
+
     // this.Customer_Temp.Client_Accounts_Id=Sales_Master_e.Account_Party_Id;
     // this.Customer_Temp.Client_Accounts_Name=Sales_Master_e.Customer;
     // this.Customer_=this.Customer_Temp;
-    debugger
+
     // this.Client_Accounts_Service_.Get_Client_Accounts(Sales_Master_e.Account_Party_Id).subscribe((result)=>{
     //     if(result!=null)
     //     {
@@ -1968,11 +2058,11 @@ debugger;
     //                 this.Vatin = result[0][0].GSTNo;
     //     }
     // })
-     debugger
+
     this.Sales_Master_Service_.Search_Customer_Typeahead('1,2,3,39',"").subscribe(Rows => { 
-        debugger    
+
         if (Rows != null) {
-            debugger
+
             this.Customer_Data = Rows[0];
             for(let i=0;i<Rows[0].length;i++){
                 if(Rows[0][i].Client_Accounts_Id == this.Price_Request_Master_.Account_Party_Id){
@@ -1999,7 +2089,7 @@ debugger;
             }
         }},
         );
-        debugger
+
     // this.Customer_Temp.Address1 = Sales_Master_e.Address1;
     // this.Customer_Temp.Address2 = Sales_Master_e.Address2;
     // this.Customer_Temp.Address3 = Sales_Master_e.Address3;
@@ -2026,15 +2116,15 @@ debugger;
             this.Payment_Term = this.PaymentTermData[i];
         }
     }
-this.Sales_Master_Service_.Get_Price_Request_Details(Sales_Master_e.Price_Request_Master_Id).subscribe((response: any) => {     
+this.Sales_Master_Service_.Get_Price_Request_Details(priceRequestMasterId).subscribe((response: any) => {     
     if (response != null) {
-        debugger
+
         this.Price_Request_Details_Data = response.success ? response.data[0] : (response[0] || []);
         //console.log('this.Price_Request_Details_Data: ', this.Price_Request_Details_Data);
         this.addBlankRows();
        // this.Calculate_Price_Request_Details_Amount();
         this.Final_Amounts();
-        debugger
+
         }
            this.issLoading = false;
        },
@@ -2098,7 +2188,7 @@ Get_Stock_Item() {
     this.Stock_Temp.ItemId = this.Item_ ? this.Item_.ItemId : 0;
     this.Stock_Temp.ItemName = this.Item_ ? this.Item_.ItemName : '';
     this.Stock_ = Object.assign({}, this.Stock_Temp);
-    debugger;
+
     if(this.Item_ != null || this.Item_ != undefined)
     {
         if(this.Item_.ItemId != null || this.Item_.ItemId != undefined)
@@ -2180,7 +2270,7 @@ numberToWordsIndianCurrency(amount) {
         return word.trim();
     }
     let MainCurrency, SubCurrency;
-    debugger;
+
     if(this.currency.CurrencyDetails_Id>0){
                 MainCurrency = this.currency.CurrecnyName;
                 SubCurrency = this.currency.SubCurrecnyName == null ? '' : this.currency.SubCurrecnyName;
@@ -2223,7 +2313,7 @@ formatDate(dateString): string {
   
   Edit_Price_Request_Detail(Sales_Details_e:Price_Request_Details, index){
     this.Price_Request_Details_Index=index;
-debugger;
+
     this.Barcode_Temp_.StockId=Sales_Details_e.StockId;
     this.Barcode_Temp_.Item_Code=Sales_Details_e.Item_Code;
     this.Barcode_=Object.assign({},this.Barcode_Temp_);
@@ -2371,7 +2461,7 @@ debugger;
     this.doListView = false;
     this.packingListPendingView = false;
     this.Sales_Master_Service_.Load_Purchase_Items_Pending_List_ByQuotation(this.Price_Request_Master_.Price_Request_Master_Id).subscribe(Rows => {
-       debugger;
+
         this.purchasePendingData=Rows[0];
         })
     setTimeout(() => {
@@ -2477,7 +2567,7 @@ debugger;
     this.Price_Request_Master_.EntryDate = this.formatDate(this.Price_Request_Master_.EntryDate)
     this.Price_Request_Master_.PrintDate = this.formatPrintDate(this.Price_Request_Master_.EntryDate);    
    // this.Customer_Name=this.Customer_.Client_Accounts_Name;
-    debugger
+
     // for (let i = 0; i < this.currencyData.length; i++) {
     //     if(this.Price_Request_Master_.CurrencyId = this.currencyData[i].CurrencyDetails_Id){
     //         this.currency.CurrecnyName = this.currencyData[i].CurrecnyName
@@ -2508,7 +2598,7 @@ debugger;
 // debugger
 //         this.Sales_Master_Service_.Search_Customer_Typeahead('1,2,3,39,36','').subscribe(Rows => {     
 //             if (Rows != null) {
-//                 debugger;
+//
 //                 this.Customer_Data = Rows[0];
 //                 for (var i = 0; i < this.Customer_Data.length; i++) {
 //                     if (this.Customer_Data[i].Client_Accounts_Id == result[0][0].Account_Party_Id) {
@@ -2549,21 +2639,21 @@ debugger;
 /**** Added on 15-10-2024 */
     Load_Price_Request_Master()
     {
-        debugger;
         this.Entry_View=true;
         this.issLoading = true
-debugger;
         this.Sales_Master_Service_.Load_Price_Request_Master(this.Price_Request_Master_Id).subscribe((response: any)=>{
             this.Price_Request_Master_=new Price_Request_Master();
-            const Rows = response.success ? response.data : [];
-            this.Price_Request_Master_Data=Rows[0];
-            this.Price_Request_Master_=Object.assign({},Rows[0][0]); 
-            this.Price_Request_Master_.PaymentTermValue=Rows[0][0].PaymentTermValue
-            this.Price_Request_Master_.POnumber = Rows[0][0].POnumber;          
+            const Rows = (response && response.success !== undefined) ? response.data : response;
+            if (Rows && Rows[0] && Rows[0][0]) {
+                const masterRow = Rows[0][0];
+                this.Price_Request_Master_Data=Rows[0];
+                this.Price_Request_Master_=Object.assign({},masterRow); 
+                this.Price_Request_Master_.PaymentTermValue=masterRow.PaymentTermValue
+                this.Price_Request_Master_.POnumber = masterRow.POnumber;
         this.Edit_Sales=1;
         this.Sales_Print = false;    
-        this.Customer_Temp.Client_Accounts_Id=Rows[0][0].Account_Party_Id;
-        this.Customer_Temp.Client_Accounts_Name=Rows[0][0].Customer;
+        this.Customer_Temp.Client_Accounts_Id=masterRow.Account_Party_Id;
+        this.Customer_Temp.Client_Accounts_Name=masterRow.Customer;
         this.Customer_=this.Customer_Temp;
         this.Price_Request_Master_.Customer_Name=this.Customer_.Client_Accounts_Name;
         this.Price_Request_Master_.Customer=this.Price_Request_Master_.Customer_Name; 
@@ -2626,15 +2716,15 @@ debugger;
         this.currency = this.currencyData[i]
         }
         }
-        debugger;
+
         for(let i=0;i<this.PaymentTermData.length;i++){
         if(this.PaymentTermData[i].payment_Term_ID == this.Price_Request_Master_.Payment_Term_Description){
         this.Payment_Term = this.PaymentTermData[i]
         }
         }
     console.log("QUO - Outside Get_Price_Request_Details ");
-    this.Sales_Master_Service_.Get_Price_Request_Details(Rows[0][0].Price_Request_Master_Id).subscribe((response: any) => { 
-        const Rows_Details = response.success ? response.data[0] : (response[0] || []);        debugger;
+    this.Sales_Master_Service_.Get_Price_Request_Details(masterRow.Price_Request_Master_Id).subscribe((response: any) => { 
+        const Rows_Details = response.success ? response.data[0] : (response[0] || []);
         console.log("QUO - Inside Get_Price_Request_Details ");
         console.log('QUO - Rows 1: ', response);
             if (Rows_Details != null) {
@@ -2649,7 +2739,10 @@ debugger;
         Rows => {
                 this.issLoading = false;
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-        });   
+        });
+        } else {
+            this.issLoading = false;
+        }
     })
 }
       makeInvoice(){
@@ -2702,9 +2795,9 @@ debugger;
         });
       }    
       makeDO(){
-        debugger
+
         localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.Price_Request_Master_Id.toString());
-        debugger
+
         this.router.navigateByUrl(`/Delivery_Order`);
       }
       Edit_Price_Request_DeliveryOrder(DeliveryOrderMaster_Id)
@@ -2723,9 +2816,9 @@ debugger;
         this.deliveryPendingView = false;
         this.purchasePendingView = false;
         this.packingListPendingView = false;
-        debugger;
+
         this.Sales_Master_Service_.Get_PackingList_Quotation_Details(this.Price_Request_Master_Id_Edit).subscribe(Rows => {
-            debugger;
+
         this.packinglist_details_Data=Rows[0];
          })
         setTimeout(() => {
@@ -2755,7 +2848,7 @@ debugger;
         this.purchasePendingView = false;
         this.packingListPendingView = false;
         this.Sales_Master_Service_.Get_PurchaseOrder_Quotation_Details(this.Price_Request_Master_Id_Edit).subscribe(Rows => {
-            debugger
+
         this.Purchase_Orderdetails_Data=Rows[0];    
         })
         setTimeout(() => {
@@ -2765,7 +2858,7 @@ debugger;
         });
       }    
       makePO(){
-        debugger;
+
         localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.Price_Request_Master_Id.toString());
         this.router.navigateByUrl(`/Purchase_order`);
       }
@@ -2817,7 +2910,7 @@ debugger;
         });
       }
       closeproformaListView(){
-        debugger;
+
         this.proformaListView = false;
         this.invoiceListView = false;
         this.doListView = false;
@@ -2835,7 +2928,7 @@ debugger;
         });
       }
       makeProforma(){ 
-        debugger;
+
         localStorage.setItem('Price_RequestNo', this.Price_Request_Master_.Price_Request_Master_Id.toString());
         this.router.navigateByUrl(`/Performa_Invoice`);
       }
@@ -2849,8 +2942,8 @@ debugger;
       {   
       this.Sales_Master_Service_.Load_Vat_Percentage().subscribe(Rows => {    
       if (Rows != null) {
-          debugger;
-      this.Default_Vat_Percentage = Rows[0][0].vat_percentage;
+      const vatRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : [];
+      this.Default_Vat_Percentage = vatRows.length > 0 ? vatRows[0].vat_percentage : 0;
    }
    this.issLoading = false;
    },
@@ -2861,7 +2954,7 @@ debugger;
   }
   Price_Request_Master_Desc2_Break()
   {
-    debugger;
+
     let words = this.Price_Request_Master_.Description2.split(' ');
     let result = '';
     for (let i = 0; i < words.length; i++) {
@@ -2876,7 +2969,7 @@ debugger;
   {
     let addDiscCheck = 1;
     let discountper = '0';
-    debugger;
+
     if(Number(this.Price_Request_Master_.Additional_Discount)>0){
         this.Price_Request_Master_.Discount_Description = (this.Price_Request_Master_.Additional_Discount * 100/this.Price_Request_Master_.TotalAmount).toString()
         discountper = Number(this.Price_Request_Master_.Discount_Description).toFixed(3);
@@ -2884,13 +2977,13 @@ debugger;
     }else{
         this.Price_Request_Master_.Discount_Description = '0.000'
     }
-    debugger;
+
     this.addDiscCheck = addDiscCheck;
     this.Final_Amounts();
 }
 // Calculate_Discount_Amount()
 // {
-//   debugger;
+//
 //   if(Number(this.Price_Request_Master_.Discount_Description)>0){
 //     this.Price_Request_Master_.Additional_Discount = Number(this.Price_Request_Master_.TotalAmount) * (Number(this.Price_Request_Master_.Discount_Description)/ 100);
 //     this.Price_Request_Master_.Additional_Discount = Number(this.Price_Request_Master_.Additional_Discount.toFixed(3));   
@@ -2928,7 +3021,7 @@ debugger;
         }
         this.addDiscCheck = 0;
       }
-      debugger;
+
       this.addDiscCheck = 0;
       //this.Price_Request_Master_.Discount_Description = (this.safeNumber(this.Price_Request_Master_.Additional_Discount) * 100)/this.Price_Request_Master_.TotalAmount
       this.Price_Request_Master_.TotalDiscount = Number(this.Tot_discount.toFixed(3))+ Number(this.Price_Request_Master_.Additional_Discount);
@@ -2955,7 +3048,7 @@ debugger;
       this.Price_Request_Master_.TotalAmount = parseFloat(this.Price_Request_Master_.TotalAmount.toFixed(3));
       this.Price_Request_Master_.Total_Quantity = this.Price_Request_Details_Data.reduce((acc, curr) => acc + Number(curr.Quantity || 0), 0);
       this.Price_Request_Master_.Amount_In_Words = this.numberToWordsIndianCurrency(this.Price_Request_Master_.NetTotal)       
-     debugger;
+
   //this.Clr_Sales_Edit_Data();
   }
 //   Export() {
@@ -2974,7 +3067,7 @@ debugger;
     this.Sales_Master_Service_.exportExcel(filteredData,"Price_Request" );}
     /*** Added on 22-11-2024 */
     closeInvoiceListView(){
-        debugger;
+
         this.proformaListView = false;
         this.invoiceListView = false;
         this.doListView = false;
@@ -2992,7 +3085,7 @@ debugger;
         });
       }
       closeDoListView(){
-        debugger;
+
         this.proformaListView = false;
         this.invoiceListView = false;
         this.doListView = false;
@@ -3010,7 +3103,7 @@ debugger;
         });
       }
       closePoListView(){
-        debugger;
+
         this.proformaListView = false;
         this.invoiceListView = false;
         this.doListView = false;
@@ -3028,7 +3121,7 @@ debugger;
         });
       }
       closePackingListView(){
-        debugger;
+
         this.proformaListView = false;
         this.invoiceListView = false;
         this.doListView = false;
@@ -3046,7 +3139,7 @@ debugger;
         });
       }
       closeInvoicePendingView(){
-        debugger;
+
         this.proformaListView = false;
         this.invoiceListView = false;
         this.doListView = false;
@@ -3064,7 +3157,7 @@ debugger;
         });
       }
       closeDeliveryPendingView(){
-        debugger;
+
         this.proformaListView = false;
         this.invoiceListView = false;
         this.doListView = false;
@@ -3082,7 +3175,7 @@ debugger;
         });
       }
       closePurchasePendingView(){
-        debugger;
+
         this.proformaListView = false;
         this.invoiceListView = false;
         this.doListView = false;
@@ -3100,7 +3193,7 @@ debugger;
         });
       }
       closePackingListPendingView(){
-        debugger;
+
         this.proformaListView = false;
         this.invoiceListView = false;
         this.doListView = false;
@@ -3122,7 +3215,7 @@ debugger;
         return itemName.split(/\s+/).filter(word => word).length;
       }  
       addBlankRows(): void {
-        debugger;
+
         let cellThr: number = 0;
         let cellThr1: number = 0;
         let nosOfBlankRows: number = 0;
@@ -3135,7 +3228,7 @@ debugger;
         // }    
         let tempht1: number = 0;
         let tempht2: number = 0;
-        debugger
+
         // this.Price_Request_Details_Data.forEach((item, index) => {
         //     item.ItemName = `Edited ${item.ItemName}`;
         //   });
@@ -3148,7 +3241,7 @@ debugger;
           const cell = document.getElementById(cellId);    
           if (cell) {
             // Example: Apply a style or perform an action
-            debugger
+
             tempht1 = cell ? cell.offsetHeight : 0 ;
             tempht1 -= 50;
             //  tempht1 -= 0;
@@ -3183,7 +3276,7 @@ debugger;
              if(cellThr1 > 0) cellThr1 = 0;
                cellThr1 = cellThr;
             console.log('cellThr1: ', cellThr1);
-debugger;
+
              if (cellThr1 < 410 && (this.Price_Request_Details_Data.length < 18 && this.marginTopItemNameCount == false) 
                 || (this.Price_Request_Details_Data.length < 15 && this.marginTopItemNameCount == true)) {   
                 this.breakPage = false;                          //350
@@ -3207,7 +3300,7 @@ debugger;
                 // nosOfBlankRows = blank + nosOfBlankRows;
                 console.log('nosOfBlankRows = blank + nosOfBlankRows;: ', nosOfBlankRows);
             }  
-            debugger
+
             console.log('nosOfBlankRows: ', nosOfBlankRows);
             this.blankItems = [];
             var start = 1
@@ -3298,5 +3391,26 @@ debugger;
         //   printDiv.style.display = 'none';
         // }
       }
+  
+  Load_Brand_Dropdown() {
+      this.Brand_Service_.Search_Brand('').subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.BrandData = (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error('Error loading brands:', err);
+          this.BrandData = [];
+      });
+  }
+
+  Load_Model_Dropdown() {
+      this.Model_Service_.Search_Model('').subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.ModelData = (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error('Error loading models:', err);
+          this.ModelData = [];
+      });
+  }
 }
+
 

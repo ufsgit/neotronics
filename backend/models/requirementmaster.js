@@ -1,6 +1,7 @@
 var db = require('../dbconnection');
 var fs = require('fs');
 const storedProcedure = require('../helpers/stored-procedure');
+const Lead = require('./Lead');
 var requirementmaster = {
 
     Save_Requirement: async function (requirementmaster_, { log } = {}) {
@@ -24,7 +25,17 @@ var requirementmaster = {
                 requirementmaster_.PaymentTermValue, requirementmaster_.Supplier_Ref_No, requirementmaster_.Requirement_Details
             ]);
             if (log) log.info("sp.call", { name: "Save_Requirement" });
-            return (new storedProcedure("Save_Requirement", params, connection)).result();
+            const result = await (new storedProcedure("Save_Requirement", params, connection)).result();
+            if (requirementmaster_.Lead_Id) {
+                Lead.Add_Lead_Activity({
+                    Lead_Id: Number(requirementmaster_.Lead_Id),
+                    Activity_Type: 'REQUIREMENT_ADDED',
+                    Activity_Title: 'Requirement added',
+                    New_Value: requirementmaster_.RequirementNo || requirementmaster_.Description1 || '',
+                    User_Id: Number(requirementmaster_.User_Id || requirementmaster_.Login_User_Id || 0)
+                }, () => {});
+            }
+            return result;
         }, { log });
     },
 

@@ -189,7 +189,7 @@
                                         aria-describedby="cdk-describedby-message-1" cdk-describedby-host=""
                                         ng-reflect-position="above" ng-reflect-message="Remove"><span
                                             class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"
-                                                (click)="Delete_Price_Request_Master(Sales_Master.Price_Request_Master_Id,i)">close</i></span>
+                                                (click)="Delete_Price_Request_Master(Get_Price_Request_Master_Id(Sales_Master),i)">close</i></span>
                                         <div class="mat-button-ripple mat-ripple" matripple=""
                                             ng-reflect-centered="false" ng-reflect-disabled="false"
                                             ng-reflect-trigger="[object HTMLButtonElement]"></div>
@@ -201,7 +201,7 @@
         mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" 
         cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper">
             <i _ngcontent-gdi-c11="" class="material-icons"  
-            (click)="Change_Bill_Status(Sales_Master.Price_Request_Master_Id,Sales_Master.BillType,i)" >trending_flat</i></span>
+            (click)="Change_Bill_Status(Get_Price_Request_Master_Id(Sales_Master),Sales_Master.BillType,i)" >trending_flat</i></span>
             <div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" 
             ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"></div></button>
         </td> -->
@@ -428,17 +428,23 @@
                                     </div>
                                     <div class="tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" style="flex: 0 0 calc(12% - 12px); min-width: 140px;">
                                         <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Model</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Details_.Model"
+                                        <select [(ngModel)]="Price_Request_Details_.Model"
                                             (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
-                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box; height: 36px; border: 1px solid #b1b1b1; border-radius: 4px;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                            <option value="">-- Select Model --</option>
+                                            <option *ngFor="let model of ModelData" [ngValue]="model.Model_Name">{{model.Model_Name}}</option>
+                                        </select>
                                     </div>
                                     <div class="tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" style="flex: 0 0 calc(15% - 12px); min-width: 160px;">
                                         <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Brand</label>
-                                        <input type="text" [(ngModel)]="Price_Request_Details_.Brand"
+                                        <select [(ngModel)]="Price_Request_Details_.Brand"
                                             (keyup.enter)="Plus_Price_Request_Details($event)"
-                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
-                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box; height: 36px; border: 1px solid #b1b1b1; border-radius: 4px;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                            <option value="">-- Select Brand --</option>
+                                            <option *ngFor="let brand of BrandData" [ngValue]="brand.Brand_Name">{{brand.Brand_Name}}</option>
+                                        </select>
                                     </div>
                                     <div
                                         class="tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column" *ngIf="false" style="flex: 0 0 120px;">

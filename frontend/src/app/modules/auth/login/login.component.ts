@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, NgZone } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { CustomValidators } from "../../../helpers/custom-validators";
 import { UserData } from "../../../services/user-data";
@@ -40,7 +40,8 @@ export class LoginComponent implements OnInit {
 		public Menu_Service_: Menu_Service,
 		public userService: UserData,
 		public router: Router,
-		public dialogBox: MatDialog
+		public dialogBox: MatDialog,
+		private ngZone: NgZone
 	) {
 		this.initForm();
 	}
@@ -50,12 +51,44 @@ export class LoginComponent implements OnInit {
 			password: ["", CustomValidators.compose([Validators.required])],
 		});
 	}
+
+	/** Called on every real keystroke/input event — keeps form in sync */
+	onFieldInput() {
+		// Angular handles this automatically; the binding itself triggers change detection
+	}
+
+	/**
+	 * Called when the LOGIN button is clicked.
+	 * Reads the raw DOM values in case the browser autofilled them
+	 * without firing Angular's input events (the classic autofill bug).
+	 */
+	onLoginClick(event: Event, userNameInput: HTMLInputElement, passwordInput: HTMLInputElement) {
+		// Patch form with actual DOM values to capture browser autofill
+		const domUser = userNameInput.value;
+		const domPass = passwordInput.value;
+
+		if (domUser) {
+			this.loginForm.get('userName').setValue(domUser);
+		}
+		if (domPass) {
+			this.loginForm.get('password').setValue(domPass);
+		}
+
+		if (this.loginForm.invalid) {
+			alert('Your login could not be processed because the input was not updated.\n\nPlease re-enter or modify your username or password and try again.');
+			event.preventDefault();
+			event.stopPropagation();
+			return;
+		}
+		// form is valid — let (ngSubmit) handle the rest via login()
+	}
+
 	async login() {
 		if (this.loginForm.valid) {
 			this.issLoading = true;
 
 			const success = await this.userService.login(this.loginForm.value);
-			if (success) {
+			if (success === true) {
 				this.issLoading = false;
 				// this.router.navigateByUrl('Dashboard');
 				this.Login_Id = localStorage.getItem("Login_User");
@@ -1537,7 +1570,9 @@ debugger
 								"Pointer_Temp",
 								JSON.stringify(Pointer_Table)
 							);
-							this.router.navigateByUrl("Lead");
+							this.ngZone.run(() => {
+								this.router.navigateByUrl("Lead");
+							});
 						}
 					},
 					(Rows) => {}

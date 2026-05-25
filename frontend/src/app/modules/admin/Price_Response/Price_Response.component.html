@@ -340,11 +340,17 @@
                             </div>
                             <div class="flex-item" style="flex: 1; min-width: 120px;">
                                 <label class="standard-label">Model</label>
-                                <input type="text" [(ngModel)]="Price_Response_Details_.Model" class="form-control-standard" />
+                                <select [(ngModel)]="Price_Response_Details_.Model" class="form-control-standard">
+                                    <option value="" disabled selected>-- Select Model --</option>
+                                    <option *ngFor="let model of ModelData" [ngValue]="model.Model_Name">{{model.Model_Name}}</option>
+                                </select>
                             </div>
                             <div class="flex-item" style="flex: 1; min-width: 120px;">
                                 <label class="standard-label">Brand</label>
-                                <input type="text" [(ngModel)]="Price_Response_Details_.Brand" class="form-control-standard" />
+                                <select [(ngModel)]="Price_Response_Details_.Brand" class="form-control-standard">
+                                    <option value="" disabled selected>-- Select Brand --</option>
+                                    <option *ngFor="let brand of BrandData" [ngValue]="brand.Brand_Name">{{brand.Brand_Name}}</option>
+                                </select>
                             </div>
                             <div class="flex-item" style="flex: 0.8; min-width: 100px;">
                                 <label class="standard-label">Price</label>

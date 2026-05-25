@@ -1,4 +1,5 @@
 var db = require('../dbconnection');
+var Lead = require('./Lead');
 var fs = require('fs');
 var request = require('request');
 const fetch = require("node-fetch");
@@ -158,14 +159,72 @@ var Sales_Master = {
                 qid = result[0][0].SalesQuotationMaster_Id_;
             }
             if (qid) {
-                const status = Quotation_Master_.Status || 1;
-                let statusStr = 'DRAFT';
-                if (status == 3) statusStr = 'APPROVED';
-                else if (status == 5) statusStr = 'CONFIRMED';
-                else if (status == 2) statusStr = 'PENDING';
-                else if (status == 4) statusStr = 'REJECTED';
+                let status = Quotation_Master_.Status;
+                let statusId = Quotation_Master_.Status_Id;
+                let statusName = Quotation_Master_.Status_Name;
+                let statusStr = 'PENDING';
+
+                if (!Quotation_Master_.SalesQuotationMaster_Id) {
+                    // New quotation: force Pending
+                    status = 2;
+                    statusId = 1;
+                    statusName = 'Pending';
+                    statusStr = 'PENDING';
+                } else {
+                    // Edit quotation
+                    if (statusId == 1) {
+                        status = 2;
+                        statusName = 'Pending';
+                        statusStr = 'PENDING';
+                    } else if (statusId == 2) {
+                        status = 3;
+                        statusName = 'Approved';
+                        statusStr = 'APPROVED';
+                    } else if (statusId == 3) {
+                        status = 4;
+                        statusName = 'Reject';
+                        statusStr = 'REJECTED';
+                    } else {
+                        // Fallback mapping from status
+                        if (status == 3) {
+                            statusId = 2;
+                            statusName = 'Approved';
+                            statusStr = 'APPROVED';
+                        } else if (status == 5) {
+                            statusId = 2;
+                            statusName = 'Approved';
+                            statusStr = 'CONFIRMED';
+                        } else if (status == 2) {
+                            statusId = 1;
+                            statusName = 'Pending';
+                            statusStr = 'PENDING';
+                        } else if (status == 4) {
+                            statusId = 3;
+                            statusName = 'Reject';
+                            statusStr = 'REJECTED';
+                        } else {
+                            status = 2;
+                            statusId = 1;
+                            statusName = 'Pending';
+                            statusStr = 'PENDING';
+                        }
+                    }
+                }
                 
-                await connection.query("UPDATE salesquotationmaster SET Status = ?, workflow_status = ? WHERE SalesQuotationMaster_Id = ?", [status, statusStr, qid]);
+                await connection.query(
+                    "UPDATE salesquotationmaster SET Status = ?, workflow_status = ?, Status_Id = ?, Status_Name = ? WHERE SalesQuotationMaster_Id = ?",
+                    [status, statusStr, statusId, statusName, qid]
+                );
+
+                if (Quotation_Master_.Lead_Id) {
+                    Lead.Add_Lead_Activity({
+                        Lead_Id: Number(Quotation_Master_.Lead_Id),
+                        Activity_Type: 'QUOTE_SENT',
+                        Activity_Title: 'Quote sent',
+                        New_Value: Quotation_Master_.Supplier_Ref_No || Quotation_Master_.QuotationNo || String(qid),
+                        User_Id: Number(Quotation_Master_.User_Id || 0)
+                    }, () => {});
+                }
             }
             return result;
         }, { log });
@@ -512,13 +571,31 @@ var Sales_Master = {
         await db.promise().query("INSERT INTO quotation_workflow_status (quotation_id, status_code) VALUES (?, ?)", [qid, status]);
         
         let statusInt = 1;
-        if (status === 'APPROVED') statusInt = 3;
-        else if (status === 'CONFIRMED') statusInt = 5;
-        else if (status === 'PENDING') statusInt = 2;
-        else if (status === 'REJECTED') statusInt = 4;
-        else if (status === 'DRAFT') statusInt = 1;
+        let statusId = 1;
+        let statusName = 'Pending';
+        if (status === 'APPROVED') {
+            statusInt = 3;
+            statusId = 2;
+            statusName = 'Approved';
+        } else if (status === 'CONFIRMED') {
+            statusInt = 5;
+            statusId = 2;
+            statusName = 'Approved';
+        } else if (status === 'PENDING') {
+            statusInt = 2;
+            statusId = 1;
+            statusName = 'Pending';
+        } else if (status === 'REJECTED') {
+            statusInt = 4;
+            statusId = 3;
+            statusName = 'Reject';
+        } else if (status === 'DRAFT') {
+            statusInt = 1;
+            statusId = 1;
+            statusName = 'Pending';
+        }
 
-        await db.promise().query("UPDATE salesquotationmaster SET workflow_status = ?, Status = ? WHERE SalesQuotationMaster_Id = ?", [status, statusInt, qid]);
+        await db.promise().query("UPDATE salesquotationmaster SET workflow_status = ?, Status = ?, Status_Id = ?, Status_Name = ? WHERE SalesQuotationMaster_Id = ?", [status, statusInt, statusId, statusName, qid]);
         return [{ ok: 1 }];
     },
 
@@ -692,6 +769,55 @@ var Sales_Master = {
     Get_Item_Name_Typeahead_For_Sales_Return: function (Sales_Master_Id_, Item_Name_) {
         return db.promise().query("CALL Get_Item_Name_Typeahead_For_Sales_Return(@Sales_Master_Id_ :=?,@Item_Name_ :=?)", [Sales_Master_Id_, Item_Name_ || '']).then(r => r[0]);
     },
+
+            Get_Max_Sales_Invoice_No: function () {
+        return new Promise(async (resolve, reject) => {
+            const pool = db.promise();
+            var connection = await pool.getConnection();
+            try {
+                const [rows] = await connection.query("SELECT COALESCE(MAX(CAST(Invoice_No AS UNSIGNED)), 0) AS MaxNo FROM sales_master WHERE Invoice_No REGEXP '^[0-9]+$'");
+                const maxNo = rows && rows[0] ? Number(rows[0].MaxNo || 0) : 0;
+                resolve([{ MaxNo: maxNo }]);
+            } catch (err) {
+                reject(err);
+            } finally {
+                if (connection) connection.release();
+            }
+        });
+    },
+Get_Max_Performa_Invoice_No: function () {
+        return new Promise(async (resolve, reject) => {
+            const pool = db.promise();
+            var connection = await pool.getConnection();
+            try {
+                const [rows] = await connection.query("SELECT COALESCE(MAX(CAST(PerformaInvNo AS UNSIGNED)), 0) AS MaxNo FROM performainvoicemaster WHERE PerformaInvNo REGEXP '^[0-9]+$'");
+                const maxNo = rows && rows[0] ? Number(rows[0].MaxNo || 0) : 0;
+                resolve([{ MaxNo: maxNo }]);
+            } catch (err) {
+                reject(err);
+            } finally {
+                connection.release();
+            }
+        });
+    },
+
+    Get_Max_Quotation_No: function () {
+        return new Promise(async (resolve, reject) => {
+            const pool = db.promise();
+            var connection = await pool.getConnection();
+            try {
+                const [rows] = await connection.query("SELECT COALESCE(MAX(CAST(QuotationNo AS UNSIGNED)), 0) AS MaxNo FROM salesquotationmaster WHERE QuotationNo REGEXP '^[0-9]+$'");
+                const maxNo = rows && rows[0] ? Number(rows[0].MaxNo || 0) : 0;
+                resolve([{ MaxNo: maxNo }]);
+            } catch (err) {
+                reject(err);
+            } finally {
+                connection.release();
+            }
+        });
+    },
 };
 
 module.exports = Sales_Master;
+
+

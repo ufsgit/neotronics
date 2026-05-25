@@ -12,7 +12,10 @@ import { Employee_Details_Service } from '../../../services/Employee_Details.Ser
 import { Client_Accounts_Service } from '../../../services/Client_Accounts.Service';
 import { Stock_Service } from '../../../services/Stock.Service';
 import { Item_Group_Service } from '../../../services/Item_Group.Service';
+import { Item_Service } from '../../../services/Item.Service';
 import { payment_term_Service } from '../../../services/payment_term.Service';
+import { Brand_Service } from '../../../services/Brand.Service';
+import { Model_Service } from '../../../services/Model.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Requirement_Master } from '../../../models/Requirement_Master';
 import { Company } from '../../../models/Company';
@@ -20,7 +23,6 @@ import { Requirement_Details } from '../../../models/Requirement_Details';
 import { Bill_Type } from '../../../models/Bill_Type';
 import { Bill_Mode } from '../../../models/Bill_Mode';
 import { Stock } from '../../../models/Stock';
-import { Item_Service } from '../../../services/Item.Service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
@@ -119,7 +121,11 @@ Bill_Mode_:Bill_Mode= new Bill_Mode();
 Bill_Mode_Temp:Bill_Mode= new Bill_Mode();
 Customer_Data:Client_Accounts[];
 PurchaseOrder_Data = [];
-ItemCodeData = [];
+ItemCodeData: any;
+Item_Group_Data: any;
+ItemData: any;
+BrandData: any[] = [];
+ModelData: any[] = [];
 Customer_:Client_Accounts= new Client_Accounts();
 Search_Customer:Client_Accounts= new Client_Accounts();
 Customer_Temp:Client_Accounts= new Client_Accounts();
@@ -298,8 +304,9 @@ showTermsCharges: boolean = false;
 showTermsVAT: boolean = false;
 constructor(public Requirement_Master_Service_: Requirement_Master_Service, public currencydetails_Service_: currencydetails_Service, public User_Details_Service_: User_Details_Service, private route: ActivatedRoute, private router: Router, public dialogBox: MatDialog
         , private el: ElementRef, private zone: NgZone, private renderer: Renderer2, public purchaseordermaster_Service_: purchaseordermaster_Service, public Employee_Details_Service_: Employee_Details_Service, public Stock_Service_: Stock_Service,
-        public Item_Group_Service_: Item_Group_Service, public payment_term_Service_: payment_term_Service, public Client_Accounts_Service_:Client_Accounts_Service,
-        public Item_Service_: Item_Service,
+        public Item_Group_Service_: Item_Group_Service, public Item_Service_: Item_Service, public payment_term_Service_: payment_term_Service, public Client_Accounts_Service_:Client_Accounts_Service,
+        private Brand_Service_: Brand_Service,
+        private Model_Service_: Model_Service,
         public RequirementWorkflowService_: RequirementWorkflowService,
         private cdr: ChangeDetectorRef
         // public decimalPipe: DecimalPipe
@@ -359,6 +366,8 @@ Page_Load()
     this.Sales_Print=true;
     this.Entry_View=false;
     this.Workflow_Tab = 'Requirement';
+    this.Load_Brand_Dropdown();
+    this.Load_Model_Dropdown();
     if(this.RequirementMaster_Id >0)
     {
         this.Entry_View=true;
@@ -2037,6 +2046,16 @@ makePriceRequest_Navigate() {
     localStorage.setItem('Requirement_For_PriceRequest', JSON.stringify({ RequirementMaster_Id: id }));
     this.router.navigateByUrl('/PriceRequest');
 }
+
+Price_Response_Listing_Click() {
+    const id = this.Requirement_Master_ && this.Requirement_Master_.RequirementMaster_Id
+        ? this.Requirement_Master_.RequirementMaster_Id
+        : 0;
+    if (id > 0) {
+        localStorage.setItem('Requirement_For_PriceResponse_List', JSON.stringify({ RequirementMaster_Id: id }));
+    }
+    this.router.navigateByUrl('/PriceResponse');
+}
 Barcode_Change(Barcode_sl:Requirement_Details)
 {    
       debugger
@@ -2529,7 +2548,8 @@ debugger;
     }
     this.Requirement_Master_Service_.Get_Requirement_Details(Sales_Master_e.RequirementMaster_Id).subscribe(Rows => { 
         if (Rows != null) {
-            this.Requirement_Details_Data = Rows[0];
+            const data = Rows[0];
+            this.Requirement_Details_Data = Array.isArray(data) ? data : (data ? [data] : []);
             if(this.Requirement_Details_Data){
                 this.Requirement_Details_Data.forEach((element:any) => {
                     if(element.Item_Code == undefined || element.Item_Code == null || element.Item_Code == '')
@@ -2596,33 +2616,30 @@ Get_Stock_Item() {
         this.Requirement_Details_.Item_Code = '';
         return;
     }
-    this.Stock_Temp.ItemId = this.Item_ ? this.Item_.ItemId : 0;
-    this.Stock_Temp.ItemName = this.Item_ ? this.Item_.ItemName : '';
-    this.Stock_ = Object.assign({}, this.Stock_Temp);
-    debugger;
-    if(this.Item_ != null || this.Item_ != undefined)
-    {
-        if(this.Item_.ItemId != null || this.Item_.ItemId != undefined)
-            {
-                this.Item_Temp.Item_Code=this.Item_.Item_Code;
-                 this.Item_Temp.ItemId=this.Item_.ItemId;
-                 this.Barcode_=Object.assign({},this.Item_Temp);                 
-                this.Requirement_Details_.ItemId=this.Item_.ItemId;
-                this.Requirement_Details_.ItemName=this.Item_.ItemName;
-                this.Requirement_Details_.UnitId=this.Item_.UnitId;
-                this.Requirement_Details_.UnitName=this.Item_.UnitName;
-                this.Requirement_Details_.MRP=this.Item_.MRP;
-                this.Requirement_Details_.PurchaseRate=this.Item_.PurchaseRate;
-                this.Requirement_Details_.Stock=this.Item_.Quantity;
-                this.Requirement_Details_.UnitPrice=this.Item_.SaleRate;
-                this.Requirement_Details_.ItemName=this.Item_.ItemName;
-                this.Requirement_Details_.GroupId=this.Item_.GroupId;
-                this.Requirement_Details_.GroupName=this.Item_.GroupName;
-                this.Requirement_Details_.HSNMasterId=this.Item_.HSNMasterId;
-                this.Requirement_Details_.HSNCODE=this.Item_.HSNCODE;
-                this.Requirement_Details_.HSNMasterId=this.Item_.HSNMasterId;
-                this.Requirement_Details_.Item_Code=this.Item_.Item_Code; 
-            }
+    // If Item_ object exists, fetch full details
+    if (this.Item_ && this.Item_.ItemId) {
+        this.Item_Service_.Get_Item(this.Item_.ItemId).subscribe((fullItem: any) => {
+            // assign to temporary objects if needed
+            this.Item_Temp = Object.assign({}, fullItem);
+            this.Barcode_ = Object.assign({}, this.Item_Temp);
+            // Populate Requirement_Details_
+            this.Requirement_Details_.ItemId = fullItem.ItemId;
+            this.Requirement_Details_.ItemName = fullItem.ItemName;
+            this.Requirement_Details_.Description = fullItem.Description1 || fullItem.ItemDescription || fullItem.Description || '';
+            this.Requirement_Details_.Model = fullItem.ModelName || fullItem.Model || '';
+            this.Requirement_Details_.Brand = fullItem.BrandName || fullItem.Brand || '';
+            this.Requirement_Details_.UnitId = fullItem.UnitId;
+            this.Requirement_Details_.UnitName = fullItem.UnitName;
+            this.Requirement_Details_.MRP = fullItem.MRP;
+            this.Requirement_Details_.PurchaseRate = fullItem.PurchaseRate;
+            this.Requirement_Details_.Stock = fullItem.Quantity;
+            this.Requirement_Details_.UnitPrice = fullItem.SaleRate;
+            this.Requirement_Details_.GroupId = fullItem.GroupId;
+            this.Requirement_Details_.GroupName = fullItem.GroupName;
+            this.Requirement_Details_.HSNMasterId = fullItem.HSNMasterId;
+            this.Requirement_Details_.HSNCODE = fullItem.HSNCODE;
+            this.Requirement_Details_.Item_Code = fullItem.Item_Code;
+        });
     }
 }
 numberToWordsIndianCurrency(amount) {    
@@ -2993,6 +3010,73 @@ debugger;
         // };
     })
   }
+
+  Load_Brand_Dropdown() {
+      this.Brand_Service_.Search_Brand('').subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.BrandData = (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error('Error loading brands:', err);
+          this.BrandData = [];
+      });
+  }
+
+  Load_Model_Dropdown() {
+      this.Model_Service_.Search_Model('').subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.ModelData = (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error('Error loading models:', err);
+          this.ModelData = [];
+      });
+  }
+
+  Search_Brand_Typeahead(event: any) {
+      let Value = "";
+      if (event && event.target && event.target.value != undefined) {
+          Value = event.target.value;
+      } else {
+          Value = this.Requirement_Details_.Brand && typeof this.Requirement_Details_.Brand === 'string' ? this.Requirement_Details_.Brand : '';
+      }
+      this.Brand_Service_.Search_Brand(Value).subscribe(response => {
+          const rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+          this.BrandData = (rows && rows[0]) ? rows[0] : [];
+      }, err => {
+          console.error(err);
+      });
+  }
+
+  displayFnBrand(brand?: any): string | undefined {
+      return brand ? brand.Brand_Name : undefined;
+  }
+
+  selectBrand(brand: any) {
+      this.Requirement_Details_.Brand = brand.Brand_Name;
+  }
+
+  Search_Model_Typeahead(event: any) {
+      let Value = "";
+      if (event && event.target && event.target.value != undefined) {
+          Value = event.target.value;
+      } else {
+          Value = this.Requirement_Details_.Model && typeof this.Requirement_Details_.Model === 'string' ? this.Requirement_Details_.Model : '';
+      }
+      this.Model_Service_.Search_Model(Value).subscribe(response => {
+          const rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+          this.ModelData = (rows && rows[0]) ? rows[0] : [];
+      }, err => {
+          console.error(err);
+      });
+  }
+
+  displayFnModel(model?: any): string | undefined {
+      return model ? model.Model_Name : undefined;
+  }
+
+  selectModel(model: any) {
+      this.Requirement_Details_.Model = model.Model_Name;
+  }
+
   /**** Added on 14-10-2024 */
 //   Load_Delivery_Order_Master(){
 //     debugger
@@ -3138,7 +3222,8 @@ debugger;
         console.log("QUO - Inside Get_Requirement_Details ");
         console.log('QUO - Rows 1: ', Rows);
             if (Rows != null) {
-            this.Requirement_Details_Data = Rows[0];
+            const data = Rows[0];
+            this.Requirement_Details_Data = Array.isArray(data) ? data : (data ? [data] : []);
             if(this.Requirement_Details_Data){
                 this.Requirement_Details_Data.forEach((element:any) => {
                     if(element.Item_Code == undefined || element.Item_Code == null || element.Item_Code == '')

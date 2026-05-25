@@ -88,6 +88,7 @@ Roundoff_Amt:number;
 Supplier_Ref_No: string;
 
     Status: number;
+    Status_Id: number;
     Status_Name: string;
     Email: string;
     WhatsApp: string;

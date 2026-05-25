@@ -19,6 +19,8 @@ import { Company_Size_Service } from '../../../services/Company_Size.Service';
 export class LeadComponent implements OnInit {
   Lead_: Lead = new Lead();
   Lead_Data: Lead[] = [];
+  Filtered_Lead_Data: Lead[] = [];
+  Paged_Lead_Data: Lead[] = [];
   Entry_View: boolean = false;
   issLoading: boolean = false;
   contactForm: FormGroup;
@@ -34,7 +36,79 @@ export class LeadComponent implements OnInit {
   Location_Data: any[] = [];
   Staff_Data: any[] = [];
   FollowUp_History: any[] = [];
+  Activity_Log: any[] = [];
+  Meeting_Data: any[] = [];
+  Quote_Tracking_Data: any[] = [];
+  Meeting_Input: any = {};
+  Quote_Tracking_Input: any = {};
+  Show_Meeting_Form: boolean = false;
+  Show_Quote_Form: boolean = false;
+  Selected_Meeting_Type: string = 'OFFLINE';
   Company_Size_Data: any[] = [];
+  readonly Raw_Lead_Stage_Name: string = 'RAW Lead';
+  readonly Lost_Stage_Name: string = 'Lost';
+  Lost_Reason_Data: string[] = [
+    'Price Too High',
+    'Competitor Offered Better Price',
+    'Took Quote for Price Comparison',
+    'Budget Issue',
+    'No Budget Approval',
+    'Chose Competitor',
+    'Existing Vendor Continued',
+    'Solution Mismatch',
+    'Feature Missing',
+    'Integration Not Possible',
+    'Technical Issue',
+    'Poor Call Quality Concern',
+    'Support Concern',
+    'SLA Concern',
+    'Implementation Delay',
+    'Timeline Issue',
+    'Requirement Cancelled',
+    'Project On Hold',
+    'No Response from Customer',
+    'Not Interested',
+    'Decision Delayed',
+    'Decision Maker Changed',
+    'Management Rejected',
+    'Internal Discussion Pending',
+    'Existing Contract Active'
+  ];
+  Lost_Primary_Issue_Data: string[] = [
+    'Price',
+    'Solution',
+    'Support',
+    'Timeline'
+  ];
+  Lead_List_Columns: any[] = [
+    { key: 'Company_Name', label: 'Company Name', fixed: true, visible: true },
+    { key: 'Contact_Person', label: 'Contact Person', fixed: true, visible: true },
+    { key: 'Number', label: 'Number', fixed: true, visible: true },
+    { key: 'Industry', label: 'Industry', fixed: true, visible: true },
+    { key: 'Lead_Stage', label: 'Lead Stage', visible: true },
+    { key: 'Priority', label: 'Priority', visible: true },
+    { key: 'Last_FollowUp', label: 'Last Follow-up', visible: true },
+    { key: 'Next_FollowUp', label: 'Next Follow-up', visible: true },
+    { key: 'Created_Date', label: 'Created Date', visible: true },
+    { key: 'Assigned_Staff', label: 'Assigned Staff', visible: true },
+    { key: 'Remarks', label: 'Remarks', visible: true },
+    { key: 'Action', label: 'Action', visible: true }
+  ];
+  Column_Customizer_Open: boolean = false;
+  private Lead_Column_Prefs_Key: string = 'Lead_List_Column_Preferences';
+  Lead_Filter: any = {
+    Industry: 0,
+    Stage: 0,
+    Priority: '',
+    Date: '',
+    Assigned_Staff: 0,
+    District: 0,
+    State: 0
+  };
+  Page_Index: number = 1;
+  Page_Size: number = 10;
+  Page_Size_Options: number[] = [10, 25, 50, 100];
+  Total_Pages: number = 1;
 
   Selected_Vertical: number = 0;
   Selected_Enquiry_For: number[] = [];
@@ -60,6 +134,7 @@ export class LeadComponent implements OnInit {
   }
 
   Page_Load() {
+    this.Load_Column_Preferences();
     this.Get_Leads();
     this.Get_Dropdowns_Lead();
     this.Get_Company_Sizes();
@@ -98,9 +173,11 @@ export class LeadComponent implements OnInit {
         });
         // Fix: Map staff names immediately after fetching leads
         this.Map_Staff_Names();
+        this.Apply_Lead_Filters();
       } else {
         // Fallback or handle unexpected structure
         this.Lead_Data = [];
+        this.Apply_Lead_Filters();
       }
       this.issLoading = false;
     }, err => {
@@ -125,6 +202,8 @@ export class LeadComponent implements OnInit {
         if (Array.isArray(Rows[8]) && Rows[8].length > 0) {
           this.Staff_Data = Rows[8];
         }
+
+        this.Set_Default_Raw_Lead_Stage();
         
         // Fetching staff data separately because Rows[8] might be empty in some versions of the SP
         this.User_Details_Service_.Search_User_Details('', 1, 1).subscribe(StaffRows => {
@@ -157,6 +236,150 @@ export class LeadComponent implements OnInit {
     }
   }
 
+  Apply_Lead_Filters() {
+    const filters = this.Lead_Filter;
+    this.Filtered_Lead_Data = (this.Lead_Data || []).filter((lead: any) => {
+      const entryDate = lead.Entry_Date ? this.New_Date(new Date(lead.Entry_Date)) : '';
+      const industry = this.Vertical_Data.find(v => Number(v.Vertical_Id) === Number(filters.Industry));
+      const district = this.District_Data.find(d => Number(d.District_Id) === Number(filters.District));
+      const state = this.State_Data.find(s => Number(s.State_Id) === Number(filters.State));
+      return (!filters.Industry || Number(lead.Vertical) === Number(filters.Industry) || Number(lead.Vertical_Id) === Number(filters.Industry) || (industry && lead.Vertical_Name === industry.Vertical_Name))
+        && (!filters.Stage || Number(lead.Status_Id) === Number(filters.Stage))
+        && (!filters.Priority || lead.Lead_Priority === filters.Priority)
+        && (!filters.Date || entryDate === filters.Date)
+        && (!filters.Assigned_Staff || Number(lead.Staff_Id) === Number(filters.Assigned_Staff))
+        && (!filters.District || Number(lead.District) === Number(filters.District) || Number(lead.District_Id) === Number(filters.District) || (district && lead.District_Name === district.District_Name))
+        && (!filters.State || Number(lead.State) === Number(filters.State) || Number(lead.State_Id) === Number(filters.State) || (state && lead.State_Name === state.State_Name));
+    });
+    this.Page_Index = 1;
+    this.Update_Paged_Leads();
+  }
+
+  Clear_Lead_Filters() {
+    this.Lead_Filter = {
+      Industry: 0,
+      Stage: 0,
+      Priority: '',
+      Date: '',
+      Assigned_Staff: 0,
+      District: 0,
+      State: 0
+    };
+    this.Apply_Lead_Filters();
+  }
+
+  Update_Paged_Leads() {
+    this.Total_Pages = Math.max(1, Math.ceil((this.Filtered_Lead_Data || []).length / this.Page_Size));
+    if (this.Page_Index > this.Total_Pages) this.Page_Index = this.Total_Pages;
+    const start = (this.Page_Index - 1) * this.Page_Size;
+    this.Paged_Lead_Data = (this.Filtered_Lead_Data || []).slice(start, start + this.Page_Size);
+  }
+
+  Change_Page(delta: number) {
+    const nextPage = this.Page_Index + delta;
+    if (nextPage < 1 || nextPage > this.Total_Pages) return;
+    this.Page_Index = nextPage;
+    this.Update_Paged_Leads();
+  }
+
+  Change_Page_Size() {
+    this.Page_Index = 1;
+    this.Update_Paged_Leads();
+  }
+
+  Get_Export_Rows() {
+    return (this.Filtered_Lead_Data || []).map((lead: any) => ({
+      'Company Name': lead.Lead_Name || '',
+      'Contact Person': lead.Contact_Person || '',
+      'Number': lead.Contact_Number || lead.Phone || '',
+      'Industry': lead.Vertical_Name || '',
+      'Lead Stage': lead.Status_Name || '',
+      'Priority': lead.Lead_Priority || '',
+      'Last Follow-up': lead.Last_FollowUp_Date ? this.New_Date(new Date(lead.Last_FollowUp_Date)) : '',
+      'Next Follow-up': lead.Next_FollowUp_Date ? this.New_Date(new Date(lead.Next_FollowUp_Date)) : '',
+      'Created Date': lead.Entry_Date ? this.New_Date(new Date(lead.Entry_Date)) : '',
+      'Assigned Staff': lead.Staff_Name || '',
+      'Remarks': lead.Remark || ''
+    }));
+  }
+
+  Download_Text_File(filename: string, content: string, mimeType: string) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = window.URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  Export_CSV() {
+    const rows = this.Get_Export_Rows();
+    if (rows.length === 0) return;
+    const headers = Object.keys(rows[0]);
+    const escapeCell = (value) => '"' + String(value === undefined || value === null ? '' : value).replace(/"/g, '""') + '"';
+    const csv = [headers.map(escapeCell).join(',')]
+      .concat(rows.map(row => headers.map(header => escapeCell(row[header])).join(',')))
+      .join('\r\n');
+    this.Download_Text_File('lead-list.csv', csv, 'text/csv;charset=utf-8;');
+  }
+
+  Export_Excel() {
+    const rows = this.Get_Export_Rows();
+    if (rows.length === 0) return;
+    const headers = Object.keys(rows[0]);
+    const html = '<table><thead><tr>' + headers.map(h => '<th>' + h + '</th>').join('') +
+      '</tr></thead><tbody>' + rows.map(row => '<tr>' + headers.map(h => '<td>' + String(row[h] || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</td>').join('') + '</tr>').join('') +
+      '</tbody></table>';
+    this.Download_Text_File('lead-list.xls', html, 'application/vnd.ms-excel;charset=utf-8;');
+  }
+
+  Load_Column_Preferences() {
+    const saved = localStorage.getItem(this.Lead_Column_Prefs_Key);
+    if (!saved) return;
+
+    try {
+      const preferences = JSON.parse(saved);
+      this.Lead_List_Columns.forEach(column => {
+        if (preferences[column.key] !== undefined) {
+          column.visible = preferences[column.key];
+        }
+      });
+    } catch (e) {
+      console.warn('Invalid lead column preferences:', e);
+    }
+  }
+
+  Save_Column_Preferences() {
+    const preferences = {};
+    this.Lead_List_Columns.forEach(column => preferences[column.key] = column.visible);
+    localStorage.setItem(this.Lead_Column_Prefs_Key, JSON.stringify(preferences));
+    this.Column_Customizer_Open = false;
+  }
+
+  Reset_Column_Preferences() {
+    this.Lead_List_Columns.forEach(column => column.visible = true);
+    localStorage.removeItem(this.Lead_Column_Prefs_Key);
+  }
+
+  Is_Column_Visible(key: string): boolean {
+    const column = this.Lead_List_Columns.find(c => c.key === key);
+    return column ? column.visible : true;
+  }
+
+  Set_Default_Raw_Lead_Stage() {
+    if (!this.Lead_ || this.Lead_.Status_Id > 0 || !this.Status_Data || this.Status_Data.length === 0) {
+      return;
+    }
+
+    const rawStage = this.Status_Data.find(s => s.Status_Name === this.Raw_Lead_Stage_Name);
+    if (rawStage) {
+      this.Lead_.Status_Id = rawStage.Status_Id;
+      this.Lead_.Status_Name = rawStage.Status_Name;
+      this.Lead_.FollowUp_Status_Id = rawStage.Status_Id;
+    }
+  }
+
   New_Date(Date_) {
     let date = new Date(Date_);
     let year = date.getFullYear();
@@ -168,14 +391,26 @@ export class LeadComponent implements OnInit {
   Create_New() {
     this.Entry_View = true;
     this.Lead_ = new Lead();
+    this.Set_Default_Raw_Lead_Stage();
     this.Selected_Vertical = 0;
     this.Selected_Enquiry_For = [];
     this.Enquiry_For_Data = [];
+    
+    // Set default state to Kerala if it exists in State_Data
+    if (this.State_Data && this.State_Data.length > 0) {
+      const kerala = this.State_Data.find(s => s.State_Name && s.State_Name.toLowerCase() === 'kerala');
+      if (kerala) {
+        this.Lead_.State = kerala.State_Id;
+      }
+    }
     // Initialize FollowUp_Date to current local time formatted for datetime-local input
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     this.Lead_.FollowUp_Date = now.toISOString().slice(0, 16);
     this.FollowUp_History = [];
+    this.Activity_Log = [];
+    this.Meeting_Data = [];
+    this.Quote_Tracking_Data = [];
     
     this.Initialize_Contact_Form();
     this.addContact(); // Add at least one row
@@ -195,8 +430,10 @@ export class LeadComponent implements OnInit {
     return this.fb.group({
       Contact_Person: [contact ? contact.Contact_Person : '', Validators.required],
       Contact_Number: [contact ? contact.Contact_Number : '', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(10)]],
+      Phone: [contact ? contact.Phone : '', [Validators.pattern('^[0-9]*$')]],
       Designation: [contact ? contact.Designation : 0],
-      Email: [contact ? contact.Email : '', [Validators.email]]
+      Email: [contact ? contact.Email : '', [Validators.email]],
+      Next_Call_Action: [contact ? !!contact.Next_Call_Action : false]
     });
   }
 
@@ -204,9 +441,20 @@ export class LeadComponent implements OnInit {
     this.contactPersons.push(this.createContactRow());
   }
 
+  Set_Next_Call_Contact(index: number) {
+    const selected = this.contactPersons.at(index).get('Next_Call_Action').value;
+    this.contactPersons.controls.forEach((control, controlIndex) => {
+      if (controlIndex !== index) {
+        control.get('Next_Call_Action').setValue(false, { emitEvent: false });
+      }
+    });
+    this.Lead_.Next_Call_Action = !!selected;
+  }
+
   removeContact(index: number) {
     if (this.contactPersons.length > 1) {
       this.contactPersons.removeAt(index);
+      this.Lead_.Next_Call_Action = this.contactPersons.controls.some(control => !!control.get('Next_Call_Action').value);
     } else {
       this.dialogBox.open(DialogBox_Component, { 
         panelClass: 'Dialogbox-Class', 
@@ -222,6 +470,9 @@ export class LeadComponent implements OnInit {
     this.Selected_Enquiry_For = [];
     this.Enquiry_For_Data = [];
     this.FollowUp_History = [];
+    this.Activity_Log = [];
+    this.Meeting_Data = [];
+    this.Quote_Tracking_Data = [];
   }
 
   Open_Requirement(lead: Lead) {
@@ -257,11 +508,27 @@ export class LeadComponent implements OnInit {
     this.Lead_.Enquiry_For = this.Selected_Enquiry_For.join(',');
   }
 
+  Is_Lost_Stage(): boolean {
+    const selectedStatus = this.Status_Data.find(s => s.Status_Id == this.Lead_.FollowUp_Status_Id || s.Status_Id == this.Lead_.Status_Id);
+    const statusName = selectedStatus ? selectedStatus.Status_Name : this.Lead_.Status_Name;
+    return statusName === this.Lost_Stage_Name;
+  }
+
   Save_Lead() {
     if (!this.Lead_.Lead_Name) {
       this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter Lead Name', Type: "3" } });
       return;
     }
+
+    const contactPersonValues = this.contactForm && this.contactForm.value && this.contactForm.value.contactPersons
+      ? this.contactForm.value.contactPersons
+      : [];
+    const selectedContactValue = contactPersonValues.find(c => !!c.Next_Call_Action) || contactPersonValues[0] || null;
+    const firstContactValue = selectedContactValue;
+    if (!this.Lead_.Phone && firstContactValue && firstContactValue.Contact_Number) {
+      this.Lead_.Phone = firstContactValue.Contact_Number;
+    }
+
     if (!this.Lead_.Phone) {
       this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter Phone Number', Type: "3" } });
       return;
@@ -277,13 +544,15 @@ export class LeadComponent implements OnInit {
 
     let Lead_Copy = Object.assign({}, this.Lead_);
     // Attach contact persons from the form array
-    (Lead_Copy as any).Contact_Person_Details = this.contactForm.value.contactPersons;
+    (Lead_Copy as any).Contact_Person_Details = contactPersonValues;
+    Lead_Copy.Next_Call_Action = contactPersonValues.some(c => !!c.Next_Call_Action);
     
     // For backward compatibility with single contact fields if needed by backend
-    if (this.contactForm.value.contactPersons.length > 0) {
-      const firstContact = this.contactForm.value.contactPersons[0];
+    if (contactPersonValues.length > 0) {
+      const firstContact = selectedContactValue || contactPersonValues[0];
       Lead_Copy.Contact_Person = firstContact.Contact_Person;
       Lead_Copy.Contact_Number = firstContact.Contact_Number;
+      Lead_Copy.Phone = firstContact.Phone || firstContact.Contact_Number || Lead_Copy.Phone;
       Lead_Copy.Designation = firstContact.Designation;
       Lead_Copy.Email = firstContact.Email;
     }
@@ -310,9 +579,9 @@ export class LeadComponent implements OnInit {
       Lead_Copy.Location_Id = this.Lead_.FollowUp_Location_Id;
       Lead_Copy.Next_FollowUp_Date = this.Lead_.FollowUp_Next_Date;
     } else {
-      // If not follow-up, ensure these have default valid values (0 or null)
+      // Keep the lead stage on the master record even when no follow-up entry is created.
       Lead_Copy.Department_Id = 0;
-      Lead_Copy.Status_Id = 0;
+      Lead_Copy.Status_Id = this.Lead_.Status_Id;
       Lead_Copy.Staff_Id = 0;
       Lead_Copy.Location_Id = 0;
       Lead_Copy.Next_FollowUp_Date = null;
@@ -321,6 +590,9 @@ export class LeadComponent implements OnInit {
     if (Lead_Copy.Entry_Date) Lead_Copy.Entry_Date = this.New_Date(new Date(Lead_Copy.Entry_Date));
     if (Lead_Copy.Next_FollowUp_Date) Lead_Copy.Next_FollowUp_Date = this.New_Date(new Date(Lead_Copy.Next_FollowUp_Date));
     if (Lead_Copy.FollowUp_Next_Date) Lead_Copy.FollowUp_Next_Date = this.New_Date(new Date(Lead_Copy.FollowUp_Next_Date));
+    if ((Lead_Copy as any).Lost_Expected_Reconnect_Date) {
+      (Lead_Copy as any).Lost_Expected_Reconnect_Date = this.New_Date(new Date((Lead_Copy as any).Lost_Expected_Reconnect_Date));
+    }
     
     // BACKEND MAPPING: The backend expects 'Next_FollowUp_Date' for the new column.
     // In our logic, 'FollowUp_Next_Date' is what's bound to the input.
@@ -397,22 +669,37 @@ export class LeadComponent implements OnInit {
     this.Initialize_Contact_Form();
     // Assuming existing contact persons are stored in a property called Contact_Person_Details
     // If not, we might need to fetch them or use the single fields as a fallback
-    const contacts = (this.Lead_ as any).Contact_Person_Details;
+    let contacts = (this.Lead_ as any).Contact_Person_Details;
+    if (typeof contacts === 'string' && contacts.trim() !== '') {
+      try {
+        contacts = JSON.parse(contacts);
+      } catch (e) {
+        contacts = [];
+      }
+    }
     if (contacts && Array.isArray(contacts) && contacts.length > 0) {
       contacts.forEach(c => {
         this.contactPersons.push(this.createContactRow(c));
       });
+      if (!contacts.some(c => !!c.Next_Call_Action) && this.Lead_.Next_Call_Action && this.contactPersons.length > 0) {
+        this.contactPersons.at(0).get('Next_Call_Action').setValue(true);
+      }
     } else {
       // Fallback to single fields if no multiple contacts exist
       this.contactPersons.push(this.createContactRow({
         Contact_Person: this.Lead_.Contact_Person,
         Contact_Number: this.Lead_.Contact_Number,
+        Phone: this.Lead_.Phone,
         Designation: this.Lead_.Designation,
-        Email: this.Lead_.Email
+        Email: this.Lead_.Email,
+        Next_Call_Action: this.Lead_.Next_Call_Action
       }));
     }
 
     this.Get_Lead_FollowUp_History(this.Lead_.Lead_Id);
+    this.Get_Lead_Activity_Log(this.Lead_.Lead_Id);
+    this.Get_Lead_Meetings(this.Lead_.Lead_Id);
+    this.Get_Lead_Quote_Tracking(this.Lead_.Lead_Id);
     this.Entry_View = true;
   }
 
@@ -427,6 +714,122 @@ export class LeadComponent implements OnInit {
     });
   }
 
+  Get_Lead_Activity_Log(Lead_Id) {
+    if (!Lead_Id) {
+      this.Activity_Log = [];
+      return;
+    }
+
+    this.Lead_Service_.Get_Lead_Activity_Log(Lead_Id).subscribe(Rows => {
+      if (Rows && Rows[0]) {
+        this.Activity_Log = Rows[0];
+      } else {
+        this.Activity_Log = [];
+      }
+    }, err => {
+      this.Activity_Log = [];
+    });
+  }
+
+  Get_Lead_Meetings(Lead_Id) {
+    if (!Lead_Id) {
+      this.Meeting_Data = [];
+      return;
+    }
+
+    this.Lead_Service_.Get_Lead_Meetings(Lead_Id).subscribe(Rows => {
+      this.Meeting_Data = Rows && Rows[0] ? Rows[0] : [];
+    }, err => {
+      this.Meeting_Data = [];
+    });
+  }
+
+  Get_Lead_Quote_Tracking(Lead_Id) {
+    if (!Lead_Id) {
+      this.Quote_Tracking_Data = [];
+      return;
+    }
+
+    this.Lead_Service_.Get_Lead_Quote_Tracking(Lead_Id).subscribe(Rows => {
+      this.Quote_Tracking_Data = Rows && Rows[0] ? Rows[0] : [];
+    }, err => {
+      this.Quote_Tracking_Data = [];
+    });
+  }
+
+  Get_Meeting_Count(type: string): number {
+    return (this.Meeting_Data || []).filter(m => String(m.Meeting_Type).toUpperCase() === type).length;
+  }
+
+  Open_Meeting_Form(type: string) {
+    this.Selected_Meeting_Type = type;
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    this.Meeting_Input = {
+      Meeting_Date: now.toISOString().slice(0, 16),
+      Meeting_Type: type,
+      Notes: '',
+      Outcome: ''
+    };
+    this.Show_Meeting_Form = true;
+  }
+
+  Save_Lead_Meeting() {
+    if (!this.Lead_.Lead_Id) return;
+    if (!this.Meeting_Input.Meeting_Date) {
+      this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Meeting Date', Type: "3" } });
+      return;
+    }
+
+    const Data = Object.assign({}, this.Meeting_Input, {
+      Lead_Id: this.Lead_.Lead_Id,
+      Meeting_Type: this.Selected_Meeting_Type,
+      User_Id: Number(localStorage.getItem('Login_User') || 0)
+    });
+
+    this.Lead_Service_.Save_Lead_Meeting(Data).subscribe((res: any) => {
+      if (res && res.success) {
+        this.Show_Meeting_Form = false;
+        this.Get_Lead_Meetings(this.Lead_.Lead_Id);
+        this.Get_Lead_Activity_Log(this.Lead_.Lead_Id);
+      }
+    });
+  }
+
+  Open_Quote_Form() {
+    const today = new Date();
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    this.Quote_Tracking_Input = {
+      Requirement_Id: 0,
+      Requirement_Name: '',
+      Quote_Sent_Date: today.toISOString().slice(0, 10),
+      Quote_Amount: 0,
+      FollowUp_Status_After_Quote: ''
+    };
+    this.Show_Quote_Form = true;
+  }
+
+  Save_Lead_Quote_Tracking() {
+    if (!this.Lead_.Lead_Id) return;
+    if (!this.Quote_Tracking_Input.Requirement_Name) {
+      this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter Requirement', Type: "3" } });
+      return;
+    }
+
+    const Data = Object.assign({}, this.Quote_Tracking_Input, {
+      Lead_Id: this.Lead_.Lead_Id,
+      User_Id: Number(localStorage.getItem('Login_User') || 0)
+    });
+
+    this.Lead_Service_.Save_Lead_Quote_Tracking(Data).subscribe((res: any) => {
+      if (res && res.success) {
+        this.Show_Quote_Form = false;
+        this.Get_Lead_Quote_Tracking(this.Lead_.Lead_Id);
+        this.Get_Lead_Activity_Log(this.Lead_.Lead_Id);
+      }
+    });
+  }
+
   Delete_Lead(Lead_Id, index) {
     const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Do you want to delete ?', Type: "true", Heading: 'Confirm' } });
     dialogRef.afterClosed().subscribe(result => {
@@ -434,7 +837,12 @@ export class LeadComponent implements OnInit {
         this.issLoading = true;
         this.Lead_Service_.Delete_Lead(Lead_Id).subscribe(Delete_status => {
           this.issLoading = false;
-          this.Lead_Data.splice(index, 1);
+          if (Delete_status && Delete_status.success === false) {
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: Delete_status.message || 'Delete failed', Type: "2" } });
+            return;
+          }
+          this.Lead_Data = this.Lead_Data.filter((lead: any) => lead.Lead_Id != Lead_Id);
+          this.Apply_Lead_Filters();
           this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted Successfully', Type: "false" } });
         }, err => {
           this.issLoading = false;
@@ -480,6 +888,9 @@ export class LeadComponent implements OnInit {
     });
 
     this.Get_Lead_FollowUp_History(lead.Lead_Id);
+    this.Get_Lead_Activity_Log(lead.Lead_Id);
+    this.Get_Lead_Meetings(lead.Lead_Id);
+    this.Get_Lead_Quote_Tracking(lead.Lead_Id);
     this.FollowUp_Drawer_Visible = true;
   }
 
@@ -498,6 +909,8 @@ export class LeadComponent implements OnInit {
 
     // Sync current follow-up data to Lead master record
     Lead_Copy.Status_Id = this.Lead_.FollowUp_Status_Id;
+    const selectedStatus = this.Status_Data.find(s => s.Status_Id == Lead_Copy.Status_Id);
+    if (selectedStatus) Lead_Copy.Status_Name = selectedStatus.Status_Name;
     Lead_Copy.Department_Id = this.Lead_.FollowUp_Department_Id;
     Lead_Copy.Staff_Id = this.Lead_.FollowUp_Staff_Id;
     Lead_Copy.Next_FollowUp_Date = this.Lead_.FollowUp_Next_Date;
@@ -517,6 +930,9 @@ export class LeadComponent implements OnInit {
     if (Lead_Copy.Entry_Date) Lead_Copy.Entry_Date = this.New_Date(new Date(Lead_Copy.Entry_Date));
     if (Lead_Copy.Next_FollowUp_Date) Lead_Copy.Next_FollowUp_Date = this.New_Date(new Date(Lead_Copy.Next_FollowUp_Date));
     if (Lead_Copy.FollowUp_Next_Date) Lead_Copy.FollowUp_Next_Date = this.New_Date(new Date(Lead_Copy.FollowUp_Next_Date));
+    if ((Lead_Copy as any).Lost_Expected_Reconnect_Date) {
+      (Lead_Copy as any).Lost_Expected_Reconnect_Date = this.New_Date(new Date((Lead_Copy as any).Lost_Expected_Reconnect_Date));
+    }
     
     // BACKEND MAPPING: Ensure Next_FollowUp_Date is set for the new column
     Lead_Copy.Next_FollowUp_Date = Lead_Copy.FollowUp_Next_Date;
@@ -563,6 +979,7 @@ export class LeadComponent implements OnInit {
           }
 
           this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Follow-up Updated', Type: "false" } });
+          this.Get_Lead_Activity_Log(Lead_Copy.Lead_Id);
           this.Close_Drawer();
           this.Get_Leads();
         } else {

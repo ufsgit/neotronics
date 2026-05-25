@@ -49,7 +49,7 @@ export class Quotation_ConfirmationComponent implements OnInit, AfterViewInit {
     Search_ToDate: any = moment();
     Date_Check: boolean = true;
     
-    Status_Filter: any = 3; // Default to Approved
+    Status_Filter: any = 2; // Default to Pending
     Payment_Status_Filter: any = 0;
 
     Status_Data: any[] = [
@@ -109,6 +109,52 @@ export class Quotation_ConfirmationComponent implements OnInit, AfterViewInit {
             if (response.success) {
                 this.Quotation_Master_Data = response.data[0] || [];
                 
+                // Normalize status values based on Status_Id and Status
+                this.Quotation_Master_Data.forEach(q => {
+                    if (q.Status_Id !== undefined && q.Status_Id !== null) {
+                        const sid = parseInt(q.Status_Id);
+                        if (sid === 1) {
+                            if (q.workflow_status === 'CONFIRMED' || q.Status == 5) {
+                                q.Status = 5;
+                                q.Status_Name = 'Confirmed';
+                            } else {
+                                q.Status = 2;
+                                q.Status_Name = 'Pending';
+                            }
+                        } else if (sid === 2) {
+                            if (q.workflow_status === 'CONFIRMED' || q.Status == 5) {
+                                q.Status = 5;
+                                q.Status_Name = 'Confirmed';
+                            } else {
+                                q.Status = 3;
+                                q.Status_Name = 'Approved';
+                            }
+                        } else if (sid === 3) {
+                            q.Status = 4;
+                            q.Status_Name = 'Rejected';
+                        }
+                    } else {
+                        // Fallback using traditional Status column if Status_Id is missing
+                        const statusVal = parseInt(q.Status);
+                        if (statusVal === 2) {
+                            q.Status_Id = 1;
+                            q.Status_Name = 'Pending';
+                        } else if (statusVal === 3) {
+                            q.Status_Id = 2;
+                            q.Status_Name = 'Approved';
+                        } else if (statusVal === 4) {
+                            q.Status_Id = 3;
+                            q.Status_Name = 'Rejected';
+                        } else if (statusVal === 5) {
+                            q.Status_Id = 2;
+                            q.Status_Name = 'Approved';
+                        } else if (statusVal === 1) {
+                            q.Status_Id = 1;
+                            q.Status_Name = 'Draft';
+                        }
+                    }
+                });
+                
                 // Client-side filtering for Status if needed
                 if (this.Status_Filter != 0) {
                     this.Quotation_Master_Data = this.Quotation_Master_Data.filter(q => q.Status == this.Status_Filter);
@@ -134,7 +180,7 @@ export class Quotation_ConfirmationComponent implements OnInit, AfterViewInit {
         this.Search_ReferenceNo = '';
         this.Search_FromDate = moment().startOf('month');
         this.Search_ToDate = moment();
-        this.Status_Filter = 3;
+        this.Status_Filter = 2;
         this.Search_Quotation_Confirmation();
     }
 
@@ -184,19 +230,72 @@ export class Quotation_ConfirmationComponent implements OnInit, AfterViewInit {
         });
     }
 
+    Approve_Quotation(quotation: any) {
+        const dialogRef = this.dialog.open(DialogBox_Component, {
+            panelClass: 'Dialogbox-Class',
+            data: { Message: 'Are you sure you want to approve this quotation?', Type: "true" },
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === 'Yes') {
+                this.isLoading = true;
+                this.sales_Master_Service_.Update_Quotation_Workflow_Status(quotation.SalesQuotationMaster_Id, 'APPROVED').subscribe(response => {
+                    this.isLoading = false;
+                    this.Show_Message("Quotation Approved Successfully", true);
+                    this.Search_Quotation_Confirmation();
+                }, error => {
+                    this.isLoading = false;
+                    this.Show_Message("Failed to approve quotation", false);
+                });
+            }
+        });
+    }
+
+    Reject_Quotation(quotation: any) {
+        const dialogRef = this.dialog.open(DialogBox_Component, {
+            panelClass: 'Dialogbox-Class',
+            data: { Message: 'Are you sure you want to reject this quotation?', Type: "true" },
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === 'Yes') {
+                this.isLoading = true;
+                this.sales_Master_Service_.Update_Quotation_Workflow_Status(quotation.SalesQuotationMaster_Id, 'REJECTED').subscribe(response => {
+                    this.isLoading = false;
+                    this.Show_Message("Quotation Rejected Successfully", true);
+                    this.Search_Quotation_Confirmation();
+                }, error => {
+                    this.isLoading = false;
+                    this.Show_Message("Failed to reject quotation", false);
+                });
+            }
+        });
+    }
+
     View_Quotation(quotation: any) {
         this.isLoading = true;
-        this.sales_Master_Service_.Get_Quotation_Details(quotation.SalesQuotationMaster_Id).subscribe(detailsResp => {
-            const detailsData = (detailsResp && typeof detailsResp === "object" && "data" in detailsResp) ? detailsResp.data : detailsResp;
-            this.selectedQuotation = Object.assign({}, quotation);
-            this.selectedQuotation.items = (detailsData && detailsData[0]) ? detailsData[0] : [];
-            this.showPreview = true;
-            this.isLoading = false;
+        this.sales_Master_Service_.Load_SalesQuotationMaster(quotation.SalesQuotationMaster_Id).subscribe((masterResp: any) => {
+            const masterData = (masterResp && typeof masterResp === "object" && "data" in masterResp) ? masterResp.data : masterResp;
+            let fullQuotation = Object.assign({}, quotation);
+            if (masterData && masterData[0] && masterData[0][0]) {
+                fullQuotation = Object.assign(fullQuotation, masterData[0][0]);
+            }
+            
+            this.sales_Master_Service_.Get_Quotation_Details(quotation.SalesQuotationMaster_Id).subscribe(detailsResp => {
+                const detailsData = (detailsResp && typeof detailsResp === "object" && "data" in detailsResp) ? detailsResp.data : detailsResp;
+                this.selectedQuotation = fullQuotation;
+                this.selectedQuotation.items = (detailsData && detailsData[0]) ? detailsData[0] : [];
+                this.showPreview = true;
+                this.isLoading = false;
+            }, err => {
+                this.isLoading = false;
+                this.selectedQuotation = fullQuotation;
+                this.selectedQuotation.items = [];
+                this.showPreview = true;
+            });
         }, err => {
             this.isLoading = false;
-            this.selectedQuotation = Object.assign({}, quotation);
-            this.selectedQuotation.items = [];
-            this.showPreview = true;
+            this.Show_Message("Error loading quotation details.", false);
         });
     }
 
@@ -211,8 +310,20 @@ export class Quotation_ConfirmationComponent implements OnInit, AfterViewInit {
     }
 
     Print_Quotation(quotation: any) {
-        localStorage.setItem('SalesQuotationMaster_Id', quotation.SalesQuotationMaster_Id.toString());
-        this.router.navigateByUrl('/Quotation');
+        if (!quotation || !quotation.SalesQuotationMaster_Id) {
+            return;
+        }
+
+        this.isLoading = true;
+        this.sales_Master_Service_.Print_Quotation(quotation.SalesQuotationMaster_Id).subscribe(blob => {
+            this.isLoading = false;
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        }, err => {
+            console.error('Error generating PDF:', err);
+            this.isLoading = false;
+            this.Show_Message("Error generating PDF.", false);
+        });
     }
 
     Export_To_Excel() {

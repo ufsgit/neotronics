@@ -1,4 +1,5 @@
 const db = require('../dbconnection');
+const Lead = require('./Lead');
 
 function withConnection(work, callback) {
   db.getConnection((err, connection) => {
@@ -119,6 +120,13 @@ const LeadRequirement = {
           if (details.length === 0) {
             return connection.commit(errCommit => {
               if (errCommit) return connection.rollback(() => done(errCommit));
+              Lead.Add_Lead_Activity({
+                Lead_Id: leadId,
+                Activity_Type: 'REQUIREMENT_ADDED',
+                Activity_Title: 'Requirement added',
+                New_Value: master.Notes || '',
+                User_Id: Number(master.User_Id || master.Login_User_Id || 0)
+              }, () => {});
               done(null, [{ LeadRequirementMaster_Id_: newId }]);
             });
           }
@@ -142,6 +150,14 @@ const LeadRequirement = {
             }
             connection.commit(errCommit => {
               if (errCommit) return connection.rollback(() => done(errCommit));
+              Lead.Add_Lead_Activity({
+                Lead_Id: leadId,
+                Activity_Type: 'REQUIREMENT_ADDED',
+                Activity_Title: 'Requirement added',
+                New_Value: master.Notes || '',
+                Remarks: details.map(d => d.Item || d.Remarks || '').filter(Boolean).join(', '),
+                User_Id: Number(master.User_Id || master.Login_User_Id || 0)
+              }, () => {});
               done(null, [{ LeadRequirementMaster_Id_: newId }]);
             });
           });
@@ -152,4 +168,3 @@ const LeadRequirement = {
 };
 
 module.exports = LeadRequirement;
-

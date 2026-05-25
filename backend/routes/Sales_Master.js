@@ -605,4 +605,20 @@ router.get('/Get_Next_Price_Request_No', asyncHandler(async function (req, res, 
     return sendSuccess(res, { data: rows });
 }));
 
+router.get('/Get_Max_Performa_Invoice_No', asyncHandler(async function (req, res, next) {
+    const rows = await Sales_Master.Get_Max_Performa_Invoice_No();
+    return sendSuccess(res, { data: rows });
+}));
+
+router.get('/Get_Max_Quotation_No', asyncHandler(async function (req, res, next) {
+    const rows = await Sales_Master.Get_Max_Quotation_No();
+    return sendSuccess(res, { data: rows });
+}));
+
+router.get('/Get_Max_Sales_Invoice_No', asyncHandler(async function (req, res, next) {
+    const rows = await Sales_Master.Get_Max_Sales_Invoice_No();
+    return sendSuccess(res, { data: rows });
+}));
+
 module.exports = router;
+

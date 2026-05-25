@@ -216,5 +216,23 @@ Search_Service_Type:function(Service_Type_Name_,callback)
     Service_Type_Name_='';
      return db.query("CALL Search_Service_Type(@Service_Type_Name_ :=?)",[Service_Type_Name_],callback);
     },
+Get_Multiple_Sale_Rates: function(Item_Id_, callback) {
+    const query = `
+        SELECT DISTINCT SaleRate, Source FROM (
+            SELECT DISTINCT COALESCE(SaleRate, 0) AS SaleRate, 'Stock' AS Source
+            FROM stock
+            WHERE DeleteStatus = 0 AND ItemId = ? AND SaleRate > 0
+            
+            UNION
+            
+            SELECT DISTINCT COALESCE(PRD.Sale_Rate, 0) AS SaleRate, 'Price Response' AS Source
+            FROM price_response_details PRD
+            INNER JOIN price_response_master PRM ON PRD.Price_Response_Master_Id = PRM.Price_Response_Master_Id
+            WHERE PRM.DeleteStatus = 0 AND PRD.Item_Id = ? AND PRD.Sale_Rate > 0
+        ) t
+        ORDER BY SaleRate ASC
+    `;
+    return db.query(query, [Item_Id_, Item_Id_], callback);
+}
 };
 module.exports=Item;

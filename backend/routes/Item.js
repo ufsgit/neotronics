@@ -257,5 +257,20 @@ finally
 }
 });
 
+router.get('/Get_Multiple_Sale_Rates/:Item_Id_?', function(req, res, next) {
+    try {
+        Item.Get_Multiple_Sale_Rates(req.params.Item_Id_, function(err, rows) {
+            if (err) {
+                res.json(err);
+            } else {
+                res.json(rows);
+            }
+        });
+    } catch(e) {
+        console.error(e);
+        res.status(500).json(e);
+    }
+});
+
 module.exports = router;
 

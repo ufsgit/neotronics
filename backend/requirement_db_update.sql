@@ -91,7 +91,7 @@ CREATE PROCEDURE `Save_Requirement`(
     IN `POnumber_` VARCHAR(100),
     IN `CurrencyId_` INT,
     IN `PaymentTerms_` VARCHAR(500),
-    IN `AttendEmployee_` INT,
+    IN `AttendEmployee_` VARCHAR(250),
     IN `TotalAmount_` DECIMAL(18,4),
     IN `TotalDiscount_` DECIMAL(18,4),
     IN `Roundoff_Amt_` DECIMAL(18,4),

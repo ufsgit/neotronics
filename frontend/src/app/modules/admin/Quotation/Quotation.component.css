@@ -363,3 +363,19 @@ textarea.form-control-standard {
         min-width: 100% !important;
     }
 }
+
+/* Premium Quotation Status Badges */
+.quotation-status {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+.quotation-status.pending { background: #fffbeb; color: #d97706; border: 1px solid #fef3c7; }
+.quotation-status.approved { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
+.quotation-status.reject { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }

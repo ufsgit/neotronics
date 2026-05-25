@@ -52,6 +52,21 @@ Get_Next_Price_Request_No(EntryDate_): Observable<any>
     return this.http.get(environment.BasePath + 'Sales_Master/Get_Next_Price_Request_No', { params: Search_Data });
 }
 
+Get_Max_Sales_Invoice_No(): Observable<any>
+{
+    return this.http.get(environment.BasePath + 'Sales_Master/Get_Max_Sales_Invoice_No');
+}
+
+Get_Max_Performa_Invoice_No(): Observable<any>
+{
+    return this.http.get(environment.BasePath + 'Sales_Master/Get_Max_Performa_Invoice_No');
+}
+
+Get_Max_Quotation_No(): Observable<any>
+{
+    return this.http.get(environment.BasePath + 'Sales_Master/Get_Max_Quotation_No');
+}
+
 
 
 
@@ -956,3 +971,4 @@ Search_SaleInvoice_By_Supplier_Typeahead(Client_Accounts_Id_,InvoiceNo_)
     /*** */
 
 }
+

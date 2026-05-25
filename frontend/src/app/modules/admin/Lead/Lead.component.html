@@ -11,190 +11,138 @@
 
                     <div class="card-body">
                         <form>
-                            <!-- Basic details section -->
+                            <!-- Company Information -->
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h6 class="text-info" style="cursor: default;">Basic details</h6>
+                                    <h6 class="text-info" style="cursor: default;">Company Information</h6>
                                 </div>
                             </div>
-
                             <div class="row">
-                                <!-- Left side: Lead / Enquiry details -->
-                                <div class="col-md-8">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <mat-form-field floatLabel="never">
-                                                <input matInput placeholder="Lead Name *" name="Lead_Name"
-                                                    [(ngModel)]="Lead_.Lead_Name">
-                                            </mat-form-field>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <mat-form-field floatLabel="never">
-                                                <input matInput placeholder="Mobile No *" name="Phone"
-                                                    [(ngModel)]="Lead_.Phone">
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mt-2">
-                                        <div class="col-md-6">
-                                            <mat-form-field floatLabel="never">
-                                                <mat-select placeholder="Enquiry Source" name="Enquiry_Source"
-                                                    [(ngModel)]="Lead_.Source">
-                                                    <mat-option *ngFor="let source of Source_Data"
-                                                        [value]="source.Source_Id">{{source.Source_Name}}</mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <mat-form-field floatLabel="never" class="vertical-multiselect">
-                                                <mat-select placeholder="Enquiry For" name="Enquiry_For"
-                                                    [(ngModel)]="Selected_Enquiry_For" multiple
-                                                    (ngModelChange)="onEnquiryForChange()">
-                                                    <mat-select-trigger>
-                                                        <span *ngIf="Selected_Enquiry_For.length === 0"
-                                                            class="placeholder-text">Enquiry For</span>
-                                                        <span class="vertical-chip"
-                                                            *ngFor="let eId of Selected_Enquiry_For">
-                                                            {{getVerticalName(eId)}}
-                                                        </span>
-                                                    </mat-select-trigger>
-                                                    <mat-option *ngFor="let opt of Vertical_Data"
-                                                        [value]="opt.Vertical_Id">{{opt.Vertical_Name}}</mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mt-2">
-                                        <div class="col-md-6">
-                                            <mat-form-field floatLabel="never">
-                                                <mat-select placeholder="Vertical" name="Vertical2"
-                                                    [(ngModel)]="Selected_Vertical"
-                                                    (ngModelChange)="onVerticalChange()">
-                                                    <mat-option *ngFor="let v of Vertical_Data"
-                                                        [value]="v.Vertical_Id">{{v.Vertical_Name}}</mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <mat-form-field floatLabel="never">
-                                                <input matInput placeholder="Website" name="Website"
-                                                    [(ngModel)]="Lead_.Website">
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-
-                                    <!-- Project Name | POC Name | Company Size row -->
-                                    <div class="row mt-2">
-                                        <div class="col-md-4">
-                                            <mat-form-field floatLabel="never">
-                                                <input matInput placeholder="Project Name" name="Project_Name"
-                                                    [(ngModel)]="Lead_.Project_Name">
-                                            </mat-form-field>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <mat-form-field floatLabel="never">
-                                                <input matInput placeholder="POC Name" name="POC_Name"
-                                                    [(ngModel)]="Lead_.POC_Name">
-                                            </mat-form-field>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <mat-form-field floatLabel="never">
-                                                <mat-select placeholder="Company Size" name="Company_Size_Id"
-                                                    [(ngModel)]="Lead_.Company_Size_Id">
-                                                    <mat-option [value]="0">Select Company Size</mat-option>
-                                                    <mat-option *ngFor="let cs of Company_Size_Data"
-                                                        [value]="cs.Company_Size_Id">{{cs.Company_Size_Name}}</mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Right side: Contact Person Details -->
-                                <div class="col-md-4" [formGroup]="contactForm">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <mat-checkbox class="example-margin" [(ngModel)]="Lead_.Next_Call_Action" name="Next_Call_Action" [ngModelOptions]="{standalone: true}">
-                                            Next Call Action
-                                        </mat-checkbox>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between mb-2">
-                                        <h6 class="text-info m-0" style="cursor: default;">Contact Person Details</h6>
-                                        <button mat-button type="button" class="btn-add-contact-person" (click)="addContact()">
-                                            <i class="material-icons" style="font-size: 16px; margin-right: 4px;">add</i> Add Contact Person
-                                        </button>
-                                    </div>
-                                    
-                                    <div formArrayName="contactPersons" class="contact-persons-wrapper" style="max-height: 450px; overflow-y: auto; padding-right: 5px;">
-                                        <div *ngFor="let contact of contactPersons.controls; let i=index" [formGroupName]="i" 
-                                             class="card p-2 mb-3 contact-person-entry" style="border: 1px solid #e0e0e0; box-shadow: none;">
-                                            
-                                            <div class="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom">
-                                                <span class="text-secondary" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Contact #{{i + 1}}</span>
-                                                <button *ngIf="contactPersons.length > 1" mat-icon-button color="warn" type="button" 
-                                                        (click)="removeContact(i)" style="width: 24px; height: 24px; line-height: 24px;" title="Remove">
-                                                    <i class="material-icons" style="font-size: 16px;">delete_outline</i>
-                                                </button>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <mat-form-field floatLabel="never">
-                                                        <input matInput placeholder="Contact Person Name *" formControlName="Contact_Person">
-                                                        <mat-error *ngIf="contact.get('Contact_Person').invalid && contact.get('Contact_Person').touched">
-                                                            Name is required
-                                                        </mat-error>
-                                                    </mat-form-field>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <mat-form-field floatLabel="never">
-                                                        <input matInput placeholder="Contact Number *" formControlName="Contact_Number">
-                                                        <mat-error *ngIf="contact.get('Contact_Number').hasError('required') && contact.get('Contact_Number').touched">
-                                                            Number is required
-                                                        </mat-error>
-                                                        <mat-error *ngIf="contact.get('Contact_Number').hasError('pattern')">
-                                                            Numeric values only
-                                                        </mat-error>
-                                                        <mat-error *ngIf="contact.get('Contact_Number').hasError('minlength')">
-                                                            Min 10 digits
-                                                        </mat-error>
-                                                    </mat-form-field>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <mat-form-field floatLabel="never">
-                                                        <mat-select placeholder="Designation" formControlName="Designation">
-                                                            <mat-option [value]="0">Select Designation</mat-option>
-                                                            <mat-option *ngFor="let d of Designation_Data"
-                                                                [value]="d.Designation_Id">{{d.Designation_Name}}</mat-option>
-                                                        </mat-select>
-                                                    </mat-form-field>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <mat-form-field floatLabel="never">
-                                                        <input matInput placeholder="Email" formControlName="Email">
-                                                        <mat-error *ngIf="contact.get('Email').hasError('email')">
-                                                            Invalid email format
-                                                        </mat-error>
-                                                    </mat-form-field>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mt-2">
                                 <div class="col-md-3">
                                     <mat-form-field floatLabel="never">
-                                        <input matInput placeholder="Address1" name="Address"
-                                            [(ngModel)]="Lead_.Address">
+                                        <input matInput placeholder="Company Name *" name="Lead_Name" [(ngModel)]="Lead_.Lead_Name">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-3">
                                     <mat-form-field floatLabel="never">
-                                        <input matInput placeholder="Address2" name="Address2"
-                                            [(ngModel)]="Lead_.Remark">
+                                        <mat-select placeholder="Company Size" name="Company_Size_Id" [(ngModel)]="Lead_.Company_Size_Id">
+                                            <mat-option [value]="0">Select Company Size</mat-option>
+                                            <mat-option *ngFor="let cs of Company_Size_Data" [value]="cs.Company_Size_Id">{{cs.Company_Size_Name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-form-field floatLabel="never">
+                                        <input matInput placeholder="Project Name" name="Project_Name" [(ngModel)]="Lead_.Project_Name">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-form-field floatLabel="never">
+                                        <input matInput placeholder="Company Address" name="Address" [(ngModel)]="Lead_.Address">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <!-- Contact Person Information -->
+                            <div class="row mt-4">
+                                <div class="col-md-12">
+                                    <h6 class="text-info" style="cursor: default;">Contact Person Information</h6>
+                                </div>
+                            </div>
+                            <div [formGroup]="contactForm">
+                                <div formArrayName="contactPersons" class="contact-persons-wrapper">
+                                    <div *ngFor="let contact of contactPersons.controls; let i=index" [formGroupName]="i" class="card p-2 mb-3 contact-person-entry" style="border: 1px solid #e0e0e0; box-shadow: none;">
+                                        <div class="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom">
+                                            <span class="text-secondary" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Contact #{{i + 1}}</span>
+                                            <button *ngIf="contactPersons.length > 1" mat-icon-button color="warn" type="button" (click)="removeContact(i)" style="width: 24px; height: 24px; line-height: 24px;" title="Remove">
+                                                <i class="material-icons" style="font-size: 16px;">delete_outline</i>
+                                            </button>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <mat-form-field floatLabel="never">
+                                                    <input matInput placeholder="Contact Person Name *" formControlName="Contact_Person">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <mat-form-field floatLabel="never">
+                                                    <mat-select placeholder="Designation" formControlName="Designation">
+                                                        <mat-option [value]="0">Select Designation</mat-option>
+                                                        <mat-option *ngFor="let d of Designation_Data" [value]="d.Designation_Id">{{d.Designation_Name}}</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <mat-form-field floatLabel="never">
+                                                    <input matInput placeholder="Mobile Number *" formControlName="Contact_Number">
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-md-4">
+                                                <mat-form-field floatLabel="never">
+                                                    <input matInput placeholder="Phone Number" formControlName="Phone">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <mat-form-field floatLabel="never">
+                                                    <input matInput placeholder="Email ID" formControlName="Email">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md-4 d-flex align-items-center">
+                                                <mat-checkbox class="example-margin" formControlName="Next_Call_Action" (change)="Set_Next_Call_Contact(i)">
+                                                    Next Call Action
+                                                </mat-checkbox>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end mb-2">
+                                    <button mat-button type="button" class="btn-add-contact-person" (click)="addContact()">
+                                        <i class="material-icons" style="font-size: 16px; margin-right: 4px;">add</i> Add Contact Person
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Business Information -->
+                            <div class="row mt-4">
+                                <div class="col-md-12">
+                                    <h6 class="text-info" style="cursor: default;">Business Information</h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <mat-form-field floatLabel="never">
+                                        <mat-select placeholder="Industry" name="Vertical2" [(ngModel)]="Selected_Vertical" (ngModelChange)="onVerticalChange()">
+                                            <mat-option *ngFor="let v of Vertical_Data" [value]="v.Vertical_Id">{{v.Vertical_Name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-form-field floatLabel="never">
+                                        <mat-select placeholder="District" name="District" [(ngModel)]="Lead_.District">
+                                            <mat-option *ngFor="let d of District_Data" [value]="d.District_Id">{{d.District_Name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-form-field floatLabel="never">
+                                        <mat-select placeholder="State" name="State" [(ngModel)]="Lead_.State">
+                                            <mat-option *ngFor="let s of State_Data" [value]="s.State_Id">{{s.State_Name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-form-field floatLabel="never">
+                                        <input matInput placeholder="Website" name="Website" [(ngModel)]="Lead_.Website">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-2">
+                                <div class="col-md-3">
+                                    <mat-form-field floatLabel="never">
+                                        <input matInput placeholder="Address2/Remark" name="Address2" [(ngModel)]="Lead_.Remark">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-3">
@@ -209,111 +157,113 @@
                                 </div>
                             </div>
 
-                            <div class="row mt-2">
+                            <!-- Requirement Information -->
+                            <div class="row mt-4">
+                                <div class="col-md-12">
+                                    <h6 class="text-info" style="cursor: default;">Requirement Information</h6>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
-                                    <mat-form-field floatLabel="never">
-                                        <mat-select placeholder="State" name="State" [(ngModel)]="Lead_.State">
-                                            <mat-option *ngFor="let s of State_Data"
-                                                [value]="s.State_Id">{{s.State_Name}}</mat-option>
+                                    <mat-form-field floatLabel="never" class="vertical-multiselect">
+                                        <mat-select placeholder="Requirement For (Checklist)" name="Enquiry_For" [(ngModel)]="Selected_Enquiry_For" multiple (ngModelChange)="onEnquiryForChange()">
+                                            <mat-select-trigger>
+                                                <span *ngIf="Selected_Enquiry_For.length === 0" class="placeholder-text">Requirement For</span>
+                                                <span class="vertical-chip" *ngFor="let eId of Selected_Enquiry_For">
+                                                    {{getVerticalName(eId)}}
+                                                </span>
+                                            </mat-select-trigger>
+                                            <mat-option *ngFor="let opt of Vertical_Data" [value]="opt.Vertical_Id">{{opt.Vertical_Name}}</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-6">
                                     <mat-form-field floatLabel="never">
-                                        <mat-select placeholder="District" name="District" [(ngModel)]="Lead_.District">
-                                            <mat-option *ngFor="let d of District_Data"
-                                                [value]="d.District_Id">{{d.District_Name}}</mat-option>
+                                        <mat-select placeholder="Enquiry Source" name="Enquiry_Source" [(ngModel)]="Lead_.Source">
+                                            <mat-option *ngFor="let source of Source_Data" [value]="source.Source_Id">{{source.Source_Name}}</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
                             </div>
 
-                            <div class="followup-checkbox">
+                            <!-- Lead Priority -->
+                            <div class="row mt-4">
+                                <div class="col-md-12">
+                                    <h6 class="text-info" style="cursor: default;">Lead Priority</h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field floatLabel="never">
+                                        <mat-select placeholder="Lead Priority" name="Lead_Priority" [(ngModel)]="Lead_.Lead_Priority">
+                                            <mat-option value="Low">Low</mat-option>
+                                            <mat-option value="Medium">Medium</mat-option>
+                                            <mat-option value="High">High</mat-option>
+                                            <mat-option value="Critical">Critical</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="followup-checkbox mt-4">
                                 <label class="followup-checkbox-label">
                                     <input type="checkbox" name="Is_FollowUp" [(ngModel)]="Lead_.Is_FollowUp" />
                                     <span class="custom-checkbox"></span>
                                     <span class="checkbox-text">Show Follow-up</span>
                                 </label>
                             </div>
-
-
+                            
                             <!-- Follow-up Details section -->
-                            <div *ngIf="Lead_.Is_FollowUp" class="follow-up-section mt-5">
+                            <div *ngIf="Lead_.Is_FollowUp" class="follow-up-section mt-4">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h6 class="text-info" style="cursor: default;">Follow-up Details</h6>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <!-- <div class="col-md-4">
-                                        <mat-form-field floatLabel="never">
-                                            <mat-select placeholder="Branch *" name="FollowUp_Location_Id"
-                                                [(ngModel)]="Lead_.FollowUp_Location_Id">
-                                                <mat-option *ngFor="let loc of Location_Data"
-                                                    [value]="loc.Location_Id">{{loc.Location_Name}}</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </div> -->
                                     <div class="col-md-4">
                                         <mat-form-field floatLabel="never">
-                                            <mat-select placeholder="Department *" name="FollowUp_Department_Id"
-                                                [(ngModel)]="Lead_.FollowUp_Department_Id">
-                                                <mat-option *ngFor="let dept of Department_Data"
-                                                    [value]="dept.Department_Id">{{dept.Department_Name}}</mat-option>
+                                            <mat-select placeholder="Department *" name="FollowUp_Department_Id" [(ngModel)]="Lead_.FollowUp_Department_Id">
+                                                <mat-option *ngFor="let dept of Department_Data" [value]="dept.Department_Id">{{dept.Department_Name}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
                                     <div class="col-md-4">
                                         <mat-form-field floatLabel="never">
-                                            <mat-select placeholder="Assigned Staff *" name="FollowUp_Staff_Id"
-                                                [(ngModel)]="Lead_.FollowUp_Staff_Id">
-                                                <mat-option *ngFor="let staff of Staff_Data"
-                                                    [value]="staff.User_Details_Id">{{staff.User_Details_Name}}</mat-option>
+                                            <mat-select placeholder="Assigned Staff *" name="FollowUp_Staff_Id" [(ngModel)]="Lead_.FollowUp_Staff_Id">
+                                                <mat-option *ngFor="let staff of Staff_Data" [value]="staff.User_Details_Id">{{staff.User_Details_Name}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
                                     <div class="col-md-4">
                                         <mat-form-field floatLabel="never">
-                                            <mat-select placeholder="Follow-up Status *" name="FollowUp_Status_Id"
-                                                [(ngModel)]="Lead_.FollowUp_Status_Id">
-                                                <mat-option *ngFor="let status of Status_Data"
-                                                    [value]="status.Status_Id">{{status.Status_Name}}</mat-option>
+                                            <mat-select placeholder="Lead Stage *" name="FollowUp_Status_Id" [(ngModel)]="Lead_.FollowUp_Status_Id">
+                                                <mat-option *ngFor="let status of Status_Data" [value]="status.Status_Id">{{status.Status_Name}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
                                 </div>
 
-                                <!-- source -->
-
-
-
                                 <div class="row mt-2">
-
                                     <div class="col-md-4">
                                         <label>Next Follow-up Date</label>
                                         <mat-form-field floatLabel="never">
-                                            <input matInput [matDatepicker]="fp" placeholder="Next Follow-up Date *"
-                                                name="FollowUp_Next_Date" [(ngModel)]="Lead_.FollowUp_Next_Date">
+                                            <input matInput [matDatepicker]="fp" placeholder="Next Follow-up Date *" name="FollowUp_Next_Date" [(ngModel)]="Lead_.FollowUp_Next_Date">
                                             <mat-datepicker-toggle matSuffix [for]="fp"></mat-datepicker-toggle>
                                             <mat-datepicker #fp></mat-datepicker>
                                         </mat-form-field>
                                     </div>
                                     <div class="col-md-4">
                                         <label>Follow-up Time</label>
-                                        <!-- Using native datetime-local for simplicity as requested "Date and Time one field" -->
-                                        <!-- Note: matInput type="datetime-local" works natively in modern browsers -->
                                         <mat-form-field floatLabel="never">
-                                            <input matInput type="datetime-local" placeholder="Follow-up Date & Time"
-                                                name="FollowUp_Date" [(ngModel)]="Lead_.FollowUp_Date">
+                                            <input matInput type="datetime-local" placeholder="Follow-up Date & Time" name="FollowUp_Date" [(ngModel)]="Lead_.FollowUp_Date">
                                         </mat-form-field>
                                     </div>
                                     <div class="col-md-4">
                                         <mat-form-field floatLabel="never">
-                                            <input matInput placeholder="Remarks" name="FollowUp_Remark"
-                                                [(ngModel)]="Lead_.FollowUp_Remark">
+                                            <input matInput placeholder="Remarks" name="FollowUp_Remark" [(ngModel)]="Lead_.FollowUp_Remark">
                                         </mat-form-field>
                                     </div>
-
                                 </div>
                             </div>
 
@@ -352,10 +302,8 @@
 
                             <div class="row mt-5">
                                 <div class="col-md-12 text-right">
-                                    <button mat-button type="button" class="btn-cancel"
-                                        (click)="Close_Click()">Cancel</button>
-                                    <button mat-raised-button type="button" class="btn-save"
-                                        (click)="Save_Lead()">Save</button>
+                                    <button mat-button type="button" class="btn-cancel" (click)="Close_Click()">Cancel</button>
+                                    <button mat-raised-button type="button" class="btn-save" (click)="Save_Lead()">Save</button>
                                 </div>
                             </div>
                         </form>
@@ -374,6 +322,15 @@
                             <p class="card-category">Track and manage your business leads</p>
                         </div>
                         <div class="d-flex align-items-center" style="gap: 8px;">
+                            <button mat-raised-button type="button" class="btn-column-settings" (click)="Column_Customizer_Open = !Column_Customizer_Open">
+                                <i class="material-icons">view_column</i> Columns
+                            </button>
+                            <button mat-raised-button type="button" class="btn-column-settings" (click)="Export_CSV()">
+                                <i class="material-icons">description</i> CSV
+                            </button>
+                            <button mat-raised-button type="button" class="btn-column-settings" (click)="Export_Excel()">
+                                <i class="material-icons">grid_on</i> Excel
+                            </button>
                             <button mat-raised-button (click)="Create_New()" class="btn-new-lead">
                                 <i class="material-icons">add</i> New Lead
                             </button>
@@ -381,6 +338,68 @@
 
                     </div>
                     <div class="card-body p-0">
+                        <div class="column-customizer" *ngIf="Column_Customizer_Open">
+                            <div class="column-customizer-header">
+                                <strong>Customize Lead Columns</strong>
+                                <span>Show or hide columns and save your preference.</span>
+                            </div>
+                            <div class="column-toggle-grid">
+                                <mat-checkbox *ngFor="let column of Lead_List_Columns" [(ngModel)]="column.visible" [name]="'col_' + column.key">
+                                    {{column.label}}
+                                </mat-checkbox>
+                            </div>
+                            <div class="text-right mt-2">
+                                <button mat-button type="button" class="btn-cancel" (click)="Reset_Column_Preferences()">Reset</button>
+                                <button mat-raised-button type="button" class="btn-save" (click)="Save_Column_Preferences()">Save Preferences</button>
+                            </div>
+                        </div>
+                        <div class="lead-filter-panel">
+                            <div class="filter-grid">
+                                <mat-form-field floatLabel="never">
+                                    <mat-select placeholder="Industry" name="Filter_Industry" [(ngModel)]="Lead_Filter.Industry" (ngModelChange)="Apply_Lead_Filters()">
+                                        <mat-option [value]="0">All Industries</mat-option>
+                                        <mat-option *ngFor="let v of Vertical_Data" [value]="v.Vertical_Id">{{v.Vertical_Name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field floatLabel="never">
+                                    <mat-select placeholder="Stage" name="Filter_Stage" [(ngModel)]="Lead_Filter.Stage" (ngModelChange)="Apply_Lead_Filters()">
+                                        <mat-option [value]="0">All Stages</mat-option>
+                                        <mat-option *ngFor="let status of Status_Data" [value]="status.Status_Id">{{status.Status_Name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field floatLabel="never">
+                                    <mat-select placeholder="Priority" name="Filter_Priority" [(ngModel)]="Lead_Filter.Priority" (ngModelChange)="Apply_Lead_Filters()">
+                                        <mat-option value="">All Priorities</mat-option>
+                                        <mat-option value="Low">Low</mat-option>
+                                        <mat-option value="Medium">Medium</mat-option>
+                                        <mat-option value="High">High</mat-option>
+                                        <mat-option value="Critical">Critical</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field floatLabel="never">
+                                    <input matInput type="date" placeholder="Date" name="Filter_Date" [(ngModel)]="Lead_Filter.Date" (ngModelChange)="Apply_Lead_Filters()">
+                                </mat-form-field>
+                                <mat-form-field floatLabel="never">
+                                    <mat-select placeholder="Assigned Staff" name="Filter_Assigned_Staff" [(ngModel)]="Lead_Filter.Assigned_Staff" (ngModelChange)="Apply_Lead_Filters()">
+                                        <mat-option [value]="0">All Staff</mat-option>
+                                        <mat-option *ngFor="let staff of Staff_Data" [value]="staff.User_Details_Id">{{staff.User_Details_Name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field floatLabel="never">
+                                    <mat-select placeholder="District" name="Filter_District" [(ngModel)]="Lead_Filter.District" (ngModelChange)="Apply_Lead_Filters()">
+                                        <mat-option [value]="0">All Districts</mat-option>
+                                        <mat-option *ngFor="let d of District_Data" [value]="d.District_Id">{{d.District_Name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field floatLabel="never">
+                                    <mat-select placeholder="State" name="Filter_State" [(ngModel)]="Lead_Filter.State" (ngModelChange)="Apply_Lead_Filters()">
+                                        <mat-option [value]="0">All States</mat-option>
+                                        <mat-option *ngFor="let s of State_Data" [value]="s.State_Id">{{s.State_Name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <button mat-button type="button" class="btn-cancel filter-clear" (click)="Clear_Lead_Filters()">Clear</button>
+                            </div>
+                        </div>
                         <div class="lead-list-master-container">
 
                             <!-- FIXED COLUMNS (LEFT) -->
@@ -388,34 +407,26 @@
                                 <table class="split-table">
                                     <thead>
                                         <tr>
-                                            <th class="col-width-sl">SL</th>
-                                            <th class="col-width-fixed">Lead Name</th>
-                                            <th class="col-width-fixed">Phone</th>
-                                            <th class="col-width-fixed">Status</th>
-                                            <th class="col-width-fixed">Enquiry For</th>
+                                            <th *ngIf="Is_Column_Visible('Company_Name')" class="col-width-company">Company Name</th>
+                                            <th *ngIf="Is_Column_Visible('Contact_Person')" class="col-width-fixed">Contact Person</th>
+                                            <th *ngIf="Is_Column_Visible('Number')" class="col-width-fixed">Number</th>
+                                            <th *ngIf="Is_Column_Visible('Industry')" class="col-width-fixed">Industry</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let lead of Lead_Data; let i = index">
-                                            <td>{{i + 1}}</td>
-                                            <td>
+                                        <tr *ngFor="let lead of Paged_Lead_Data; let i = index">
+                                            <td *ngIf="Is_Column_Visible('Company_Name')">
                                                 <span class="lead-name-clickable" (click)="Edit_Lead(lead)"
                                                     matTooltip="Click to Edit Lead">
                                                     {{lead.Lead_Name}}
                                                 </span>
                                             </td>
-                                            <td>{{lead.Phone}}</td>
-                                            <td>
-                                                <span class="badge badge-info status-clickable"
-                                                    (click)="Open_FollowUp_Drawer(lead)"
-                                                    matTooltip="Click to update follow-up">
-                                                    {{lead.Status_Name}}
-                                                </span>
-                                            </td>
-                                            <td>{{lead.Vertical_Name}}</td>
+                                            <td *ngIf="Is_Column_Visible('Contact_Person')">{{lead.Contact_Person}}</td>
+                                            <td *ngIf="Is_Column_Visible('Number')">{{lead.Contact_Number || lead.Phone}}</td>
+                                            <td *ngIf="Is_Column_Visible('Industry')">{{lead.Vertical_Name}}</td>
                                         </tr>
-                                        <tr *ngIf="Lead_Data.length == 0">
-                                            <td colspan="5" class="text-center">&nbsp;</td>
+                                        <tr *ngIf="Paged_Lead_Data.length == 0">
+                                            <td colspan="4" class="text-center">&nbsp;</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -426,58 +437,43 @@
                                 <table class="split-table">
                                     <thead>
                                         <tr>
-                                            <th class="col-width-scroll">Contact Person</th>
-                                            <th class="col-width-scroll">Contact No</th>
-                                            <th class="col-width-scroll">Designation</th>
-                                            <th class="col-width-scroll">Email</th>
-                                            <th class="col-width-scroll">Website</th>
-                                            <th class="col-width-scroll">Source</th>
-                                            <th class="col-width-scroll">Address</th>
-                                            <th class="col-width-scroll">Remark</th>
-                                            <th class="col-width-scroll">Rating</th>
-                                            <th class="col-width-scroll">Review</th>
-                                            <th class="col-width-scroll">State</th>
-                                            <th class="col-width-scroll">District</th>
-
-                                            <th class="col-width-scroll">Assigned Staff</th>
-                                            <th class="col-width-scroll text-right">Action</th>
+                                            <th *ngIf="Is_Column_Visible('Lead_Stage')" class="col-width-scroll">Lead Stage</th>
+                                            <th *ngIf="Is_Column_Visible('Priority')" class="col-width-scroll-small">Priority</th>
+                                            <th *ngIf="Is_Column_Visible('Last_FollowUp')" class="col-width-scroll">Last Follow-up</th>
+                                            <th *ngIf="Is_Column_Visible('Next_FollowUp')" class="col-width-scroll">Next Follow-up</th>
+                                            <th *ngIf="Is_Column_Visible('Created_Date')" class="col-width-scroll">Created Date</th>
+                                            <th *ngIf="Is_Column_Visible('Assigned_Staff')" class="col-width-scroll">Assigned Staff</th>
+                                            <th *ngIf="Is_Column_Visible('Remarks')" class="col-width-scroll">Remarks</th>
+                                            <th *ngIf="Is_Column_Visible('Action')" class="col-width-scroll text-right">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let lead of Lead_Data; let i = index">
-                                            <td class="col-width-scroll">{{lead.Contact_Person}}</td>
-                                            <td class="col-width-scroll">{{lead.Contact_Number}}</td>
-                                            <td class="col-width-scroll">{{lead.Designation_Name}}</td>
-                                            <td class="col-width-scroll">{{lead.Email}}</td>
-                                            <td class="col-width-scroll">{{lead.Website}}</td>
-                                            <td class="col-width-scroll">{{lead.Source_Name}}</td>
-
-                                            <td class="col-width-scroll">
-                                                <span class="text-truncate-custom"
-                                                    [matTooltip]="lead.Address">{{lead.Address}}</span>
+                                        <tr *ngFor="let lead of Paged_Lead_Data; let i = index">
+                                            <td *ngIf="Is_Column_Visible('Lead_Stage')" class="col-width-scroll">
+                                                <span class="badge badge-info status-clickable"
+                                                    (click)="Open_FollowUp_Drawer(lead)"
+                                                    matTooltip="Click to update follow-up">
+                                                    {{lead.Status_Name || 'RAW Lead'}}
+                                                </span>
                                             </td>
-                                            <td class="col-width-scroll">
+                                            <td *ngIf="Is_Column_Visible('Priority')" class="col-width-scroll-small">{{lead.Lead_Priority || 'Medium'}}</td>
+                                            <td *ngIf="Is_Column_Visible('Last_FollowUp')" class="col-width-scroll">{{lead.Last_FollowUp_Date | date:'mediumDate'}}</td>
+                                            <td *ngIf="Is_Column_Visible('Next_FollowUp')" class="col-width-scroll">{{lead.Next_FollowUp_Date | date:'mediumDate'}}</td>
+                                            <td *ngIf="Is_Column_Visible('Created_Date')" class="col-width-scroll">{{lead.Entry_Date | date:'mediumDate'}}</td>
+                                            <td *ngIf="Is_Column_Visible('Assigned_Staff')" class="col-width-scroll">{{lead.Staff_Name}}</td>
+                                            <td *ngIf="Is_Column_Visible('Remarks')" class="col-width-scroll">
                                                 <span class="text-truncate-custom"
                                                     [matTooltip]="lead.Remark">{{lead.Remark}}</span>
                                             </td>
-                                            <td class="col-width-scroll">{{lead.Rate}}</td>
-                                            <td class="col-width-scroll">
-                                                <span class="text-truncate-custom"
-                                                    [matTooltip]="lead.Review">{{lead.Review}}</span>
-                                            </td>
-                                            <td class="col-width-scroll">{{lead.State_Name}}</td>
-                                            <td class="col-width-scroll">{{lead.District_Name}}</td>
-
-                                            <td class="col-width-scroll">{{lead.Staff_Name}}</td>
-                                            <td class="col-width-scroll text-right">
+                                            <td *ngIf="Is_Column_Visible('Action')" class="col-width-scroll text-right">
                                                 <button mat-icon-button (click)="Open_Requirement(lead)"
                                                     color="primary" matTooltip="Requirement">
                                                     <i class="material-icons">assignment</i>
                                                 </button>
 
-                                                <button mat-icon-button (click)="Reprocess_Click(lead)"
-                                                    color="accent" matTooltip="Reprocess">
-                                                    <i class="material-icons">refresh</i>
+                                                <button mat-icon-button (click)="Edit_Lead(lead)"
+                                                    color="primary" matTooltip="Edit Lead">
+                                                    <i class="material-icons">edit</i>
                                                 </button>
 
                                                 <button mat-icon-button (click)="Delete_Lead(lead.Lead_Id, i)"
@@ -486,13 +482,32 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr *ngIf="Lead_Data.length == 0">
-                                            <td colspan="14" class="text-center text-muted">No leads found.</td>
+                                        <tr *ngIf="Paged_Lead_Data.length == 0">
+                                            <td colspan="8" class="text-center text-muted">No leads found.</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
 
+                        </div>
+                        <div class="pagination-container d-flex justify-content-between align-items-center p-2">
+                            <div class="page-info">
+                                Showing {{Paged_Lead_Data.length}} of {{Filtered_Lead_Data.length}} leads
+                            </div>
+                            <div class="d-flex align-items-center" style="gap: 8px;">
+                                <mat-form-field floatLabel="never" style="width: 90px;">
+                                    <mat-select name="Page_Size" [(ngModel)]="Page_Size" (ngModelChange)="Change_Page_Size()">
+                                        <mat-option *ngFor="let size of Page_Size_Options" [value]="size">{{size}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <button mat-button type="button" (click)="Change_Page(-1)" [disabled]="Page_Index <= 1">
+                                    <i class="material-icons">chevron_left</i> Previous
+                                </button>
+                                <span class="page-info">Page {{Page_Index}} / {{Total_Pages}}</span>
+                                <button mat-button type="button" (click)="Change_Page(1)" [disabled]="Page_Index >= Total_Pages">
+                                    Next <i class="material-icons">chevron_right</i>
+                                </button>
+                            </div>
                         </div>
 
 
@@ -534,9 +549,9 @@
 
                 <div class="row mt-2">
                     <div class="col-md-6">
-                        <label class="drawer-input-label">Follow-up Status</label>
+                        <label class="drawer-input-label">Lead Stage</label>
                         <mat-form-field floatLabel="never">
-                            <mat-select placeholder="Select Status" name="FollowUp_Status_Id"
+                            <mat-select placeholder="Select Lead Stage" name="FollowUp_Status_Id"
                                 [(ngModel)]="Lead_.FollowUp_Status_Id">
                                 <mat-option *ngFor="let status of Status_Data"
                                     [value]="status.Status_Id">{{status.Status_Name}}</mat-option>
@@ -556,6 +571,12 @@
 
                 <div class="row mt-2">
                     <div class="col-md-6">
+                        <label class="drawer-input-label">Last Followed On</label>
+                        <mat-form-field floatLabel="never">
+                            <input matInput [value]="Lead_.Last_FollowUp_Date ? (Lead_.Last_FollowUp_Date | date:'medium') : '-'" disabled>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
                         <label class="drawer-input-label">Follow-up Time</label>
                         <mat-form-field floatLabel="never">
                             <input matInput type="datetime-local" placeholder="Follow-up Date & Time"
@@ -566,26 +587,250 @@
 
                 <div class="row mt-2">
                     <div class="col-md-12">
-                        <label class="drawer-input-label">Remarks</label>
+                        <label class="drawer-input-label">Follow-up Notes</label>
                         <mat-form-field floatLabel="never">
-                            <textarea matInput placeholder="Enter your remarks here..." name="FollowUp_Remark" rows="4"
+                            <textarea matInput placeholder="Enter follow-up notes..." name="FollowUp_Remark" rows="4"
                                 [(ngModel)]="Lead_.FollowUp_Remark"></textarea>
                         </mat-form-field>
                     </div>
                 </div>
 
-                <!-- HISTORY SECTION -->
-                <!-- <div class="history-section" *ngIf="FollowUp_History && FollowUp_History.length > 0">
-                    <h6 class="text-info mb-3">Follow-up History</h6>
-                    <div class="history-item" *ngFor="let history of FollowUp_History">
-                        <div class="history-item-header">
-                            <span class="history-status">{{history.Status_Name}}</span>
-                            <span>{{history.Entry_Date | date:'dd MMM yyyy, hh:mm a'}}</span>
+                <div class="lost-lead-section" *ngIf="Is_Lost_Stage()">
+                    <h6 class="text-info mb-3">Lost Lead Management</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="drawer-input-label">Lost Reason</label>
+                            <mat-form-field floatLabel="never">
+                                <mat-select name="Lost_Reason" [(ngModel)]="Lead_.Lost_Reason">
+                                    <mat-option *ngFor="let reason of Lost_Reason_Data" [value]="reason">{{reason}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
                         </div>
-                        <div class="history-remark">{{history.Remark}}</div>
-                        <div class="text-muted mt-1" style="font-size: 10px;">By: {{history.Staff_Name}}</div>
+                        <div class="col-md-6">
+                            <label class="drawer-input-label">Primary Issue</label>
+                            <mat-form-field floatLabel="never">
+                                <mat-select name="Lost_Primary_Issue" [(ngModel)]="Lead_.Lost_Primary_Issue">
+                                    <mat-option *ngFor="let issue of Lost_Primary_Issue_Data" [value]="issue">{{issue}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
                     </div>
-                </div> -->
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="drawer-input-label">Competitor Name</label>
+                            <mat-form-field floatLabel="never">
+                                <input matInput name="Lost_Competitor_Name" [(ngModel)]="Lead_.Lost_Competitor_Name">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="drawer-input-label">Competitor Price</label>
+                            <mat-form-field floatLabel="never">
+                                <input matInput type="number" name="Lost_Competitor_Price" [(ngModel)]="Lead_.Lost_Competitor_Price">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="lost-toggle-grid mt-2">
+                        <mat-checkbox [(ngModel)]="Lead_.Lost_Was_Price_Issue" name="Lost_Was_Price_Issue">Was Price the Issue?</mat-checkbox>
+                        <mat-checkbox [(ngModel)]="Lead_.Lost_Was_Solution_Issue" name="Lost_Was_Solution_Issue">Was Solution the Issue?</mat-checkbox>
+                        <mat-checkbox [(ngModel)]="Lead_.Lost_Quote_Only_Comparison" name="Lost_Quote_Only_Comparison">Took Quote Only for Comparison?</mat-checkbox>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="drawer-input-label">Re-open Possibility</label>
+                            <mat-form-field floatLabel="never">
+                                <mat-select name="Lost_Reopen_Possibility" [(ngModel)]="Lead_.Lost_Reopen_Possibility">
+                                    <mat-option value="High">High</mat-option>
+                                    <mat-option value="Medium">Medium</mat-option>
+                                    <mat-option value="Low">Low</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="drawer-input-label">Expected Reconnect Date</label>
+                            <mat-form-field floatLabel="never">
+                                <input matInput [matDatepicker]="reconnect_dp" name="Lost_Expected_Reconnect_Date" [(ngModel)]="Lead_.Lost_Expected_Reconnect_Date">
+                                <mat-datepicker-toggle matSuffix [for]="reconnect_dp"></mat-datepicker-toggle>
+                                <mat-datepicker #reconnect_dp></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <label class="drawer-input-label">Remarks</label>
+                    <mat-form-field floatLabel="never">
+                        <textarea matInput rows="4" name="Lost_Remarks" [(ngModel)]="Lead_.Lost_Remarks"></textarea>
+                    </mat-form-field>
+                </div>
+
+                <div class="tracking-section">
+                    <h6 class="text-info mb-3">Meeting Tracking</h6>
+                    <div class="counter-row">
+                        <div class="counter-box">
+                            <span>Offline Meetings</span>
+                            <strong>{{Get_Meeting_Count('OFFLINE')}}</strong>
+                            <button mat-mini-fab color="primary" type="button" (click)="Open_Meeting_Form('OFFLINE')" matTooltip="Add Offline Meeting">
+                                <i class="material-icons">add</i>
+                            </button>
+                        </div>
+                        <div class="counter-box">
+                            <span>Online Meetings</span>
+                            <strong>{{Get_Meeting_Count('ONLINE')}}</strong>
+                            <button mat-mini-fab color="primary" type="button" (click)="Open_Meeting_Form('ONLINE')" matTooltip="Add Online Meeting">
+                                <i class="material-icons">add</i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="tracking-form" *ngIf="Show_Meeting_Form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="drawer-input-label">Meeting Date</label>
+                                <mat-form-field floatLabel="never">
+                                    <input matInput type="datetime-local" name="Meeting_Date" [(ngModel)]="Meeting_Input.Meeting_Date">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="drawer-input-label">Meeting Type</label>
+                                <mat-form-field floatLabel="never">
+                                    <input matInput name="Meeting_Type" [value]="Selected_Meeting_Type" disabled>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <label class="drawer-input-label">Notes</label>
+                        <mat-form-field floatLabel="never">
+                            <textarea matInput rows="2" name="Meeting_Notes" [(ngModel)]="Meeting_Input.Notes"></textarea>
+                        </mat-form-field>
+                        <label class="drawer-input-label">Outcome</label>
+                        <mat-form-field floatLabel="never">
+                            <textarea matInput rows="2" name="Meeting_Outcome" [(ngModel)]="Meeting_Input.Outcome"></textarea>
+                        </mat-form-field>
+                        <div class="text-right">
+                            <button mat-button class="btn-cancel" type="button" (click)="Show_Meeting_Form=false">Cancel</button>
+                            <button mat-raised-button class="btn-save" type="button" (click)="Save_Lead_Meeting()">Save Meeting</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mt-3" *ngIf="Meeting_Data && Meeting_Data.length > 0">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Notes</th>
+                                    <th>Outcome</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let meeting of Meeting_Data">
+                                    <td>{{meeting.Meeting_Date | date:'medium'}}</td>
+                                    <td>{{meeting.Meeting_Type}}</td>
+                                    <td>{{meeting.Notes}}</td>
+                                    <td>{{meeting.Outcome}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tracking-section">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="text-info mb-3">Quote Tracking</h6>
+                        <button mat-mini-fab color="primary" type="button" (click)="Open_Quote_Form()" matTooltip="Add Quote Tracking">
+                            <i class="material-icons">add</i>
+                        </button>
+                    </div>
+
+                    <div class="tracking-form" *ngIf="Show_Quote_Form">
+                        <label class="drawer-input-label">Requirement</label>
+                        <mat-form-field floatLabel="never">
+                            <input matInput name="Requirement_Name" [(ngModel)]="Quote_Tracking_Input.Requirement_Name" placeholder="Requirement-wise quote sent">
+                        </mat-form-field>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="drawer-input-label">Quote Sent Date</label>
+                                <mat-form-field floatLabel="never">
+                                    <input matInput type="date" name="Quote_Sent_Date" [(ngModel)]="Quote_Tracking_Input.Quote_Sent_Date">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="drawer-input-label">Quote Amount</label>
+                                <mat-form-field floatLabel="never">
+                                    <input matInput type="number" name="Quote_Amount" [(ngModel)]="Quote_Tracking_Input.Quote_Amount">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <label class="drawer-input-label">Follow-up Status After Quote</label>
+                        <mat-form-field floatLabel="never">
+                            <input matInput name="FollowUp_Status_After_Quote" [(ngModel)]="Quote_Tracking_Input.FollowUp_Status_After_Quote">
+                        </mat-form-field>
+                        <div class="text-right">
+                            <button mat-button class="btn-cancel" type="button" (click)="Show_Quote_Form=false">Cancel</button>
+                            <button mat-raised-button class="btn-save" type="button" (click)="Save_Lead_Quote_Tracking()">Save Quote</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mt-3" *ngIf="Quote_Tracking_Data && Quote_Tracking_Data.length > 0">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Requirement</th>
+                                    <th>Sent Date</th>
+                                    <th>Amount</th>
+                                    <th>Follow-up Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let quote of Quote_Tracking_Data">
+                                    <td>{{quote.Requirement_Name}}</td>
+                                    <td>{{quote.Quote_Sent_Date | date:'mediumDate'}}</td>
+                                    <td>{{quote.Quote_Amount}}</td>
+                                    <td>{{quote.FollowUp_Status_After_Quote}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- HISTORY SECTION -->
+                <div class="history-section" *ngIf="Activity_Log && Activity_Log.length > 0">
+                    <h6 class="text-info mb-3">Remarks History</h6>
+                    <ng-container *ngFor="let activity of Activity_Log">
+                        <div class="history-item" *ngIf="activity.Activity_Type === 'REMARK'">
+                                <div class="history-item-header">
+                                    <span class="history-status">{{activity.User_Name || 'System'}}</span>
+                                    <span>{{activity.Activity_Date | date:'medium'}}</span>
+                                </div>
+                                <div class="activity-change">
+                                    <div>
+                                        <strong>Old Remarks</strong>
+                                        <p>{{activity.Old_Value || '-'}}</p>
+                                    </div>
+                                    <div>
+                                        <strong>New Remarks</strong>
+                                        <p>{{activity.New_Value || '-'}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                    </ng-container>
+                </div>
+
+                <div class="history-section" *ngIf="Activity_Log && Activity_Log.length > 0">
+                    <h6 class="text-info mb-3">Activity Timeline</h6>
+                    <div class="timeline-item" *ngFor="let activity of Activity_Log">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="history-item-header">
+                                <span class="history-status">{{activity.Activity_Title}}</span>
+                                <span>{{activity.Activity_Date | date:'medium'}}</span>
+                            </div>
+                            <div class="text-muted" style="font-size: 11px;">{{activity.User_Name || 'System'}}</div>
+                            <div class="history-remark" *ngIf="activity.Activity_Type === 'STATUS_CHANGE'">
+                                {{activity.Old_Value || '-'}} -> {{activity.New_Value || '-'}}
+                            </div>
+                            <div class="history-remark" *ngIf="activity.Activity_Type !== 'STATUS_CHANGE'">
+                                {{activity.New_Value || activity.Remarks || '-'}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="drawer-footer">
                 <button mat-button class="btn-cancel" (click)="Close_Drawer()">Cancel</button>

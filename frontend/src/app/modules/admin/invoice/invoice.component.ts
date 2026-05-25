@@ -426,6 +426,7 @@ loadQuotation(){
        // this.Sales_Master_Data=result[0];
         this.Sales_Master_=Object.assign({},result[0][0]); 
         this.Sales_Master_.Sales_Master_Id = 0;
+        this.Load_Next_Sales_Invoice_No();
         // this.Sales_Master_.LPONo = result[0][0].POnumber
         // this.Sales_Master_.VAT_percentage = result[0][0].VAT_Percentage
          this.Sales_Master_.PaymentTermValue= result[0][0].PaymentTermValue;
@@ -650,6 +651,7 @@ loadPerformaInvoice(){
         //this.Sales_Master_Data=result[0];
         this.Sales_Master_=Object.assign({},result[0][0]); 
         this.Sales_Master_.Sales_Master_Id = 0;
+        this.Load_Next_Sales_Invoice_No();
         this.Sales_Master_.LPONo=result[0][0].POnumber;   
         this.Sales_Master_.PaymentTermValue=result[0][0].PaymentTermValue;
         this.Sales_Master_.SalesQuotationMaster_Id=result[0][0].SalesQuotationMaster_Id;
@@ -869,7 +871,19 @@ Create_New()
   this.Tot_Amount=0;
   this.Tot_Net=0;
   this.Tot_Gross=0;
+  this.Load_Next_Sales_Invoice_No();
 }
+Load_Next_Sales_Invoice_No() {
+    this.Sales_Master_Service_.Get_Max_Sales_Invoice_No().subscribe({
+        next: (response: any) => {
+            const rows = response.success ? response.data : response;
+            const maxNo = rows && rows[0] ? Number(rows[0].MaxNo || 0) : 0;
+            this.Sales_Master_.Invoice_No = String(maxNo + 1);
+        },
+        error: () => {}
+    });
+}
+
 Close_Click()
 {
   this.Entry_View = false;
@@ -2373,22 +2387,32 @@ Get_Stock_Item(){
                  this.Stock_Temp.ItemId=this.Stock_.ItemId;
                  this.Barcode_=Object.assign({},this.Stock_Temp);
                  
-                this.Sales_Details_.ItemId=this.Stock_.ItemId;
-                this.Sales_Details_.ItemName=this.Stock_.ItemName;
+                                this.Sales_Details_.ItemId=this.Stock_.ItemId;
+                this.Sales_Details_.ItemCode=this.Stock_.Item_Code;
+                this.Sales_Details_.ItemName = this.Stock_.Item_Code ? this.Stock_.Item_Code : this.Stock_.ItemName;
                 this.Sales_Details_.UnitId=this.Stock_.UnitId;
                 this.Sales_Details_.UnitName=this.Stock_.UnitName;
                 this.Sales_Details_.MRP=this.Stock_.MRP;
                 this.Sales_Details_.PurchaseRate=this.Stock_.PurchaseRate;
                 this.Sales_Details_.Stock=this.Stock_.Quantity;
                 this.Sales_Details_.UnitPrice=this.Stock_.SaleRate;
-                this.Sales_Details_.ItemName=this.Stock_.ItemName;
+                
+                const itemAny: any = this.Stock_ as any;
+                let desc = itemAny.Description || '';
+                let itmName = this.Stock_.ItemName || '';
+                if (itmName && desc) {
+                    this.Sales_Details_.Description = itmName + ' - ' + desc;
+                } else {
+                    this.Sales_Details_.Description = desc || itmName || '';
+                }
+                
+                this.Sales_Details_.Model = itemAny.ModelName || itemAny.Model || '';
+                this.Sales_Details_.Brand = itemAny.BrandName || itemAny.Brand || '';
+                
                 this.Sales_Details_.GroupId=this.Stock_.GroupId;
                 this.Sales_Details_.GroupName=this.Stock_.GroupName;
                 this.Sales_Details_.HSNMasterId=this.Stock_.HSNMasterId;
-                this.Sales_Details_.HSNCODE=this.Stock_.HSNCODE;
-                this.Sales_Details_.HSNMasterId=this.Stock_.HSNMasterId;
-                this.Sales_Details_.ItemCode=this.Stock_.Item_Code; 
-            }
+                this.Sales_Details_.HSNCODE=this.Stock_.HSNCODE;}
     }
    
   
@@ -2580,6 +2604,7 @@ newQuotation(){
     this.Sales_Master_= new Sales_Master();
     this.Clr_Sales_Master();
     this.Clr_Sales_Details();
+    this.Load_Next_Sales_Invoice_No();
     this.Sales_Master_Id_Edit = 0;
     this.SalesQuotationMaster_Id = 0;
     this.Edit_Sales = 0;
@@ -2672,6 +2697,7 @@ Load_Delivery_Order_Master(){
        // this.Sales_Master_Data=result[0];
         this.Sales_Master_=Object.assign({},result[0][0]); 
         this.Sales_Master_.Sales_Master_Id = 0;
+        this.Load_Next_Sales_Invoice_No();
         //this.Sales_Master_.LPONo = result[0][0].LPONo
         this.Sales_Master_.VAT_percentage = result[0][0].VAT_Percentage
         // if(this.Sales_Master_.VAT_percentage == undefined || this.Sales_Master_.VAT_percentage == null)
@@ -3400,3 +3426,7 @@ Show_Quotation_Click(SalesQuotationMaster_Id)
   }
 
 }
+
+
+
+

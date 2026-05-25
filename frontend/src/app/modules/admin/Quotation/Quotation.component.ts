@@ -12,6 +12,8 @@ import { Stock_Service } from '../../../services/Stock.Service';
 import { Item_Group_Service } from '../../../services/Item_Group.Service';
 import { Item_Service } from '../../../services/Item.Service';
 import { payment_term_Service } from '../../../services/payment_term.Service';
+import { Brand_Service } from '../../../services/Brand.Service';
+import { Model_Service } from '../../../services/Model.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Quotation_Master } from '../../../models/Quotation_Master';
 import { Company } from '../../../models/Company';
@@ -137,6 +139,11 @@ Permissions: any;
 Sales_Master_Edit:boolean;
 Sales_Master_Save:boolean;
 Sales_Master_Delete:boolean;
+yItem_Group_Data: any;
+ItemData: any;
+BrandData: any[] = [];
+ModelData: any[] = [];
+Unit_Data: any;
 year:any;
 month:any;
 day:any;
@@ -279,7 +286,9 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
         , private el: ElementRef, private zone: NgZone, private renderer: Renderer2, public purchaseordermaster_Service_: purchaseordermaster_Service, public Employee_Details_Service_: Employee_Details_Service, public Stock_Service_: Stock_Service,
         public Item_Group_Service_: Item_Group_Service, public Item_Service_: Item_Service, public payment_term_Service_: payment_term_Service, public Client_Accounts_Service_:Client_Accounts_Service,
         public Requirement_Master_Service_: Requirement_Master_Service,
-        public RequirementWorkflowService_: RequirementWorkflowService,
+        private Brand_Service_: Brand_Service,
+        private Model_Service_: Model_Service,
+        private RequirementWorkflowService_: RequirementWorkflowService,
         private cdr: ChangeDetectorRef
         // public decimalPipe: DecimalPipe
     ) { 
@@ -345,6 +354,8 @@ Page_Load()
     this.Clr_Sales_Details();
     this.Sales_Print=true;
     this.Entry_View=false;
+    this.Load_Brand_Dropdown();
+    this.Load_Model_Dropdown();
 
     // Check if navigated from Requirement module
     const reqData = localStorage.getItem('Requirement_For_Quotation');
@@ -604,6 +615,18 @@ Create_New()
     this.deliveryPendingView = false;
     this.purchasePendingView = false;
     this.packingListPendingView = false;
+    this.Load_Next_Quotation_No();
+}
+
+Load_Next_Quotation_No() {
+    this.Sales_Master_Service_.Get_Max_Quotation_No().subscribe({
+        next: (response: any) => {
+            const rows = response.success ? response.data : response;
+            const maxNo = rows && rows[0] ? Number(rows[0].MaxNo || 0) : 0;
+            this.Quotation_Master_.QuotationNo = String(maxNo + 1);
+        },
+        error: () => {}
+    });
 }
 
 Close_Click()
@@ -1417,9 +1440,10 @@ Clr_Sales_Master()
     {
         this.Payment_Term = this.PaymentTermData[0];
     }
-    this.Status_ = this.Status_Data[0];
+    this.Status_ = this.Status_Data.find(s => s.id == 2) || this.Status_Data[1];
     this.Quotation_Master_.Status = this.Status_.id;
-    this.Quotation_Master_.Status_Name = this.Status_.name;
+    this.Quotation_Master_.Status_Id = 1;
+    this.Quotation_Master_.Status_Name = 'Pending';
 }
 Clr_Sales_Details()
 {
@@ -1736,6 +1760,72 @@ Search_Customer_Typeahead(event: any)
          const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
      });     
   }
+
+  Load_Brand_Dropdown() {
+      this.Brand_Service_.Search_Brand('').subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.BrandData = (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error('Error loading brands:', err);
+          this.BrandData = [];
+      });
+  }
+
+  Load_Model_Dropdown() {
+      this.Model_Service_.Search_Model('').subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.ModelData = (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error('Error loading models:', err);
+          this.ModelData = [];
+      });
+  }
+
+  Search_Brand_Typeahead(event: any) {
+      let Value = "";
+      if (event && event.target && event.target.value != undefined) {
+          Value = event.target.value;
+      } else {
+          Value = this.Quotation_Details_.Brand && typeof this.Quotation_Details_.Brand === 'string' ? this.Quotation_Details_.Brand : '';
+      }
+      this.Brand_Service_.Search_Brand(Value).subscribe(response => {
+          const rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+          this.BrandData = (rows && rows[0]) ? rows[0] : [];
+      }, err => {
+          console.error(err);
+      });
+  }
+
+  displayFnBrand(brand?: any): string | undefined {
+      return brand ? brand.Brand_Name : undefined;
+  }
+
+  selectBrand(brand: any) {
+      this.Quotation_Details_.Brand = brand.Brand_Name;
+  }
+
+  Search_Model_Typeahead(event: any) {
+      let Value = "";
+      if (event && event.target && event.target.value != undefined) {
+          Value = event.target.value;
+      } else {
+          Value = this.Quotation_Details_.Model && typeof this.Quotation_Details_.Model === 'string' ? this.Quotation_Details_.Model : '';
+      }
+      this.Model_Service_.Search_Model(Value).subscribe(response => {
+          const rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+          this.ModelData = (rows && rows[0]) ? rows[0] : [];
+      }, err => {
+          console.error(err);
+      });
+  }
+
+  displayFnModel(model?: any): string | undefined {
+      return model ? model.Model_Name : undefined;
+  }
+
+  selectModel(model: any) {
+      this.Quotation_Details_.Model = model.Model_Name;
+  }
 Search_Item_Typeahead(event: any) {
     var Value = "";
     if (event && event.target && event.target.value != undefined) {
@@ -1943,21 +2033,74 @@ Item_Name_Change(Item_sl: any) {
     this.Quotation_Details_.HSNCODE = Item_sl.HSNCODE;
     this.Quotation_Details_.Stock = Item_sl.Quantity || Item_sl.Stock;
 
-    // Multi-pricing rates
+    // Multi-pricing rates fetched dynamically via UNION query
     this.Pricing_Rates = [];
-    if (Item_sl.SaleRate) this.Pricing_Rates.push({ name: 'Retail', value: Item_sl.SaleRate });
-    if (Item_sl.b2b_rate) this.Pricing_Rates.push({ name: 'B2B', value: Item_sl.b2b_rate });
-    if (Item_sl.b2c_rate) this.Pricing_Rates.push({ name: 'B2C', value: Item_sl.b2c_rate });
-    if (Item_sl.MRP) this.Pricing_Rates.push({ name: 'MRP', value: Item_sl.MRP });
-
-    if (this.Pricing_Rates.length > 0) {
-        this.Selected_Rate = this.Pricing_Rates[0];
-        this.Quotation_Details_.UnitPrice = this.Selected_Rate.value;
+    if (Item_sl.ItemId) {
+        this.Item_Service_.Get_Multiple_Sale_Rates(Item_sl.ItemId).subscribe((response: any) => {
+            const rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+            const list = Array.isArray(rows) && Array.isArray(rows[0]) ? rows[0]
+                       : Array.isArray(rows) ? rows : [];
+            
+            const rateSet = new Set<number>();
+            
+            list.forEach((row: any) => {
+                const val = Number(row.SaleRate);
+                if (val && !rateSet.has(val)) {
+                    rateSet.add(val);
+                    this.Pricing_Rates.push({
+                        name: row.Source || 'Rate',
+                        value: val
+                    });
+                }
+            });
+            
+            // Fallback to static item rates if nothing was fetched from DB
+            if (this.Pricing_Rates.length === 0) {
+                if (Item_sl.SaleRate) this.Pricing_Rates.push({ name: 'Retail', value: Item_sl.SaleRate });
+                if (Item_sl.b2b_rate) this.Pricing_Rates.push({ name: 'B2B', value: Item_sl.b2b_rate });
+                if (Item_sl.b2c_rate) this.Pricing_Rates.push({ name: 'B2C', value: Item_sl.b2c_rate });
+                if (Item_sl.MRP) this.Pricing_Rates.push({ name: 'MRP', value: Item_sl.MRP });
+            }
+            
+            if (this.Pricing_Rates.length > 0) {
+                this.Selected_Rate = this.Pricing_Rates[0];
+                this.Quotation_Details_.UnitPrice = this.Selected_Rate.value;
+            } else {
+                this.Quotation_Details_.UnitPrice = Item_sl.UnitPrice || 0;
+            }
+            this.Calculate_Quotation_Details_Amount();
+            this.cdr.detectChanges();
+        }, err => {
+            console.error('Error fetching dynamic sale rates:', err);
+            // Fallback
+            if (Item_sl.SaleRate) this.Pricing_Rates.push({ name: 'Retail', value: Item_sl.SaleRate });
+            if (Item_sl.b2b_rate) this.Pricing_Rates.push({ name: 'B2B', value: Item_sl.b2b_rate });
+            if (Item_sl.b2c_rate) this.Pricing_Rates.push({ name: 'B2C', value: Item_sl.b2c_rate });
+            if (Item_sl.MRP) this.Pricing_Rates.push({ name: 'MRP', value: Item_sl.MRP });
+            
+            if (this.Pricing_Rates.length > 0) {
+                this.Selected_Rate = this.Pricing_Rates[0];
+                this.Quotation_Details_.UnitPrice = this.Selected_Rate.value;
+            } else {
+                this.Quotation_Details_.UnitPrice = Item_sl.UnitPrice || 0;
+            }
+            this.Calculate_Quotation_Details_Amount();
+            this.cdr.detectChanges();
+        });
     } else {
-        this.Quotation_Details_.UnitPrice = Item_sl.UnitPrice || 0;
+        if (Item_sl.SaleRate) this.Pricing_Rates.push({ name: 'Retail', value: Item_sl.SaleRate });
+        if (Item_sl.b2b_rate) this.Pricing_Rates.push({ name: 'B2B', value: Item_sl.b2b_rate });
+        if (Item_sl.b2c_rate) this.Pricing_Rates.push({ name: 'B2C', value: Item_sl.b2c_rate });
+        if (Item_sl.MRP) this.Pricing_Rates.push({ name: 'MRP', value: Item_sl.MRP });
+        
+        if (this.Pricing_Rates.length > 0) {
+            this.Selected_Rate = this.Pricing_Rates[0];
+            this.Quotation_Details_.UnitPrice = this.Selected_Rate.value;
+        } else {
+            this.Quotation_Details_.UnitPrice = Item_sl.UnitPrice || 0;
+        }
+        this.Calculate_Quotation_Details_Amount();
     }
-
-    this.Calculate_Quotation_Details_Amount();
 
     this.Item_ = Object.assign({}, this.Quotation_Details_);
 }
@@ -1965,8 +2108,28 @@ Item_Name_Change(Item_sl: any) {
 OnStatusChange() {
     if (this.Status_) {
         this.Quotation_Master_.Status = this.Status_.id;
-        this.Quotation_Master_.Status_Name = this.Status_.name;
+        if (this.Status_.id == 2) {
+            this.Quotation_Master_.Status_Id = 1;
+            this.Quotation_Master_.Status_Name = 'Pending';
+        } else if (this.Status_.id == 3) {
+            this.Quotation_Master_.Status_Id = 2;
+            this.Quotation_Master_.Status_Name = 'Approved';
+        } else if (this.Status_.id == 4) {
+            this.Quotation_Master_.Status_Id = 3;
+            this.Quotation_Master_.Status_Name = 'Reject';
+        } else {
+            this.Quotation_Master_.Status_Id = 1;
+            this.Quotation_Master_.Status_Name = 'Pending';
+        }
     }
+}
+
+getQuotationStatusClass() {
+    const statusId = this.Quotation_Master_.Status_Id;
+    if (statusId == 1) return 'pending';
+    if (statusId == 2) return 'approved';
+    if (statusId == 3) return 'reject';
+    return 'pending';
 }
 
 OnRateChange() {
@@ -2534,42 +2697,59 @@ Edit_Sales_Details(Quotation_Details_e:Quotation_Details,index)
     // Set autocomplete text input value
     this.Item_ = Object.assign({}, Quotation_Details_e);
 
-    // Load multiple pricing rates for the item being edited
+    // Load multiple pricing rates for the item being edited dynamically from UNION query
     this.Pricing_Rates = [];
     this.Selected_Rate = null;
 
-    if (Quotation_Details_e.ItemName) {
-        this.Sales_Master_Service_.Search_Item_Typeahead(Quotation_Details_e.ItemName).subscribe((response: any) => {
-            const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
-            let resultsByName = (Rows && Rows[0]) ? Rows[0] : [];
-
-            this.Item_Service_.Search_Item('', 0, Quotation_Details_e.ItemName).subscribe((response2: any) => {
-                const Rows2 = (response2 && typeof response2 === "object" && "success" in response2) ? response2.data : response2;
-                let resultsByCode = (Rows2 && Rows2[0]) ? Rows2[0] : [];
-
-                const combinedResults = [...resultsByName];
-                resultsByCode.forEach(itemCode => {
-                    if (!combinedResults.some(itemByName => itemByName.ItemId === itemCode.ItemId)) {
-                        combinedResults.push(itemCode);
-                    }
-                });
-
-                const matchedItem = combinedResults.find(item => item.ItemId === Quotation_Details_e.ItemId);
-                if (matchedItem) {
-                    this.Pricing_Rates = [];
-                    if (matchedItem.SaleRate) this.Pricing_Rates.push({ name: 'Retail', value: matchedItem.SaleRate });
-                    if (matchedItem.b2b_rate) this.Pricing_Rates.push({ name: 'B2B', value: matchedItem.b2b_rate });
-                    if (matchedItem.b2c_rate) this.Pricing_Rates.push({ name: 'B2C', value: matchedItem.b2c_rate });
-                    if (matchedItem.MRP) this.Pricing_Rates.push({ name: 'MRP', value: matchedItem.MRP });
-
-                    const matchedRate = this.Pricing_Rates.find(r => Number(r.value) === Number(Quotation_Details_e.UnitPrice));
-                    if (matchedRate) {
-                        this.Selected_Rate = matchedRate;
-                    } else {
-                        this.Selected_Rate = null; // Custom Rate
-                    }
+    if (Quotation_Details_e.ItemId) {
+        this.Item_Service_.Get_Multiple_Sale_Rates(Quotation_Details_e.ItemId).subscribe((response: any) => {
+            const rows = (response && typeof response === "object" && "success" in response) ? response.data : response;
+            const list = Array.isArray(rows) && Array.isArray(rows[0]) ? rows[0]
+                       : Array.isArray(rows) ? rows : [];
+            
+            const rateSet = new Set<number>();
+            
+            list.forEach((row: any) => {
+                const val = Number(row.SaleRate);
+                if (val && !rateSet.has(val)) {
+                    rateSet.add(val);
+                    this.Pricing_Rates.push({
+                        name: row.Source || 'Rate',
+                        value: val
+                    });
                 }
             });
+            
+            // Fallback to static item rates if nothing was fetched from DB
+            if (this.Pricing_Rates.length === 0) {
+                if (Quotation_Details_e.SaleRate) this.Pricing_Rates.push({ name: 'Retail', value: Quotation_Details_e.SaleRate });
+                if ((Quotation_Details_e as any).b2b_rate) this.Pricing_Rates.push({ name: 'B2B', value: (Quotation_Details_e as any).b2b_rate });
+                if ((Quotation_Details_e as any).b2c_rate) this.Pricing_Rates.push({ name: 'B2C', value: (Quotation_Details_e as any).b2c_rate });
+                if (Quotation_Details_e.MRP) this.Pricing_Rates.push({ name: 'MRP', value: Quotation_Details_e.MRP });
+            }
+
+            const matchedRate = this.Pricing_Rates.find(r => Number(r.value) === Number(Quotation_Details_e.UnitPrice));
+            if (matchedRate) {
+                this.Selected_Rate = matchedRate;
+            } else {
+                this.Selected_Rate = null; // Custom Rate
+            }
+            this.cdr.detectChanges();
+        }, err => {
+            console.error('Error fetching dynamic sale rates on edit:', err);
+            // Fallback on error
+            if (Quotation_Details_e.SaleRate) this.Pricing_Rates.push({ name: 'Retail', value: Quotation_Details_e.SaleRate });
+            if ((Quotation_Details_e as any).b2b_rate) this.Pricing_Rates.push({ name: 'B2B', value: (Quotation_Details_e as any).b2b_rate });
+            if ((Quotation_Details_e as any).b2c_rate) this.Pricing_Rates.push({ name: 'B2C', value: (Quotation_Details_e as any).b2c_rate });
+            if (Quotation_Details_e.MRP) this.Pricing_Rates.push({ name: 'MRP', value: Quotation_Details_e.MRP });
+            
+            const matchedRate = this.Pricing_Rates.find(r => Number(r.value) === Number(Quotation_Details_e.UnitPrice));
+            if (matchedRate) {
+                this.Selected_Rate = matchedRate;
+            } else {
+                this.Selected_Rate = null; // Custom Rate
+            }
+            this.cdr.detectChanges();
         });
     }
 }
@@ -2605,34 +2785,46 @@ Get_Stock_Item() {
     this.Stock_Temp.ItemId = this.Item_ ? this.Item_.ItemId : 0;
     this.Stock_Temp.ItemName = this.Item_ ? this.Item_.ItemName : '';
     this.Stock_ = Object.assign({}, this.Stock_Temp);
-    debugger;
+    
     if(this.Item_ != null || this.Item_ != undefined)
     {
         if(this.Item_.ItemId != null || this.Item_.ItemId != undefined)
-            {
-                this.Item_Temp.Item_Code=this.Item_.Item_Code;
-                 this.Item_Temp.ItemId=this.Item_.ItemId;
-                 this.Barcode_=Object.assign({},this.Item_Temp);                 
-                this.Quotation_Details_.ItemId=this.Item_.ItemId;
-                this.Quotation_Details_.ItemName=this.Item_.ItemName;
-                this.Quotation_Details_.UnitId=this.Item_.UnitId;
-                this.Quotation_Details_.UnitName=this.Item_.UnitName;
-                this.Quotation_Details_.MRP=this.Item_.MRP;
-                this.Quotation_Details_.PurchaseRate=this.Item_.PurchaseRate;
-                this.Quotation_Details_.Stock=this.Item_.Quantity;
-                this.Quotation_Details_.UnitPrice=this.Item_.SaleRate;
-                const itemAny: any = this.Item_ as any;
-                this.Quotation_Details_.Description = itemAny.Description || itemAny.ItemName || '';
-                this.Quotation_Details_.Model = itemAny.ModelName || itemAny.Model || '';
-                this.Quotation_Details_.Brand = itemAny.BrandName || itemAny.Brand || '';
-                this.Quotation_Details_.ItemName=this.Item_.ItemName;
-                this.Quotation_Details_.GroupId=this.Item_.GroupId;
-                this.Quotation_Details_.GroupName=this.Item_.GroupName;
-                this.Quotation_Details_.HSNMasterId=this.Item_.HSNMasterId;
-                this.Quotation_Details_.HSNCODE=this.Item_.HSNCODE;
-                this.Quotation_Details_.HSNMasterId=this.Item_.HSNMasterId;
-                this.Quotation_Details_.Item_Code=this.Item_.Item_Code; 
+        {
+            this.Item_Temp.Item_Code = this.Item_.Item_Code;
+            this.Item_Temp.ItemId = this.Item_.ItemId;
+            this.Barcode_ = Object.assign({}, this.Item_Temp);                 
+            
+            this.Quotation_Details_.ItemId = this.Item_.ItemId;
+            this.Quotation_Details_.Item_Code = this.Item_.Item_Code; 
+            // Put part number into item
+            this.Quotation_Details_.ItemName = this.Item_.Item_Code ? this.Item_.Item_Code : this.Item_.ItemName;
+            
+            this.Quotation_Details_.UnitId = this.Item_.UnitId;
+            this.Quotation_Details_.UnitName = this.Item_.UnitName;
+            this.Quotation_Details_.MRP = this.Item_.MRP;
+            this.Quotation_Details_.PurchaseRate = this.Item_.PurchaseRate;
+            this.Quotation_Details_.Stock = this.Item_.Quantity;
+            this.Quotation_Details_.UnitPrice = this.Item_.SaleRate;
+            
+            const itemAny: any = this.Item_ as any;
+            
+            // item&description into description
+            let desc = itemAny.Description || '';
+            let itmName = this.Item_.ItemName || '';
+            if (itmName && desc) {
+                this.Quotation_Details_.Description = itmName + ' - ' + desc;
+            } else {
+                this.Quotation_Details_.Description = desc || itmName || '';
             }
+            
+            this.Quotation_Details_.Model = itemAny.ModelName || itemAny.Model || '';
+            this.Quotation_Details_.Brand = itemAny.BrandName || itemAny.Brand || '';
+            
+            this.Quotation_Details_.GroupId = this.Item_.GroupId;
+            this.Quotation_Details_.GroupName = this.Item_.GroupName;
+            this.Quotation_Details_.HSNMasterId = this.Item_.HSNMasterId;
+            this.Quotation_Details_.HSNCODE = this.Item_.HSNCODE;
+        }
     }
 }
 numberToWordsIndianCurrency(amount) {    
@@ -3080,6 +3272,18 @@ debugger;
                 const foundStatus = this.Status_Data.find(s => s.id == this.Quotation_Master_.Status);
                 if (foundStatus) {
                     this.Status_ = foundStatus;
+                }
+            }
+            if (!this.Quotation_Master_.Status_Id) {
+                if (this.Quotation_Master_.Status == 3) {
+                    this.Quotation_Master_.Status_Id = 2;
+                    this.Quotation_Master_.Status_Name = 'Approved';
+                } else if (this.Quotation_Master_.Status == 4) {
+                    this.Quotation_Master_.Status_Id = 3;
+                    this.Quotation_Master_.Status_Name = 'Reject';
+                } else {
+                    this.Quotation_Master_.Status_Id = 1;
+                    this.Quotation_Master_.Status_Name = 'Pending';
                 }
             }
         this.Edit_Sales=1;

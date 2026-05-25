@@ -7,7 +7,7 @@ const formatCurrency = (amount) => {
 
 const getQuotationTemplate = (data) => {
     const { master, details, company, bank } = data;
-    const currency = master.CurrecnyName || '₹';
+    const currency = master.CurrecnyName || master.CurrencyName || '';
     
     let itemsHtml = details.map((item, index) => `
         <tr style="page-break-inside: avoid;">
@@ -238,15 +238,15 @@ const getQuotationTemplate = (data) => {
                 <table class="summary-table">
                     <tr>
                         <td style="text-align: left;">Sub Total</td>
-                        <td style="text-align: right;">${currency} ${formatCurrency(master.TotalAmount || master.NetTotal)}</td>
+                        <td style="text-align: right;">${currency ? currency + ' ' : ''}${formatCurrency(master.TaxableAmount || master.TotalAmount)}</td>
                     </tr>
                     <tr>
-                        <td style="text-align: left;">Tax / VAT (0%)</td>
-                        <td style="text-align: right;">${currency} 0.00</td>
+                        <td style="text-align: left;">Tax / VAT (${master.VAT_Percentage || 0}%)</td>
+                        <td style="text-align: right;">${currency ? currency + ' ' : ''}${formatCurrency(master.VAT_Amount || master.VatAmount || 0)}</td>
                     </tr>
                     <tr class="grand-total-row">
                         <td style="text-align: left; padding: 10px 0;">Grand Total</td>
-                        <td style="text-align: right; padding: 10px 0;">${currency} ${formatCurrency(master.TotalAmount || master.NetTotal)}</td>
+                        <td style="text-align: right; padding: 10px 0;">${currency ? currency + ' ' : ''}${formatCurrency(master.NetTotal || master.Total_Amount)}</td>
                     </tr>
                 </table>
 

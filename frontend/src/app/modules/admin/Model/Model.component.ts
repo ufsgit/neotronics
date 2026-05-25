@@ -160,6 +160,16 @@ export class ModelComponent implements OnInit {
             const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Model Name', Type: '3' } });
             return;
         }
+
+        if (this.Item_) {
+            if (typeof this.Item_ === 'object') {
+                this.Model_.Item_Id = this.Item_.Item_Id || this.Item_.ItemId || 0;
+                this.Model_.Item_Name = this.Item_.Item_Name || this.Item_.ItemName || '';
+            } else if (typeof this.Item_ === 'string') {
+                this.Model_.Item_Name = this.Item_;
+            }
+        }
+
         if (!this.Model_.Item_Name || this.Model_.Item_Name.trim() === '') {
             const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter or select the Item Name', Type: '3' } });
             return;

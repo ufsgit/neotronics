@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="col-md-2 row mb-1" style="align-items: center;">
-                    <label class="col-md-6 mb-0  " style="text-align: end;">Part No</label>
+                    <label class="col-md-6 mb-0  " style="text-align: end;">Item</label>
                     <input type="text" class="col-md-6 " style="height: 40px;border: 1px solid #b1b1b1;"
                         [(ngModel)]="partNo" [ngModelOptions]="{standalone: true}">
                 </div>
@@ -401,11 +401,14 @@
                                     <!-- Model -->
                                     <div style="flex: 0 0 calc(8.33% - 8px);">
                                         <label class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Model</label>
-                                        <input type="text" [(ngModel)]="Requirement_Details_.Model"
-                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;" id="Requirement_Details_.Model"
+                                        <select [(ngModel)]="Requirement_Details_.Model"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box; height: 36px; border: 1px solid #b1b1b1; border-radius: 4px;" id="Requirement_Details_.Model"
                                             name="Requirement_Details_.Model"
                                             (keyup.enter)="Plus_Requirement_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                            <option value="">-- Select Model --</option>
+                                            <option *ngFor="let model of ModelData" [ngValue]="model.Model_Name">{{model.Model_Name}}</option>
+                                        </select>
                                     </div>
                                     <!-- Qty -->
                                     <div style="flex: 0 0 calc(8.33% - 8px);">
@@ -429,11 +432,14 @@
                                     <!-- Brand -->
                                     <div style="flex: 0 0 calc(16.66% - 8px);">
                                         <label class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Brand</label>
-                                        <input type="text" [(ngModel)]="Requirement_Details_.Brand"
-                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;" id="Requirement_Details_.Brand"
+                                        <select [(ngModel)]="Requirement_Details_.Brand"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box; height: 36px; border: 1px solid #b1b1b1; border-radius: 4px;" id="Requirement_Details_.Brand"
                                             name="Requirement_Details_.Brand"
                                             (keyup.enter)="Plus_Requirement_Details($event)"
-                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                            class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                            <option value="">-- Select Brand --</option>
+                                            <option *ngFor="let brand of BrandData" [ngValue]="brand.Brand_Name">{{brand.Brand_Name}}</option>
+                                        </select>
                                     </div>
                                     <!-- HIDDEN: Part Number (barcode) autocomplete preserved -->
                                     <div style="display:none">
@@ -590,6 +596,9 @@
                                 <button mat-raised-button type="button"
                                     class="btn pull-right btn-info div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
                                                                         (click)="Quotation_Pending_Click(Requirement_Master_)">Quotation Pending</button>
+                                <button mat-raised-button type="button"
+                                    class="btn pull-right btn-info div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
+                                    (click)="Price_Response_Listing_Click()">Price Response Listing</button>
                                 <button mat-raised-button type="button"
                                     class="btn pull-right btn-primary div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
                                     (click)="Create_Quotation_Click(Requirement_Master_)">Quotation</button>

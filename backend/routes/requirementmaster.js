@@ -7,8 +7,14 @@ const { generatePdf } = require("../helpers/pdf-generator");
 const { getRequirementTemplate } = require("../templates/requirement-template");
 
 router.post('/Save_Requirement/', asyncHandler(async function(req, res, next) {
-    const resp = await requirementmaster.Save_Requirement(req.body, { log: req.log });
-    return sendSuccess(res, { message: "Saved", data: resp });
+    try {
+        require('fs').writeFileSync('c:/Users/nanda/OneDrive/Desktop/UFS PROJECT/netronics/req_body.json', JSON.stringify(req.body));
+        const resp = await requirementmaster.Save_Requirement(req.body, { log: req.log });
+        return sendSuccess(res, { message: "Saved", data: resp });
+    } catch (err) {
+        require('fs').writeFileSync('c:/Users/nanda/OneDrive/Desktop/UFS PROJECT/netronics/req_error.json', JSON.stringify({ message: err.message, stack: err.stack, code: err.code }));
+        throw err;
+    }
 }));
 
 router.get('/Get_Next_Requirement_No', asyncHandler(async function (req, res, next) {

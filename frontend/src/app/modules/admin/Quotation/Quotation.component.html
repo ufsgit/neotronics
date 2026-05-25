@@ -215,6 +215,15 @@
 
         <div class="row mt-2" *ngIf="Entry_View" style="background-color: #f1f1f1; padding: 15px;">
             <div class="container-fluid" #topDiv>
+                <div class="col-md-12 d-flex justify-content-between align-items-center mb-3 p-2 bg-white rounded shadow-sm no-print" style="border-left: 4px solid #3e6bdd;">
+                    <h3 class="mb-0 font-weight-bold" style="color: #2d3436; font-size: 18px; margin: 0;">Quotation Details</h3>
+                    <div class="d-flex align-items-center">
+                        <span class="mr-2 text-muted font-weight-bold" style="font-size: 13px; text-transform: uppercase;">Current Status:</span>
+                        <div class="quotation-status" [ngClass]="getQuotationStatusClass()">
+                            {{ Quotation_Master_.Status_Name || 'Pending' }}
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-6 croct-float-purchase-master-section">
                     <div class="col-md-12 mb-1">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer</label>
@@ -279,7 +288,7 @@
                     </div>
                     <div class="col-md-12 mb-1">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Status</label>
-                        <select class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" [(ngModel)]="Status_" (ngModelChange)="OnStatusChange()" style="height: 40px; border: 1px solid #b1b1b1;">
+                        <select class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" [(ngModel)]="Status_" (ngModelChange)="OnStatusChange()" style="height: 40px; border: 1px solid #b1b1b1;" [disabled]="!Quotation_Master_.SalesQuotationMaster_Id">
                             <option *ngFor="let s of Status_Data" [ngValue]="s">{{s.name}}</option>
                         </select>
                     </div>
@@ -314,12 +323,23 @@
                             <!-- Model -->
                             <div style="flex: 0 0 120px;">
                                 <label class="label-to-crect-all-names-to-divs">Model</label>
-                                <input type="text" [(ngModel)]="Quotation_Details_.Model" class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px; margin-bottom: 0;">
+                                <select [(ngModel)]="Quotation_Details_.Model"
+                                    class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                    style="height: 40px; margin-bottom: 0; border: 1px solid #b1b1b1; border-radius: 4px;">
+                                    <option value="">-- Select Model --</option>
+                                    <option *ngFor="let model of ModelData" [ngValue]="model.Model_Name">{{model.Model_Name}}</option>
+                                </select>
                             </div>
+
                             <!-- Brand -->
                             <div style="flex: 0 0 120px;">
                                 <label class="label-to-crect-all-names-to-divs">Brand</label>
-                                <input type="text" [(ngModel)]="Quotation_Details_.Brand" class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px; margin-bottom: 0;">
+                                <select [(ngModel)]="Quotation_Details_.Brand"
+                                    class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                    style="height: 40px; margin-bottom: 0; border: 1px solid #b1b1b1; border-radius: 4px;">
+                                    <option value="">-- Select Brand --</option>
+                                    <option *ngFor="let brand of BrandData" [ngValue]="brand.Brand_Name">{{brand.Brand_Name}}</option>
+                                </select>
                             </div>
                             <!-- UOM -->
                             <div style="flex: 0 0 80px;">

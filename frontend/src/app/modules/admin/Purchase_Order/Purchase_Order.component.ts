@@ -177,6 +177,8 @@ Sale_Detail_Quantity:number=0;
 Quotation_Details_Description:string;
 Amount_In_Words:string;
 Sales_Quantity:number=0;
+Customer_Email: string = '';
+Customer_WhatsApp: string = '';
 Edit_Stock_:number=0;
 Edit_CGST:number=0;
 Edit_SGST:number=0;

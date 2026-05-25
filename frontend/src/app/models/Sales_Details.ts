@@ -28,6 +28,8 @@ NetValue:number;
 TaxAmount:number;
 Stock:number;
 Description:string;
+Model:string;
+Brand:string;
 Item_Discount_Amount:number;
 GSTA:number;
     Country_Id: number;

@@ -621,6 +621,13 @@ Load_Company()
                     }    
                 }              
         })
+        
+        this.Sales_Master_Service_.Get_Max_Performa_Invoice_No().subscribe(Rows => {
+            if (Rows != null && Rows.data && Rows.data[0]) {
+                const nextNo = (Rows.data[0].MaxNo || 0) + 1;
+                this.performainvoicemaster_.InvoiceNo = String(nextNo);
+            }
+        });
 
         this.issLoading = false;        
     }
@@ -642,6 +649,13 @@ Create_New()
     this.Tot_Amount=0;
     this.Tot_Net=0;
     this.Tot_Gross=0;
+
+    this.Sales_Master_Service_.Get_Max_Performa_Invoice_No().subscribe(Rows => {
+        if (Rows != null && Rows.data && Rows.data[0]) {
+            const nextNo = (Rows.data[0].MaxNo || 0) + 1;
+            this.performainvoicemaster_.InvoiceNo = String(nextNo);
+        }
+    });
 }
 Close_Click()
 {

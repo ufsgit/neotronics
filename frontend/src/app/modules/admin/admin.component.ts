@@ -57,10 +57,8 @@ export class AdminComponent implements OnInit {
             elemMainPanel.scrollTop = 0;
             elemSidebar.scrollTop = 0;
         });
-        if (window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
-            let ps = new PerfectScrollbar(elemMainPanel);
-            ps = new PerfectScrollbar(elemSidebar);
-        }
+        // We must initialize PerfectScrollbar in ngAfterViewInit when child components are rendered
+        // to avoid null reference errors that abort routing.
 
         const window_width = $(window).width();
         let $sidebar = $('.sidebar');
@@ -135,6 +133,16 @@ export class AdminComponent implements OnInit {
         });
     }
     ngAfterViewInit() {
+        if (window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
+            const elemMainPanel = <HTMLElement>document.querySelector('.main-panel');
+            const elemSidebar = <HTMLElement>document.querySelector('.sidebar .sidebar-wrapper');
+            if (elemMainPanel) {
+                let ps = new PerfectScrollbar(elemMainPanel);
+            }
+            if (elemSidebar) {
+                let ps = new PerfectScrollbar(elemSidebar);
+            }
+        }
         this.runOnRouteChange();
     }
     isMaps(path) {

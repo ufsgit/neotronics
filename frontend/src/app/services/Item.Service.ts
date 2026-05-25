@@ -88,5 +88,9 @@ Get_Service_Type(Service_Type_Id)
 {
     return this.http.get(environment.BasePath +'Item/Get_Service_Type/'+Service_Type_Id);
 }
+Get_Multiple_Sale_Rates(Item_Id): Observable<any>
+{
+    return this.http.get(environment.BasePath + 'Item/Get_Multiple_Sale_Rates/' + Item_Id);
+}
 }
 

@@ -47,7 +47,19 @@ export class Lead {
     Login_User_Id: number; // New Field for User ID
     FollowUp_Next_Date: any;
     Entry_Date: any;
+    Lead_Priority: string;
     Contact_Person_Details: any[] = [];
+    Last_FollowUp_Date: any;
+    Lost_Reason: string;
+    Lost_Primary_Issue: string;
+    Lost_Competitor_Name: string;
+    Lost_Competitor_Price: any;
+    Lost_Was_Price_Issue: boolean;
+    Lost_Was_Solution_Issue: boolean;
+    Lost_Quote_Only_Comparison: boolean;
+    Lost_Reopen_Possibility: string;
+    Lost_Expected_Reconnect_Date: any;
+    Lost_Remarks: string;
 
     constructor() {
         this.Lead_Id = 0;
@@ -84,5 +96,16 @@ export class Lead {
         this.Entry_Date = new Date();
         this.Next_FollowUp_Date = new Date();
         this.FollowUp_Next_Date = new Date();
+        this.Lead_Priority = "Medium";
+        this.Lost_Reason = "";
+        this.Lost_Primary_Issue = "";
+        this.Lost_Competitor_Name = "";
+        this.Lost_Competitor_Price = null;
+        this.Lost_Was_Price_Issue = false;
+        this.Lost_Was_Solution_Issue = false;
+        this.Lost_Quote_Only_Comparison = false;
+        this.Lost_Reopen_Possibility = "";
+        this.Lost_Expected_Reconnect_Date = null;
+        this.Lost_Remarks = "";
     }
 }

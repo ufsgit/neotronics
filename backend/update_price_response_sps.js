@@ -29,9 +29,9 @@ END;`,
     IN EntryDate_ DATE
 )
 BEGIN
-    SELECT COUNT(Price_Response_Master_Id) + 1 AS NextNo 
+    SELECT COALESCE(MAX(CAST(Price_Response_No AS UNSIGNED)), 0) + 1 AS NextNo 
     FROM Price_Response_Master 
-    WHERE DATE(EntryDate) = DATE(EntryDate_);
+    WHERE Price_Response_No REGEXP '^[0-9]+$';
 END;`
 ];
 
