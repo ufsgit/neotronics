@@ -1,30 +1,49 @@
-<div class="login-card">
-  <div class="login-header">
-    <img src="assets/img/ADAT.png" class="img-fluid login-logo" alt="Neotronics Logo">
-    <div class="version-badge">Version 5</div>
+<div class="login-shell">
+  <div class="login-brand-panel">
+    <div>
+      <img src="assets/img/ADAT.png" class="brand-logo" alt="Neotronics Logo">
+      <div class="brand-rule"></div>
+    </div>
+    <div class="brand-copy">
+      <h1>Business Management</h1>
+      <p>Secure access for quotations, requirements, stock, accounts, and customer operations.</p>
+    </div>
+    <div class="brand-footer">
+      <span>PERFECT HILLS</span>
+    </div>
   </div>
 
-  <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
-    <div class="form-group modern-input-group">
-      <i class="fa fa-user input-icon"></i>
-      <input type="text" class="modern-input" placeholder="Login Name" formControlName="userName" (input)="onFieldInput()" (change)="onFieldInput()" #userNameInput autocomplete="username" />
+  <div class="login-card">
+    <div class="login-header">
+      <h2>Login</h2>
+      <p>Use your authorized account to continue.</p>
     </div>
 
-    <div class="form-group modern-input-group">
-      <i class="fa fa-lock input-icon"></i>
-      <input type="password" class="modern-input" placeholder="Password" formControlName="password" (input)="onFieldInput()" (change)="onFieldInput()" #passwordInput autocomplete="current-password" />
-    </div>
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+      <div class="form-group modern-input-group">
+        <label>Login Name</label>
+        <i class="fa fa-user input-icon"></i>
+        <input type="text" class="modern-input" placeholder="Enter login name" formControlName="userName" (input)="onFieldInput()" (change)="onFieldInput()" #userNameInput autocomplete="username" />
+      </div>
 
-    <div class="form-options">
-      <label class="custom-checkbox">
-        <input type="checkbox" checked>
-        <span class="checkmark"></span>
-        <span class="checkbox-label">Remember Me</span>
-      </label>
-    </div>
+      <div class="form-group modern-input-group">
+        <label>Password</label>
+        <i class="fa fa-lock input-icon"></i>
+        <input type="password" class="modern-input" placeholder="Enter password" formControlName="password" (input)="onFieldInput()" (change)="onFieldInput()" #passwordInput autocomplete="current-password" />
+      </div>
 
-    <button mat-raised-button type="submit" class="modern-btn-submit" (click)="onLoginClick($event, userNameInput, passwordInput)">
-      <span>LOGIN</span>
-    </button>
-  </form>
+      <div class="form-options">
+        <label class="custom-checkbox">
+          <input type="checkbox" checked>
+          <span class="checkmark"></span>
+          <span class="checkbox-label">Remember me</span>
+        </label>
+      </div>
+
+      <button mat-raised-button type="submit" class="modern-btn-submit" (click)="onLoginClick($event, userNameInput, passwordInput)">
+        <span class="btn-fluid"></span>
+        <span>Login</span>
+      </button>
+    </form>
+  </div>
 </div>

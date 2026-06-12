@@ -12,6 +12,46 @@
 input{
     padding-left: 15px  !important;
 }
+
+.requirement-entry-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+
+.requirement-entry-field {
+    min-width: 120px;
+}
+
+.requirement-entry-item {
+    flex: 1 1 260px;
+}
+
+.requirement-entry-description {
+    flex: 1 1 180px;
+}
+
+.requirement-entry-small {
+    flex: 0 1 120px;
+}
+
+.requirement-entry-button {
+    flex: 0 0 auto;
+    padding-bottom: 5px;
+}
+
+.table-for-sale-search-section-diary {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table-for-sale-search-section-diary th,
+.table-for-sale-search-section-diary td {
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
 .for-input-selct-tblelst {
     margin: 10px 0px 25px 0px;
     padding: 5px 0px !important;

@@ -1,124 +1,101 @@
 <div *ngIf="issLoading" class="overlay">
-        <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
-        </mat-progress-spinner>
-        </div>
-        <div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
-        <div class="container-fluid">
-        <div class="row" *ngIf="Entry_View">
-        <div class="col-md-12">
-        <div class="card">
- 
-        <div class="card-body">
-       
-        <div class="row">
-        
-        <div class="col-md-6">
-        </div>
-        </div>
-        <div class="clearfix"></div>
-
-        </div>
-        </div>
-        </div>
-        
-        
-        </div>
-        <div class="row" *ngIf="!Entry_View">
-                <div class="card" style="align-items: center;
-             border: 0;
-             border-radius: 6px;
-             margin-left: 2px;
-             color: #333333;
-             background: #fff;
-             width: 100%;padding: 3px;background-color: #f1f1f1;
-             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-         ">
-                        <div class="row col-12 mb-1">
-
-                     <div class="col-md-3" style="margin-top: 12px;">
-                        <label class="col-md-3 margin-crect-dte-account-group-diary label-down-alighn-supler-prhse-mstr-down" style="top: 0px !important;">From</label>
-                        <mat-form-field class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
-                        height: 46px;">
-                                <input matInput [matDatepicker]="dp" placeholder="" [(ngModel)]="Search_FromDate">
-                                <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-                                <mat-datepicker #dp></mat-datepicker>
-                        </mat-form-field>
-                        </div>
-                        
-                        <div class="col-md-3" style="margin-top: 12px;" >
-                                <label class="col-md-2 margin-crect-dte-account-group-diary label-down-alighn-supler-prhse-mstr-down" style="top: 0px !important;">To</label>
-                                <mat-form-field class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
-                                height: 46px;">
-                                        <input matInput [matDatepicker]="dp1" placeholder="" [(ngModel)]="Search_ToDate"> 
-                                        <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
-                                        <mat-datepicker #dp1></mat-datepicker>
-                                </mat-form-field>
-                                </div>
-                       
-                                        
-    <div class="col-md-3" style="margin-top: 10px;">         
-                <button mat-raised-button type="submit" (click)="Print_Click()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin"><i class="fa fa-print" aria-hidden="true"></i></button>              
- <button mat-raised-button type="submit" (click)="Search_ProfitAndLoss()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin">Search</button>
- <button mat-raised-button type="submit" (click)="Export()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin">Export</button>
-
-</div>  
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
 </div>
+
+<div class="main-content">
+    <div class="container-fluid px-0">
+
+        <!-- LIST VIEW -->
+        <div *ngIf="!Entry_View">
+
+            <!-- PAGE HEADER -->
+            <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="page-title-main">Profit and Loss Report</h4>
+                </div>
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <!-- Any top-right buttons can go here -->
+                </div>
+            </div>
+
+            <!-- FILTER PANEL -->
+            <div class="lead-filter-panel mb-3">
+                <div class="filter-grid">
+                    
+                    <!-- From Date -->
+                    <mat-form-field appearance="legacy" floatLabel="never">
+                        <input matInput [matDatepicker]="dp_from" placeholder="From Date" [(ngModel)]="Search_FromDate">
+                        <mat-datepicker-toggle matSuffix [for]="dp_from"></mat-datepicker-toggle>
+                        <mat-datepicker #dp_from></mat-datepicker>
+                    </mat-form-field>
+
+                    <!-- To Date -->
+                    <mat-form-field appearance="legacy" floatLabel="never">
+                        <input matInput [matDatepicker]="dp_to" placeholder="To Date" [(ngModel)]="Search_ToDate">
+                        <mat-datepicker-toggle matSuffix [for]="dp_to"></mat-datepicker-toggle>
+                        <mat-datepicker #dp_to></mat-datepicker>
+                    </mat-form-field>
+
+                    <!-- Action Buttons -->
+                    <button mat-raised-button class="btn-new-lead" (click)="Search_ProfitAndLoss()" style="min-width: 100px;">
+                        SEARCH
+                    </button>
+
+                    <button mat-raised-button class="btn-export" (click)="Export()" style="min-width: 100px;">
+                        <i class="material-icons" style="font-size: 18px;">file_download</i>
+                        EXPORT
+                    </button>
+
+                    <button mat-raised-button class="btn-print" (click)="Print_Click()" title="Print">
+                        <i class="material-icons" style="font-size: 20px;">print</i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="lead-table-container">
+                <div class="table-scroll-area" [style.max-height.px]="myInnerHeight">
+                    <table class="lead-data-table">
+                        <thead>
+                            <tr>
+                                <th>Particular</th>
+                                <th>Amount</th>
+                                <th>Particular</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let Accounts1 of ProfitLoss_Data; let i = index">
+                                <td>{{ Accounts1["Caption1"] }}</td>
+                                <td style="font-weight: 600;">{{ Accounts1["Data1"] }}</td>
+                                <td>{{ Accounts1["Caption2"] }}</td>
+                                <td style="font-weight: 600;">{{ Accounts1["Data2"] }}</td>
+                            </tr>
+                            <tr *ngIf="ProfitLoss_Data?.length === 0">
+                                <td colspan="4" class="text-center py-5 text-muted">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="pagination-container">
+                    <div class="d-flex align-items-center">
+                        <span class="page-info">Total Entries: <strong>{{ Total_Entries }}</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENTRY VIEW (ADD / EDIT) -->
+        <div *ngIf="Entry_View">
+            <!-- No entry view defined for Profit and Loss -->
+        </div>
+
+    </div>
 </div>
-        <div class="col-md-12">
-        <div class="card card-plain">
-        <div class="table-responsive card">
-        <div class="table-responsive"
-        [style.height.px]="myInnerHeight"
-        style="overflow-y: scroll;background-color: #f1f1f1;">
- <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" style="overflow-y: scroll;"> -->
-        <table class="table table-hover">
-        <thead class="thead">
-        <th>
-        Particular
-        </th>
-        <th>
-        Amount
-        </th>
-        <th>
-    Particular
-        </th> 
-        <th>
-       Amount
-        </th>
-        <!-- <th>
-        Voucher
-        </th>
-        
-        <th>
-         Dr
-        </th>
-        <th>
-        Cr
-        </th> -->
-     
-      
-        </thead>
-        <!-- <ng-container *cdkVirtualFor="let Accounts1 of ProfitLoss_Data; let i = index"> -->
-                <tr *ngFor="let Accounts1 of ProfitLoss_Data; let i =index">
-        <td style="padding-left:5px;">{{ Accounts1["Caption1"] }}</td>
-        <td>{{Accounts1["Data1"]}}</td>
-        <td>{{Accounts1["Caption2"]}}</td> 
-        <td>{{Accounts1["Data2"]}}</td> 
-        <!-- <td>{{Accounts1["VoucherType"]}}</td> 
-        <td>{{Accounts1["Dr"]}}</td> 
-        <td>{{Accounts1["Cr"]}}</td>  -->
-</tr>
-      
-       <!-- </ng-container> -->
-</table>
-<!-- </cdk-virtual-scroll-viewport> -->
-        </div>
-        </div>
-        <label class="entry-num">Entries : {{Total_Entries}}</label>
-        </div>
-        </div>
-        </div>
-        </div>
+
        
 
 <div id="Print_Div" style="display:none;">

@@ -1,336 +1,187 @@
 <div *ngIf="issLoading" class="overlay">
-        <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
-        </mat-progress-spinner>
-        </div>
-        <div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
-        <div class="container-fluid">
-        <div class="row" *ngIf="Entry_View">
-        <div class="col-md-12">
-        <div class="card">
- 
-        <div class="card-body">
-       
-        <div class="row">
-        
-        <div class="col-md-6">
-        </div>
-        </div>
-        <div class="clearfix"></div>
-
-        </div>
-        </div>
-        </div>
-        
-        
-        </div>
-        <div class="row" *ngIf="!Entry_View">
-                <div class="card" style="align-items: center;
-             border: 0;
-             border-radius: 6px;
-             margin-left: 2px;
-             color: #333333;
-             background: #fff;
-             width: 100%;padding: 3px;background-color: #f1f1f1;
-             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-         ">
-                        <div class="row col-12 mb-1">
-
-                     <div class="col-md-3" style="margin-top: 12px;">
-                        <label class="col-md-3 margin-crect-dte-account-group-diary label-down-alighn-supler-prhse-mstr-down" style="top: 0px !important;">From</label>
-                        <mat-form-field class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
-                        height: 46px;">
-                                <input matInput [matDatepicker]="dp" placeholder="" [(ngModel)]="Search_FromDate">
-                                <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-                                <mat-datepicker #dp></mat-datepicker>
-                        </mat-form-field>
-                        </div>
-                        
-                        <div class="col-md-3" style="margin-top: 12px;" >
-                                <label class="col-md-2 margin-crect-dte-account-group-diary label-down-alighn-supler-prhse-mstr-down" style="top: 0px !important;">To</label>
-                                <mat-form-field class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
-                                height: 46px;">
-                                        <input matInput [matDatepicker]="dp1" placeholder="" [(ngModel)]="Search_ToDate"> 
-                                        <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
-                                        <mat-datepicker #dp1></mat-datepicker>
-                                </mat-form-field>
-                                </div>
-
-                 
-                        
-                                        
-    <div class="col-md-3" style="margin-top: 10px;">         
-                <button mat-raised-button type="submit" (click)="Print_Click()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin"><i class="fa fa-print" aria-hidden="true"></i></button>              
- <button mat-raised-button type="submit" (click)="Search_GRNVatReport()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin">Search</button>
- <button mat-raised-button type="submit" (click)="Export()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin">Export</button>
-
-</div>  
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
 </div>
-</div>
-        <div class="col-md-12">
-        <div class="card card-plain">
-        <div class="card-body">
-        <div class="table-responsive card">
- <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" style="overflow-y: scroll;"> -->
-        <div
-        class="table-responsive"
-        [style.height.px]="myInnerHeight"
-        style="overflow-y: scroll;background-color: #f1f1f1;"
-      >
-        <table class="table table-hover">
-        <thead class="thead">
-        <th>
-        No
-        </th>
-        <th>
-        Date
-        </th>
-        <th>
-    Invoice No
-        </th> 
-        <th>
-       Supplier
-        </th>
-        <th>
-        Vat No
-        </th>
-        <th>
-        Currency
-        </th>
-        <th>
-        Net Total
-        </th>
-        <th>
-        Vat %
-        </th> 
-        <th>
-        Vat Amount
-        </th>
-        <th>
-          Roundoff
-          </th>
-        <th>
-        Grand Total
-        </th>  
-        </thead>
-        <!-- <ng-container *cdkVirtualFor="let Accounts1 of GRNVatReport_Data; let i = index"> -->
-                <tr *ngFor="let Accounts1 of GRNVatReport_Data; let i =index">
-        <td style="padding-left:5px;">{{ i+1 }}</td>
-        <td>{{Accounts1["Entry_Date"]}}</td>
-        <td>{{Accounts1["InvoiceNo"]}}</td> 
-        <td>{{Accounts1["Supplier"]}}</td> 
-        <td>{{Accounts1["GSTNo"]}}</td> 
-        <td>{{Accounts1["CurrecnyName"]}}</td> 
-        <td>{{Accounts1["NetTotal"]}}</td> 
-        <td>{{Accounts1["Vat %"]}}</td> 
-        <td>{{Accounts1["VatAmount"]}}</td> 
-        <td>{{Accounts1["Roundoff"]}}</td> 
-        <td>{{Accounts1["GrandTotal"]}}</td> 
-</tr>
 
-       <!-- </ng-container> -->
-</table>
-</div>
-<!-- </cdk-virtual-scroll-viewport> -->
-        </div>
-        </div>
-        <label class="entry-num">Entries : {{Total_Entries}}</label>
-        </div>
-        </div>
-        </div>
-        </div>
-       
+<div class="main-content">
+    <div class="container-fluid px-0">
 
-<!-- <div id="Print_Div" style="display:none;">
-      <div class="printz">
-       <table>
-        <tr>
-            <td class="company-title-print-portion" name="company_Name"  style="width:93%;"><h1><b>{{Print_Company_.Company_Name}}</b></h1></td>
-           <td class="printLogo center-block">
-            <img style="width: 90px; Height:90px;" src='{{Image_Url}}'>
-            </td>
-        </tr>
-        <tr>
-             <td>  {{Print_Company_.EMail}} </td>
-            <td>  {{Print_Company_.Website}} </td>
-        </tr>
-          <tr>
-            <td>   {{Print_Company_.GSTNO}}  </td>
-          </tr>
-      </table>
-          <hr>
-    
-     <table class="inBox" style="width: 100%;">
-         <tr>
-            <td></td>
-            <td></td>
-             <td>Customer:</td>
-             <td>{{From_Party_Search.Client_Accounts_Name}}</td>
-             <td></td>
-             <td></td>
-             <td></td>
-             <td></td>
-          </tr>
-          <tr>
-                <td></td>
-                <td></td>
-                <td>Address:</td>
-                <td>{{Print_Client1_.Address1}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-        </tr>
-        <tr>
-                <td></td>
-                <td></td>
-                <td>{{Print_Client1_.Address2}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-      </tr>
-      <tr>
-                <td></td>
-                <td></td>
-                <td>{{Print_Client1_.Address3}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-    </tr>
-   
-        <tr>
-                <td></td>
-                <td>Mobile</td>
-                <td>{{Print_Client1_.Mobile}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-        </tr>
-              <tr>
-                  <td style="width: 50%;">{{Print_Company_.Address1}}</td>
-                  <td></td>
-                  <td></td>
-                  <td>Date   :</td>
-                  <td>{{Print_Date_}}</td>
-              </tr>
-            
-              <tr>
-                        <td></td>
-                        <td></td>
-                        <td>Receipt No :</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-              </tr>
-          </table>
-  
-          <table class="table table-hover">
-                        <thead class="">
-                                <th> Sl No</th>
+        <!-- LIST VIEW -->
+        <div *ngIf="!Entry_View">
+
+            <!-- PAGE HEADER -->
+            <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="page-title-main">GRN Vat Report</h4>
+                </div>
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <!-- Any top-right buttons can go here -->
+                </div>
+            </div>
+
+            <!-- FILTER PANEL -->
+            <div class="lead-filter-panel mb-3">
+                <div class="filter-grid">
+                    
+                    <!-- From Date -->
+                    <mat-form-field appearance="legacy" floatLabel="never">
+                        <input matInput [matDatepicker]="dp_from" placeholder="From Date" [(ngModel)]="Search_FromDate">
+                        <mat-datepicker-toggle matSuffix [for]="dp_from"></mat-datepicker-toggle>
+                        <mat-datepicker #dp_from></mat-datepicker>
+                    </mat-form-field>
+
+                    <!-- To Date -->
+                    <mat-form-field appearance="legacy" floatLabel="never">
+                        <input matInput [matDatepicker]="dp_to" placeholder="To Date" [(ngModel)]="Search_ToDate">
+                        <mat-datepicker-toggle matSuffix [for]="dp_to"></mat-datepicker-toggle>
+                        <mat-datepicker #dp_to></mat-datepicker>
+                    </mat-form-field>
+
+                    <!-- Action Buttons -->
+                    <button mat-raised-button class="btn-new-lead" (click)="Search_GRNVatReport()" style="min-width: 100px;">
+                        SEARCH
+                    </button>
+
+                    <button mat-raised-button class="btn-export" (click)="Export()" style="min-width: 100px;">
+                        <i class="material-icons" style="font-size: 18px;">file_download</i>
+                        EXPORT
+                    </button>
+
+                    <button mat-raised-button class="btn-print" (click)="Print_Click()" title="Print">
+                        <i class="material-icons" style="font-size: 20px;">print</i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="lead-table-container">
+                <div class="table-scroll-area" [style.max-height.px]="myInnerHeight">
+                    <table class="lead-data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">No</th>
                                 <th>Date</th>
-                                <th>Account</th> 
-                                <th>Voucher No</th>
-                                <th>Voucher</th>
-                                <th>Dr</th>
-                                <th>Cr</th> 
+                                <th>Invoice No</th>
+                                <th>Supplier</th>
+                                <th>VAT No</th>
+                                <th>Currency</th>
+                                <th>Net Total</th>
+                                <th>VAT %</th>
+                                <th>VAT Amount</th>
+                                <th>Round Off</th>
+                                <th>Grand Total</th>
+                            </tr>
                         </thead>
-                        <tbody *ngFor="let Accounts1 of GRNVatReport_Data; let i = index">
-                        <tr>
-                                <td style="padding-left:5px;">{{ i+1 }}</td>
-                                <td>{{Accounts1["Date"]}}</td>
-                                <td>{{Accounts1["Particular"]}}</td> 
-                                <td>{{Accounts1["VoucherNo"]}}</td> 
-                                <td>{{Accounts1["VoucherType"]}}</td> 
-                                <td>{{Accounts1["Dr"]}}</td> 
-                                <td>{{Accounts1["Cr"]}}</td> 
-                         </tr>
-                       </tbody>
-         </table>
+                        <tbody>
+                            <tr *ngFor="let Accounts1 of GRNVatReport_Data; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ Accounts1["Entry_Date"] }}</td>
+                                <td>{{ Accounts1["InvoiceNo"] }}</td>
+                                <td style="font-weight: 500;">{{ Accounts1["Supplier"] }}</td>
+                                <td>{{ Accounts1["GSTNo"] }}</td>
+                                <td>{{ Accounts1["CurrecnyName"] }}</td>
+                                <td>{{ Accounts1["NetTotal"] }}</td>
+                                <td>{{ Accounts1["Vat %"] }}</td>
+                                <td>{{ Accounts1["VatAmount"] }}</td>
+                                <td>{{ Accounts1["Roundoff"] }}</td>
+                                <td style="font-weight: 600;">{{ Accounts1["GrandTotal"] }}</td>
+                            </tr>
+                            <tr *ngIf="GRNVatReport_Data?.length === 0">
+                                <td colspan="11" class="text-center py-5 text-muted">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-          <br />
-          <br />
+                <!-- FOOTER -->
+                <div class="pagination-container">
+                    <div class="d-flex align-items-center">
+                        <span class="page-info">Total Entries: <strong>{{ Total_Entries }}</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENTRY VIEW (ADD / EDIT) -->
+        <div *ngIf="Entry_View">
+            <!-- No entry view defined for GRN Vat Report -->
+        </div>
+
+    </div>
+</div>
+
+<div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ccc;font-size: 10px;"  id="Print_Div1" style="display:none;">
+    <img src='/assets/img/printlogo.png' alt="Perfect Hills Logo" style="height: 100px;width: 100%;" />
+    <h1 style="text-align: center; margin-bottom: 5px; margin-top: -5px; 
+text-decoration: underline;font-family: arial, sans-serif;">GRN Vat Report</h1>
     
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+      <div style="width: 48%;">
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">PB 1554 , PC 113 , GHALA,</p>
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">MUSCAT</p>
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">SULTANATE OF OMAN</p>
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Phone: +968 22820150</p>
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Gsm: 97416789, 99751621</p>
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Email: sales&#64;perfecthills.com</p>
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Website: www.perfecthills.com</p>
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">CR Number: 1150753</p>
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">VATIN: OM1100004897</p>
       </div>
-  </div> -->
-
-
-  <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ccc;font-size: 10px;"  id="Print_Div1" style="display:none;">
-        <img src='/assets/img/printlogo.png' alt="Perfect Hills Logo" style="height: 100px;width: 100%;" />
-        <!-- <h1 style="text-align: center; margin-bottom: 20px;">GRN Vat Report</h1> -->
-        <h1 style="text-align: center; margin-bottom: 5px; margin-top: -5px; 
-    text-decoration: underline;font-family: arial, sans-serif;">GRN Vat Report</h1>
-        
-        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-          <div style="width: 48%;">
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">PB 1554 , PC 113 , GHALA,</p>
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">MUSCAT</p>
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">SULTANATE OF OMAN</p>
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Phone: +968 22820150</p>
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Gsm: 97416789, 99751621</p>
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Email: sales&#64;perfecthills.com</p>
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Website: www.perfecthills.com</p>
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">CR Number: 1150753</p>
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">VATIN: OM1100004897</p>
-          </div>
-          <div style="width: 35%;">
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Date: {{ currentDate }}</p>
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">From: {{ FromDate }}</p>
-            <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">To: {{ToDate}}</p>
-          </div>
-        </div>   
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
-          <thead>
-            <tr>
-              <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">No</th>
-              <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                Date
-                </th>
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-            Invoice No
-                </th> 
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-               Supplier
-                </th>
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                Vat No
-                </th>
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                Currency
-                </th>
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                Net Total
-                </th>
-        
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                Vat %
-                </th> 
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                Vat Amount
-                </th>
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                Total
-                </th>
-             
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let Accounts1 of GRNVatReport_Data; let i = index">
-              <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{ i + 1 }}</td>
-              <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["Entry_Date"]}}</td>
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["InvoiceNo"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["Client_Accounts_Name"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["GSTNo"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["CurrecnyName"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["NetTotal"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["VAT_Percentage"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["VAT_Amount"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["TotalAmount"]}}</td> 
-            </tr>
-          </tbody>
-        </table>
-        
+      <div style="width: 35%;">
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">Date: {{ currentDate }}</p>
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">From: {{ FromDate }}</p>
+        <p style="font-size: 12px;margin-bottom: 0px; margin-top: 0px;font-family: arial, sans-serif;">To: {{ToDate}}</p>
       </div>
-            
+    </div>   
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+      <thead>
+        <tr>
+          <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">No</th>
+          <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
+            Date
+            </th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
+        Invoice No
+            </th> 
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
+           Supplier
+            </th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
+            Vat No
+            </th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
+            Currency
+            </th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
+            Net Total
+            </th>
+    
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
+            Vat %
+            </th> 
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
+            Vat Amount
+            </th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
+            Total
+            </th>
+         
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let Accounts1 of GRNVatReport_Data; let i = index">
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{ i + 1 }}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["Entry_Date"]}}</td>
+    <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["InvoiceNo"]}}</td> 
+    <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["Client_Accounts_Name"]}}</td> 
+    <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["GSTNo"]}}</td> 
+    <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["CurrecnyName"]}}</td> 
+    <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["NetTotal"]}}</td> 
+    <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["VAT_Percentage"]}}</td> 
+    <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["VAT_Amount"]}}</td> 
+    <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["TotalAmount"]}}</td> 
+        </tr>
+      </tbody>
+    </table>
+    
+  </div>

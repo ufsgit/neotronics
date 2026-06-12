@@ -1,18 +1,558 @@
+/* ================================
+   1. GLOBAL CONTAINER & OVERLAYS
+   ================================ */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
+.main-content {
+    background-color: #f8fbff !important;
+    min-height: 100vh;
+    padding: 24px !important;
+}
+
+/* ================================
+   2. HEADER & PAGE TITLE
+   ================================ */
+.lead-list-header {
+    margin-bottom: 24px;
+}
+
+.page-title-main {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1f36;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+/* ================================
+   3. FILTER PANEL (SEARCH BAR)
+   ================================ */
+.lead-filter-panel {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid #eef2f6;
+    margin-bottom: 20px;
+}
+
+/* === SOA Two-Row Filter Layout === */
+.soa-filter-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    align-items: end;
+}
+
+.soa-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.soa-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin: 0;
+    display: block;
+}
+
+.soa-input {
+    height: 44px;
+    background: #fcfdfe;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 14px;
+    color: #4a5568;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.soa-input:focus {
+    border-color: #0061f2;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 97, 242, 0.1);
+}
+
+.soa-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 44px;
+    background: #fcfdfe;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0 8px 0 12px;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.soa-input-wrap:focus-within {
+    border-color: #0061f2;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 97, 242, 0.1);
+}
+
+.soa-input-wrap .soa-input {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    height: 100% !important;
+    padding: 0 !important;
+    flex: 1;
+}
+
+.soa-datepicker-toggle {
+    margin-left: auto;
+}
+
+/* Buttons in filter grid */
+.soa-btn-cell {
+    justify-content: flex-end;
+}
+
+.soa-more-btn {
+    width: 100%;
+    height: 44px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #0061f2;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.soa-more-btn:hover {
+    background: #fff;
+    border-color: #0061f2;
+    box-shadow: 0 2px 8px rgba(0, 97, 242, 0.15);
+}
+
+.soa-search-btn {
+    width: 100%;
+    height: 44px;
+    background: #0061f2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 97, 242, 0.15);
+}
+
+.soa-search-btn:hover {
+    background: #0052ce;
+    box-shadow: 0 6px 12px rgba(0, 97, 242, 0.25);
+}
+
+.soa-export-btn {
+    width: 100%;
+    height: 44px;
+    background: #fff;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.soa-export-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.soa-pdf-btn {
+    width: 100%;
+    height: 44px;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.soa-pdf-btn:hover {
+    background: #e2e8f0;
+}
+
+.soa-letterhead {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #475569;
+    font-weight: 500;
+}
+
+.soa-letterhead input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #0061f2;
+}
+
+.soa-letterhead label {
+    cursor: pointer;
+    margin: 0;
+}
+
+.filter-grid {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.trackbox-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 180px;
+}
+
+.input-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    height: 20px;
+    line-height: 20px;
+    margin: 0 !important;
+    display: block;
+}
+
+/* Redefining Appearance legacy overrides */
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
-    display: none;
+    display: none !important;
 }
-::ng-deep .mat-input-element{
-    padding-left: 15px !important;
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
 }
+
 ::ng-deep .mat-form-field-infix {
-    border-bottom: 0.84375em solid transparent;
+    border-top: 0 !important;
+    padding: 0 !important;
 }
-input{
-    padding-left: 15px  !important;
+
+/* Custom Input Styling */
+.trackbox-input-group input,
+.trackbox-input-group select,
+.trackbox-input-group .date-input-wrapper,
+.trackbox-input-group .input-wrapper {
+    height: 44px !important;
+    background: #fcfdfe;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0 12px !important;
+    font-size: 14px;
+    color: #4a5568;
+    transition: all 0.2s ease;
+    width: 100%;
+    margin: 0 !important;
+    box-sizing: border-box;
 }
-.for-input-selct-tblelst {
-    margin: 10px 0px 25px 0px;
-    padding: 5px 0px !important;
-    border: #d3d3d3 solid 1px !important;
+
+.trackbox-input-group input:focus,
+.trackbox-input-group select:focus,
+.trackbox-input-group .date-input-wrapper:focus-within,
+.trackbox-input-group .input-wrapper:focus-within {
+    border-color: #0061f2;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(0, 97, 242, 0.1);
+    outline: none;
+}
+
+/* Datepicker and Input wrapper specific */
+.date-input-wrapper,
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-right: 8px !important;
+}
+
+.date-input-wrapper input,
+.input-wrapper input {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    height: 100% !important;
+    padding: 0 !important;
+    flex: 1;
+}
+
+/* ================================
+   4. BUTTON STYLES
+   ================================ */
+.btn-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.btn-search {
+    background-color: #0061f2 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    padding: 0 24px !important;
+    height: 44px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    box-shadow: 0 4px 6px rgba(0, 97, 242, 0.15) !important;
+    transition: all 0.2s ease !important;
+    text-transform: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.btn-search:hover {
+    background-color: #0052ce !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0, 97, 242, 0.2) !important;
+}
+
+.btn-export {
+    background-color: #ffffff !important;
+    color: #475569 !important;
+    font-weight: 600 !important;
+    padding: 0 20px !important;
+    height: 44px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    border: 1px solid #e2e8f0 !important;
+    text-transform: none !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+.btn-export:hover {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+}
+
+.btn-print {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+    min-width: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.btn-more-options-grid {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #0061f2;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 16px;
+    height: 44px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn-more-options-grid:hover {
+    background: #ffffff;
+    border-color: #0061f2;
+    box-shadow: 0 2px 8px rgba(0, 97, 242, 0.1);
+}
+
+.secondary-filters {
+    padding-top: 0;
+    border-top: none;
+}
+
+.action-filter-grid {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 12px;
+}
+
+.action-filter-grid .trackbox-input-group {
+    flex: 0 1 auto;
+    min-width: 130px;
+}
+
+.trackbox-checkbox-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #475569;
+    font-weight: 500;
+    cursor: pointer;
+    padding-bottom: 10px;
+}
+
+.trackbox-checkbox-inline input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #0061f2;
+}
+
+.flex-grow-2 {
+    flex: 2 !important;
+}
+
+.action-row {
+    margin-top: 20px;
+}
+
+/* ================================
+   5. TABLE CONTAINER & STYLES
+   ================================ */
+.lead-table-container {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid #eef2f6;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.table-scroll-area {
+    overflow-y: auto;
+    width: 100%;
+}
+
+.lead-data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.lead-data-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #f8fafc;
+}
+
+.lead-data-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #eef2f6;
+}
+
+.lead-data-table td {
+    padding: 14px 20px;
+    font-size: 13px;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.lead-data-table tr:hover td {
+    background-color: #fcfdfe;
+}
+
+/* ================================
+   6. SUMMARY & AGING SECTIONS
+   ================================ */
+.report-summary-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+}
+
+.summary-item {
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.summary-value {
+    color: #0061f2;
+    font-weight: 700;
+}
+
+.aging-report-container {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #eef2f6;
+    padding: 0;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.aging-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.aging-table th {
+    background: #f1f5f9;
+    padding: 12px 16px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    border-right: 1px solid #e2e8f0;
+}
+
+.aging-table td {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+    text-align: center;
+    border-right: 1px solid #e2e8f0;
+}
+
+.aging-table th:last-child,
+.aging-table td:last-child {
+    border-right: none;
 }

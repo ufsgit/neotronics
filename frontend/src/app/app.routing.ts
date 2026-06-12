@@ -9,9 +9,13 @@ import { CanAdminGuard } from './guards/admin.guard';
 const routes: Routes = [
 
   {
+    path: '',
+    redirectTo: 'auth/login',
+    pathMatch: 'full'
+  },
+  {
     path: 'auth',
-    loadChildren: './modules/auth/auth.module#AuthModule',
-    canActivate: [CanAuthGuardGuard]
+    loadChildren: './modules/auth/auth.module#AuthModule'
   },
   {
     path: '',

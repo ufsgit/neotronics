@@ -51,7 +51,7 @@ export class DesignationComponent implements OnInit {
 
   Page_Load() {
     this.myInnerHeight = (window.innerHeight);
-    this.myInnerHeight = this.myInnerHeight - 300;
+    this.myInnerHeight = this.myInnerHeight - 330;
     this.Clr_Designation();
     this.Search_Designation();
     this.Entry_View = false;

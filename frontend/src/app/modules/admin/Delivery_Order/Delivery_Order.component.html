@@ -36,27 +36,27 @@
                                     <label
                                         class="col-md-4 mb-0 " style="text-align: end;">From</label>
                                 
-                                    <mat-form-field class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                    <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate" [(ngModel)]="Search_FromDate">
+                                    <div class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                    <input [matDatepicker]="dp1" placeholder="" name="Search_FromDate" [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                     <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
                     <mat-datepicker #dp1></mat-datepicker>
-                </mat-form-field>
+                </div>
                                 </div>
 
                                 <!-- To Date Filter -->
                                 <div class="col-md-3 row mb-1" style="align-items: center;">
                                     <label
                                         class="col-md-4 mb-0 " style="text-align: end;">To</label>
-                                    <mat-form-field
+                                    <div
                                         class="col-md-8 "
                                         style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                                        <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
-                                            [(ngModel)]="Search_ToDate">
+                                        border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                        <input [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
+                                            [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                                         <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
                                         <mat-datepicker #dp2></mat-datepicker>
-                                    </mat-form-field>
+                                    </div>
                                 </div>
 
                                 <!-- Customer Filter -->
@@ -410,14 +410,14 @@
                     <div class="col-md-12 mb-1">
                         <label
                             class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date</label>
-                        <mat-form-field
+                        <div
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            style="height: 47px !important">
-                            <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate"
-                                [(ngModel)]="Delivery_Order_Master_.EntryDate">
+                            style="height: 47px !important display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                            <input [matDatepicker]="dpdate" placeholder="" name="EntryDate"
+                                [(ngModel)]="Delivery_Order_Master_.EntryDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                             <mat-datepicker-toggle matSuffix [for]="dpdate" ></mat-datepicker-toggle>
                             <mat-datepicker #dpdate></mat-datepicker>
-                        </mat-form-field>
+                        </div>
                     </div>
 
                                             <!-- Do No Field -->

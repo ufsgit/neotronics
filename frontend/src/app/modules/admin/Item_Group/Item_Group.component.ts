@@ -16,7 +16,6 @@ Item_Group_Datas_:Item_Group[]
 Under_Role_Temp:Item_Group= new Item_Group();
 Item_Group_:Item_Group= new Item_Group();
 Item_Group:Item_Group= new Item_Group();
-Item_Group_Name_Search:string;
 Entry_View:boolean=true;
 myInnerHeight: number;
 EditIndex: number;

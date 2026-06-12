@@ -97,6 +97,7 @@ export class Price_Response_Master {
     Supplier_Address: string;
     Response_No: string;
     Taxable_Amount: number;
+    FormattedEntryDate: string;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);

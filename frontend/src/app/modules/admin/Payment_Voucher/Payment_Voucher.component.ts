@@ -58,7 +58,7 @@ import {
 	],
 })
 export class Payment_VoucherComponent implements OnInit {
-	Payment_Voucher_Data: Payment_Voucher[];
+	Payment_Voucher_Data: Payment_Voucher[] = [];
 	Payment_Voucher_: Payment_Voucher = new Payment_Voucher();
 	Payment_Voucher_Name_Search: string;
 
@@ -193,21 +193,22 @@ export class Payment_VoucherComponent implements OnInit {
 	Page_Load() {
 		this.myInnerHeight = window.innerHeight;
 		this.myInnerHeight = this.myInnerHeight - 200;
-		this.myInnerHeightTwo = this.myInnerHeight -150;
+		this.myInnerHeightTwo = this.myInnerHeight - 150;
 
-		//this.Accounts_Typeahead();
 		this.Search_FromDate = this.New_Date(this.Search_FromDate);
 		this.Search_ToDate = this.New_Date(this.Search_ToDate);
 		this.Clr_Payment_Voucher();
-		//this.Search_Payment_Voucher();
 		this.Get_Payment_Mode();
 		this.Clr_Purchase_Payment();
 		this.Entry_View = false;
-		//this.Payment_Voucher_Print = false;
 		this.Search_Company();
 		this.Load_Currency();
-		debugger
 		this.Get_Voucher_Type();
+
+		// Do NOT auto-load data — keep table empty until Search is clicked
+		this.Payment_Voucher_Data = [];
+		this.Total_Entries = 0;
+		this.Total_Amounts = 0;
 	}
 
 	From_Accounts_Typeahead(event: any) {

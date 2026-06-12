@@ -1,168 +1,158 @@
 <div *ngIf="issLoading" class="overlay">
     <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
     </mat-progress-spinner>
-    </div>
-    <div class="main-content">
-    <div class="container-fluid">
-    <div class="row" *ngIf="Entry_View">
-    <div class="col-md-12">
-   
-    <div class="card-body">
-    <form>
-    <div class="row">
-    <div class="col-md-6">
-<div class="col-md-12 wole-div-margin-to-down-proper">
-    <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Name
-         <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-    <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-    [(ngModel)]="Company_.Company_Name" name="Company_.Company_Name" [ngModelOptions]="{standalone: true}">
 </div>
 
-<div class="col-md-12 wole-div-margin-to-down-proper">
-    <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address1
-         <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-    <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-    [(ngModel)]="Company_.Address1" name="Company_.Address1" [ngModelOptions]="{standalone: true}">
-</div>
+<div class="company-page-wrapper">
 
-<div class="col-md-12 wole-div-margin-to-down-proper">
-<label class="col-md-3  label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address 2</label>
-<input  type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
- [(ngModel)]="Company_.Address2" name="Company_.Address2">
-</div>
+    <h1 class="page-main-heading">Company Settings</h1>
 
-<div class="col-md-12 wole-div-margin-to-down-proper">
-<label class="col-md-3  label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address 3</label>
-<input  type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-[(ngModel)]="Company_.Address3" name="Company_.Address3">
-</div>
+    <!-- ===================== FORM VIEW ===================== -->
+    <div *ngIf="Entry_View">
+        <div class="company-card">
+            <div class="company-card-body">
+                <form>
+                    <!-- Basic Information Section -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3 class="section-title">Basic Information</h3>
+                        </div>
+                        
+                        <div class="form-row three-cols">
+                            <div class="form-field-group">
+                                <label class="field-label">Company Name <span class="req">*</span></label>
+                                <input type="text" class="modern-input" placeholder="Enter company name" [(ngModel)]="Company_.Company_Name" name="Company_Name" [ngModelOptions]="{standalone: true}">
+                            </div>
+                            <div class="form-field-group">
+                                <label class="field-label">Address Line 1 <span class="req">*</span></label>
+                                <input type="text" class="modern-input" placeholder="Enter address line 1" [(ngModel)]="Company_.Address1" name="Address1" [ngModelOptions]="{standalone: true}">
+                            </div>
+                            <div class="form-field-group">
+                                <label class="field-label">Address Line 2</label>
+                                <input type="text" class="modern-input" placeholder="Enter address line 2" [(ngModel)]="Company_.Address2" name="Address2">
+                            </div>
+                        </div>
 
-<div class="col-md-12 wole-div-margin-to-down-proper">
-<label class="col-md-3  label-to-crect-all-names-to-divs down-label-name-to-all-sections">Phone No</label>    
-<input  type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-[(ngModel)]="Company_.Phone_Number" name="Company_.Phone_Number">
-</div>                    
-
-</div>
-    <div class="col-md-6">
-
-                    <div class="col-md-12 wole-div-margin-to-down-proper">
-                        <label class="col-md-3  label-to-crect-all-names-to-divs down-label-name-to-all-sections">Email</label>    
-                        <input  type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-                        [(ngModel)]="Company_.EMail" name="Company_.EMail">
-                        </div>   
-
-                    <div class="col-md-12 wole-div-margin-to-down-proper">                                         
-                        <label
-                          class="col-md-3  label-to-crect-all-names-to-divs down-label-name-to-all-sections">File</label>
-                          <input type="text" [(ngModel)]="Doc_Photo" name="Doc_Photo" disabled/>                      
-                          <button 
-                                class="btn btn-danger mb-2 pl-2 pr-2 mt-2 ml-1"  type="button" 
-                                (click)="fileInput1.click()">
-                          <span>Choose File</span>
-                          <input
-                              #fileInput1
-                              type="file"
-                              name="ImageFile_Doc"
-                              [(ngModel)]="ImageFile_Doc"
-                              (change)="File_Change_Vat($event)"
-                              style="display: none"
-                          />
-                      </button>  
-                  </div>
-                    
-
-                    
-                 
-                    <div class="col-md-12 wole-div-margin-to-down-proper">
-                    <label class="col-md-3  label-to-crect-all-names-to-divs down-label-name-to-all-sections">GSM</label>    
-                    <input  type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-                    [(ngModel)]="Company_.GSTNO" name="Company_.GSTNO">
+                        <div class="form-row two-cols">
+                            <div class="form-field-group">
+                                <label class="field-label">Address Line 3</label>
+                                <input type="text" class="modern-input" placeholder="Enter address line 3" [(ngModel)]="Company_.Address3" name="Address3">
+                            </div>
+                            <div class="form-field-group">
+                                <label class="field-label">Phone Number</label>
+                                <input type="text" class="modern-input" placeholder="Enter phone number" [(ngModel)]="Company_.Phone_Number" name="Phone_Number">
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="col-md-12 wole-div-margin-to-down-proper">
-                    <label class="col-md-3  label-to-crect-all-names-to-divs down-label-name-to-all-sections">CR No</label>    
-                    <input  type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-                    [(ngModel)]="Company_.CINO" name="Company_.CINO">
-                    </div> 
-                    
-                    <div class="col-md-12 wole-div-margin-to-down-proper">
-                    <label class="col-md-3  label-to-crect-all-names-to-divs down-label-name-to-all-sections">Vat No</label>    
-                    <input  type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-                    [(ngModel)]="Company_.PANNO" name="Company_.PANNO">
-                    </div> 
 
-                    <div class="col-md-12 wole-div-margin-to-down-proper">
-                        <label class="col-md-3  label-to-crect-all-names-to-divs down-label-name-to-all-sectionse">Note</label>    
-                        <input  type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-                        [(ngModel)]="Company_.Note" name="Company_.Note">
-                        </div> 
+                    <!-- Contact & Legal Information Section -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3 class="section-title">Contact & Legal Information</h3>
+                        </div>
 
-                    <div class="col-md-12 butn-crct-alghn-dwnwrd-users-srch-new">
-                            <button mat-raised-button type="button" [hidden]="Company_Save==false" id="Save_Button"class="btn btn-danger pull-right" 
-                            (click)="Save_Company()">Save</button>
-                        </div>       
+                        <div class="form-row three-cols">
+                            <div class="form-field-group">
+                                <label class="field-label">Email</label>
+                                <input type="email" class="modern-input" placeholder="Enter email address" [(ngModel)]="Company_.EMail" name="EMail">
+                            </div>
+                            <div class="form-field-group">
+                                <label class="field-label">GSM</label>
+                                <input type="text" class="modern-input" placeholder="Enter GSM number" [(ngModel)]="Company_.GSTNO" name="GSTNO">
+                            </div>
+                            <div class="form-field-group">
+                                <label class="field-label">CR No</label>
+                                <input type="text" class="modern-input" placeholder="Enter CR number" [(ngModel)]="Company_.CINO" name="CINO">
+                            </div>
+                        </div>
+
+                        <div class="form-row vat-logo-row">
+                            <div class="form-field-group">
+                                <label class="field-label">VAT No</label>
+                                <input type="text" class="modern-input" placeholder="Enter VAT number" [(ngModel)]="Company_.PANNO" name="PANNO">
+                            </div>
+                            <div class="form-field-group">
+                                <label class="field-label">Company Logo / File</label>
+                                <div class="file-upload-container">
+                                    <div class="file-name-display">
+                                        {{ Doc_Photo || 'No file chosen' }}
+                                    </div>
+                                    <button type="button" class="btn-upload" (click)="fileInput1.click()">
+                                        <i class="material-icons">upload</i>
+                                        Choose File
+                                        <input #fileInput1 type="file" name="ImageFile_Doc" [(ngModel)]="ImageFile_Doc" (change)="File_Change_Vat($event)" style="display:none">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Note - Full Width -->
+                    <div class="form-section" style="margin-bottom: 0;">
+                        <div class="form-field-group">
+                            <label class="field-label">Note</label>
+                            <textarea class="modern-textarea" rows="4" placeholder="Enter any additional notes here..." [(ngModel)]="Company_.Note" name="Note"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="form-footer">
+                        <button type="button" class="btn-save-modern" [hidden]="Company_Save==false" id="Save_Button" (click)="Save_Company()">
+                            <i class="material-icons">save</i>
+                            Save Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+
+    <!-- ===================== LIST VIEW ===================== -->
+    <div *ngIf="!Entry_View">
+        <div class="company-card">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: none; margin-bottom: 2rem;">
+                <h3 class="section-title">Company List</h3>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn-upload" type="button" (click)="Search_Company()" style="background: #f1f5f9; color: #475569;">
+                        <i class="material-icons">search</i> Search
+                    </button>
+                    <button class="btn-upload" type="button" (click)="Create_New()">
+                        <i class="material-icons">add</i> Add New
+                    </button>
+                </div>
+            </div>
+
+            <div class="modern-table-container">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px; text-align: center;">Sl No</th>
+                            <th>Company Name</th>
+                            <th style="width: 150px; text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *cdkVirtualFor="let Company_1 of Company_Data; let i = index">
+                            <tr>
+                                <td style="text-align: center;">{{ i + 1 }}</td>
+                                <td style="font-weight: 600;">{{ Company_1["Company_Name"] }}</td>
+                                <td style="text-align: center;">
+                                    <button class="action-btn btn-edit-modern" [hidden]="Company_Edit==false" (click)="Edit_Company(Company_1, i)">
+                                        <i class="material-icons" style="font-size: 18px;">edit</i>
+                                    </button>
+                                    <button class="action-btn btn-delete-modern" [hidden]="Company_Delete==false" (click)="Delete_Company(Company_1.Company_Id, i)">
+                                        <i class="material-icons" style="font-size: 18px;">delete_outline</i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+            <div style="padding: 1.5rem; font-size: 14px; color: #64748b; font-weight: 500;">
+                Total Entries: {{ Total_Entries }}
+            </div>
+        </div>
     </div>
-    <div class="clearfix"></div>
-    </form>
-    </div>
-    <!-- </div> -->
-    </div>
-    </div>
-    <div class="row" *ngIf="!Entry_View">
-<div class="col-md-5">
-<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name"> Company Name </label>
-<mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
-<input matInput type="text"  [(ngModel)]="Company_Name_Search"  name="Company_Name_Search">  
-</mat-form-field>
+
 </div>
-<div class="col-md-1">
-<button mat-raised-button type="button" (click)="Search_Company()" class="btn btn-danger button-to-crect-margin "><i class="fa fa-search" aria-hidden="true"></i></button> 
-<button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin "><i class="fa fa-plus" aria-hidden="true"></i></button> 
-</div>
-<div class="col-md-12">
-<div class="card-plain">
-        <div class="card-body">
-    <div class="table-responsive">
- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" >
-    <table class="table table-hover">
-    <thead class="thead">
-    <th>
-    Sl No
-    </th>
-    <th>
-Company Name
-    </th>
-    <th [hidden]="Company_Edit==false">
-    Edit
-    </th>
-    <th [hidden]="Company_Delete==false">
-    Delete
-    </th>
-    </thead>
-    <ng-container *cdkVirtualFor="let Company_1 of Company_Data; let i = index">
-    <tr>
-    <td style="padding-left:5px;">{{ i+1 }}</td>
-    <td>{{Company_1["Company_Name"]}}</td>
-    <td>
-        
-    <button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Company_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Company(Company_1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
-    </td>
-    <td> 
-    <button _ngcontent-gdi-c11="" [hidden]="Company_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Company(Company_1.Company_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
-    </td>
-   </tr>
-       </ng-container>
-</table>
-</cdk-virtual-scroll-viewport>
-    </div>
-    </div>
-    
-    <label class="entry-num">Entries : {{Total_Entries}}</label>
-    </div>
-    
-    </div>
-    </div>
-    </div>
-    

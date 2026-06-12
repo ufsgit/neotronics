@@ -1,132 +1,121 @@
 <div *ngIf="issLoading" class="overlay">
     <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
     </mat-progress-spinner>
-    </div>
-    <div class="main-content">
-    <div class="container-fluid">
-    <div class="row" *ngIf="!Entry_View">
-           
-    <div _ngcontent-xmy-c9="" class="col-md-1 width-to-crect-check-boxes">
-        <div _ngcontent-xmy-c9="" class="form-check algyn-checkbx-lead-serch-scton div-crct-alghn-dwn-ldgr-vuchr-tpe">
-        <label _ngcontent-xmy-c9="" class="form-check-label">
-        <input type='checkbox'class="form-check-input" placeholder='Search...' [(ngModel)]="Look_In_Date" />
-        <span _ngcontent-xmy-c9="" class="form-check-sign"><span _ngcontent-xmy-c9="" class="check"></span>
-        </span></label></div>
+</div>
+
+<div class="main-content">
+    <div class="container-fluid px-0">
+
+        <!-- PAGE HEADER -->
+        <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 class="page-title-main">Expense Report</h4>
+            </div>
+            <div>
+                <button mat-raised-button class="btn-export" (click)="Export()">
+                    <i class="material-icons" style="font-size:18px;">download</i>
+                    Export Excel
+                </button>
+            </div>
         </div>
-        <div class="col-md-3">
-          <label class="col-md-4 label-down-alighn-supler-prhse-mstr-down">From</label>
-          <mat-form-field>
-                  <input matInput [matDatepicker]="dp1" placeholder="" [(ngModel)]="Search_FromDate">
-                  <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
-                  <mat-datepicker #dp1></mat-datepicker>
-                </mat-form-field>
-          </div>
 
-        <div class="col-md-3">
-          <label class="col-md-4 label-down-alighn-supler-prhse-mstr-down">TO</label>
-          <mat-form-field>
-                  <input matInput [matDatepicker]="dp2" placeholder="" [(ngModel)]="Search_ToDate">
-                  <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
-                  <mat-datepicker #dp2></mat-datepicker>
-                </mat-form-field>
-          </div>
-
-
-        <div class="col-md-5">
-            <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down">Voucher No</label>
-                <mat-form-field  class="col-md-9 led-srch-sctn-nput-tb">
-                <input matInput type="number" [(ngModel)]="Voucher_No_search" name="Voucher_No_search">
-                </mat-form-field>
+        <!-- FILTER PANEL -->
+        <div class="lead-filter-panel mb-3">
+            <div class="filter-grid">
+                <!-- Look In Date Checkbox -->
+                <div style="display: flex; align-items: center; padding-top: 5px;">
+                    <mat-checkbox [(ngModel)]="Look_In_Date" color="primary"></mat-checkbox>
                 </div>
 
-        <div class="col-md-4">
-            <label class="col-md-3 label-down-alighn-stk-ad-mstr-brcde">From</label>
-            <input type="text" [matAutocomplete]="auto2" [(ngModel)]="FromAccount_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Accounts_Typeahead($event)" class="col-md-9 for-input-selct-tblelst" />
-            <mat-autocomplete #auto2="matAutocomplete" [displayWith]="display_FromAccount">
-            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
-            <ng-container *ngIf="!isLoading">
-              <mat-option *ngFor="let FromAccount of Client_Accounts_Data" [value]="FromAccount">
-                  <span>{{FromAccount.Client_Accounts_Name}}-{{FromAccount.Address1}}-{{FromAccount.Mobile}}</span>
-              </mat-option>
-            </ng-container>
-            </mat-autocomplete>
-            
+                <!-- From Date -->
+                <mat-form-field appearance="legacy" floatLabel="never" [style.opacity]="Look_In_Date ? 1 : 0.5">
+                    <input matInput [matDatepicker]="dp1" placeholder="From Date" [(ngModel)]="Search_FromDate" [disabled]="!Look_In_Date">
+                    <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                    <mat-datepicker #dp1></mat-datepicker>
+                </mat-form-field>
+
+                <!-- To Date -->
+                <mat-form-field appearance="legacy" floatLabel="never" [style.opacity]="Look_In_Date ? 1 : 0.5">
+                    <input matInput [matDatepicker]="dp2" placeholder="To Date" [(ngModel)]="Search_ToDate" [disabled]="!Look_In_Date">
+                    <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                    <mat-datepicker #dp2></mat-datepicker>
+                </mat-form-field>
+
+                <!-- Voucher No -->
+                <mat-form-field appearance="legacy" floatLabel="never">
+                    <input matInput type="number" placeholder="Voucher No" [(ngModel)]="Voucher_No_search">
+                </mat-form-field>
+
+                <!-- From Account -->
+                <mat-form-field appearance="legacy" floatLabel="never">
+                    <input matInput type="text" [matAutocomplete]="auto_from" [(ngModel)]="FromAccount_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Accounts_Typeahead($event)" placeholder="From Account" />
+                    <mat-autocomplete #auto_from="matAutocomplete" [displayWith]="display_FromAccount">
+                        <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                        <ng-container *ngIf="!isLoading">
+                            <mat-option *ngFor="let acc of Client_Accounts_Data" [value]="acc">
+                                <span>{{acc.Client_Accounts_Name}}</span>
+                            </mat-option>
+                        </ng-container>
+                    </mat-autocomplete>
+                </mat-form-field>
+
+                <!-- To Account -->
+                <mat-form-field appearance="legacy" floatLabel="never">
+                    <input matInput type="text" [matAutocomplete]="auto_to" [(ngModel)]="ToAccount_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Accounts_Typeahead($event)" placeholder="To Account" />
+                    <mat-autocomplete #auto_to="matAutocomplete" [displayWith]="display_FromAccount">
+                        <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                        <ng-container *ngIf="!isLoading">
+                            <mat-option *ngFor="let acc of Client_Accounts_Data" [value]="acc">
+                                <span>{{acc.Client_Accounts_Name}}</span>
+                            </mat-option>
+                        </ng-container>
+                    </mat-autocomplete>
+                </mat-form-field>
+
+                <!-- Action -->
+                <button mat-raised-button class="btn-search" (click)="Search_Journal_Entry()">
+                    <i class="material-icons">search</i>
+                    SEARCH
+                </button>
             </div>
-    
-            <div class="col-md-4">
-                <label class="col-md-2 label-down-alighn-stk-ad-mstr-brcde">To </label>
-                <input type="text" [matAutocomplete]="auto3" [(ngModel)]="ToAccount_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Accounts_Typeahead($event)" class="col-md-10 for-input-selct-tblelst" />
-                <mat-autocomplete #auto3="matAutocomplete" [displayWith]="display_FromAccount">
-                <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
-                <ng-container *ngIf="!isLoading">
-                  <mat-option *ngFor="let FromAccount of Client_Accounts_Data" [value]="FromAccount">
-                      <span>{{FromAccount.Client_Accounts_Name}}-{{FromAccount.Address1}}-{{FromAccount.Mobile}}</span>
-                  </mat-option>
-                </ng-container>
-                </mat-autocomplete>
-                
-                </div> 
-  <div class="col-md-1">  
- <button mat-raised-button type="submit" (click)="Search_Journal_Entry()" class="btn btn-danger pull-right button-to-crect-margin change-colour-button"><i class="fa fa-search" aria-hidden="true"></i></button>
-   </div> 
+        </div>
 
+        <!-- TABLE -->
+        <div class="lead-table-container">
+            <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" class="table-scroll-area">
+                <table class="lead-data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>From</th>
+                            <th>From Detail</th>
+                            <th>To</th>
+                            <th>To Detail</th>
+                            <th style="text-align: right;">Amount</th>
+                            <th>Voucher No</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *cdkVirtualFor="let Journal_Entry1 of Journal_Entry_Data">
+                            <td>{{Journal_Entry1["Search_Date"]}}</td>
+                            <td style="font-weight: 500;">{{Journal_Entry1["FromAccount_Name"]}}</td>
+                            <td>{{Journal_Entry1["From_Detail"]}}</td>
+                            <td style="font-weight: 500;">{{Journal_Entry1["ToAccount_Name"]}}</td>
+                            <td>{{Journal_Entry1["To_Detail"]}}</td>
+                            <td style="text-align: right; font-weight: 600;">{{Journal_Entry1["Amount"]}}</td>
+                            <td>{{Journal_Entry1["Voucher_No"]}}</td>
+                        </tr>
+                        <tr *ngIf="Journal_Entry_Data?.length === 0">
+                            <td colspan="7" class="text-center py-5 text-muted">No records found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </cdk-virtual-scroll-viewport>
 
-   <button
-   (click)="Export()"
-   mat-raised-button
-   type="submit"
-   class="save-button-style pull-right mr-1"
- >
-   Export
- </button>
-    <div class="col-md-12">
-    <div class="card card-plain">
-   <div class="card-body">
-    <div class="table-responsive">
- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" >
-    <table class="table table-hover">
-    <thead class="thead">
-    <th>
-     Date
-    </th>
-    <th>
-      From 
-      </th> 
-      <th>
-        From Detail
-        </th> 
-      <th>
-      To 
-      </th>
-      <th>
-        To Detail
-        </th>
-    <th>
-    Amount
-    </th>
-    <th>
-      Voucher No
-      </th>
-    </thead>
-    <ng-container *cdkVirtualFor="let Journal_Entry1 of Journal_Entry_Data; let i = index">
-    <tr>
-    <!-- <td style="padding-left:5px;">{{ i+1 }}</td> -->
-    <td>{{Journal_Entry1["Search_Date"]}}</td>
-    <td>{{Journal_Entry1["FromAccount_Name"]}}</td> 
-    <td>{{Journal_Entry1["From_Detail"]}}</td> 
-    <td>{{Journal_Entry1["ToAccount_Name"]}}</td> 
-    <td>{{Journal_Entry1["To_Detail"]}}</td> 
-    <td>{{Journal_Entry1["Amount"]}}</td> 
-    <td>{{Journal_Entry1["Voucher_No"]}}</td> 
-   </tr>
-       </ng-container>
-</table>
-</cdk-virtual-scroll-viewport>
+            <!-- FOOTER -->
+            <div class="pagination-container d-flex justify-content-between align-items-center mt-3">
+                <div class="entry-num">Total Entries: <strong>{{ Total_Entries }}</strong></div>
+            </div>
+        </div>
     </div>
-    </div>
-    <label class="entry-num">Entries : {{Total_Entries}}</label>
-    </div>
-    </div>
-    </div>
-    </div>
-    
+</div>

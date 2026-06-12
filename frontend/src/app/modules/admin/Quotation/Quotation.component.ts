@@ -2168,6 +2168,19 @@ Calculate_Quotation_Details_Amount()
 
     this.Calculate_Total_Amount();
 }
+On_Quotation_Amount_Change()
+{
+    if(this.Quotation_Details_.Amount == undefined || this.Quotation_Details_.Amount == null)
+        this.Quotation_Details_.Amount = 0;
+    if(this.Quotation_Details_.Quantity == undefined || this.Quotation_Details_.Quantity == null)
+        this.Quotation_Details_.Quantity = 0;
+
+    this.Quotation_Details_.Amount = Number(Number(this.Quotation_Details_.Amount).toFixed(3));
+    if(Number(this.Quotation_Details_.Quantity) > 0) {
+        this.Quotation_Details_.UnitPrice = Number((Number(this.Quotation_Details_.Amount) / Number(this.Quotation_Details_.Quantity)).toFixed(3));
+    }
+    this.Calculate_Total_Amount();
+}
 Calculate_Total_Amount()
 { 
     debugger;

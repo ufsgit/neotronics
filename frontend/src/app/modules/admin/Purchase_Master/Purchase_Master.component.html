@@ -120,8 +120,8 @@
             class="col-md-3 label-down-alighn-adrs-tre-prhse-mstr-down"
             >Document
         </label>
-        <mat-form-field style="border: 1px solid lightgrey !important;
-        height: 47px;padding-left: 10px;"
+        <div style="border: 1px solid lightgrey !important;
+        height: 47px;padding-left: 10px; display: flex; align-items: center; padding: 0 5px; background: #fff;"
             class="col-md-6 input-allighn-typer-head-all-divs-matinputs"
         >
             <input
@@ -130,8 +130,9 @@
                 [(ngModel)]="Doc_Photo"
                 name="Doc_Photo"
                 disabled
+                style="border:none;outline:none;width:100%;background:transparent;"
             />
-        </mat-form-field>
+        </div>
 
         <button
             class="btn btn-danger mb-2 pl-2 pr-2 mt-2"
@@ -461,10 +462,10 @@
   <!-- <div class="col-md-2 croct-float-purchase-master-section div-crct-algn-up-wrd-to-crect" [hidden]="Is_Expiry_Show">
         <label class="col-md-4">Date</label>
         <mat-form-field class="col-md-8 input-allighn-to-crect-wole-paddings">
-            <input matInput [matDatepicker]="dpdate" placeholder="" name="Purchase_Details_Expiry_Date" [(ngModel)]="Purchase_Details_.Expiry_Date">
+            <input [matDatepicker]="dpdate" placeholder="" name="Purchase_Details_Expiry_Date" [(ngModel)]="Purchase_Details_.Expiry_Date" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
             <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
             <mat-datepicker #dpdate></mat-datepicker>
-            </mat-form-field>
+            </div>
         </div>     -->
 <!--<div class="col-md-3 mrgn-up-wrd-wle-div-rspnsv-prhse-mstr-nw-sctn">
     <label class="col-md-6 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Salerate
@@ -694,20 +695,20 @@
     </div>  
 <div class="col-md-3 " style="margin-top: 2px;">
     <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections">From</label>
-    <mat-form-field class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px;">
-    <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate" [(ngModel)]="Search_FromDate">
+    <div class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+    <input [matDatepicker]="dp1" placeholder="" name="Search_FromDate" [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
     <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
     <mat-datepicker #dp1></mat-datepicker>
-    </mat-form-field>
+    </div>
     </div> 
     <div class="col-md-3 " style="margin-top: 2px;">
         <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections">To</label>
-        <mat-form-field class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" 
-        style="height: 40px;">
-        <input matInput [matDatepicker]="dp2" placeholder="" name="Search_ToDate" [(ngModel)]="Search_ToDate">
+        <div class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" 
+        style="height: 40px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+        <input [matDatepicker]="dp2" placeholder="" name="Search_ToDate" [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
         <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
         <mat-datepicker #dp2></mat-datepicker>
-        </mat-form-field>
+        </div>
         </div> 
     <div class="col-md-3 tab-wole-div-alyn"  style="margin-top: 2px;">
         <label class="col-md-4 label-to-crect-all-names-to-divs margin-alghn-label-text pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Supplier

@@ -362,6 +362,8 @@ Page_Load()
                         } as any;
 
                         // Map master fields
+                        this.Price_Response_Master_.Account_Party_Id = master.Account_Party_Id;
+                        this.Price_Response_Master_.Supplier_Id = master.Account_Party_Id;
                         this.Price_Response_Master_.Address1 = master.Address1;
                         this.Price_Response_Master_.Address2 = master.Address2;
                         this.Price_Response_Master_.Address3 = master.Address3;
@@ -455,6 +457,9 @@ Page_Load()
         this.Sales_Print = false;
         debugger;
         this.Load_Price_Response_Master();
+    }
+    else {
+        this.Search_Price_Response();
     }
     //this.myDate=new Date();
 }
@@ -638,7 +643,7 @@ Close_Click()
     this.deliveryPendingView = false;
     this.purchasePendingView = false;
     this.packingListPendingView = false;
-    //this.Search_Price_Response();
+    this.Search_Price_Response();
     setTimeout(() => {
         if (this.topDiv1) {
             this.topDiv1.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1502,6 +1507,8 @@ Customer_Change( Customer_T_)
     this.Price_Response_Master_.Customer_Name=this.Customer_.Client_Accounts_Name;
     this.Price_Response_Master_.Customer=this.Customer_.Client_Accounts_Name;
     this.Price_Response_Master_.Account_Party_Id=this.Customer_.Client_Accounts_Id;
+    this.Price_Response_Master_.Supplier_Id=this.Customer_.Client_Accounts_Id;
+    this.Price_Response_Master_.Supplier_Name=this.Customer_.Client_Accounts_Name;
 
     this.Price_Response_Master_.Address1 = this.Customer_.Address1;
     this.Price_Response_Master_.Address2 = this.Customer_.Address2;
@@ -1525,6 +1532,8 @@ selectCustomer(){
     this.Price_Response_Master_.Customer_Name=this.Customer_.Client_Accounts_Name;
     this.Price_Response_Master_.Customer=this.Customer_.Client_Accounts_Name;
     this.Price_Response_Master_.Account_Party_Id=this.Customer_.Client_Accounts_Id;
+    this.Price_Response_Master_.Supplier_Id=this.Customer_.Client_Accounts_Id;
+    this.Price_Response_Master_.Supplier_Name=this.Customer_.Client_Accounts_Name;
 
     this.Price_Response_Master_.Address1 = this.Customer_.Address1;
     this.Price_Response_Master_.Address2 = this.Customer_.Address2;
@@ -1689,7 +1698,10 @@ Search_Price_Response()
             if (this.Price_Response_Master_Data && this.Price_Response_Master_Data.length > 0) {
                 for (var i = 0; i < this.Price_Response_Master_Data.length; i++) {
                     this.Price_Response_Master_Data[i].Price_RequestNo = this.Price_Response_Master_Data[i].Price_Response_No;
-                    this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Price_Response_Master_Data[i].Net_Amount);
+                    this.Price_Response_Master_Data[i].Customer = this.Price_Response_Master_Data[i].Supplier_Name;
+                    this.Price_Response_Master_Data[i].FormattedEntryDate = moment(this.Price_Response_Master_Data[i].EntryDate).format('DD/MM/YYYY');
+                    this.Price_Response_Master_Data[i].NetTotal = Number(this.Price_Response_Master_Data[i].Net_Amount || this.Price_Response_Master_Data[i].Total_Amount || 0);
+                    this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Price_Response_Master_Data[i].NetTotal);
                 }
                 this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount.toFixed(3));
             }
@@ -1814,7 +1826,24 @@ Save_Price_Response(Printstatus:number)
     }
 
     this.Price_Response_Master_.Price_Response_No = this.Price_Response_Master_.Price_RequestNo;
-    this.Price_Response_Master_.Price_Response_Details = this.Price_Response_Details_Data;
+    
+    // Map details to match DB expected column names for JSON_TABLE
+    const mappedDetails = this.Price_Response_Details_Data.map(item => {
+        return {
+            ...item,
+            Item_Id: item.ItemId || item.Item_Id || 0,
+            Item_Name: item.ItemName || item.Item_Name || '',
+            Part_No: item.Item_Code || item.Part_No || '',
+            Supplier_Price: item.UnitPrice || item.Supplier_Price || 0,
+            Profit_Percentage: item.Profit || item.Profit_Percentage || 0,
+            Profit_Amount: (Number(item.SaleRate || 0) - Number(item.UnitPrice || 0)) || item.Profit_Amount || 0,
+            Sale_Rate: item.SaleRate || item.Sale_Rate || 0,
+            Total_Amount: item.Amount || item.Total_Amount || 0,
+            Brand_Id: item.Brand_Id || 0,
+            Brand_Name: item.Brand || item.Brand_Name || ''
+        };
+    });
+    this.Price_Response_Master_.Price_Response_Details = mappedDetails;
     this.Price_Response_Master_.EntryDate = this.New_Date(new Date(moment(this.Price_Response_Master_.EntryDate).format('YYYY-MM-DD')));
     this.Price_Response_Master_.Currency_Id = this.currency.CurrencyDetails_Id;
 
@@ -1830,7 +1859,7 @@ Save_Price_Response(Printstatus:number)
     // Net total and other amounts
     this.Price_Response_Master_.Total_Amount = this.Price_Response_Master_.TotalAmount || 0;
     this.Price_Response_Master_.Vat_Amount = this.Price_Response_Master_.VAT_Amount || 0;
-    this.Price_Response_Master_.Net_Amount = this.Price_Response_Master_.NetTotal || 0;
+    this.Price_Response_Master_.Net_Amount = this.Price_Response_Master_.NetTotal || this.Price_Response_Master_.Total_Amount || this.Price_Response_Master_.TotalAmount || 0;
 
     console.log("Before Price Response API call");
     this.issLoading = true;
@@ -2550,30 +2579,11 @@ debugger;
         this.Customer_=this.Customer_Temp;
         this.Price_Response_Master_.Customer_Name=this.Customer_.Client_Accounts_Name;
         this.Price_Response_Master_.Customer=this.Price_Response_Master_.Customer_Name; 
+        this.Price_Response_Master_.Supplier_Id=masterRow.Account_Party_Id;
+        this.Price_Response_Master_.Supplier_Name=masterRow.Customer;
         
         this.Price_Response_Master_Id_Edit = this.Price_Response_Master_Id;
 
-        // this.Client_Accounts_Service_.Get_Client_Accounts(this.Price_Response_Master_.Account_Party_Id).subscribe((result)=>{
-        //     if(result!=null)
-        //     {
-        //         debugger
-        //                 this.Customer_Temp.Client_Accounts_Id=result[0][0].Client_Accounts_Id;
-        //                 this.Customer_Temp.Client_Accounts_Name=result[0][0].Client_Accounts_Name;
-        //                 this.Customer_= this.Customer_Temp;
-
-        //                 this.Price_Response_Master_.Address1 = result[0][0].Address1;
-        //                 this.Price_Response_Master_.Address2 = result[0][0].Address2;
-        //                 this.Price_Response_Master_.Address3 = result[0][0].Address3;
-        //                 this.Price_Response_Master_.Address4 = result[0][0].Address4;
-        //                 this.Price_Response_Master_.Vatin = result[0][0].GSTNo;
-                       
-        //                 this.Address1 = result[0][0].Address1;
-        //                 this.Address2 = result[0][0].Address2;
-        //                 this.Address3 = result[0][0].Address3;
-        //                 this.Address4 = result[0][0].Address4;
-        //                 this.Vatin = result[0][0].GSTNo;
-        //     }
-        // });
     this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39',"").subscribe(Rows => {  
         if (Rows != null) {
             this.Customer_Data = Rows[0];

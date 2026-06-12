@@ -43,6 +43,8 @@ Select_View:boolean=false;
 Select_Save:boolean=false;
 Select_Edit:boolean=false;
 Select_Delete:boolean=false;
+Menu_Permission_Selected:boolean=false;
+Menu_Permission_Page:boolean=false;
 User_Details_Save:boolean;
 User_Details_Delete:boolean;
 
@@ -96,12 +98,14 @@ this.Entry_View=false;
 Create_New()
 {
 this.Entry_View = true;
+this.Menu_Permission_Page = false;
 this.Clr_User_Details();
 }
 Close_Click()
 {
 this.Clr_User_Details();
 this.Entry_View = false;
+this.Menu_Permission_Page = false;
 }
 trackByFn(index, item) 
 {
@@ -114,6 +118,8 @@ return index;
     this.Select_Edit=false;
     this.Select_Save=false;
     this.Select_Delete=false;
+    this.Menu_Permission_Selected=false;
+    this.Menu_Permission_Page=false;
 this.User_Details_.User_Details_Id=0;
 this.User_Details_.User_Details_Name="";
 this.User_Details_.Password="";
@@ -190,6 +196,15 @@ for(var i=0;i<this.User_Menu_Selection_Data.length;i++)
 }
 }
 
+}
+Menu_Permission_Change(event)
+{
+    this.Menu_Permission_Selected = event.target.checked;
+    this.Menu_Permission_Page = this.Menu_Permission_Selected;
+}
+Back_To_User_Form()
+{
+    this.Menu_Permission_Page = false;
 }
 View_Click()
 {
@@ -360,11 +375,7 @@ Save_User_Details()
             Menu_Status = true;
     }
      
-    if (Menu_Status==false)
-    {
-   const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Atleast One Menu', Type: "3" } });
-   }
-   else if(this.User_Details_.User_Details_Name==undefined||this.User_Details_.User_Details_Name==null||this.User_Details_.User_Details_Name=="")
+   if(this.User_Details_.User_Details_Name==undefined||this.User_Details_.User_Details_Name==null||this.User_Details_.User_Details_Name=="")
    {
     const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the User Name', Type: "3" } });
    }
@@ -386,6 +397,10 @@ Save_User_Details()
     else if (this.Department_ == undefined || this.Department_ == null || this.Department_.Department_Id == undefined || this.Department_.Department_Id==0) {
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Department', Type: "3" } });
         }
+    else if (this.Menu_Permission_Selected == true && Menu_Status==false)
+    {
+   const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Atleast One Menu', Type: "3" } });
+   }
 
     else{
          
@@ -400,11 +415,13 @@ Save_User_Details()
         this.User_Details_.Branch_Id = 0;
 		this.User_Details_.Branch_Name = "";
         this.User_Menu_Selection_Data_Temp=[]; 
+        if (this.Menu_Permission_Selected == true) {
         for (var i = 0; i< this.User_Menu_Selection_Data.length; i++) {
 
         if (Boolean(this.User_Menu_Selection_Data[i].IsView) == true||Boolean(this.User_Menu_Selection_Data[i].IsSave) == true
         ||Boolean(this.User_Menu_Selection_Data[i].IsEdit) == true||Boolean(this.User_Menu_Selection_Data[i].IsDelete) == true) {
         this.User_Menu_Selection_Data_Temp.push(this.User_Menu_Selection_Data[i]);
+        }
         }
         }
         this.User_Details_.User_Menu_Selection_Data = this.User_Menu_Selection_Data_Temp;
@@ -461,6 +478,9 @@ this.User_Menu_Selection_Data=Rows[0];
     this.User_Menu_Selection_Data[j].IsDelete= false;
     }
     this.issLoading=false;
+    this.Menu_Permission_Selected = this.User_Menu_Selection_Data.some(menu =>
+        menu.IsView == true || menu.IsSave == true || menu.IsEdit == true || menu.IsDelete == true
+    );
     },
   Rows => { 
     this.issLoading=false;
@@ -471,6 +491,8 @@ Edit_User_Details(User_Details_e:User_Details,index)
 {
       
 this.Entry_View=true;
+this.Menu_Permission_Page=false;
+this.Menu_Permission_Selected=false;
 this.User_Details_=User_Details_e;
 this.User_Details_=Object.assign({},User_Details_e);
  

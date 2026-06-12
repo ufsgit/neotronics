@@ -54,7 +54,7 @@ export class User_RoleComponent implements OnInit {
 
     Page_Load() {
         this.myInnerHeight = (window.innerHeight);
-        this.myInnerHeight = this.myInnerHeight - 300;
+        this.myInnerHeight = this.myInnerHeight - 330;
         this.Clr_User_Role();
         this.Search_User_Role_Name = "";
         this.Search_User_Role();

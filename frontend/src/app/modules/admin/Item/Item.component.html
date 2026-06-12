@@ -1,264 +1,236 @@
 
-
 <div *ngIf="issLoading" class="overlay">
-    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
-    </mat-progress-spinner>
-    </div>
-    <div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value"></mat-progress-spinner>
+</div>
+
+<div class="main-content">
     <div class="container-fluid">
-    <div class="row mt-2" *ngIf="Entry_View">
-    <div class="col-md-12">
-    <div class="card" style="background-color: #f1f1f1;">
-  
-    <div class="card-body">
-    <form>
-    <div class="row">
-    <div class="col-md-6">
-      <div class="col-md-12 mb-2">
+        <!-- Entry View -->
+        <div class="row" *ngIf="Entry_View">
+            <div class="col-md-12">
+                <div class="lead-entry-header d-flex justify-content-between align-items-center">
+                    <h4 class="page-title-main">{{Item_.Item_Id > 0 ? 'Edit Item' : 'Add New Item'}}</h4>
+                    <button type="button" class="btn-close-custom" (click)="Close_Click()">
+                        <i class="material-icons">close</i> Close
+                    </button>
+                </div>
 
-        <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Group <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
-        <input type="text" [matAutocomplete]="auto" [(ngModel)]="Item_Group_" name="Item_Group_" (click)="Search_Item_Group($event)"
-        (keyup)="Search_Item_Group($event)" 
-        style="border: 1px solid lightgrey;
-        height: 40px;padding-left: 10px;"
-        class="col-md-8 select-box-style-diary" />
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Item_Group">
-        <mat-option *ngIf="issLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
-        <ng-container *ngIf="!issLoading">
-        <mat-option *ngFor="let Item_Group_ of Item_Group_Data" [value]="Item_Group_">
-        <span>{{Item_Group_.Item_Group_Name}}</span>
-        </mat-option>
-        </ng-container>
-        </mat-autocomplete>
-        
+                <div class="lead-entry-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-info">Basic Information</h6>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="trackbox-input-group">
+                                            <label class="input-label">Group <span class="required-star">*</span></label>
+                                            <mat-form-field floatLabel="never">
+                                                <input matInput type="text" [matAutocomplete]="auto" [(ngModel)]="Item_Group_" name="Item_Group_" 
+                                                    (click)="Search_Item_Group($event)" (keyup)="Search_Item_Group($event)" placeholder="Search Group">
+                                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Item_Group">
+                                                    <mat-option *ngIf="issLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                                                    <ng-container *ngIf="!issLoading">
+                                                        <mat-option *ngFor="let Item_Group_ of Item_Group_Data" [value]="Item_Group_">
+                                                            <span>{{Item_Group_.Item_Group_Name}}</span>
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="trackbox-input-group">
+                                            <label class="input-label">Description <span class="required-star">*</span></label>
+                                            <mat-form-field floatLabel="never">
+                                                <input matInput type="text" [(ngModel)]="Item_.Item_Name" name="Item_Name" placeholder="Enter Description">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="trackbox-input-group">
+                                            <label class="input-label">Part Number <span class="required-star">*</span></label>
+                                            <mat-form-field floatLabel="never">
+                                                <input matInput type="text" [(ngModel)]="Item_.Item_Code" name="Item_Code" placeholder="Enter Part Number">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="trackbox-input-group">
+                                            <label class="input-label">Sale Unit <span class="required-star">*</span></label>
+                                            <select [(ngModel)]="Sale_Unit" name="Sale_Unit" required class="select-box-style-diary w-100">
+                                                <option *ngFor="let Sale_Unit_M of Sale_Unit_Data" [ngValue]="Sale_Unit_M">{{Sale_Unit_M.Sale_Unit_Name}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="trackbox-input-group">
+                                            <label class="input-label">HSN CODE</label>
+                                            <select [(ngModel)]="HSNCODE" name="HSNCODE" required class="select-box-style-diary w-100">
+                                                <option *ngFor="let HSN_M of HSN_Data" [ngValue]="HSN_M">{{HSN_M.HSN_CODE}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 border-left pl-4">
+                                <h6 class="text-info">Tax Details</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="trackbox-input-group">
+                                            <label class="input-label">GST (%)</label>
+                                            <mat-form-field floatLabel="never">
+                                                <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.gst" name="gst" placeholder="0.00">
+                                            </mat-form-field>
+                                            <small class="text-danger" *ngIf="Tax_Errors.gst">{{Tax_Errors.gst}}</small>
+                                            <small class="text-danger d-block" *ngIf="Tax_Errors.gst_split">{{Tax_Errors.gst_split}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="trackbox-input-group">
+                                            <label class="input-label">CGST (%)</label>
+                                            <mat-form-field floatLabel="never">
+                                                <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.cgst" name="cgst" placeholder="0.00">
+                                            </mat-form-field>
+                                            <small class="text-danger" *ngIf="Tax_Errors.cgst">{{Tax_Errors.cgst}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="trackbox-input-group">
+                                            <label class="input-label">SGST (%)</label>
+                                            <mat-form-field floatLabel="never">
+                                                <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.sgst" name="sgst" placeholder="0.00">
+                                            </mat-form-field>
+                                            <small class="text-danger" *ngIf="Tax_Errors.sgst">{{Tax_Errors.sgst}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="trackbox-input-group">
+                                            <label class="input-label">IGST (%)</label>
+                                            <mat-form-field floatLabel="never">
+                                                <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.igst" name="igst" placeholder="0.00">
+                                            </mat-form-field>
+                                            <small class="text-danger" *ngIf="Tax_Errors.igst">{{Tax_Errors.igst}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="trackbox-input-group">
+                                            <label class="input-label">B2B Rate (%)</label>
+                                            <mat-form-field floatLabel="never">
+                                                <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.b2b_rate" name="b2b_rate" placeholder="0.00">
+                                            </mat-form-field>
+                                            <small class="text-danger" *ngIf="Tax_Errors.b2b_rate">{{Tax_Errors.b2b_rate}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="trackbox-input-group">
+                                            <label class="input-label">B2C Rate (%)</label>
+                                            <mat-form-field floatLabel="never">
+                                                <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.b2c_rate" name="b2c_rate" placeholder="0.00">
+                                            </mat-form-field>
+                                            <small class="text-danger" *ngIf="Tax_Errors.b2c_rate">{{Tax_Errors.b2c_rate}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-12 text-right">
+                                <button mat-button type="button" class="btn-cancel mr-2" (click)="Close_Click()">Cancel</button>
+                                <button mat-raised-button type="button" class="btn-save" [hidden]="Item_Save==false" (click)="Save_Item()">Save Item</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
-    <div class="col-md-12 mb-2">
-    <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Description
-       <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>   
-  <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
-  height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-    <input matInput type="text" [(ngModel)]="Item_.Item_Name" name="Item_.Item_Name" class="input-text-item-group-diary">
-  </mat-form-field>
-  </div>
-
-  <div class="col-md-12 mb-2">
-    <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Part Number
-      <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> 
-    </label>   
-  <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
-  height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-    <input matInput type="text" [(ngModel)]="Item_.Item_Code" name="Item_.Item_Code" class="input-text-item-group-diary">
-  </mat-form-field>
-  </div>
-   
-  <div class="col-md-12 mb-2">
-    <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt">Sale Unit <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
-    <select [(ngModel)]="Sale_Unit" name="Sale_Unit" style="border: 1px solid lightgrey;
-    height: 40px;padding-left: 10px; "  required class="col-md-8 select-box-style-diary">
-    <option *ngFor="let Sale_Unit_M of Sale_Unit_Data"[ngValue]="Sale_Unit_M">{{Sale_Unit_M.Sale_Unit_Name}}</option>
-    </select>
-    </div>                      
-
-    <div class="col-md-12 mb-2">
-      <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt-one">HSNCODE  </label>
-      <select [(ngModel)]="HSNCODE" name="HSNCODE" style="border: 1px solid lightgrey;
-      height: 40px;padding-left: 10px;" required class="col-md-8  select-user-block">
-        <option *ngFor="let HSN_M of HSN_Data" [ngValue]="HSN_M">
-          {{HSN_M.HSN_CODE}}</option>
-      </select>
-    </div>
-
-    <div class="col-md-12 mt-3 mb-2">
-      <h6 class="text-info" style="cursor: default; margin: 0;">Tax Details</h6>
-    </div>
-
-    <div class="col-md-12 mb-2">
-      <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt-one">GST (%)</label>
-      <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
-      height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-        <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.gst" name="Item_.gst">
-      </mat-form-field>
-      <small class="text-danger col-md-12" *ngIf="Tax_Errors.gst">{{Tax_Errors.gst}}</small>
-      <small class="text-danger col-md-12" *ngIf="Tax_Errors.gst_split">{{Tax_Errors.gst_split}}</small>
-    </div>
-
-    <div class="col-md-12 mb-2">
-      <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt-one">CGST (%)</label>
-      <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
-      height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-        <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.cgst" name="Item_.cgst">
-      </mat-form-field>
-      <small class="text-danger col-md-12" *ngIf="Tax_Errors.cgst">{{Tax_Errors.cgst}}</small>
-    </div>
-
-    <div class="col-md-12 mb-2">
-      <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt-one">SGST (%)</label>
-      <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
-      height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-        <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.sgst" name="Item_.sgst">
-      </mat-form-field>
-      <small class="text-danger col-md-12" *ngIf="Tax_Errors.sgst">{{Tax_Errors.sgst}}</small>
-    </div>
-
-    <div class="col-md-12 mb-2">
-      <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt-one">IGST (%)</label>
-      <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
-      height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-        <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.igst" name="Item_.igst">
-      </mat-form-field>
-      <small class="text-danger col-md-12" *ngIf="Tax_Errors.igst">{{Tax_Errors.igst}}</small>
-    </div>
-
-    <div class="col-md-12 mb-2">
-      <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt-one">B2B Rate (%)</label>
-      <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
-      height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-        <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.b2b_rate" name="Item_.b2b_rate">
-      </mat-form-field>
-      <small class="text-danger col-md-12" *ngIf="Tax_Errors.b2b_rate">{{Tax_Errors.b2b_rate}}</small>
-    </div>
-
-    <div class="col-md-12 mb-2">
-      <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt-one">B2C Rate (%)</label>
-      <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
-      height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-        <input matInput type="number" min="0" max="100" step="0.01" [(ngModel)]="Item_.b2c_rate" name="Item_.b2c_rate">
-      </mat-form-field>
-      <small class="text-danger col-md-12" *ngIf="Tax_Errors.b2c_rate">{{Tax_Errors.b2c_rate}}</small>
-    </div>
-
-      <div class="col-md-6">
-        <button mat-raised-button type="button" [hidden]="Item_Save==false" id="Save_Button"
-        class="btn btn-danger pull-right save-close-new-buttons-to-crect"(click)="Save_Item()">Save</button>
-        <button mat-raised-button type="button" class="btn btn-danger pull-right save-close-new-buttons-to-crect" (click)="Close_Click()">Close</button>
-        </div>
-                              
-
-    </div>
-
-
-   
-
-    </div>
-    <div class="clearfix"></div>
-    </form>
-    </div>
-    </div>
-    </div>
-    </div>
-    <div class="row mt-2" *ngIf="!Entry_View">
-            <div class="col-md-12 card-body row mb-2" 
-            style="align-items: center;
-             border: 0;
-             border-radius: 6px;
-             margin-left: 2px;
-             color: #333333;
-             background: #fff;
-             width: 100%;padding: 3px;background-color: #f1f1f1;
-             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-         ">
-                    <div class="col-md-3 row" style="align-items: center;">               
-                  
-                    <label class="col-md-6   " style="text-align: end;" >Item Name</label> 
-                    <mat-form-field class="col-md-6" style="border: 1px solid lightgrey;
-                    height: 40px;background-color: #fff;" > 
-                    <input matInput type="text" [(ngModel)]="Search_Item_" name="Search_Item_" >
-                   </mat-form-field>         
-
+        <!-- List View -->
+        <div class="row" *ngIf="!Entry_View">
+            <div class="col-md-12">
+                <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="page-title-main">Item Management</h4>
+                        <!-- <p class="page-subtitle">Overview of your product catalog</p> -->
                     </div>
-                    <div class="col-md-3" style="align-items: center;">    
-                        <label class="col-md-6  " style="text-align: end;">Group</label>
-                          <select [(ngModel)]="Search_ItemGroup_" name="Sale_Unit" style="border: 1px solid lightgrey;
-                                          height: 40px;background-color: #fff; " required class="col-md-6 select-box-style-diary">
-                            <option *ngFor="let item of Item_Group_Data1" [ngValue]="item">{{item.Item_Group_Name}}</option>
-                          </select>
+                    <div class="d-flex align-items-center" style="gap: 10px;">
+                        <button mat-raised-button (click)="Create_New()" class="btn-new-lead">
+                            <i class="material-icons">add</i> Create New
+                        </button>
                     </div>
-                    <div class="col-md-3" style="align-items: center;">
-                        <label class="col-md-6  " style="text-align: end;">Part Number</label>
-                        <mat-form-field class="col-md-6 " style="border: 1px solid lightgrey;
-                                          height: 40px;background-color: #fff;">
-                          <input matInput type="text" [(ngModel)]="Search_Part_" name="Search_Part_" class=" input-text-item-group-diary">
+                </div>
+
+                <div class="lead-filter-panel">
+                    <div class="filter-grid">
+                        <mat-form-field floatLabel="never">
+                            <input matInput type="text" [(ngModel)]="Search_Item_" name="Search_Item_" placeholder="Item Name">
                         </mat-form-field>
+                        
+                        <select [(ngModel)]="Search_ItemGroup_" name="Search_ItemGroup_" class="select-box-style-diary">
+                            <option [ngValue]="undefined">Select Group</option>
+                            <option *ngFor="let item of Item_Group_Data1" [ngValue]="item">{{item.Item_Group_Name}}</option>
+                        </select>
+
+                        <mat-form-field floatLabel="never">
+                            <input matInput type="text" [(ngModel)]="Search_Part_" name="Search_Part_" placeholder="Part Number">
+                        </mat-form-field>
+
+                        <button mat-raised-button type="button" (click)="Search_Item()" class="btn-save">SEARCH</button>
                     </div>
-                
-                    <div class="col-md-3">
-                    <button mat-raised-button type="button" (click)="Search_Item()" class="btn btn-danger button-to-crect-margin mt-0">Search</button>  
-                    <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin mt-0">Create New</button>
-                 
+                </div>
+
+                <div class="lead-table-container">
+                    <table class="lead-data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Sl No</th>
+                                <th>Description</th>
+                                <th>Item Code</th>
+                                <th>Group</th>
+                                <th>HSN</th>
+                                <th>Sale Unit</th>
+                                <th class="text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let Item_1 of Item_Data; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td style="font-weight: 600; color: #1a73e8;">{{Item_1["Item_Name"]}}</td>
+                                <td>{{Item_1["Item_Code"]}}</td>
+                                <td>{{Item_1["Group_Name"]}}</td>
+                                <td>{{Item_1["HSNCODE"]}}</td>
+                                <td>{{Item_1["Saleunit_Name"]}}</td>
+                                <td class="text-right">
+                                    <div class="action-buttons">
+                                        <button mat-icon-button (click)="Edit_Item(Item_1, i)" color="primary" [hidden]="Item_Edit==false" matTooltip="Edit Item">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                        <button mat-icon-button (click)="Delete_Item(Item_1.Item_Id, i)" color="warn" [hidden]="Item_Delete==false" matTooltip="Delete Item">
+                                            <i class="material-icons">delete</i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="Item_Data?.length == 0">
+                                <td colspan="7" class="text-center text-muted p-5">No items found matching your search.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-container d-flex justify-content-between align-items-center">
+                    <div class="page-info">
+                        Total Entries: {{Total_Entries}}
                     </div>
-                    <div class="clearfix"></div> 
-                    </div>   
-   
-    <div class="col-md-12">
-    <!-- <div class="card card-plain" > -->
-    <!-- <div class="card-body"> -->
-        <div class="table-responsive card">
-    <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" > -->
-          <div
-            class="table-responsive"
-            [style.height.px]="myInnerHeight"
-            style="overflow-y: scroll;background-color: #f1f1f1;"
-          >
-            <table class="table table-hover">
-              <thead class="thead">
-                <th class="crect-margin-width-table-header-title">
-                Sl No
-                </th>
-                <th>
-                Description 
-                </th>
-                <th>
-                  Item Code
-                  </th>
-                <th>
-                Group 
-                </th>
-                <th>
-                HSN
-                </th> 
-                <th>
-                Sale Unit
-                </th>
-                
-                <th [hidden]="Item_Edit==false" class="crect-margin-width-table-header-title">
-                Edit
-                </th>
-                <th [hidden]="Item_Delete==false" class="crect-margin-width-table-header-title">
-                Delete
-                </th>
-              </thead>
-            <!-- <ng-container *cdkVirtualFor="let Item_1 of Item_Data; let i = index"> -->
-                <tr *ngFor="let Item_1 of Item_Data; let i =index">  
-                  <td style="padding-left:5px;">{{ i+1 }}</td>
-                  <td>{{Item_1["Item_Name"]}}</td>
-                  <td>{{Item_1["Item_Code"]}}</td>
-                  <td>{{Item_1["Group_Name"]}}</td>
-                  <td>{{Item_1["HSNCODE"]}}</td>
-                  <td>{{Item_1["Saleunit_Name"]}}</td>
-                  <!-- <td>{{Item_1["Sales_Tax"]}}</td> -->
-                  <td><button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Item_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" 
-                    class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" 
-                    ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper">
-                      <i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Item(Item_1,i)" >edit</i></span><div _ngcontent-jry-c5="" 
-                      class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div>
-                      <div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" 
-                      ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button></td>
-                  <td><button _ngcontent-gdi-c11="" [hidden]="Item_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" 
-                    mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove">
-                    <span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Item(Item_1.Item_Id,i)" >close</i></span>
-                    <div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div>
-                    <div class="mat-button-focus-overlay"  ></div></button></td> 
-                </tr>
-              <!-- </ng-container> -->
-            </table>
-          </div>
-    <!-- </cdk-virtual-scroll-viewport> -->
+                    <!-- Simplified pagination visual consistent with design -->
+                    <div class="d-flex align-items-center" style="gap: 12px;">
+                        <button mat-button disabled class="btn-cancel" style="height: 32px !important; padding: 0 10px !important;">Previous</button>
+                        <span class="page-info">Page 1 of 1</span>
+                        <button mat-button disabled class="btn-cancel" style="height: 32px !important; padding: 0 10px !important;">Next</button>
+                    </div>
+                </div>
+            </div>
         </div>
-    <!-- </div> -->
-    <label class="entry-num">Entries : {{Total_Entries}}</label>
-    <!-- </div> -->
     </div>
-    </div>
-    </div>
-    
+</div>

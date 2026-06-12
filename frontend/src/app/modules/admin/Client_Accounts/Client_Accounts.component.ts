@@ -33,6 +33,12 @@ myInnerHeight: number;
 EditIndex: number;
  Total_Entries: number=0;
 
+// Pagination
+currentPage: number = 1;
+pageSize: number = 10;
+totalPages: number = 1;
+Paginated_Data: Client_Accounts[] = [];
+
 color = 'primary';
 mode = 'indeterminate';
 value = 50;
@@ -204,8 +210,6 @@ this.Add_Contact_Person();
 }
 Search_Client_Accounts()
 {
-    
-    // Search_Client_Accounts_,Account_Group_Search
     var Account_Group_Id=0;
     if (this.Account_Group_Search != undefined && this.Account_Group_Search!=null)
     if (this.Account_Group_Search.Account_Group_Id != undefined && this.Account_Group_Search.Account_Group_Id != null)
@@ -223,12 +227,39 @@ if(this.Client_Accounts_Data.length==0)
 {
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
 }
+this.currentPage = 1;
+this.updatePagination();
 this.issLoading=false;
  },
  Rows => { 
 this.issLoading=false;
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"2"}});
  });
+}
+
+updatePagination() {
+    this.totalPages = Math.ceil(this.Total_Entries / this.pageSize) || 1;
+    const start = (this.currentPage - 1) * this.pageSize;
+    this.Paginated_Data = this.Client_Accounts_Data.slice(start, start + this.pageSize);
+}
+
+goToPrevious() {
+    if (this.currentPage > 1) {
+        this.currentPage--;
+        this.updatePagination();
+    }
+}
+
+goToNext() {
+    if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+        this.updatePagination();
+    }
+}
+
+onPageSizeChange() {
+    this.currentPage = 1;
+    this.updatePagination();
 }
 
 

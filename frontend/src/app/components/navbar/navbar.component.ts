@@ -349,6 +349,18 @@ const navbar: HTMLElement = this.element.nativeElement;
         if (titlee === '/Model' || titlee === 'Model') {
             return 'Model';
         }
+        if (titlee === '/Vertical' || titlee === 'Vertical') {
+            return 'Industry';
+        }
+        if (titlee === '/Designation' || titlee === 'Designation') {
+            return 'Designation';
+        }
+        if (titlee === '/Company_Size' || titlee === 'Company_Size') {
+            return 'Company Size';
+        }
+        if (titlee === '/User_Role' || titlee === 'User_Role') {
+            return 'User Role';
+        }
 
         for (var item = 0; item < this.listTitles.length; item++) {
             if (this.listTitles[item].path === titlee) {

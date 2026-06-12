@@ -2,98 +2,114 @@
     <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
     </mat-progress-spinner>
 </div>
-<div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
-    <div class="container-fluid">
-        <div class="row mt-2" *ngIf="Entry_View" style="background-color: #f1f1f1 !important;">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body" style="background-color: #f1f1f1 !important;">
-                        <form>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="col-md-12">
-                                        <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Company Size Name <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-                                        <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey; height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-                                            <input matInput type="text" [(ngModel)]="Company_Size_.Company_Size_Name" name="Company_Size_Name" class="input-text-Brand-group-diary">
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Description</label>
-                                        <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey; height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-                                            <input matInput type="text" [(ngModel)]="Company_Size_.Description" name="Description" class="input-text-Brand-group-diary">
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-12">
-                                        <button mat-raised-button type="button" id="Save_Button" class="btn btn-danger pull-right save-close-new-buttons-to-crect-stk-ad-mstr-prhse-rte" (click)="Save_Company_Size()">Save</button>
-                                        <button mat-raised-button type="button" class="btn btn-danger pull-right save-close-new-buttons-to-crect-stk-ad-mstr-prhse-rte" (click)="Close_Click()">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                        </form>
-                    </div>
+
+<div class="main-content">
+    <div class="container-fluid px-0">
+
+        <!-- LIST VIEW -->
+        <div *ngIf="!Entry_View">
+            <!-- PAGE HEADER -->
+            <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="page-title-main">Company Size</h4>
+                </div>
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <button mat-raised-button (click)="Create_New()" class="btn-new-lead">
+                        <i class="material-icons" style="font-size:18px;">add</i>
+                        Create New
+                    </button>
                 </div>
             </div>
-        </div>
-        <div class="row" *ngIf="!Entry_View">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body" style="align-items: center; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%;padding: 3px;background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);">
-                        <form>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="col-md-12 margin-crect-dte-account-group-diary" style="display: flex;align-items: center;">
-                                        <label class="col-md-3 text-title-to-correct-Brand-group-diary">Company Size Name</label>
-                                        <mat-form-field class="col-md-10 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey; height: 40px; background-color: #fff;">
-                                            <input matInput type="text" [(ngModel)]="Search_Company_Size_" name="Search_Company_Size_" class="col-md-8 input-text-Brand-group-diary">
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <button mat-raised-button type="button" (click)="Search_Company_Size()" class="ml-2 btn btn-danger button-to-crect-margin mt-0">Search</button>
-                                    <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin mt-0">Create New</button>
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                        </form>
-                    </div>
+
+            <!-- FILTER PANEL -->
+            <div class="lead-filter-panel mb-3">
+                <div class="filter-grid">
+                    <mat-form-field appearance="legacy" floatLabel="never">
+                        <input matInput placeholder="Company Size Name" [(ngModel)]="Search_Company_Size_" name="Search_Company_Size_">
+                    </mat-form-field>
+
+                    <button mat-raised-button class="btn-new-lead" (click)="Search_Company_Size()" style="min-width: 100px;">
+                        SEARCH
+                    </button>
                 </div>
             </div>
-            <div class="col-md-12">
-                <div class="table-responsive card">
-                    <div class="table-responsive" [style.height.px]="myInnerHeight" style="overflow-y: scroll;background-color: #f1f1f1;">
-                        <table class="table table-hover">
-                            <thead class="thead">
-                                <th class="crect-margin-width-table-header-title">Sl No</th>
+
+            <!-- TABLE -->
+            <div class="lead-table-container">
+                <div class="table-scroll-area" [style.max-height.px]="myInnerHeight">
+                    <table class="lead-data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Sl No</th>
                                 <th>Company Size</th>
                                 <th>Description</th>
-                                <th class="crect-margin-width-table-header-title">Edit</th>
-                                <th class="crect-margin-width-table-header-title">Delete</th>
-                            </thead>
-                            <ng-container *ngFor="let cs of Company_Size_Data; let i = index">
-                                <tr>
-                                    <td style="padding-left:5px;">{{ i+1 }}</td>
-                                    <td>{{cs['Company_Size_Name']}}</td>
-                                    <td>{{cs['Description']}}</td>
-                                    <td>
-                                        <button class="btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button type="button" (click)="Edit_Company_Size(cs)">
+                                <th style="text-align:right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let cs of Company_Size_Data; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td style="font-weight:600;">{{ cs["Company_Size_Name"] }}</td>
+                                <td>{{ cs["Description"] }}</td>
+                                <td>
+                                    <div class="action-buttons justify-content-end">
+                                        <div class="action-icon-btn btn-edit-tb" (click)="Edit_Company_Size(cs)" title="Edit">
                                             <i class="material-icons">edit</i>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button type="button" (click)="Delete_Company_Size(cs.Company_Size_Id, i)">
+                                        </div>
+                                        <div class="action-icon-btn btn-delete-tb" (click)="Delete_Company_Size(cs.Company_Size_Id, i)" title="Delete">
                                             <i class="material-icons">close</i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </ng-container>
-                        </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="Company_Size_Data?.length === 0">
+                                <td colspan="4" class="text-center py-5 text-muted">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="entry-num">Total Entries: {{ Total_Entries }}</div>
+            </div>
+        </div>
+
+        <!-- ENTRY VIEW (ADD / EDIT) -->
+        <div *ngIf="Entry_View">
+            <div class="lead-entry-header d-flex justify-content-between align-items-center">
+                <h4 class="page-title-main">{{ Company_Size_.Company_Size_Id > 0 ? 'Edit Company Size' : 'Add New Company Size' }}</h4>
+                <button class="btn-close-custom" (click)="Close_Click()">
+                    <i class="material-icons">close</i> Close
+                </button>
+            </div>
+
+            <form>
+                <div class="lead-entry-body">
+                    <div class="user-entry-sections">
+                        <div class="basic-info-section">
+                            <div class="basic-info-grid">
+                                <div class="trackbox-input-group">
+                                    <label class="input-label">Company Size Name <span class="required-star">*</span></label>
+                                    <mat-form-field appearance="legacy" floatLabel="never">
+                                        <input matInput type="text" [(ngModel)]="Company_Size_.Company_Size_Name" name="Company_Size_Name">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="trackbox-input-group">
+                                    <label class="input-label">Description</label>
+                                    <mat-form-field appearance="legacy" floatLabel="never">
+                                        <input matInput type="text" [(ngModel)]="Company_Size_.Description" name="Description">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORM ACTIONS -->
+                    <div class="d-flex justify-content-end mt-4" style="gap: 12px;">
+                        <button mat-raised-button class="btn-cancel" (click)="Close_Click()">Cancel</button>
+                        <button mat-raised-button class="btn-save" (click)="Save_Company_Size()">Save</button>
                     </div>
                 </div>
-                <label class="entry-num">Entries : {{Total_Entries}}</label>
-            </div>
+            </form>
         </div>
     </div>
 </div>
