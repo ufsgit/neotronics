@@ -1,3 +1,239 @@
-.terms-page { padding: 20px; }
-.page-header h2 { margin-bottom: 8px; }
-.page-header p { color: #555; }
+/* ================================
+   GENERAL LAYOUT & CONTAINERS
+   ================================ */
+.main-trackbox-content {
+    background-color: #f8fbff !important;
+    min-height: 100vh;
+    padding: 15px !important;
+}
+
+.trackbox-container {
+    width: 100%;
+    max-width: none;
+}
+
+/* ================================
+   FILTER AREA
+   ================================ */
+.trackbox-filter-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    gap: 20px;
+}
+
+.modern-search-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 600px;
+}
+
+.modern-search-wrapper i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+    font-size: 18px;
+}
+
+.modern-search-input {
+    width: 100%;
+    height: 48px;
+    background: #fff;
+    border: 1px solid #e0e6ed;
+    border-radius: 50px;
+    padding: 0 20px 0 45px;
+    font-size: 0.95rem;
+    color: #1a1f36;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5 rgba(0, 0, 0, 0.02);
+}
+
+.modern-search-input:focus {
+    outline: none;
+    border-color: #0061f2;
+    box-shadow: 0 0 0 3px rgba(0, 97, 242, 0.1);
+}
+
+.btn-add-new-trackbox {
+    background-color: #0061f2 !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    padding: 0 25px !important;
+    height: 48px !important;
+    border-radius: 8px !important;
+    text-transform: none !important;
+    font-size: 0.9rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 97, 242, 0.2) !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-add-new-trackbox:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(0, 97, 242, 0.3) !important;
+}
+
+.btn-secondary-trackbox {
+    background-color: #6c757d !important;
+    box-shadow: none !important;
+}
+
+.gap-3 {
+    gap: 12px;
+}
+
+/* ================================
+   TABLE DESIGN
+   ================================ */
+.trackbox-table-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eef2f6;
+}
+
+.modern-trackbox-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.modern-trackbox-table thead th {
+    background-color: #f8f9fc;
+    color: #4e5e7a;
+    font-weight: 700;
+    text-transform: capitalize;
+    font-size: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #eff2f7;
+    text-align: left;
+}
+
+.modern-trackbox-table tbody td {
+    padding: 18px 20px;
+    font-size: 14px;
+    color: #1a1f36;
+    border-bottom: 1px solid #f8f9fc;
+    vertical-align: middle;
+}
+
+.modern-trackbox-table tbody tr:hover td {
+    background-color: #f9fbff;
+}
+
+.col-no {
+    width: 80px;
+    text-align: center !important;
+}
+
+.col-actions {
+    width: 120px;
+    text-align: center !important;
+}
+
+/* ================================
+   ACTION ICONS
+   ================================ */
+.action-icon-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    margin: 0 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.btn-edit-tb {
+    color: #0061f2;
+    background: rgba(0, 97, 242, 0.05);
+}
+
+.btn-edit-tb:hover {
+    background: #0061f2;
+    color: #fff;
+}
+
+/* ================================
+   FORM FIELDS
+   ================================ */
+.input-label {
+    font-weight: 600;
+    font-size: 13px;
+    color: #4e5e7a;
+}
+
+.required-star {
+    color: #ef071e;
+}
+
+.modern-form-field {
+    border: 1px solid #e0e6ed;
+    border-radius: 8px;
+    background-color: #fff;
+    width: 100%;
+    padding: 0 10px;
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+}
+
+.modern-form-field input,
+.modern-form-field textarea {
+    border: none;
+    width: 100%;
+    outline: none;
+    font-size: 14px;
+    background: transparent;
+    resize: vertical;
+}
+
+.textarea-field {
+    min-height: 82px;
+    align-items: flex-start;
+    padding-top: 10px;
+}
+
+/* ================================
+   ENTRIES TEXT & OVERLAY
+   ================================ */
+.entries-summary {
+    margin-top: 20px;
+    color: #6c757d;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+@media (max-width: 767px) {
+    .trackbox-filter-area {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .modern-search-wrapper {
+        max-width: none;
+    }
+}

@@ -130,19 +130,19 @@ Quotation_Master_Total_Overdue1:string;
   nintyvalue1:string;
   oneetyvalue1:string;
   thrisistyvalue1:string;
+
   aggingperiod:number=0;
 
   AccountType_Temp : accounttype = new accounttype();
   Search_AccountType: accounttype = new accounttype;
   Customer_Data=[];Search_Customer;Entry_View=false;
   Quotation_Master_Data=[];Total_Entries=0;currentDate;FromDate;ToDate;
-  Address1 ='';Address2 ='';Address3 ='';Address4 ='';GSTNo="";Mobile="";PinCode="";
+  Address1 ='';Address2 ='';Address3 ='';Address4 ='';GSTNo="";Mobile="";PinCode="";MoreOptions_View:boolean=false;
   constructor(public currencydetails_Service_:currencydetails_Service,public dialogBox: MatDialog,private router: Router,public Receipt_Voucher_Service_:Receipt_Voucher_Service,
    public Sales_Master_Service_:Sales_Master_Service, public Client_Accounts_Service_:Client_Accounts_Service
   ) { }
 
   ngOnInit() {
-
     this.User_Type_Id=Number(localStorage.getItem('User_Type_Id'));
     this.User_Type=(localStorage.getItem('User_Type'));
     this.Login_User_Id=localStorage.getItem('Login_User');
@@ -165,7 +165,7 @@ Quotation_Master_Total_Overdue1:string;
 
   Page_Load(){
     this.myInnerHeight = (window.innerHeight);
-    this.myInnerHeight = this.myInnerHeight - 200;
+    this.myInnerHeight = this.myInnerHeight - 350;
     this.Search_FromDate=this.formatDate(this.Search_FromDate);
     this.Search_ToDate=this.formatDate(this.Search_ToDate);
     this.Load_Currency();

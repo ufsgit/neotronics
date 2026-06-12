@@ -35,7 +35,7 @@ export class Company_SizeComponent implements OnInit {
   }
 
   Page_Load() {
-    this.myInnerHeight = window.innerHeight - 300;
+    this.myInnerHeight = window.innerHeight - 330;
     this.Clr_Company_Size();
     this.Search_Company_Size();
     this.Entry_View = false;

@@ -1,3 +1,12 @@
+/* ================================
+   GENERAL PAGE & CARD STYLES
+================================ */
+.main-content {
+    background-color: #ffffff !important;
+    padding: 30px 15px !important;
+    min-height: 100vh;
+}
+
 .card-header-info {
     background: #fff !important;
     color: #333 !important;
@@ -7,21 +16,39 @@
     padding-bottom: 5px !important;
 }
 
-.card-title {
-    font-weight: 500 !important;
-    font-size: 1.1rem !important;
-    /* Slightly smaller */
+/* Reusing global Trackbox classes from styles.css */
+
+
+.page-title {
+    font-weight: 600 !important;
+    font-size: 1.5rem !important;
     margin: 0 !important;
-    /* Remove huge default margins */
     color: #333 !important;
 }
 
-.close {
-    font-size: 20px;
-    font-weight: 300;
+.page-subtitle {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0 !important;
 }
 
-/* Section headings */
+.close {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1;
+    color: #64748b;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0;
+    margin: 0;
+}
+
+.close:hover {
+    color: #ef4444;
+}
+
 h6 {
     display: flex;
     align-items: center;
@@ -32,11 +59,6 @@ h6 {
     margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
-
-.contact-person-card {
-    background: #f8fbff;
-    border: 1px solid #e3f2fd;
 }
 
 /* ================================
@@ -69,17 +91,6 @@ h6 {
     box-shadow: 0 0 0 1px #1a73e8;
 }
 
-::ng-deep .mat-form-field-appearance-legacy .mat-form-field-label {
-    top: 1.3em !important;
-    left: 12px !important;
-    color: #6c757d !important;
-}
-
-::ng-deep .mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
-    display: none !important;
-}
-
-/* Inputs & selects */
 ::ng-deep .mat-input-element {
     font-size: 13px !important;
     padding: 10px 0 !important;
@@ -90,193 +101,234 @@ h6 {
 }
 
 /* ================================
-   FOLLOW-UP SECTION
+   MULTISELECT OVERRIDES (TRACKBOX)
 ================================ */
-.follow-up-section {
-    background-color: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-    margin-top: 10px !important;
-    box-shadow: none !important;
+::ng-deep .vertical-multiselect .mat-form-field-flex {
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 4px !important;
+    padding: 0 12px !important;
+    min-height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
-/* ================================
-   CUSTOM CHECKBOX (FIXED)
-================================ */
-/* ================================
-   FOLLOW-UP CHECKBOX (CLEAN & STANDARD)
-================================ */
-
-.followup-checkbox {
-    margin-top: 20px;
+::ng-deep .vertical-multiselect.mat-focused .mat-form-field-flex {
+    border-color: #1a73e8 !important;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1) !important;
 }
 
-.followup-checkbox-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    /* 👈 PERFECT spacing like your 2nd image */
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
+::ng-deep .vertical-multiselect .mat-form-field-infix {
+    padding: 4px 0 !important;
+    border-top: none !important;
+}
+
+::ng-deep .vertical-multiselect .mat-select-trigger {
+    height: auto !important;
+    min-height: 32px;
+}
+
+.vertical-chip {
+    background: #e3f2fd;
     color: #1a73e8;
-    user-select: none;
-}
-
-/* Hide native checkbox */
-.followup-checkbox-label input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-}
-
-/* Custom box */
-.custom-checkbox {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #1a73e8;
+    padding: 2px 8px;
     border-radius: 4px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
+    font-size: 11px;
+    font-weight: 500;
+    margin-right: 4px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    display: inline-block;
 }
 
-/* Tick */
-.custom-checkbox::after {
-    content: "";
-    width: 5px;
-    height: 9px;
-    border: solid #fff;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-    opacity: 0;
-}
-
-/* Checked state */
-.followup-checkbox-label input:checked+.custom-checkbox {
-    background-color: #1a73e8;
-}
-
-.followup-checkbox-label input:checked+.custom-checkbox::after {
-    opacity: 1;
-}
-
-/* Label text */
-.followup-checkbox-label .checkbox-text {
-    white-space: nowrap;
+.placeholder-text {
+    color: #6c757d;
+    font-size: 13px;
 }
 
 /* ================================
-   SPLIT TABLE DESIGN
+   FILTER PANEL STYLING (SINGLE ROW)
 ================================ */
-.lead-list-master-container {
+.lead-filter-panel {
+    background: transparent;
+    padding: 0 0 20px 0;
+    border: none;
+}
+
+.filter-grid {
     display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    align-items: center;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.filter-grid > mat-form-field,
+.filter-grid > .custom-input-wrap {
+    flex: 1 1 auto;
+    min-width: 160px;
+    max-width: 200px;
+    margin-bottom: 0 !important;
+}
+
+.filter-clear {
+    flex: 0 0 auto;
+    height: 39px !important;
+    min-width: 100px !important;
+    border-radius: 6px !important;
+    border: 1px solid #ced4da !important;
+    color: #1a73e8 !important;
+    text-transform: none !important;
+    font-weight: 500 !important;
+    background: #fff !important;
+    margin-bottom: 0 !important;
+}
+
+/* Fix Date Filter Appearance */
+::ng-deep .filter-grid input[type="date"] {
+    font-family: inherit;
+    font-size: 13px !important;
+    color: #333;
+    background: transparent !important;
+    border: none !important;
+    width: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+    outline: none !important;
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+}
+
+/* Remove default date icon if needed, or style it */
+::ng-deep .filter-grid input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    padding: 0;
+    margin-right: -4px;
+}
+
+/* ================================
+   NATIVE SELECT/INPUTS (TRACKBOX)
+================================ */
+.trackbox-native-input, .trackbox-native-select {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    line-height: 40px;
+}
+
+.trackbox-native-input::placeholder {
+    color: #6c757d;
+    font-size: 13px;
+}
+
+.trackbox-native-input:focus, .trackbox-native-select:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+}
+
+.trackbox-native-input:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+    color: #adb5bd;
+}
+
+.custom-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.custom-input-wrap .trackbox-native-input {
+    padding-right: 40px;
+}
+
+.custom-input-wrap mat-datepicker-toggle {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+::ng-deep .custom-input-wrap .mat-icon-button {
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+}
+
+/* ================================
+   UNIFIED TABLE DESIGN
+================================ */
+.lead-table-container {
     width: 100%;
     background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    overflow: hidden;
-    /* Contains the internal scroll */
-    margin-top: 20px;
+    border: 1px solid #eef2f6;
+    border-radius: 12px;
+    overflow-x: auto;
+    margin: 0 0 20px 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
-/* Common Table Styles for both parts */
-.split-table {
-    border-collapse: collapse;
+.lead-data-table {
     width: 100%;
+    border-collapse: collapse;
+    min-width: 1400px;
 }
 
-.split-table th,
-.split-table td {
-    padding: 8px 10px;
+.lead-data-table th,
+.lead-data-table td {
+    padding: 12px 15px;
     font-size: 13px;
     border-bottom: 1px solid #f0f0f0;
     white-space: nowrap;
-    height: 45px;
-    /* Fixed height to ensure alignment between split tables */
+    vertical-align: middle;
 }
 
-.split-table th {
-    background-color: #f8f9fa;
+.lead-data-table th {
+    background-color: #ffffff;
     color: #5c6c84;
     font-weight: 600;
     text-transform: uppercase;
     font-size: 11px;
     text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-/* FIXED SECTION (Left) */
-.fixed-column-part {
-    flex: 0 0 auto;
-    background-color: #fff;
-    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.05);
-    z-index: 2;
-    position: relative;
+.lead-data-table tr:hover td {
+    background-color: #f9fbff;
 }
 
-.fixed-column-part td {
-    background-color: #fff;
-}
+/* Column Specifics */
+.col-width-company { min-width: 220px; }
+.col-width-fixed { min-width: 150px; }
+.col-width-scroll { min-width: 180px; }
+.col-width-scroll-small { min-width: 120px; }
 
-.fixed-column-part tr:hover td {
-    background-color: #f5f5f5;
-}
-
-/* SCROLLABLE SECTION (Right) */
-.scrollable-column-part {
-    flex: 1;
-    overflow-x: auto;
-    background-color: #fff;
-    cursor: grab;
-}
-
-.scrollable-column-part:active {
-    cursor: grabbing;
-}
-
-/* Custom Scrollbar for the balance columns */
-.scrollable-column-part::-webkit-scrollbar {
-    height: 8px;
-}
-
-.scrollable-column-part::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.scrollable-column-part::-webkit-scrollbar-thumb {
-    background: #ccc;
+/* Status Badges & Clickables */
+.status-clickable {
+    cursor: pointer;
     border-radius: 4px;
+    padding: 4px 8px;
+    font-weight: 500;
+    font-size: 11px;
 }
 
-.scrollable-column-part::-webkit-scrollbar-thumb:hover {
-    background: #999;
-}
-
-/* Column Widths to ensure exactly ~5 scrollable cols visible */
-.col-width-fixed {
-    min-width: 120px;
-}
-
-.col-width-company {
-    min-width: 190px;
-}
-
-.col-width-sl {
-    min-width: 50px;
-}
-
-.col-width-scroll {
-    min-width: 200px;
-    /* Forces scrolling after ~5 columns on standard screens */
-}
-
-.col-width-scroll-small {
-    min-width: 120px;
-}
-
-/* Status Badge */
 .lead-name-clickable {
-    background-color: #e8f0fe;
+    background-color: #ffffff;
     color: #1a73e8;
     padding: 5px 12px;
     border-radius: 20px;
@@ -294,8 +346,30 @@ h6 {
     box-shadow: 0 2px 5px rgba(26, 115, 232, 0.2);
 }
 
+.text-truncate-custom {
+    display: block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* ================================
-   SIDE DRAWER FOR FOLLOW-UP
+   PAGINATION
+================================ */
+.pagination-container {
+    background: #ffffff;
+    border-top: 1px solid #eee;
+    padding: 10px 15px;
+}
+
+.page-info {
+    font-size: 13px;
+    color: #5c6c84;
+}
+
+/* ================================
+   SIDE DRAWER & BACKDROP
 ================================ */
 .drawer-backdrop {
     position: fixed;
@@ -303,12 +377,12 @@ h6 {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 998;
-    /* Below Material Popups (1000) */
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
     visibility: hidden;
     opacity: 0;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease;
 }
 
 .drawer-backdrop.active {
@@ -318,42 +392,60 @@ h6 {
 
 .followup-drawer {
     position: fixed;
-    top: 0;
-    right: -550px;
-    width: 500px;
-    height: 100vh;
+    top: 50%;
+    left: 50%;
+    width: 700px;
+    max-width: 95vw;
+    height: auto;
+    max-height: 85vh;
     background: #fff;
-    z-index: 999;
-    /* Below Material Popups (1000) but above content */
-    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
-    transition: right 0.3s ease-in-out;
+    z-index: 1001;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     display: flex;
     flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
 }
 
 .followup-drawer.active {
-    right: 0;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    visibility: visible;
 }
 
 .drawer-header {
-    padding: 20px;
-    border-bottom: 1px solid #eee;
+    padding: 20px 30px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fff;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f8f9fa;
 }
 
 .drawer-header h5 {
     margin: 0;
+    font-size: 1.125rem;
     font-weight: 600;
-    color: #333;
+    color: #0f172a;
 }
 
 .drawer-body {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 30px;
+}
+
+.drawer-footer {
+    padding: 20px 30px;
+    border-top: 1px solid #f1f5f9;
+    background: #ffffff;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
 }
 
 .drawer-input-label {
@@ -362,307 +454,28 @@ h6 {
     font-weight: 600;
     color: #666;
     margin-bottom: 5px;
-    margin-left: 2px;
 }
-
-.drawer-footer {
-    padding: 20px;
-    border-top: 1px solid #eee;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    background: #fff;
-}
-
-/* History List Styles */
-.history-section {
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 2px dashed #eee;
-}
-
-.history-item {
-    background: #fcfcfc;
-    border: 1px solid #f0f0f0;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 10px;
-}
-
-.history-item-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: #777;
-    margin-bottom: 5px;
-}
-
-.history-remark {
-    font-size: 13px;
-    color: #333;
-    line-height: 1.4;
-}
-
-.history-status {
-    font-weight: 600;
-    color: #1a73e8;
-}
-
-.activity-change {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 8px;
-}
-
-.activity-change strong {
-    display: block;
-    font-size: 11px;
-    color: #5c6c84;
-    margin-bottom: 4px;
-}
-
-.activity-change p {
-    background: #f8f9fa;
-    border: 1px solid #edf0f2;
-    border-radius: 6px;
-    color: #333;
-    font-size: 12px;
-    margin: 0;
-    min-height: 40px;
-    padding: 8px;
-    white-space: pre-wrap;
-}
-
-.timeline-item {
-    border-left: 2px solid #d9e7ff;
-    margin-left: 8px;
-    padding: 0 0 14px 18px;
-    position: relative;
-}
-
-.timeline-dot {
-    background: #1a73e8;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 0 2px #d9e7ff;
-    height: 10px;
-    left: -6px;
-    position: absolute;
-    top: 4px;
-    width: 10px;
-}
-
-.timeline-content {
-    background: #fcfcfc;
-    border: 1px solid #f0f0f0;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-.tracking-section {
-    border-top: 2px dashed #eee;
-    margin-top: 25px;
-    padding-top: 20px;
-}
-
-.counter-row {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: 1fr 1fr;
-}
-
-.counter-box {
-    align-items: center;
-    background: #f8fbff;
-    border: 1px solid #d9e7ff;
-    border-radius: 8px;
-    display: grid;
-    gap: 6px;
-    grid-template-columns: 1fr auto auto;
-    padding: 10px;
-}
-
-.counter-box span {
-    color: #5c6c84;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.counter-box strong {
-    color: #1a73e8;
-    font-size: 20px;
-}
-
-.counter-box .mat-mini-fab {
-    height: 30px !important;
-    line-height: 30px !important;
-    width: 30px !important;
-}
-
-.counter-box .material-icons {
-    font-size: 18px;
-}
-
-.tracking-form {
-    background: #fcfcfc;
-    border: 1px solid #f0f0f0;
-    border-radius: 8px;
-    margin-top: 12px;
-    padding: 12px;
-}
-
-.lost-lead-section {
-    background: #fff8f8;
-    border: 1px solid #ffd8d8;
-    border-left: 4px solid #d32f2f;
-    border-radius: 8px;
-    margin-top: 16px;
-    padding: 14px;
-}
-
-.lost-toggle-grid {
-    display: grid;
-    gap: 8px;
-    grid-template-columns: 1fr;
-}
-
-/* Make status badge look clickable */
-.status-clickable {
-    cursor: pointer;
-    transition: transform 0.1s;
-}
-
-.status-clickable:hover {
-    transform: scale(1.05);
-}
-
 
 /* ================================
    BUTTONS
-================================ */
-.btn-save {
-    background-color: #1a73e8 !important;
-    color: #fff !important;
-    padding: 8px 30px !important;
-    border-radius: 20px !important;
-    text-transform: none !important;
-    font-weight: 500 !important;
-    font-size: 14px !important;
-}
-
-.btn-cancel {
-    background-color: #fff !important;
-    color: #1a73e8 !important;
-    border: 1px solid #1a73e8 !important;
-    padding: 8px 25px !important;
-    border-radius: 20px !important;
-    text-transform: none !important;
-    font-weight: 500 !important;
-    margin-right: 10px !important;
-}
-
-/* ================================
-   LAYOUT HELPERS
-================================ */
-.mt-2 {
-    margin-top: 5px !important;
-}
-
-.mt-3 {
-    margin-top: 10px !important;
-}
-
-.mt-4 {
-    margin-top: 15px !important;
-}
-
-.mt-5 {
-    margin-top: 15px !important;
-}
-
-.mb-4 {
-    margin-bottom: 15px !important;
-}
-
-.p-0 {
+=============================== */
+.btn-close-custom {
+    background: transparent !important;
+    border: none !important;
+    color: #ef4444 !important;
     padding: 0 !important;
-}
-
-/* ================================
-   TABLE STYLING
-================================ */
-.table th {
-    font-weight: 600;
-    color: #5c6c84;
-    font-size: 11px;
-    text-transform: uppercase;
-    border-top: none;
-}
-
-.table td {
-    font-size: 13px;
-    vertical-align: middle;
-}
-
-/* Safety: ensure follow-up section has breathing room */
-.follow-up-section {
-    padding: 15px;
-    background-color: #f8faff;
-    border-radius: 12px;
-    border: 1px solid #e1e8f5;
-    border-left: 5px solid #1a73e8;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.05);
-}
-
-/* ================================
-   PAGINATION STYLING
-================================ */
-.pagination-container {
-    background: #f8f9fa;
-    border-top: 1px solid #eee;
-}
-
-.page-info {
-    font-size: 14px;
-    color: #5c6c84;
-    padding: 0 15px;
-}
-
-.pagination-container button {
-    border-radius: 20px !important;
-    text-transform: none !important;
+    height: auto !important;
     font-weight: 500 !important;
-    padding: 0 20px !important;
-    background-color: #fff !important;
-    border: 1px solid #ced4da !important;
-    color: #5c6c84 !important;
+    box-shadow: none !important;
 }
 
-.pagination-container button:hover:not(:disabled) {
-    background-color: #e8f0fe !important;
-    border-color: #1a73e8 !important;
-    color: #1a73e8 !important;
+.btn-close-custom:hover {
+    color: #dc2626 !important;
+    background: transparent !important;
 }
 
-.pagination-container button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.pagination-container .material-icons {
-    font-size: 18px;
-    vertical-align: middle;
-}
-
-
-/* ================================
-   NEW LEAD BUTTON (SKY BLUE)
-================================ */
 .btn-new-lead {
-    background-color: #4fc3f7 !important; /* Sky Blue */
+    background-color: #4fc3f7 !important;
     color: #fff !important;
     border-radius: 20px !important;
     padding: 8px 20px !important;
@@ -671,219 +484,99 @@ h6 {
     display: flex;
     align-items: center;
     gap: 6px;
-    transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
 }
-
-/* Hover effect */
 .btn-new-lead:hover {
-    background-color: #1a73e8 !important; /* Dark Blue */
-    box-shadow: 0 6px 14px rgba(26, 115, 232, 0.3);
-    transform: translateY(-1px);
+    background-color: #1a73e8 !important;
 }
 
-/* Icon styling */
-.btn-new-lead .material-icons {
-    font-size: 20px;
-}
-
-.btn-column-settings {
-    background-color: #fff !important;
-    border: 1px solid #ced4da !important;
-    border-radius: 20px !important;
-    color: #5c6c84 !important;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px !important;
-    text-transform: none !important;
-}
-
-.btn-column-settings .material-icons {
-    font-size: 18px;
-}
-
-.column-customizer {
-    background: #f8fbff;
-    border-bottom: 1px solid #d9e7ff;
-    padding: 14px 18px;
-}
-
-.column-customizer-header {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-}
-
-.column-customizer-header strong {
-    color: #333;
-    font-size: 14px;
-}
-
-.column-customizer-header span {
-    color: #5c6c84;
-    font-size: 12px;
-}
-
-.column-toggle-grid {
-    display: grid;
-    gap: 8px 16px;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-}
-
-.lead-filter-panel {
-    background: #fff;
-    border-bottom: 1px solid #eee;
-    padding: 12px 18px;
-}
-
-.filter-grid {
-    align-items: center;
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-}
-
-.filter-clear {
-    height: 42px;
-    margin-right: 0 !important;
-}
-
-/* ================================
-   VERTICAL MULTI-SELECT CHIPS
-================================ */
-.vertical-chip {
-    display: inline-block;
-    background-color: #e8f0fe;
-    color: #1a73e8;
-    border-radius: 12px;
-    padding: 2px 10px;
-    font-size: 11px;
-    font-weight: 600;
-    margin-right: 4px;
-    margin-bottom: 2px;
-    white-space: nowrap;
-}
-
-.placeholder-text {
-    color: #6c757d;
-    font-size: 13px;
-}
-
-::ng-deep .vertical-multiselect .mat-select-value {
-    overflow: visible !important;
-    white-space: normal !important;
-}
-
-::ng-deep .vertical-multiselect .mat-form-field-flex {
-    min-height: 45px;
-    height: auto !important;
-    align-items: flex-start !important;
-    padding-top: 8px !important;
-}
-
-/* ================================
-   REQUIREMENT BUTTON
-================================ */
-.btn-requirement {
-    background-color: #e8f5e9 !important;
-    color: #2e7d32 !important;
-    border: 1px solid #a5d6a7 !important;
-    border-radius: 16px !important;
-    padding: 4px 12px !important;
-    font-size: 12px !important;
-    font-weight: 500 !important;
-    text-transform: none !important;
-    margin-right: 6px !important;
-    transition: all 0.2s ease;
-}
-
-.btn-requirement:hover {
-    background-color: #2e7d32 !important;
-    color: #fff !important;
-}
-
-/* ================================
-   CONTACT PERSON SECTION
-================================ */
-.contact-person-section {
-    background-color: #f8faff;
-    border: 1px solid #e1e8f5;
-    border-left: 4px solid #1a73e8;
-    border-radius: 8px;
-    padding: 10px 14px;
-}
-
-.contact-section-title {
-    font-size: 0.78rem !important;
-    margin-bottom: 8px !important;
-    margin-top: 0 !important;
-}
-
-/* ====================================
-   DYNAMIC CONTACT PERSON STYLING
-   ==================================== */
-.btn-add-contact-person {
-    background: #1a73e8 !important;
+.btn-new-lead {
+    background-color: #0061f2 !important;
     color: white !important;
-    padding: 2px 12px !important;
-    font-size: 11px !important;
-    font-weight: 500 !important;
-    border-radius: 4px !important;
-    height: 30px !important;
-    line-height: 26px !important;
-    text-transform: none !important;
-    box-shadow: 0 2px 4px rgba(26, 115, 232, 0.2) !important;
-    transition: all 0.2s ease !important;
+    border-radius: 8px !important;
+    padding: 0 20px !important;
+    height: 40px !important;
     display: flex !important;
     align-items: center !important;
+    gap: 8px !important;
+    font-weight: 500 !important;
+    box-shadow: 0 4px 12px rgba(0, 97, 242, 0.2) !important;
 }
 
-.btn-add-contact-person:hover {
-    background: #1557b0 !important;
-    box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3) !important;
-    transform: translateY(-1px);
+.trackbox-section {
+    background: #fff;
+    border: 1px solid #eef2f6;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
 }
 
-.contact-person-entry {
-    background: #ffffff !important;
-    transition: all 0.2s ease;
-    border: 1px solid #e0e0e0 !important;
-    border-radius: 8px !important;
-    overflow: hidden;
+.follow-up-section-open {
+    background: #ffffff;
+    border: 1px solid #f1f5f8;
+    border-radius: 12px;
 }
 
-.contact-person-entry:hover {
-    border-color: #1a73e8 !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+.btn-save {
+    background-color: #1a73e8 !important;
+    color: #fff !important;
+    padding: 8px 30px !important;
+    border-radius: 20px !important;
+    text-transform: none !important;
 }
 
-.contact-persons-wrapper::-webkit-scrollbar {
-    width: 6px;
+.btn-cancel {
+    background-color: #fff !important;
+    color: #58595a !important;
+    border: 1px solid #1a73e8 !important;
+    padding: 8px 25px !important;
+    /* border-radius: 20px !important; */
+    text-transform: none !important;
 }
 
-.contact-persons-wrapper::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
+/* ================================
+   FOLLOW-UP CHECKBOX
+================================ */
+.followup-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1a73e8;
 }
 
-.contact-persons-wrapper::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 10px;
+.followup-checkbox-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
 }
 
-.contact-persons-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #1a73e8;
+.custom-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #1a73e8;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-::ng-deep .contact-person-entry .mat-form-field-flex {
-    min-height: 40px !important;
-    margin-bottom: 5px;
+.custom-checkbox::after {
+    content: "";
+    width: 5px;
+    height: 9px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
 }
 
-::ng-deep .contact-person-entry .mat-error {
-    font-size: 10px !important;
-    margin-top: -5px;
-    margin-bottom: 5px;
+.followup-checkbox-label input:checked + .custom-checkbox {
+    background-color: #1a73e8;
+}
+
+.followup-checkbox-label input:checked + .custom-checkbox::after {
+    opacity: 1;
 }
 
 /* ================================

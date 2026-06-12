@@ -1,1 +1,102 @@
+.main-content {
+    background-color: #f8fafc;
+    min-height: calc(100vh - 70px);
+    padding: 20px 25px !important;
+}
 
+.page-title-main {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.lead-list-header {
+    margin-bottom: 24px;
+}
+
+/* CARDS */
+.lead-filter-panel, .lead-table-container {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+}
+
+/* BUTTONS */
+.btn-export {
+    background-color: #10b981 !important;
+    color: white !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+
+.btn-search {
+    background-color: #3b82f6 !important;
+    color: white !important;
+    border-radius: 8px !important;
+    min-width: 100px;
+}
+
+/* FILTER GRID */
+.filter-grid {
+    display: grid;
+    grid-template-columns: 40px repeat(2, 1fr) 1fr 1.5fr 1.5fr auto;
+    gap: 16px;
+    align-items: center;
+}
+
+/* TABLE STYLING */
+.lead-data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.lead-data-table thead th {
+    background: #f8fafc;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    padding: 16px;
+    border-bottom: 2px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.lead-data-table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+.lead-data-table td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.entry-num {
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* OVERRIDES FOR MATERIAL */
+::ng-deep .lead-filter-panel .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+}
+
+::ng-deep .lead-filter-panel .mat-form-field-flex {
+    background-color: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    padding: 4px 12px !important;
+}
+
+::ng-deep .lead-filter-panel .mat-form-field-underline {
+    display: none !important;
+}

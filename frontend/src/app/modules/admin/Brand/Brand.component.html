@@ -1,172 +1,123 @@
 <div *ngIf="issLoading" class="overlay">
     <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
     </mat-progress-spinner>
-    </div>
-    <div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
-    <div class="container-fluid">
-    <div class="row mt-2" *ngIf="Entry_View" style="background-color: #f1f1f1 !important;">
-    <div class="col-md-12">
-    <div class="card">
-  
-    <div class="card-body" style="background-color: #f1f1f1 !important;">
-    <form>
-    <div class="row">                                                                                                                                                     
-    <div class="col-md-6">
+</div>
 
-    <div class="col-md-12">
-    <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Brand Name <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>   
-  <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
-  height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-    <input matInput type="text" [(ngModel)]="Brand_.Brand_Name" name="Brand_.Brand_Name" class="input-text-Brand-group-diary">
-  </mat-form-field>
-  </div>
+<div class="main-trackbox-content">
+    <div class="trackbox-container">
 
-  <div class="col-md-12">
-    <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Item Name </label>   
-  <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
-  height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-    <input matInput type="text" [matAutocomplete]="autoItem" [(ngModel)]="Item_" name="Item_" 
-    (input)="Search_Item_Typeahead($event)" (click)="Search_Item_Typeahead($event)" class="input-text-Brand-group-diary">
-    <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item">
-        <mat-option *ngIf="issLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
-        <ng-container *ngIf="!issLoading">
-            <mat-option *ngFor="let Item of Item_Data" [value]="Item">
-                <span (click)="Item_Change(Item)">{{Item.Item_Name || Item.ItemName}}</span>
-            </mat-option>
-        </ng-container>
-    </mat-autocomplete>
-  </mat-form-field>
-  </div>     
-   
-  <!-- <div class="col-md-12 crect-mrgn-dte-wole-prtin-stock-add">
-                                <label class="col-md-4 mrgin-alghn-label-text-otrs-nxt">Under Brand <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
-                                <select [(ngModel)]="Under_Brand" name="Under_Brand" style="border: 1px solid lightgrey;
-                                height: 40px;padding-left: 10px; "  required class="col-md-8 select-box-style-diary">
-                                <option *ngFor="let Under_Brand_M of Under_Brand_Data"[ngValue]="Under_Brand_M">{{Under_Brand_M.under_brand_Name}}</option>
-                                </select>
-                                </div> -->
-
-  </div>
-<div class="col-md-6">   
-   <div class="col-md-12">
-    <button mat-raised-button type="button" [hidden]="Brand_Save==false"id="Save_Button"class="btn btn-danger pull-right save-close-new-buttons-to-crect"(click)="Save_Brand()">Save</button>
-    <button mat-raised-button type="button" class="btn btn-danger pull-right save-close-new-buttons-to-crect" (click)="Close_Click()">Close</button>
-    </div>
-    </div>
-
-   
-
-    </div>
-    <div class="clearfix"></div>
-    </form>
-    </div>
-    </div>
-    </div>
-    </div>
-    <div class="row" *ngIf="!Entry_View">
+        <!-- FORM ENTRY VIEW -->
+        <div class="row" *ngIf="Entry_View">
             <div class="col-md-12">
-                    <div class="card">
-              
-                    <div class="card-body"       
-                     style="align-items: center;
-             border: 0;
-             border-radius: 6px;
-             margin-left: 2px;
-             color: #333333;
-             background: #fff;
-             width: 100%;padding: 3px;background-color: #f1f1f1;
-             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-         ">
+                <div class="trackbox-table-card p-4">
                     <form>
-                    <div class="row">
-                    <div class="col-md-6">
-                
-                    <div class="col-md-12 margin-crect-dte-account-group-diary" style="display: flex;align-items: center;">
-                    <label class="col-md-3 text-title-to-correct-Brand-group-diary ">Brand Name</label> 
-                    <mat-form-field class="col-md-10 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey;
-                    height: 40px; background-color: #fff ;" > 
-                    <input matInput type="text" [(ngModel)]="Search_Brand_" name="Search_Brand_" class="col-md-8 input-text-Brand-group-diary">
-                   </mat-form-field>
-                  </div>  
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label class="input-label mb-2 d-block">
+                                    Brand Name <span class="required-star">*</span>
+                                </label>
+                                <div class="modern-form-field">
+                                    <input matInput type="text" [(ngModel)]="Brand_.Brand_Name" name="Brand_Name_Entry" placeholder="Enter Brand Name">
+                                </div>
+                            </div>
 
-                    </div>
-                
-                    <div class="col-md-6">
-                    <button mat-raised-button type="button" (click)="Search_Brand()" class="ml-2  btn btn-danger button-to-crect-margin mt-0">Search</button>  
-                    <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin mt-0">Create New</button>
-                 
-                    </div>
+                            <div class="col-md-5">
+                                <label class="input-label mb-2 d-block">
+                                    Item Name <span class="required-star">*</span>
+                                </label>
+                                <div class="modern-form-field">
+                                    <input matInput type="text"
+                                           [matAutocomplete]="autoItem"
+                                           [(ngModel)]="Item_"
+                                           name="Item_Entry"
+                                           (input)="Search_Item_Typeahead($event)"
+                                           (click)="Search_Item_Typeahead($event)"
+                                           placeholder="Search Item Name">
+                                    <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item">
+                                        <mat-option *ngIf="issLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                                        <ng-container *ngIf="!issLoading">
+                                            <mat-option *ngFor="let Item of Item_Data" [value]="Item">
+                                                <span (click)="Item_Change(Item)">{{Item.Item_Name || Item.ItemName}}</span>
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-autocomplete>
+                                </div>
+                            </div>
 
-                    </div>
-                    <div class="clearfix"></div>
+                            <div class="col-md-2 d-flex align-items-end justify-content-end gap-3">
+                                <button mat-raised-button type="button" class="btn-add-new-trackbox btn-secondary-trackbox" (click)="Close_Click()">Close</button>
+                                <button mat-raised-button type="button" [hidden]="Brand_Save==false" id="Save_Button" class="btn-add-new-trackbox" (click)="Save_Brand()">Save</button>
+                            </div>
+                        </div>
                     </form>
-                    </div>
-                    </div>
-                    </div>   
-   
-    <div class="col-md-12">
-    <!-- <div class="card card-plain" >
-    <div class="card-body"> -->
-    <div class="table-responsive card">
+                </div>
+            </div>
+        </div>
 
-      <div
-      class="table-responsive"
-      [style.height.px]="myInnerHeight"
-      style="overflow-y: scroll;background-color: #f1f1f1;"
-    >
- 
-    <table class="table table-hover">
-      <thead class="thead">
-        <th class="crect-margin-width-table-header-title">
-        Sl No
-        </th>
-        <th>
-        Brand 
-        </th>
+        <!-- LIST VIEW -->
+        <div *ngIf="!Entry_View">
+            <div class="trackbox-filter-area">
+                <div class="modern-search-wrapper">
+                    <i class="material-icons">search</i>
+                    <input type="text"
+                           class="modern-search-input"
+                           [(ngModel)]="Search_Brand_"
+                           name="Search_Brand_"
+                           placeholder="Search Brand..."
+                           (keyup.enter)="Search_Brand()">
+                </div>
 
-        <th>
-        Item Name 
-        </th>
-       
-        <!-- <th>
-          Under Brand
-        </th> -->
-      
-         
-        <th [hidden]="Brand_Edit==false" class="crect-margin-width-table-header-title">
-        Edit
-        </th>
-        <th [hidden]="Brand_Delete==false" class="crect-margin-width-table-header-title">
-        Delete
-        </th>
-      </thead>
-    <ng-container *ngFor="let Brand_1 of Brand_Data; let i = index">
-        <tr>  
-          <td style="padding-left:5px;">{{ i+1 }}</td>
-          <td>{{Brand_1["Brand_Name"]}}</td>
-          <td>{{Brand_1["Item_Name"] || '-'}}</td>
-          
-          <!-- <td>{{Brand_1["under_brand_Name"]}}</td> -->
-           
-          <td><button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Brand_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" 
-            class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" 
-            ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" 
-              class="material-icons" (click)="Edit_Brand(Brand_1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" 
-              ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span>
-              <div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div>
-              <div class="mat-button-focus-overlay" ></div></button></td>
-          <td><button _ngcontent-gdi-c11="" [hidden]="Brand_Delete==false"class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" 
-            mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove">
-            <span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Brand(Brand_1.Brand_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" 
-            matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button></td> 
-        </tr>
-       </ng-container>
-</table>  
-  </div>
+                <button mat-raised-button type="button" (click)="Create_New()" class="btn-add-new-trackbox">
+                    <i class="material-icons">add</i>
+                    Add Brand
+                </button>
+            </div>
+
+            <div class="trackbox-table-card">
+                <div class="table-responsive" [style.height.px]="myInnerHeight" style="overflow-y: scroll;">
+                    <table class="modern-trackbox-table">
+                        <thead>
+                            <tr>
+                                <th class="col-no">No.</th>
+                                <th>Brand</th>
+                                <th>Item Name</th>
+                                <th class="col-actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let Brand_1 of Brand_Data; let i = index">
+                                <td class="col-no">{{ i + 1 }}</td>
+                                <td style="font-weight: 500;">{{Brand_1["Brand_Name"]}}</td>
+                                <td>{{Brand_1["Item_Name"] || '-'}}</td>
+                                <td class="col-actions">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="action-icon-btn btn-edit-tb"
+                                             [hidden]="Brand_Edit==false"
+                                             (click)="Edit_Brand(Brand_1, i)"
+                                             title="Edit">
+                                            <i class="material-icons">edit</i>
+                                        </div>
+                                        <div class="action-icon-btn btn-delete-tb"
+                                             [hidden]="Brand_Delete==false"
+                                             (click)="Delete_Brand(Brand_1.Brand_Id, i)"
+                                             title="Delete">
+                                            <i class="material-icons">delete_outline</i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="Brand_Data?.length === 0">
+                                <td colspan="4" class="text-center py-5 text-muted">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="entries-summary">
+                Entries : {{Total_Entries}}
+            </div>
+        </div>
+
     </div>
-    <label class="entry-num">Entries : {{Total_Entries}}</label>
-    <!-- </div>
-    </div> -->
-    </div>
-    </div>
-    
+</div>

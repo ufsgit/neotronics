@@ -39,6 +39,7 @@ import { Client_Accounts_Service } from '../../../services/Client_Accounts.Servi
 })
 export class LedgerComponent implements OnInit {
         Entry_View:boolean=false;
+        MoreOptions_View:boolean=false;
         myInnerHeight: number;
         EditIndex: number;
         color = 'primary';  
@@ -97,7 +98,7 @@ ngOnInit()
 Page_Load()
  {   
         this.myInnerHeight = (window.innerHeight);
-        this.myInnerHeight = this.myInnerHeight - 290;
+        this.myInnerHeight = this.myInnerHeight - 330;
         this.Search_FromDate=new Date();
         this.Search_ToDate=new Date();
         this.Search_Date=this.New_Date(this.Search_Date);

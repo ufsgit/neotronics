@@ -1,137 +1,113 @@
 <div *ngIf="issLoading" class="overlay">
-        <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
-        </mat-progress-spinner>
-        </div>
-        <div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
-        <div class="container-fluid">
-        <div class="row" *ngIf="Entry_View">
-        <div class="col-md-12">
-        <div class="card">
- 
-        <div class="card-body" >
-       
-        <div class="row">
-        
-        <div class="col-md-6">
-        </div>
-        </div>
-        <div class="clearfix"></div>
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+</div>
 
-        </div>
-        </div>
-        </div>
-        
-        
-        </div>
-        <div class="row" *ngIf="!Entry_View">
-                <div class="card" style="align-items: center;
-             border: 0;
-             border-radius: 6px;
-             margin-left: 2px;
-             color: #333333;
-             background: #fff;
-             width: 100%;padding: 3px;background-color: #f1f1f1;
-             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-         ">
-                        <div class="row col-12">
+<div class="main-content">
+    <div class="container-fluid px-0">
 
-                        <div class="col-md-3 row mb-1" style="align-items: center;">
-                                <label class="col-md-4 mb-0 " style="text-align: end;">Part No</label>
-                                <input type="text" class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;" [(ngModel)]="partNo"  >
-                        </div>                      
+        <!-- LIST VIEW -->
+        <div *ngIf="!Entry_View">
 
-                        <div class="col-md-3 row mb-1" style="align-items: center;">
-                        <label class="col-md-4 mb-0 " style="text-align: end;">Item</label>
-                        <input  type="text" [matAutocomplete]="auto2" [(ngModel)]="Item_" name="item"
-                         (click)="Search_Item_Typeahead($event)" (keyup)="Search_Item_Typeahead($event)" class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;"
-                        (keyup)="Get_Client_Accounts_Typeahead($event)"  />
+            <!-- PAGE HEADER -->
+            <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="page-title-main">Stock Report</h4>
+                </div>
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <!-- Any top-right buttons can go here -->
+                </div>
+            </div>
+
+            <!-- FILTER PANEL -->
+            <div class="lead-filter-panel mb-3">
+                <div class="filter-grid">
+                    <mat-form-field appearance="legacy" floatLabel="never">
+                        <input matInput placeholder="Part No" [(ngModel)]="partNo" name="partNo">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="legacy" floatLabel="never">
+                        <input matInput placeholder="Item" [matAutocomplete]="auto2" [(ngModel)]="Item_" name="item"
+                               (click)="Search_Item_Typeahead($event)" (keyup)="Search_Item_Typeahead($event)">
                         <mat-autocomplete #auto2="matAutocomplete" [displayWith]="display_Item">
-                        <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
-                        <ng-container *ngIf="!isLoading">
-                        <mat-option *ngFor="let Item of Item_Data" [value]="Item">
-                        <span>{{Item.Item_Name}}</span>
-                        </mat-option>
-                        </ng-container>
+                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                            <ng-container *ngIf="!isLoading">
+                                <mat-option *ngFor="let Item of Item_Data" [value]="Item">
+                                    <span>{{Item.Item_Name}}</span>
+                                </mat-option>
+                            </ng-container>
                         </mat-autocomplete>
-                        </div>
+                    </mat-form-field>
 
-                  
-                                        
-    <div class="col-md-3" style="margin-top: -6px;">         
-                <button mat-raised-button type="submit" (click)="Print_Click()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin"><i class="fa fa-print" aria-hidden="true"></i></button>              
- <button mat-raised-button type="submit" (click)="Search_StockReport()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin">Search</button>
- <button mat-raised-button type="submit" (click)="Export()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin">Export</button>
+                    <!-- Action Buttons -->
+                    <button mat-raised-button class="btn-new-lead" (click)="Search_StockReport()" style="min-width: 100px;">
+                        SEARCH
+                    </button>
 
-</div>  
+                    <button mat-raised-button class="btn-export" (click)="Export()" style="min-width: 100px;">
+                        <i class="material-icons" style="font-size: 18px;">file_download</i>
+                        EXPORT
+                    </button>
+
+                    <button mat-raised-button class="btn-print" (click)="Print_Click()" title="Print">
+                        <i class="material-icons" style="font-size: 20px;">print</i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="lead-table-container">
+                <div class="table-scroll-area" [style.max-height.px]="myInnerHeight">
+                    <table class="lead-data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">No</th>
+                                <th>Part Number</th>
+                                <th>Group</th>
+                                <th>Item Name</th>
+                                <th>UOM</th>
+                                <th>Purchase Rate</th>
+                                <th>Sale Rate</th>
+                                <th>Quantity</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let Accounts1 of Accounts_Data; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ Accounts1["Item_Code"] }}</td>
+                                <td>{{ Accounts1["GroupName"] }}</td>
+                                <td style="font-weight: 500;">{{ Accounts1["ItemName"] }}</td>
+                                <td>{{ Accounts1["UnitName"] }}</td>
+                                <td>{{ Accounts1["PurchaseRate"] }}</td>
+                                <td>{{ Accounts1["SaleRate"] }}</td>
+                                <td>{{ Accounts1["Quantity"] }}</td>
+                                <td>{{ Accounts1["Amoiunt"] }}</td>
+                            </tr>
+                            <tr *ngIf="Accounts_Data?.length === 0">
+                                <td colspan="9" class="text-center py-5 text-muted">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="pagination-container">
+                    <div class="d-flex align-items-center">
+                        <span class="page-info">Total Entries: <strong>{{ Total_Entries }}</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENTRY VIEW (ADD / EDIT) -->
+        <div *ngIf="Entry_View">
+            <!-- No entry view defined for Stock Reports -->
+        </div>
+
+    </div>
 </div>
-</div>
-        <div class="col-md-12">
-        <div class="card card-plain">
-        <div class="card-body">
-        <div class="table-responsive">
- <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" style="overflow-y: scroll;"> -->
-  <div
-  class="table-responsive"
-  [style.height.px]="myInnerHeight"
-  style="overflow-y: scroll;background-color: #f1f1f1;"
->
-        <table class="table table-hover">
-        <thead class="thead">
-        <th>
-        Sl No
-        </th>
-        <th>
-        Part number
-        </th>
-        <th>
-        Group
-        </th> 
-        <th>
-        Item Name
-        </th>
-        <th>
-          UOM
-          </th>
-        <th>
-          Purchase Rate
-          </th>
-          <th>
-            Sale Rate
-           </th>   
-        <th>
-        Quantity
-        </th>
-          
-        <th>
-          Amount
-         </th>   
-        </thead>
-        <!-- <ng-container *cdkVirtualFor="let Accounts1 of Accounts_Data; let i = index"> -->
-          <tr *ngFor="let Accounts1 of Accounts_Data; let i =index">               
-        <td style="padding-left:5px;">{{ i+1 }}</td>
-        <td>{{Accounts1["Item_Code"]}}</td>
-        <td>{{Accounts1["GroupName"]}}</td> 
-        <td>{{Accounts1["ItemName"]}}</td> 
-        <td>{{Accounts1["UnitName"]}}</td> 
-        <td>{{Accounts1["PurchaseRate"]}}</td> 
-        <td>{{Accounts1["SaleRate"]}}</td> 
-        <td>{{Accounts1["Quantity"]}}</td>        
-        <td>{{Accounts1["Amoiunt"]}}</td>
-</tr>
-      
-       <!-- </ng-container> -->
-</table>
-</div>
-<!-- </cdk-virtual-scroll-viewport> -->
-        </div>
-        </div>
-        <label class="entry-num">Entries : {{Total_Entries}}</label>
-        </div>
-        </div>
-        </div>
-        </div>
+
        
 
 <div id="Print_Div" style="display:none;">

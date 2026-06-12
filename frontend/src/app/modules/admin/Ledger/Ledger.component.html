@@ -1,331 +1,170 @@
 <div *ngIf="issLoading" class="overlay">
-        <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
-        </mat-progress-spinner>
-        </div>
-        <div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
-        <div class="container-fluid">
-        <div class="row" *ngIf="Entry_View">
-        <div class="col-md-12">
-        <div class="card">
- 
-        <div class="card-body">
-       
-        <div class="row">
-        
-        <div class="col-md-6">
-        </div>
-        </div>
-        <div class="clearfix"></div>
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
+    </mat-progress-spinner>
+</div>
 
-        </div>
-        </div>
-        </div>
-        
-        
-        </div>
-        <div class="row" *ngIf="!Entry_View">
-                <div class="card" style="align-items: center;
-             border: 0;
-             border-radius: 6px;
-             margin-left: 2px;
-             color: #333333;
-             background: #fff;
-             width: 100%;padding: 3px;background-color: #f1f1f1;
-             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-         ">
-                        <div class="row col-12">
+<div class="main-content">
+    <div class="container-fluid px-0">
 
-                     <div class="col-md-3 row mb-1 " style="align-items: center;">
-                        <label  class="col-md-4 mb-0 " style="text-align: end;">From</label>
-                        <div class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
-                                <input [matDatepicker]="dp" placeholder="" [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
-                                <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-                                <mat-datepicker #dp></mat-datepicker>
-                        </div>
-                        </div>
-                        
-                        <div class="col-md-3 row mb-1 " style="align-items: center;" >
-                                <label class="col-md-4 mb-0 " style="text-align: end;">To</label>
-                                <div class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
-                                        <input [matDatepicker]="dp1" placeholder="" [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;"> 
-                                        <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
-                                        <mat-datepicker #dp1></mat-datepicker>
-                                </div>
-                                </div>
+        <!-- PAGE HEADER -->
+        <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 class="page-title-main">Ledger Report</h4>
+            </div>
+        </div>
 
-                        <div class="col-md-3 row mb-1 " style="align-items: center;">
-                        <label class="col-md-4 mb-0 " style="text-align: end;">Account</label>
-                        <input  type="text" [matAutocomplete]="auto2" [(ngModel)]="From_Party_Search" (click)="Get_Client_Accounts_Typeahead($event)"
-                        (keyup)="Get_Client_Accounts_Typeahead($event)" class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;"/>
-                        <mat-autocomplete #auto2="matAutocomplete" [displayWith]="display_FromAccount">
-                        <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
-                        <ng-container *ngIf="!isLoading">
-                        <mat-option *ngFor="let Client_Accounts_M of Client_Accounts_Data" [value]="Client_Accounts_M">
-                        <span>{{Client_Accounts_M.Client_Accounts_Name}}</span>
-                        </mat-option>
-                        </ng-container>
+        <!-- FILTER PANEL (SOA STYLE) -->
+        <div class="lead-filter-panel mb-3">
+            
+            <!-- ROW 1: Primary Filters -->
+            <div class="soa-filter-row">
+                <div class="soa-field-group">
+                    <label class="soa-label">From Date</label>
+                    <div class="soa-input-wrap">
+                        <input matInput [matDatepicker]="dp1" [(ngModel)]="Search_FromDate" placeholder="DD/MM/YYYY" class="soa-input">
+                        <mat-datepicker-toggle matSuffix [for]="dp1" class="soa-datepicker-toggle"></mat-datepicker-toggle>
+                        <mat-datepicker #dp1></mat-datepicker>
+                    </div>
+                </div>
+
+                <div class="soa-field-group">
+                    <label class="soa-label">To Date</label>
+                    <div class="soa-input-wrap">
+                        <input matInput [matDatepicker]="dp2" [(ngModel)]="Search_ToDate" placeholder="DD/MM/YYYY" class="soa-input">
+                        <mat-datepicker-toggle matSuffix [for]="dp2" class="soa-datepicker-toggle"></mat-datepicker-toggle>
+                        <mat-datepicker #dp2></mat-datepicker>
+                    </div>
+                </div>
+
+                <div class="soa-field-group">
+                    <label class="soa-label">Search Account</label>
+                    <div class="soa-input-wrap">
+                        <input type="text" [(ngModel)]="From_Party_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Get_Client_Accounts_Typeahead($event)"
+                               [matAutocomplete]="auto_party" placeholder="Select Account" class="soa-input">
+                        <mat-autocomplete #auto_party="matAutocomplete" [displayWith]="display_FromAccount">
+                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                            <ng-container *ngIf="!isLoading">
+                                <mat-option *ngFor="let acc of Client_Accounts_Data" [value]="acc">
+                                    <span>{{acc.Client_Accounts_Name}}</span>
+                                </mat-option>
+                            </ng-container>
                         </mat-autocomplete>
-                        </div>
+                    </div>
+                </div>
 
-                        <div class="col-md-3 row mb-1 " style="align-items: center;">
-                                <label class="col-md-4 mb-0 " style="text-align: end;">Voucher</label>
-                                <select [(ngModel)]="Voucher_Type_Search" name="Voucher_Type_Search"  required class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                                <option *ngFor="let Voucher_Type_M of Voucher_Type_Data"[ngValue]="Voucher_Type_M">{{Voucher_Type_M.Voucher_Type_Name}}</option>
-                                </select>
-                                </div>
-                                        
-    <div class="col-md-12" style="margin-top: 10px;">         
-                <button mat-raised-button type="submit" (click)="Print_Click()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin"><i class="fa fa-print" aria-hidden="true"></i></button>              
- <button mat-raised-button type="submit" (click)="Search_Ledger()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin">Search</button>
- <button mat-raised-button type="submit" (click)="Export()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin">Export</button>
+                <div class="soa-field-group">
+                    <label class="soa-label">Voucher Type</label>
+                    <select [(ngModel)]="Voucher_Type_Search" class="trackbox-native-select">
+                        <option *ngFor="let vt of Voucher_Type_Data" [ngValue]="vt">
+                            {{vt.Voucher_Type_Name}}
+                        </option>
+                    </select>
+                </div>
 
-</div>  
-</div>
-</div>
-        <div class="col-md-12">
-        <!-- <div class="card card-plain"> -->
-        <div class="table-responsive card ">
-        <div class="table-responsive" 
-        [style.height.px]="myInnerHeight"
-        style="overflow-y: scroll;background-color: #f1f1f1;">
- <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" style="overflow-y: scroll;"> -->
-        <table class="table table-hover">
-        <thead class="thead">
-        <th>
-        Sl No
-        </th>
-        <th>
-        Date
-        </th>
-        <th>
-    Account
-        </th> 
-        <th>
-        Voucher No
-        </th>
-        <th>
-        Voucher
-        </th>
-         <!-- <th>
-        Description
-        </th> -->
-        <th>
-         Dr
-        </th>
-        <th>
-        Cr
-        </th>
-     
-      
-        </thead>
-        <!-- <ng-container *cdVirtualFor="let Accounts1 of Accounts_Data; let i = index"> -->
-        <tr *ngFor="let Accounts1 of Accounts_Data; let i =index">
-        <td style="padding-left:5px;">{{ i+1 }}</td>
-        <td>{{Accounts1["Date"]}}</td>
-        <td>{{Accounts1["Particular"]}}</td> 
-        <td>{{Accounts1["VoucherNo"]}}</td> 
-        <td>{{Accounts1["VoucherType"]}}</td> 
-        <td>{{Accounts1["Dr"]}}</td> 
-        <td>{{Accounts1["Cr"]}}</td> 
-</tr>
-      
-       <!-- </ng-container> -->
-</table>
-<!-- </cdk-virtual-scroll-viewport> -->
-        </div>
-        </div>
-        <label class="entry-num">Entries : {{Total_Entries}}</label>
-        <!-- </div> -->
-        </div>
-        </div>
-        </div>
-       
+                <div class="soa-field-group soa-btn-cell">
+                    <button class="soa-more-btn" (click)="MoreOptions_View = !MoreOptions_View">
+                        {{ MoreOptions_View ? 'Less Options' : 'More Options' }}
+                        <i class="fa ms-1" [ngClass]="MoreOptions_View ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </button>
+                </div>
+            </div>
 
-<div id="Print_Div" style="display:none;">
-      <div class="printz">
-       <table>
-        <tr>
-            <td class="company-title-print-portion" name="company_Name"  style="width:93%;"><h1><b>{{Print_Company_.Company_Name}}</b></h1></td>
-           <td class="printLogo center-block">
-            <img style="width: 90px; Height:90px;" src='{{Image_Url}}'>
-            </td>
-        </tr>
-        <tr>
-             <td>  {{Print_Company_.EMail}} </td>
-            <td>  {{Print_Company_.Website}} </td>
-        </tr>
-          <tr>
-            <td>   {{Print_Company_.GSTNO}}  </td>
-          </tr>
-      </table>
-          <hr>
-    
-     <table class="inBox" style="width: 100%;">
-         <tr>
-            <td></td>
-            <td></td>
-             <td>Customer:</td>
-             <td>{{From_Party_Search.Client_Accounts_Name}}</td>
-             <td></td>
-             <td></td>
-             <td></td>
-             <td></td>
-          </tr>
-          <tr>
-                <td></td>
-                <td></td>
-                <td>Address:</td>
-                <td>{{Print_Client1_.Address1}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-        </tr>
-        <tr>
-                <td></td>
-                <td></td>
-                <td>{{Print_Client1_.Address2}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-      </tr>
-      <tr>
-                <td></td>
-                <td></td>
-                <td>{{Print_Client1_.Address3}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-    </tr>
-   
-        <tr>
-                <td></td>
-                <td>Mobile</td>
-                <td>{{Print_Client1_.Mobile}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-        </tr>
-              <tr>
-                  <td style="width: 50%;">{{Print_Company_.Address1}}</td>
-                  <td></td>
-                  <td></td>
-                  <td>Date   :</td>
-                  <td>{{Print_Date_}}</td>
-              </tr>
-            
-              <tr>
-                        <td></td>
-                        <td></td>
-                        <td>Receipt No :</td>
-                        <!-- <td>{{VoucherNo}}</td> -->
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-              </tr>
-          </table>
-  
-          <table class="table table-hover">
-                        <thead class="">
-                                <th> Sl No</th>
-                                <th>Date</th>
-                                <th>Account</th> 
-                                <th>Voucher No</th>
-                                <th>Voucher</th>
-                                <th>Dr</th>
-                                <th>Cr</th> 
-                        </thead>
-                        <tbody *ngFor="let Accounts1 of Accounts_Data; let i = index">
+            <!-- ROW 2: Actions (Conditional) -->
+            <div class="soa-filter-row mt-3" *ngIf="MoreOptions_View">
+                <div class="soa-field-group">
+                    <!-- Placeholder or additional filter if needed -->
+                </div>
+                
+                <div class="soa-field-group">
+                    <!-- Placeholder -->
+                </div>
+
+                <div class="soa-field-group soa-btn-cell">
+                    <button class="soa-search-btn" (click)="Search_Ledger()">
+                        <i class="fa fa-search me-2"></i> SEARCH
+                    </button>
+                </div>
+
+                <div class="soa-field-group soa-btn-cell">
+                    <button class="soa-export-btn" (click)="Export()">
+                        <i class="fa fa-file-excel-o me-2"></i> EXPORT
+                    </button>
+                </div>
+
+                <div class="soa-field-group soa-btn-cell" style="min-width: 40px !important;">
+                    <button class="soa-print-btn" (click)="Print_Click()">
+                        <i class="fa fa-print"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="lead-table-container">
+            <div class="table-responsive" [style.height.px]="myInnerHeight" style="overflow-y: auto;">
+                <table class="lead-data-table">
+                    <thead>
                         <tr>
-                                <td style="padding-left:5px;">{{ i+1 }}</td>
-                                <td>{{Accounts1["Date"]}}</td>
-                                <td>{{Accounts1["Particular"]}}</td> 
-                                <td>{{Accounts1["VoucherNo"]}}</td> 
-                                <td>{{Accounts1["VoucherType"]}}</td> 
-                                <td>{{Accounts1["Dr"]}}</td> 
-                                <td>{{Accounts1["Cr"]}}</td> 
-                         </tr>
-                       </tbody>
-         </table>
+                            <th style="width: 60px;">#</th>
+                            <th>Date</th>
+                            <th>Particular</th>
+                            <th style="width: 120px;">Voucher No</th>
+                            <th>Voucher Type</th>
+                            <th class="text-right">Dr</th>
+                            <th class="text-right">Cr</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of Accounts_Data; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item["Date"] }}</td>
+                            <td style="font-weight: 500; color: #1e293b;">{{ item["Account"] }}</td>
+                            <td>{{ item["VoucherNo"] }}</td>
+                            <td>{{ item["VoucherType"] }}</td>
+                            <td class="text-right dr-color">{{ item["Dr"] }}</td>
+                            <td class="text-right cr-color">{{ item["Cr"] }}</td>
+                        </tr>
+                        <tr *ngIf="Accounts_Data?.length === 0">
+                            <td colspan="7" class="text-center py-5 text-muted">No transactions found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-          <br />
-          <br />
-    
-      </div>
-  </div>
-
-
-  
-  <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ccc;font-size: 10px;"  id="Print_Div1" style="display:none;">
-        <img src='/assets/img/printlogo.png' alt="Perfect Hills Logo" style="height: 100px;width: 100%;" />
-        <h1 style="text-align: center; margin-bottom: 20px;font-family: arial, sans-serif;">Ledger Report </h1>
-        
-        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-          <div style="width: 48%;">
-            <p style="font-size: 12px;margin-bottom: 2px;font-family: arial, sans-serif;">PB 1554 , PC 113 , GHALA,</p>
-            <p style="font-size: 12px;margin-bottom: 1px;font-family: arial, sans-serif;">MUSCAT</p>
-            <p style="font-size: 12px;margin-bottom: 2px;font-family: arial, sans-serif;">SULTANATE OF OMAN</p>
-            <p style="font-size: 12px;margin-bottom: 0px;font-family: arial, sans-serif;">Phone: +968 22820150</p>
-            <p style="font-size: 12px;margin-bottom: 2px;font-family: arial, sans-serif;">Gsm: 97416789, 99751621</p>
-            <p style="font-size: 12px;margin-bottom: 2px;font-family: arial, sans-serif;">Email: sales&#64;perfecthills.com</p>
-            <p style="font-size: 12px;margin-bottom: 2px;font-family: arial, sans-serif;">Website: www.perfecthills.com</p>
-            <p style="font-size: 12px;margin-bottom: 2px;font-family: arial, sans-serif;">CR Number: 1150753</p>
-            <p style="font-size: 12px;margin-bottom: 2px;font-family: arial, sans-serif;">VATIN: OM1100004897</p>
-          </div>
-          <div style="width: 35%;">
-            <p style="font-size: 12px;margin-bottom: 2px;font-family: arial, sans-serif;">Date: {{ currentDate }}</p>
-            <p style="font-size: 12px;margin-bottom: 2px;font-family: arial, sans-serif;">From: {{ FromDate }}</p>
-            <p style="font-size: 12px;margin-bottom: 2px;font-family: arial, sans-serif;">To: {{ToDate}}</p>
-          </div>
+            <!-- FOOTER -->
+            <div class="pagination-container d-flex justify-content-between align-items-center">
+                <div class="entry-num">Total Transactions: <strong>{{ Total_Entries }}</strong></div>
+            </div>
         </div>
-      
-        
-      
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
-          <thead>
+    </div>
+</div>
+
+<!-- HIDDEN PRINT AREA -->
+<div id="Print_Div1" style="display: none;">
+    <!-- ... stays the same unless redesign requested for print ... -->
+    <div class="print-header" style="text-align: center; margin-bottom: 20px;">
+        <img [src]="Image_Url" style="max-width: 200px;">
+        <h3>{{ Print_Company_.Company_Name }}</h3>
+        <p>Ledger Report from {{ FromDate }} to {{ ToDate }}</p>
+    </div>
+    <table border="1" style="width: 100%; border-collapse: collapse;">
+        <thead>
             <tr>
-              <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">SI No</th>
-              <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                Date
-                </th>
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-            Account
-                </th> 
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                Voucher No
-                </th>
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                Voucher
-                </th>
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                 Dr
-                </th>
-                <th style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; background-color: #f2f2f2;font-family:'arial', sans-serif; ">
-                Cr
-                </th>
-             
+                <th>Date</th>
+                <th>Particular</th>
+                <th>Voucher No</th>
+                <th>Dr</th>
+                <th>Cr</th>
             </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let Accounts1 of Accounts_Data; let i = index">
-              <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{ i + 1 }}</td>
-              <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["Date"]}}</td>
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["Particular"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["VoucherNo"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["VoucherType"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["Dr"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["Cr"]}}</td> 
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of Accounts_Data">
+                <td>{{ item.Date }}</td>
+                <td>{{ item.Account }}</td>
+                <td>{{ item.VoucherNo }}</td>
+                <td align="right">{{ item.Dr }}</td>
+                <td align="right">{{ item.Cr }}</td>
             </tr>
-          </tbody>
-        </table>
-        
-      </div>
-            
+        </tbody>
+    </table>
+</div>

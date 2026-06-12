@@ -1,329 +1,314 @@
 <div *ngIf="issLoading" class="overlay">
     <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
     </mat-progress-spinner>
-    </div>
-    <div class="main-content" style="padding: 0px 0px !important;background-color: #f1f1f1;">
-    <div class="container-fluid">
-    <div class="col-md-12 row" *ngIf="Entry_View">
-    <div class="card" style="background-color: #f1f1f1;">   
-    <div class="card-body">
-    <form>
-    <div class="row">
-    <div class="col-md-6">
-        <!-- <div class="col-md-12">
-
-<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Group 
-    <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-<input type="text" [matAutocomplete]="auto1" [(ngModel)]="Account_Group_" name="Account_Group_" 
-(click)="Get_Account_Group($event)" (keyup)="Get_Account_Group($event)" class="col-md-9 input-allighn-typer-head-all-divs"/>
-<mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item_Group">
-<mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
-<ng-container *ngIf="!isLoading">
-<mat-option *ngFor="let Group_M of Account_Group_Data" [value]="Group_M">
-<span>{{Group_M.Group_Name}}</span>
-</mat-option>
-</ng-container>
-</mat-autocomplete>
-</div> -->
-
-    <div class="col-md-12 tab-wole-div-alyn">
-    <label class="col-md-3 label-to-crect-all-names-to-divs margin-alghn-label-text pdng-crect-rspnsv-mrgn-nptbx-txt-lh">
-        Group Name<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-    <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Account_Group_" name="Account_Group_" 
-    (click)="Get_Account_Group($event)" (input)="Get_Account_Group($event)" 
-    class="col-md-9 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr">
-    <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item_Group">
-        <mat-option *ngIf="isLoading">
-            <mat-spinner diameter="500"></mat-spinner>
-        </mat-option>
-        <ng-container *ngIf="!isLoading">
-            <mat-option *ngFor="let Group_M of Account_Group_Data" [value]="Group_M">
-                <span>{{Group_M.Group_Name}}</span>
-            </mat-option>
-        </ng-container>
-    </mat-autocomplete>
-    </div>
-
-    <!-- <div class="col-md-12">
-<label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Employee <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-<input type="text" [matAutocomplete]="auto" [(ngModel)]="Employee_" name="Employee_" (click)="Get_Employee($event)" (keyup)="Get_Employee($event)" class="col-md-9 input-allighn-typer-head-all-divs"/>
-<mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Employee">
-<mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
-<ng-container *ngIf="!isLoading">
-<mat-option *ngFor="let Employee_M of Employee_Details_Data" [value]="Employee_M">
-<span>{{Employee_M.Client_Accounts_Name}}</span>
-</mat-option>
-</ng-container>
-</mat-autocomplete>
-</div> -->        
-
-<div class="col-md-12 alighyn-div-margin-search-item-group">                     
-    <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Account Name
-        <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span>
-    </label>
-   <input type="text" class="col-md-9  pl-3"  style="border: #d3d3d3 solid 1px !important ;"
-   [(ngModel)]="Client_Accounts_.Client_Accounts_Name" name="Client_Accounts_.Client_Accounts_Name" [ngModelOptions]="{standalone: true}">
-    </div>
-
-<div class="col-md-12 alighyn-div-margin-search-item-group">                     
-    <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Address1
-    </label>
-   <input type="text" class="col-md-9  pl-3 "  style="border: #d3d3d3 solid 1px !important ;"
-   [(ngModel)]="Client_Accounts_.Address1" name="Client_Accounts_.Address1" [ngModelOptions]="{standalone: true}">
-    </div>
-
-<div class="col-md-12 alighyn-div-margin-search-item-group">                     
-    <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Address 2
-    </label>
-   <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-   [(ngModel)]="Client_Accounts_.Address2" name="Client_Accounts_.Address2" [ngModelOptions]="{standalone: true}">
-    </div>
-
-<div class="col-md-12 alighyn-div-margin-search-item-group">                     
-    <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Address 3
-    </label>
-   <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-   [(ngModel)]="Client_Accounts_.Address3" name="Client_Accounts_.Address3" [ngModelOptions]="{standalone: true}">
-    </div>
-
-<div class="col-md-12 alighyn-div-margin-search-item-group">                     
-    <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Address 4
-    </label>
-   <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-   [(ngModel)]="Client_Accounts_.Address4" name="Client_Accounts_.Address4" [ngModelOptions]="{standalone: true}">
-    </div>
-
-<div class="col-md-12 alighyn-div-margin-search-item-group">                     
-    <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Pincode
-    </label>
-   <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-   [(ngModel)]="Client_Accounts_.PinCode" name="Client_Accounts_.PinCode" [ngModelOptions]="{standalone: true}">
-    </div>
-
-<!-- <div class="col-md-12 alighyn-div-margin-search-item-group">                     
-    <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> VATIN
-    </label>
-   <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-   [(ngModel)]="Client_Accounts_.GSTNo" name="Client_Accounts_.GSTNo" [ngModelOptions]="{standalone: true}">
-    </div> -->
- 
-                    
-<!-- <div class="col-md-12">
-        <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Pan No</label>    
-        <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
-        <input matInput type="text" [(ngModel)]="Client_Accounts_.PanNo" name="Client_Accounts_.PanNo">
-        </mat-form-field>
-        </div>   -->
-
 </div>
-    <div class="col-md-6">                    
-        <!-- <div class="col-md-12 alighyn-div-margin-search-item-group">                     
-            <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Country
-            </label>
-        <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-        [(ngModel)]="Client_Accounts_.Country" name="Client_Accounts_.Country" [ngModelOptions]="{standalone: true}">
-            </div> -->        
-        <div class="col-md-12 alighyn-div-margin-search-item-group">                     
-            <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Phone
-            </label>
-            <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-            [(ngModel)]="Client_Accounts_.Phone" name="Client_Accounts_.Phone" [ngModelOptions]="{standalone: true}">
+
+<div class="main-content">
+    <div class="container-fluid px-0">
+
+        <!-- LIST VIEW -->
+        <div *ngIf="!Entry_View">
+
+            <!-- PAGE HEADER -->
+            <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="page-title-main">Account Management</h4>
+                </div>
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <button mat-raised-button (click)="Create_New()" class="btn-new-lead">
+                        <i class="material-icons" style="font-size:18px;">add</i>
+                        Create New
+                    </button>
+                </div>
             </div>
 
-        <div class="col-md-12 alighyn-div-margin-search-item-group">                     
-            <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Mobile
-            </label>
-            <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-            [(ngModel)]="Client_Accounts_.Mobile" name="Client_Accounts_.Mobile" [ngModelOptions]="{standalone: true}">
-            </div>        
-        <div class="col-md-12 alighyn-div-margin-search-item-group">                     
-            <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Email
-            </label>
-            <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-            [(ngModel)]="Client_Accounts_.Email" name="Client_Accounts_.Email" [ngModelOptions]="{standalone: true}">
-            </div>                
-        <div class="col-md-12 alighyn-div-margin-search-item-group">                     
-            <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Opening Balance
-            </label>
-            <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-            [(ngModel)]="Client_Accounts_.Opening_Balance" name="Client_Accounts_.Opening_Balance" [ngModelOptions]="{standalone: true}">
-            </div>        
-        <!-- <div class="col-md-12">
-        <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Opening Type</label>
-        <select  required class="col-md-9 for-input-selct-tblelst ng-valid ng-dirty ng-touched" [(ngModel)]="Client_Accounts_.Opening_Type" name="Client_Accounts_.Opening_Type" >
-        <option value="0">Credit</option>
-        <option value="1">Debit</option>
-        </select>
-        </div> -->        
-        <div class="col-md-12" style="margin-top: 15px;">
-    <h5 style="font-weight: bold; color: #333;">Contact Persons</h5>
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead style="background-color: #f1f1f1;">
-                <tr>
-                    <th style="width: 40px;">#</th>
-                    <th>Contact Person</th>
-                    <th>Contact Number</th>
-                    <th>Designation</th>
-                    <th style="width: 50px;"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of Client_Accounts_.Contact_Person_Data; let i = index">
-                    <td>{{i + 1}}</td>
-                    <td>
-                        <input type="text" class="form-control" [(ngModel)]="item.contact_person" name="contact_person_{{i}}" [ngModelOptions]="{standalone: true}">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" [(ngModel)]="item.contact_number" name="contact_number_{{i}}" [ngModelOptions]="{standalone: true}">
-                    </td>
-                    <td>
-                        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: -1.25em;">
-                            <mat-select [(ngModel)]="item.designation" name="designation_{{i}}" [ngModelOptions]="{standalone: true}">
-                                <mat-option *ngFor="let d of Designation_Data" [value]="d.Designation_Name">
-                                    {{d.Designation_Name}}
+            <!-- FILTER PANEL -->
+            <div class="lead-filter-panel mb-3">
+                <div class="filter-grid">
+                    <mat-form-field appearance="legacy" floatLabel="never">
+                        <input matInput placeholder="Account Name" [(ngModel)]="Search_Client_Accounts_" name="Search_Client_Accounts_" [ngModelOptions]="{standalone: true}">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="legacy" floatLabel="never">
+                        <input matInput placeholder="Select Group" [matAutocomplete]="auto_Customer"
+                               [(ngModel)]="Account_Group_Search" name="Customer"
+                               (click)="Get_Account_Group($event)" (input)="Get_Account_Group($event)">
+                        <mat-autocomplete #auto_Customer="matAutocomplete" [displayWith]="display_Item_Group">
+                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                            <ng-container *ngIf="!isLoading">
+                                <mat-option *ngFor="let Group_M of Account_Group_Data" [value]="Group_M">
+                                    <span>{{Group_M.Group_Name}}</span>
                                 </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </td>
-                    <td class="text-center">
-                        <button type="button" class="btn btn-danger btn-link btn-sm btn-just-icon" (click)="Remove_Contact_Person(i)">
-                            <i class="material-icons">close</i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <button type="button" class="btn btn-sm btn-primary" (click)="Add_Contact_Person()">
-            <i class="fa fa-plus"></i> Add Contact Person
-        </button>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </mat-form-field>
+
+                    <button mat-raised-button class="btn-new-lead" (click)="Search_Client_Accounts()" style="min-width: 100px;">
+                        SEARCH
+                    </button>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="lead-table-container">
+                <div class="table-scroll-area" [style.max-height.px]="myInnerHeight">
+                    <table class="lead-data-table">
+                        <thead>
+                            <tr>
+                                <th>Sl No</th>
+                                <th>Account Name</th>
+                                <th>Group</th>
+                                <th>Address</th>
+                                <th style="text-align:right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let Client_Accounts_1 of Paginated_Data; let i = index">
+                                <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                                <td style="font-weight:500;">{{ Client_Accounts_1["Client_Accounts_Name"] }}</td>
+                                <td>{{ Client_Accounts_1["Account_Group_Name"] }}</td>
+                                <td>{{ Client_Accounts_1["Addresses"] }}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <div class="action-icon-btn btn-edit-tb"
+                                             [hidden]="Client_Accounts_Edit==false"
+                                             (click)="Edit_Client_Accounts(Client_Accounts_1, i)"
+                                             title="Edit">
+                                            <i class="material-icons">edit</i>
+                                        </div>
+                                        <div class="action-icon-btn btn-delete-tb"
+                                             [hidden]="Client_Accounts_Delete==false"
+                                             (click)="Delete_Client_Accounts(Client_Accounts_1.Client_Accounts_Id, i)"
+                                             title="Delete">
+                                            <i class="material-icons">delete_outline</i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="Client_Accounts_Data?.length === 0">
+                                <td colspan="5" class="text-center py-5 text-muted">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="pagination-container d-flex justify-content-between align-items-center">
+                    <!-- Per Page + Total Entries -->
+                    <div class="d-flex align-items-center" style="gap: 10px;">
+                        <span class="page-info">per page</span>
+                        <select class="page-size-select" [(ngModel)]="pageSize" (change)="onPageSizeChange()" name="pageSize">
+                            <option [value]="10">10</option>
+                            <option [value]="25">25</option>
+                            <option [value]="50">50</option>
+                            <option [value]="100">100</option>
+                        </select>
+                        <span class="page-info">Total Entries: <strong>{{ Total_Entries }}</strong></span>
+                    </div>
+                    <!-- Navigation -->
+                    <div class="d-flex align-items-center" style="gap: 12px;">
+                        <button mat-button class="btn-page-nav" (click)="goToPrevious()" [disabled]="currentPage === 1">Previous</button>
+                        <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+                        <button mat-button class="btn-page-nav" (click)="goToNext()" [disabled]="currentPage === totalPages">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENTRY VIEW (ADD / EDIT) -->
+        <div *ngIf="Entry_View">
+            <div class="lead-entry-header d-flex justify-content-between align-items-center">
+                <h4 class="page-title-main">{{ Client_Accounts_.Client_Accounts_Id > 0 ? 'Edit Account' : 'Add New Account' }}</h4>
+                <button class="btn-close-custom" (click)="Close_Click()">
+                    <i class="material-icons">close</i> Close
+                </button>
+            </div>
+
+            <form>
+                <div class="lead-entry-body">
+                    <div class="row">
+                        <!-- LEFT COLUMN -->
+                        <div class="col-md-6">
+                            <h6>Basic Information</h6>
+
+                            <div class="trackbox-input-group">
+                                <label class="input-label">Group Name <span class="required-star">*</span></label>
+                                <mat-form-field appearance="legacy" floatLabel="never" style="width:100%;">
+                                    <input matInput placeholder="Search Group" [matAutocomplete]="auto1"
+                                           [(ngModel)]="Account_Group_" name="Account_Group_"
+                                           (click)="Get_Account_Group($event)" (input)="Get_Account_Group($event)">
+                                    <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item_Group">
+                                        <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                                        <ng-container *ngIf="!isLoading">
+                                            <mat-option *ngFor="let Group_M of Account_Group_Data" [value]="Group_M">
+                                                <span>{{Group_M.Group_Name}}</span>
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="trackbox-input-group">
+                                <label class="input-label">Account Name <span class="required-star">*</span></label>
+                                <mat-form-field appearance="legacy" floatLabel="never" style="width:100%;">
+                                    <input matInput placeholder="Enter Account Name"
+                                           [(ngModel)]="Client_Accounts_.Client_Accounts_Name"
+                                           name="Client_Accounts_Name" [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="trackbox-input-group">
+                                <label class="input-label">Address 1</label>
+                                <mat-form-field appearance="legacy" floatLabel="never" style="width:100%;">
+                                    <input matInput placeholder="Enter Address Line 1"
+                                           [(ngModel)]="Client_Accounts_.Address1"
+                                           name="Address1" [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="trackbox-input-group">
+                                <label class="input-label">Address 2</label>
+                                <mat-form-field appearance="legacy" floatLabel="never" style="width:100%;">
+                                    <input matInput placeholder="Enter Address Line 2"
+                                           [(ngModel)]="Client_Accounts_.Address2"
+                                           name="Address2" [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="trackbox-input-group">
+                                <label class="input-label">Address 3</label>
+                                <mat-form-field appearance="legacy" floatLabel="never" style="width:100%;">
+                                    <input matInput placeholder="Enter Address Line 3"
+                                           [(ngModel)]="Client_Accounts_.Address3"
+                                           name="Address3" [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="trackbox-input-group">
+                                <label class="input-label">Address 4</label>
+                                <mat-form-field appearance="legacy" floatLabel="never" style="width:100%;">
+                                    <input matInput placeholder="Enter Address Line 4"
+                                           [(ngModel)]="Client_Accounts_.Address4"
+                                           name="Address4" [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="trackbox-input-group">
+                                <label class="input-label">Pincode</label>
+                                <mat-form-field appearance="legacy" floatLabel="never" style="width:100%;">
+                                    <input matInput placeholder="Enter Pincode"
+                                           [(ngModel)]="Client_Accounts_.PinCode"
+                                           name="PinCode" [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COLUMN -->
+                        <div class="col-md-6">
+                            <h6>Contact Details</h6>
+
+                            <div class="trackbox-input-group">
+                                <label class="input-label">Phone</label>
+                                <mat-form-field appearance="legacy" floatLabel="never" style="width:100%;">
+                                    <input matInput placeholder="Enter Phone"
+                                           [(ngModel)]="Client_Accounts_.Phone"
+                                           name="Phone" [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="trackbox-input-group">
+                                <label class="input-label">Mobile</label>
+                                <mat-form-field appearance="legacy" floatLabel="never" style="width:100%;">
+                                    <input matInput placeholder="Enter Mobile"
+                                           [(ngModel)]="Client_Accounts_.Mobile"
+                                           name="Mobile" [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="trackbox-input-group">
+                                <label class="input-label">Email</label>
+                                <mat-form-field appearance="legacy" floatLabel="never" style="width:100%;">
+                                    <input matInput placeholder="Enter Email"
+                                           [(ngModel)]="Client_Accounts_.Email"
+                                           name="Email" [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="trackbox-input-group">
+                                <label class="input-label">Opening Balance</label>
+                                <mat-form-field appearance="legacy" floatLabel="never" style="width:100%;">
+                                    <input matInput placeholder="Enter Opening Balance"
+                                           [(ngModel)]="Client_Accounts_.Opening_Balance"
+                                           name="Opening_Balance" [ngModelOptions]="{standalone: true}">
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Contact Persons Table -->
+                            <div class="trackbox-input-group" style="margin-top: 10px;">
+                                <label class="input-label">Contact Persons</label>
+                                <div class="lead-table-container" style="margin-top: 8px;">
+                                    <table class="lead-data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>Number</th>
+                                                <th>Designation</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let item of Client_Accounts_.Contact_Person_Data; let i = index">
+                                                <td>{{ i + 1 }}</td>
+                                                <td>
+                                                    <input type="text" class="form-control form-control-sm"
+                                                           [(ngModel)]="item.contact_person"
+                                                           name="contact_person_{{i}}"
+                                                           [ngModelOptions]="{standalone: true}">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control form-control-sm"
+                                                           [(ngModel)]="item.contact_number"
+                                                           name="contact_number_{{i}}"
+                                                           [ngModelOptions]="{standalone: true}">
+                                                </td>
+                                                <td>
+                                                    <mat-form-field appearance="outline" style="width:100%; margin-bottom:-1.25em;">
+                                                        <mat-select [(ngModel)]="item.designation"
+                                                                    name="designation_{{i}}"
+                                                                    [ngModelOptions]="{standalone: true}">
+                                                            <mat-option *ngFor="let d of Designation_Data" [value]="d.Designation_Name">
+                                                                {{ d.Designation_Name }}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="action-icon-btn btn-delete-tb" (click)="Remove_Contact_Person(i)" title="Remove">
+                                                        <i class="material-icons">close</i>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div style="padding: 10px 20px;">
+                                        <button type="button" class="btn-save" mat-raised-button (click)="Add_Contact_Person()" style="height:34px; font-size:12px; padding: 0 15px;">
+                                            <i class="material-icons" style="font-size:16px; vertical-align: middle;">add</i> Add Contact
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORM ACTIONS -->
+                    <div class="d-flex justify-content-end mt-4" style="gap: 12px;">
+                        <button mat-raised-button class="btn-cancel" (click)="Close_Click()">Cancel</button>
+                        <button mat-raised-button class="btn-save" [hidden]="Client_Accounts_Save==false" id="Save_Button" (click)="Save_Client_Accounts()">Save Account</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
     </div>
 </div>
-
-        <div class="col-md-12 butn-crct-alghn-dwnwrd-users-srch-new">
-                <button mat-raised-button type="button" [hidden]="Item_Save==false"id="Save_Button" [hidden]="Client_Accounts_Save==false" class="btn btn-danger pull-right"(click)="Save_Client_Accounts()">Save</button>
-                <button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>
-            </div>       
-    </div>
-    </div>
-    <div class="clearfix"></div>
-    </form>
-    </div>
-    <!-- </div> -->
-    </div>
-    </div>
-    <div class="row" *ngIf="!Entry_View">
-    <div class="row col-md-12 mb-3"  
-     style="align-items: center;
-             border: 0;
-             border-radius: 6px;
-             margin-left: 2px;
-             color: #333333;
-             background: #fff;
-             width: 100%;padding: 3px;background-color: #f1f1f1;
-             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-         "> 
-        <!-- <div class="col-md-5">
-        <label class="col-md-3 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name"> Account Name </label>
-        <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings input-allighn-typer-head-all-divs-matinputs">
-        <input matInput type="text"  [(ngModel)]="Search_Client_Accounts_"  name="Search_Client_Accounts_">  
-        </mat-form-field>
-        </div> -->
-        <div class="col-md-6 alighyn-div-margin-search-item-group">                     
-            <label class="col-md-3 label-to-crect-all-names-to-divs down-label-name-to-all-sections"> Account Name</label>
-        <input type="text" class="col-md-9  pl-3 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr" 
-        [(ngModel)]="Search_Client_Accounts_" name="Search_Client_Accounts_" [ngModelOptions]="{standalone: true}">
-            </div>
-        <!-- <div class="col-md-4">
-
-            <label class="col-md-2 label-to-crect-all-names-to-divs name-label-margin-down-employer-details-name">Group </label>
-            <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Account_Group_Search" name="Account_Group_Search" 
-            (click)="Get_Account_Group($event)" (keyup)="Get_Account_Group($event)" class="col-md-10 input-allighn-typer-head-all-divs"/>
-            <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item_Group">
-            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
-            <ng-container *ngIf="!isLoading">
-            <mat-option *ngFor="let Group_M of Account_Group_Data" [value]="Group_M">
-            <span>{{Group_M.Group_Name}}</span>
-            </mat-option>
-            </ng-container>
-            </mat-autocomplete>
-            </div> -->
-
-            <div class="col-md-4 tab-wole-div-alyn">
-                <label class="col-md-3 label-to-crect-all-names-to-divs margin-alghn-label-text pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Group</label>
-                <input type="text" [matAutocomplete]="auto_Customer" [(ngModel)]="Account_Group_Search" name="Customer" 
-                (click)="Get_Account_Group($event)" (input)="Get_Account_Group($event)" 
-                class="col-md-9 for-input-selct-tblelst alighn-crect-input-box-text txt-bx-mve-up-rspnsv-sles-mstr-cstmr">
-                <mat-autocomplete #auto_Customer="matAutocomplete" [displayWith]="display_Item_Group">
-                    <mat-option *ngIf="isLoading">
-                        <mat-spinner diameter="500"></mat-spinner>
-                    </mat-option>
-                    <ng-container *ngIf="!isLoading">
-                        <mat-option *ngFor="let Group_M of Account_Group_Data" [value]="Group_M">
-                            <span>{{Group_M.Group_Name}}</span>
-                        </mat-option>
-                    </ng-container>
-                </mat-autocomplete>
-            </div>
-
-        <div class="col-md-1">
-        <button mat-raised-button type="button" (click)="Search_Client_Accounts()" class="btn btn-danger button-to-crect-margin "><i class="fa fa-search" aria-hidden="true"></i></button> 
-        <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin "><i class="fa fa-plus" aria-hidden="true"></i></button> 
-        </div>
-    </div>
-    <div class="col-md-12">
-        <div class="table-responsive card ">
-        <!-- <div class="card-plain"> -->
-        <!-- <div class="card-body"> -->
-        <!-- <div class="table-responsive card "> -->
-        <div class="table-responsive"
-            [style.height.px]="myInnerHeight"
-             style="overflow-y: scroll;background-color: #f1f1f1;">
-        <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" > -->
-        <table class="table table-hover">
-        <thead class="thead">
-        <th>
-        Sl No
-        </th>
-        <th>
-        Account Name
-        </th>
-        <th>
-        Group
-        </th>
-        <th>
-            Address
-            </th>            
-        <th [hidden]="Item_Edit==false">
-        Edit
-        </th>
-        <th [hidden]="Item_Delete==false">
-        Delete
-        </th>
-        </thead>
-        <!-- <ng-container *cdkVirtualFor="let Client_Accounts_1 of Client_Accounts_Data; let i = index"> -->
-        <tr *ngFor="let Client_Accounts_1 of Client_Accounts_Data; let i =index">
-        <td style="padding-left:5px;">{{ i+1 }}</td>
-        <td>{{Client_Accounts_1["Client_Accounts_Name"]}}</td>
-            <td>{{Client_Accounts_1["Account_Group_Name"]}}</td>
-            <td>{{Client_Accounts_1["Addresses"]}}</td>
-        <td>            
-        <button _ngcontent-jry-c5="" _ngcontent-gxp-c5="" [hidden]="Client_Accounts_Edit==false"aria-describedby="cdk-describedby-message-0" cdk-describedby-host="" class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task" ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span _ngcontent-jry-c5="" class="mat-button-wrapper"><i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons" (click)="Edit_Client_Accounts(Client_Accounts_1,i)" >edit</i></span><div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div _ngcontent-jry-c5="" class="mat-button-focus-overlay"></div></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay" ></div></button>
-        </td>
-        <td> 
-        <button _ngcontent-gdi-c11="" [hidden]="Client_Accounts_Delete==false" class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"  (click)="Delete_Client_Accounts(Client_Accounts_1.Client_Accounts_Id,i)" >close</i></span><div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"  ></div></button>
-        </td>
-        </tr>
-            <!-- </ng-container> -->
-        </table>
-        <!-- </cdk-virtual-scroll-viewport> -->
-        <!-- </div> -->
-        </div>
-
-        <label class="entry-num">Entries : {{Total_Entries}}</label>
-        <!-- </div> -->
-        </div>
-    </div>
-    </div>
-    </div>
-    

@@ -40,7 +40,7 @@ providers: [
             {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},],
 })
 export class Journal_Entry_NewComponent implements OnInit {
-Journal_Entry_Data:Journal_Entry[]
+Journal_Entry_Data: Journal_Entry[] = [];
 Journal_Entry_:Journal_Entry= new Journal_Entry();
 Journal_Entry_Name_Search:string;
 Entry_View:boolean=true;
@@ -119,24 +119,23 @@ this.Page_Load()
 }
 Page_Load()
 {
-    debugger;
     this.myInnerHeight = (window.innerHeight);
     this.myInnerHeight = this.myInnerHeight - 200;
-    this.Search_FromDate=this.New_Date(this.Search_FromDate);
-    this.Search_ToDate=this.New_Date(this.Search_ToDate);
-    this.Journal_Entry_.Date=new Date("dd-MMM-yyyy").toString();
-   // this.Search_Journal_Entry();
+    this.Search_FromDate = this.New_Date(this.Search_FromDate);
+    this.Search_ToDate = this.New_Date(this.Search_ToDate);
+    this.Journal_Entry_.Date = new Date("dd-MMM-yyyy").toString();
 
     this.Load_Currency();
     this.Load_InvoiceType();
     this.Load_Payment_Term();
-    // this.Journal_Entry_.Date = new Date(); 
-this.Clr_Journal_Entry();
-this.Get_Payment_Mode() ;
+    this.Clr_Journal_Entry();
+    this.Get_Payment_Mode();
 
-debugger;
-//this.Search_Journal_Entry();
-this.Entry_View=false;
+    // Do NOT auto-load data — keep table empty until Search is clicked
+    this.Journal_Entry_Data = [];
+    this.Total_Entries = 0;
+    this.Total_Amounts = 0;
+    this.Entry_View = false;
 }
 New_Date(Date_)
     {

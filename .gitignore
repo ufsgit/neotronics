@@ -1,5 +1,0 @@
-
-# Large build/backup archives
-frontend/*.zip
-frontend/node_modules/
-node_modules/

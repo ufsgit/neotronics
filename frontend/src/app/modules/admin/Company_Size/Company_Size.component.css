@@ -1,19 +1,376 @@
+/* ================================
+   GENERAL CARD & HEADER STYLES
+================================ */
+.main-content {
+    background-color: #f8f9fa !important;
+    padding: 20px !important;
+    min-height: 100vh;
+}
+
+.page-title-main {
+    font-weight: 700 !important;
+    font-size: 1.4rem !important;
+    margin: 0 !important;
+    color: #1a202c !important;
+    letter-spacing: -0.5px;
+}
+
+h6 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+/* ================================
+   MATERIAL FORM FIELD OVERRIDES
+================================ */
+::ng-deep .mat-form-field {
+    width: 100%;
+}
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+}
+
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
-    display: none;
-}
-::ng-deep .mat-input-element{
-    padding-left: 15px !important;
-}
-::ng-deep .mat-form-field-infix {
-    border-bottom: 0.84375em solid transparent;
+    display: none !important;
 }
 
-.no-spinner::-webkit-outer-spin-button,
-.no-spinner::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-flex {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 2px 12px 0 12px !important;
+    background-color: #fff;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+::ng-deep .mat-form-field-appearance-legacy.mat-focused .mat-form-field-flex {
+    border-color: #0061f2;
+    box-shadow: 0 0 0 3px rgba(0, 97, 242, 0.1);
+}
+
+::ng-deep .mat-input-element {
+    font-size: 14px !important;
+    padding: 8px 0 !important;
+    color: black !important;
+}
+
+::ng-deep .mat-input-element::placeholder {
+    color: #a0aec0 !important;
+    font-size: 13px !important;
+}
+
+/* =ng-deep for select in User Page */
+::ng-deep .mat-form-field select.mat-native-control {
+    padding-top: 0 !important;
+    top: 2px !important;
+    position: relative;
+}
+
+/* ================================
+   FILTER PANEL STYLING
+================================ */
+.lead-filter-panel {
+    background: transparent;
+    margin-bottom: 25px;
+}
+
+.filter-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.filter-grid > mat-form-field {
+    flex: 1;
+    min-width: 250px;
+    margin-bottom: 0 !important;
+}
+
+/* ================================
+   UNIFIED TABLE DESIGN
+================================ */
+.lead-table-container {
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+    border: 1px solid #edf2f7;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Scrollable body area */
+.table-scroll-area {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.lead-data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.lead-data-table th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f8fafc;
+    color: #2d3748;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 14px 20px;
+    text-align: left;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.lead-data-table td {
+    padding: 14px 20px;
+    font-size: 13px;
+    color: #2d3748;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+}
+
+.lead-data-table tr:hover {
+    background-color: #f8fafc;
+}
+
+/* ================================
+   BUTTONS
+================================ */
+.btn-new-lead {
+    background-color: #0061f2 !important;
+    color: white !important;
+    border-radius: 8px !important;
+    padding: 0 20px !important;
+    height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-weight: 500 !important;
+    box-shadow: 0 4px 12px rgba(0, 97, 242, 0.2) !important;
+    text-transform: none !important;
+    border: none !important;
+}
+
+.btn-new-lead:hover {
+    background-color: #0052ce !important;
+    transform: translateY(-1px);
+}
+
+.btn-save {
+    background-color: #0061f2 !important;
+    color: #fff !important;
+    padding: 0 25px !important;
+    height: 40px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+    border: none !important;
+}
+
+.btn-cancel {
+    background-color: #fff !important;
+    color: #4a5568 !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 0 20px !important;
+    height: 40px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+}
+
+.btn-close-custom {
+    background: transparent;
+    border: none;
+    color: #718096;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.btn-close-custom:hover {
+    color: #e53e3e;
+}
+
+.btn-back-custom {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+    color: #4a5568;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-back-custom:hover {
+    color: #0061f2;
+    border-color: #0061f2;
+    background: rgba(0, 97, 242, 0.05);
+}
+
+/* ================================
+   ACTION ICON BUTTONS
+================================ */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-icon-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn-edit-tb {
+    color: #0061f2;
+    background: rgba(0, 97, 242, 0.05);
+}
+
+.btn-edit-tb:hover {
+    background: #0061f2;
+    color: #fff;
+}
+
+.btn-delete-tb {
+    color: #e81500;
+    background: rgba(232, 21, 0, 0.05);
+}
+
+.btn-delete-tb:hover {
+    background: #e81500;
+    color: #fff;
+}
+
+/* ================================
+   ENTRY VIEW STYLES
+================================ */
+.lead-entry-header {
+    margin-bottom: 25px;
+}
+
+.lead-entry-body {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.user-entry-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.basic-info-section,
+.menu-permission-page {
+    width: 100%;
+}
+
+.basic-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 24px;
+}
+
+.trackbox-input-group {
+    margin-bottom: 0;
+}
+
+.input-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.required-star {
+    color: #e53e3e;
+    margin-left: 2px;
+}
+
+.menu-permission-toggle-section {
+    border: 1px solid #edf2f7;
+    border-radius: 8px;
+    background: #f8fafc;
+    padding: 14px 16px 14px 22px;
+}
+
+.menu-permission-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     margin: 0;
+    color: #2d3748;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
 }
 
-.no-spinner {
-    -moz-appearance: textfield;
+@media (max-width: 1199px) {
+    .basic-info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767px) {
+    .lead-entry-body {
+        padding: 20px;
+    }
+
+    .basic-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ================================
+   OVERLAY / SPINNER
+================================ */
+.overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner {
+    position: absolute;
+}
+
+.entry-num {
+    padding: 15px 20px;
+    font-size: 13px;
+    color: #718096;
+    font-weight: 600;
 }

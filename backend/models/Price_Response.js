@@ -92,9 +92,9 @@ var Price_Response = {
                     connection.query(
                         `UPDATE price_response_master SET
                         Price_Response_No = ?, EntryDate = ?, Supplier_Id = ?, Response_No = ?, Reference_No = ?,
-                        Currency_Id = ?, Total_Amount = ?, Vat_Amount = ?, Net_Amount = ?, Description1 = ?, Payment_Term_Description = ?, Company_Id = ?
+                        Currency_Id = ?, Total_Amount = ?, Vat_Amount = ?, Net_Amount = ?, Description1 = ?, Payment_Term_Description = ?
                         WHERE Price_Response_Master_Id = ?`,
-                        masterValues.concat([Price_Response_Master_.Company_Id, masterId]),
+                        masterValues.concat([masterId]),
                         function (masterError) {
                             if (masterError) {
                                 return connection.rollback(function () {
@@ -123,9 +123,9 @@ var Price_Response = {
 
                 connection.query(
                     `INSERT INTO price_response_master
-                    (Price_Response_No, EntryDate, Supplier_Id, Response_No, Reference_No, Currency_Id, Total_Amount, Vat_Amount, Net_Amount, Description1, Payment_Term_Description, Company_Id)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
-                    masterValues.concat([Price_Response_Master_.Company_Id]),
+                    (Price_Response_No, EntryDate, Supplier_Id, Response_No, Reference_No, Currency_Id, Total_Amount, Vat_Amount, Net_Amount, Description1, Payment_Term_Description)
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+                    masterValues,
                     function (masterError, result) {
                         if (masterError) {
                             return connection.rollback(function () {
