@@ -534,14 +534,6 @@ export class LeadComponent implements OnInit {
       return;
     }
 
-    if (this.contactForm.invalid) {
-      this.dialogBox.open(DialogBox_Component, { 
-        panelClass: 'Dialogbox-Class', 
-        data: { Message: 'Please fill all required contact person details correctly.', Type: "3" } 
-      });
-      return;
-    }
-
     let Lead_Copy = Object.assign({}, this.Lead_);
     // Attach contact persons from the form array
     (Lead_Copy as any).Contact_Person_Details = contactPersonValues;

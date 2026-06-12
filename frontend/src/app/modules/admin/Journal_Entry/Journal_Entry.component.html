@@ -143,12 +143,12 @@
 
         <div class="col-md-3 row mb-3" style="align-items: center;">
           <label class="col-md-4 mb-0 " style="text-align: end;">TO</label>
-          <mat-form-field class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                  <input matInput [matDatepicker]="dp2" placeholder="" [(ngModel)]="Search_ToDate">
+          <div class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
+                                        border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                  <input [matDatepicker]="dp2" placeholder="" [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                   <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
                   <mat-datepicker #dp2></mat-datepicker>
-                </mat-form-field>
+                </div>
           </div>
 
 

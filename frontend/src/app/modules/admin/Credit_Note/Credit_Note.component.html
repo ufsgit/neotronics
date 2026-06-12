@@ -33,27 +33,27 @@
                               <div class="col-md-3 row mb-1 " style="align-items: center;">
                                   <label
                                   class="col-md-4 mb-0 " style="text-align: end;">From</label>
-                                  <mat-form-field
+                                  <div
                                       class="col-md-8 "
                                       style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                                      <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
-                                          [(ngModel)]="Search_FromDate">
+                                        border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                      <input [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
+                                          [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                                       <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
                                       <mat-datepicker #dp1></mat-datepicker>
-                                  </mat-form-field>
+                                  </div>
                               </div>
                               <div class="col-md-3 row mb-1" style="align-items: center;">
                                   <label
                                   class="col-md-4 mb-0 " style="text-align: end;">TO</label>
-                                  <mat-form-field
+                                  <div
                                   class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                                      <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
-                                          [(ngModel)]="Search_ToDate">
+                                        border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                      <input [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
+                                          [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                                       <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
                                       <mat-datepicker #dp2></mat-datepicker>
-                                  </mat-form-field>
+                                  </div>
                               </div>
                               <div class="col-md-5 row mb-1" style="align-items: center;">
                                   <label
@@ -183,7 +183,7 @@
                                             vertical-align: middle;">{{Sales_Master["FormattedEntryDate"]}}</td>
                                           <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["NetTotal"]}}</td>
+                                            vertical-align: middle;">{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</td>
                                           <td style="    padding: 0px;
                                             padding-left: 5px;
                                             vertical-align: middle;">{{Sales_Master["CurrecnyName"]}}</td>
@@ -346,14 +346,14 @@
                   <!-- <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
                     <label
                         class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Supply Date</label>
-                        <mat-form-field
+                        <div
                         class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                        style="height: 47px !important">
-                        <input matInput [matDatepicker]="dpdate1" placeholder="" name="SupplyDate"
-                            [(ngModel)]="creditnote_master_.SupplyDate">
+                        style="height: 47px !important display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                        <input [matDatepicker]="dpdate1" placeholder="" name="SupplyDate"
+                            [(ngModel)]="creditnote_master_.SupplyDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                         <mat-datepicker-toggle matSuffix [for]="dpdate1" ></mat-datepicker-toggle>
                         <mat-datepicker #dpdate1></mat-datepicker>
-                    </mat-form-field>
+                    </div>
                   </div> -->
               </div>
               <div class="col-md-6 croct-float-purchase-master-section">
@@ -362,19 +362,19 @@
                           class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Invoice Date
                           <span
                           style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-                      <mat-form-field
+                      <div
                           class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                          style="height: 47px !important">
-                          <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate"
+                          style="height: 47px !important display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                          <input [matDatepicker]="dpdate" placeholder="" name="EntryDate"
                               [(ngModel)]="creditnote_master_.EntryDate"
                               (ngModelChange)="supplyDateChange();DueDateChange()"
                               (click)="supplyDateChange();DueDateChange()"
                               (input)="supplyDateChange();DueDateChange()"
-                              >
+                               style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                               
                           <mat-datepicker-toggle matSuffix [for]="dpdate" ></mat-datepicker-toggle>
                           <mat-datepicker #dpdate></mat-datepicker>
-                      </mat-form-field>
+                      </div>
                   </div>
                   <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
                       <label
@@ -472,14 +472,14 @@
                   <!-- <div class="col-md-12 mb-1">
                     <label
                         class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Due Date</label>
-                    <mat-form-field
+                    <div
                         class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                        style="height: 47px !important">
-                        <input matInput [matDatepicker]="dpdate3" placeholder="" name="DueDate"
-                            [(ngModel)]="creditnote_master_.DueDate">
+                        style="height: 47px !important display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                        <input [matDatepicker]="dpdate3" placeholder="" name="DueDate"
+                            [(ngModel)]="creditnote_master_.DueDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                         <mat-datepicker-toggle matSuffix [for]="dpdate3" ></mat-datepicker-toggle>
                         <mat-datepicker #dpdate3></mat-datepicker>
-                    </mat-form-field>
+                    </div>
                   </div> -->
 
                   <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
@@ -1399,3 +1399,4 @@
         </div>
     </div> -->
   </div>
+

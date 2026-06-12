@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
 		public dialogBox: MatDialog,
 		private ngZone: NgZone
 	) {
+		this.userService.logout();
 		this.initForm();
 	}
 	initForm() {

@@ -468,14 +468,26 @@ Load_Next_Price_Request_No() {
         error: () => { }
     });
 }
+Company_Dropdown_Change() {
+    if(this.Company_Data) {
+        const c = this.Company_Data.find(x => x.Company_Id == this.Price_Request_Master_.Company_Id);
+        if (c) {
+            this.Company_ = c;
+            this.Print_Company_ = c;
+        }
+    }
+}
 Load_Company() 
     {   
-    this.Sales_Master_Service_.Load_Company().subscribe(Rows => {    
+    this.Sales_Master_Service_.Load_Company().subscribe((response: any) => {
+    // API wraps response with sendSuccess: { success: true, data: [[companyRows],[bankRows]] }
+    const Rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
     if (Rows != null) {
     const companyRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : [];
     const bankRows = Array.isArray(Rows) && Array.isArray(Rows[1]) ? Rows[1] : [];
     this.Print_Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
     this.Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
+    this.Company_Data = companyRows;
     this.Bank_ = bankRows;
  }
  this.issLoading = false;
@@ -959,6 +971,12 @@ Clr_Sales_Master()
     this.Price_Request_Master_.Address3="";
     this.Price_Request_Master_.Address4="";
     this.Price_Request_Master_.Mobile="";
+    if (this.Company_Data && this.Company_Data.length > 0) {
+        this.Price_Request_Master_.Company_Id = this.Company_Data[0].Company_Id;
+        this.Company_ = this.Company_Data[0];
+        this.Print_Company_ = this.Company_Data[0];
+    }
+
     this.Price_Request_Master_.Customer_Name="";
     this.Price_Request_Master_.Email="";
     this.Price_Request_Master_.PinCode="";
@@ -1942,10 +1960,16 @@ Save_Price_Request(Printstatus:number)
         },
         error: (error) => {
             console.error("Price Request API ERROR:", error);
+            let errorMessage = error.message || 'Connection failed';
+            if (error.error && error.error.message) {
+                errorMessage = error.error.message;
+            } else if (typeof error.error === 'string') {
+                errorMessage = error.error;
+            }
             this.dialogBox.open(DialogBox_Component, {
                 panelClass: 'Dialogbox-Class',
                 data: {
-                    Message: 'Server Error: ' + (error.message || 'Connection failed'),
+                    Message: 'Server Error: ' + errorMessage,
                     Type: "2"
                 }
             });

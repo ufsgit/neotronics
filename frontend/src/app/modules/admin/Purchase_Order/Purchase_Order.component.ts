@@ -117,6 +117,7 @@ itemGroupData: Item_Group[];
 Item_Group_Temp: Item_Group = new Item_Group();
 
 ItemCodeData = [];
+Item_Data = [];
 Customer_:Client_Accounts= new Client_Accounts();
 Search_Customer:Client_Accounts= new Client_Accounts();
 Customer_Temp:Client_Accounts= new Client_Accounts();
@@ -363,19 +364,30 @@ Page_Load()
     // }    
     //this.myDate=new Date();
 }
+Company_Dropdown_Change() {
+    if(this.Company_Data) {
+        const c = this.Company_Data.find(x => x.Company_Id == this.Purchase_Ordermaster_.Company_Id);
+        if (c) {
+            this.Company_ = c;
+            this.Print_Company_ = c;
+        }
+    }
+}
 Load_Company() 
     {   
-    this.Sales_Master_Service_.Load_Company().subscribe(Rows => {    
-    if (Rows != null) {
-    this.Print_Company_ = Rows[0][0];   
-    this.Company_ = Rows[0];
-    //this.Bank_Data=Rows[1];
-    this.Bank_ = Rows[1];
-    //this.Bank_Data=this.Bank_;
+    this.Sales_Master_Service_.Load_Company().subscribe((response) => {
+    // API wraps with sendSuccess: { success: true, data: [[companyRows],[bankRows]] }
+    const Rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+    if (Rows != null && Array.isArray(Rows[0]) && Rows[0].length > 0) {
+    this.Company_Data = Rows[0];
+    this.Print_Company_ = Rows[0][0];
+    this.Company_ = Rows[0][0];
+    this.Bank_ = Rows[1] || [];
  }
+ this.issLoading = false;
  },
- Rows => {
- const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
+ err => {
+ this.issLoading = false;
  });
 }
 
@@ -1009,6 +1021,12 @@ Print_Search_Click()
     popupWinindow.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /></head><body onload="window.print()">' + innerContents + '</html>');
     popupWinindow.document.close();      
 }
+
+normalizeApiRows(response: any): any[] {
+    const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+    return Array.isArray(rows) ? rows : [];
+}
+
 Clr_Sales_Master()
 {
     this.Quotation_Master_.SalesQuotationMaster_Id=0;
@@ -1270,10 +1288,12 @@ Search_PurchaseItem_Typeahead(event: any)
   this.Purchase_Orderdetails_.ItemName=Value;
 
           this.issLoading = true;
-  this.Sales_Master_Service_.Search_PurchaseItem_Typeahead(Value).subscribe(Rows => {
+  this.Sales_Master_Service_.Search_PurchaseItem_Typeahead(Value).subscribe((response: any) => {
 
+      const Rows = this.normalizeApiRows(response);
       if (Rows != null) {
-          this.Stock_Data = Rows[0];
+          this.Stock_Data = Rows[0] || [];
+          this.Item_Data = this.Stock_Data;
       }
   
 
@@ -1450,18 +1470,19 @@ Search_Customer_Typeahead(event: any)
      
   }
 
-  Get_Stock_Item_Code_Typeahead(event: any)
+  Get_Item_Item_Code_Typeahead(event: any)
  {
      var Value = "";
      
-     Value = event.target.value;
+     Value = event && event.target ? event.target.value : "";
        
       this.issLoading = true;
       
-     this.Sales_Master_Service_.Get_Purchase_Item_Code_Typeahead(Value).subscribe(Rows => {     
+     this.Sales_Master_Service_.Get_Purchase_Item_Code_Typeahead(Value).subscribe((response: any) => {     
         
+     const Rows = this.normalizeApiRows(response);
      if (Rows != null) {
-         this.ItemCodeData = Rows[0];
+         this.ItemCodeData = Rows[0] || [];
      }
      this.issLoading = false;
      },
@@ -1471,6 +1492,11 @@ Search_Customer_Typeahead(event: any)
          const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
      });
      
+  }
+
+  Get_Stock_Item_Code_Typeahead(event: any)
+  {
+      this.Get_Item_Item_Code_Typeahead(event);
   }
 
 
@@ -1512,9 +1538,10 @@ Search_Item_Typeahead(event: any)
 
 
     }
-display_Item(Stock_e: Stock)
+display_Item(Stock_e: any)
 {
-     if (Stock_e) { return Stock_e.ItemName; }
+     if (!Stock_e) { return ''; }
+     return typeof Stock_e === 'string' ? Stock_e : Stock_e.ItemName;
 }
 
 
@@ -1568,7 +1595,8 @@ Search_Barcode_Typeahead(event: any)
 display_ItemCode(item) 
 {
    
-  if (item) { return item.Item_Code; }
+  if (!item) { return ''; }
+  return typeof item === 'string' ? item : item.Item_Code;
  
 }
 
@@ -2290,7 +2318,9 @@ Get_Stock_Item(){
     
 
 }
-
+Get_Item_Item(){
+    this.Get_Stock_Item();
+}
 
 // Item_Name_Change(item:Item){
 //     this.Barcode_Temp.Stock_Id=this.Stock_.Stock_Id;
@@ -2351,6 +2381,11 @@ if(this.Purchase_Orderdetails_.SaleTax==null || this.Purchase_Orderdetails_.Sale
 
  this.Calculate_Total_Amount();
 }
+Calculate_Purchase_Orderdetails_Amount()
+{
+    this.Calculate_Quotation_Details_Amount();
+}
+
 Calculate_Total_Amount()
 { 
    

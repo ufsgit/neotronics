@@ -33,32 +33,32 @@
                                 <div class="col-md-3 row" style="align-items: center;">
                                     <label
                                         class="col-md-4  mb-0 " style="text-align: end;">From</label>
-                                    <mat-form-field
+                                    <div
                                         class="col-md-8 "
                                         style="height: 40px;     border: 1px solid #d3c4c4;
                                         border-radius: 8px;
                                     
-                                    ">
-                                        <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
-                                            [(ngModel)]="Search_FromDate">
+                                     display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                        <input [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
+                                            [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                                         <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
                                         <mat-datepicker #dp1></mat-datepicker>
-                                    </mat-form-field>
+                                    </div>
                                 </div>
                                 <div class="col-md-3 row mb-1" style="align-items: center;">
                                     <label
                                         class="col-md-4  mb-0 " style="text-align: end;" >TO</label>
-                                    <mat-form-field
+                                    <div
                                         class="col-md-8 "
                                         style="height: 40px;     border: 1px solid #d3c4c4;
                                         border-radius: 8px;
                                     
-                                    ">
-                                        <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
-                                            [(ngModel)]="Search_ToDate">
+                                     display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                        <input [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
+                                            [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                                         <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
                                         <mat-datepicker #dp2></mat-datepicker>
-                                    </mat-form-field>
+                                    </div>
                                 </div>                               
                                 
                                 <div class="col-md-3 row mb-1" style="align-items: center; justify-content: center;">
@@ -171,14 +171,14 @@
                             class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date
                             <span
                             style="color:#ef071e; ">*</span></label>
-                        <mat-form-field
+                        <div
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            style="height: 47px !important">
-                            <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate"
-                                [(ngModel)]="Stock_Add_Master_.EntryDate">
+                            style="height: 47px !important display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                            <input [matDatepicker]="dpdate" placeholder="" name="EntryDate"
+                                [(ngModel)]="Stock_Add_Master_.EntryDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                             <mat-datepicker-toggle matSuffix [for]="dpdate" ></mat-datepicker-toggle>
                             <mat-datepicker #dpdate></mat-datepicker>
-                        </mat-form-field>
+                        </div>
                     </div> 
                 </div>
             </div>
@@ -193,7 +193,7 @@
                                             <label
                                                 class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Part Number
                                                 <span
-                                                style="color:#ef071e; ">*</span>
+                                                style="color:#ff0019; ">*</span>
                                             </label>
                                             <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto42"
                                                 style="padding-left: 5px !important;" [(ngModel)]="Barcode_"

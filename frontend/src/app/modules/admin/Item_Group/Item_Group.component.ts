@@ -205,6 +205,7 @@ Save_Item_Group()
    
     if (this.Item_Group_.Item_Group_Name == undefined ||this.Item_Group_.Item_Group_Name == null || this.Item_Group_.Item_Group_Name == "") {
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Item Group ', Type: "3" } });
+        return;
     } 
     // else if(this.Item_Group == undefined ||this.Item_Group == null || this.Item_Group.Item_Group_Id == 0||this.Item_Group==undefined)  
     // {
@@ -224,10 +225,30 @@ Save_Item_Group()
       })
     )
     .subscribe({
-      next: (Save_status) => {
+      next: (Save_status: any) => {
         console.log("Item Group Save API Response:", Save_status);
-        
-        if (!Save_status || !Save_status[0]) {
+
+        let resultId: number = NaN;
+        try {
+          if (Save_status && Save_status.data && Save_status.data[0]) {
+            const raw = Save_status.data[0];
+            if (raw[0] && raw[0][0] && raw[0][0].Item_Group_Id_ !== undefined) {
+              resultId = Number(raw[0][0].Item_Group_Id_);
+            } else if (raw[0] && raw[0].Item_Group_Id_ !== undefined) {
+              resultId = Number(raw[0].Item_Group_Id_);
+            } else if (raw.Item_Group_Id_ !== undefined) {
+              resultId = Number(raw.Item_Group_Id_);
+            }
+          } else if (Save_status && Save_status[0] && Save_status[0][0]) {
+            resultId = Number(Save_status[0][0].Item_Group_Id_);
+          } else if (Save_status && Save_status[0] && Save_status[0].Item_Group_Id_ !== undefined) {
+            resultId = Number(Save_status[0].Item_Group_Id_);
+          }
+        } catch (e) {
+          resultId = NaN;
+        }
+
+        if (isNaN(resultId)) {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',
             data: { Message: 'Invalid server response', Type: "2" }
@@ -235,7 +256,6 @@ Save_Item_Group()
           return;
         }
 
-        const resultId = Number(Save_status[0][0].Item_Group_Id_);
         if (resultId > 0) {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',

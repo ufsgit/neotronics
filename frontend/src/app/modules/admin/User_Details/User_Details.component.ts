@@ -394,7 +394,7 @@ Save_User_Details()
         this.User_Details_.Role_Id = this.User_Role_.User_Role_Id;
         this.User_Details_.Department_Id = this.Department_.Department_Id;
         
-        this.User_Details_.Working_Status = ""; // This is handled by ID now, but keeping for compatibility if needed
+        this.User_Details_.Working_Status = this.Working_Status_.Working_Status_Name;
 
         this.User_Details_.Employee_Id=0;
         this.User_Details_.Branch_Id = 0;
@@ -412,9 +412,12 @@ Save_User_Details()
  
 // document.getElementById('Save_Button').hidden=true;
 this.issLoading=true;
-this.User_Details_Service_.Save_User_Details(this.User_Details_).subscribe(Save_status => {
+this.User_Details_Service_.Save_User_Details(this.User_Details_).subscribe((Save_status: any) => {
      
-//Save_status=Save_status[0];
+if(Save_status && Save_status.success !== undefined && Save_status.data) {
+    Save_status = Save_status.data;
+}
+
 if(Number(Save_status[0].User_Details_Id_)>0)
 {
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});

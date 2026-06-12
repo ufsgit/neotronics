@@ -1,109 +1,50 @@
 const fs = require('fs');
+const path = require('path');
 
-function patchModel() {
-    let content = fs.readFileSync('models/Sales_Master.js', 'utf8');
-    
-    // Find functions to clone
-    const extractFunc = (startText) => {
-        const startIdx = content.indexOf(startText);
-        if (startIdx === -1) return null;
-        let braceCount = 0;
-        let inFunc = false;
-        let endIdx = -1;
-        for (let i = startIdx; i < content.length; i++) {
-            if (content[i] === '{') {
-                braceCount++;
-                inFunc = true;
-            } else if (content[i] === '}') {
-                braceCount--;
-                if (inFunc && braceCount === 0) {
-                    endIdx = i + 1;
-                    break;
-                }
-            }
+function patchModel(file) {
+    if (!fs.existsSync(file)) return;
+    let content = fs.readFileSync(file, 'utf8');
+
+    const patches = [
+        {
+            sp: "Save_PerformaInvoice",
+            table: "performainvoicemaster",
+            pk: "PerformaInvoiceMaster_Id",
+            master: "PerformaInvoice_Master_"
+        },
+        {
+            sp: "Save_Purchase_order",
+            table: "purchaseordermaster",
+            pk: "PurchaseOrderMaster_Id",
+            master: "Purchase_Order_Master_"
+        },
+        {
+            sp: "Save_Sales_Returns_Master",
+            table: "sales_return_master",
+            pk: "Sales_Return_Master_Id",
+            master: "Sales_Return_Master_"
+        },
+        {
+            sp: "Save_Price_Request",
+            table: "price_request_master",
+            pk: "Price_Request_Master_Id",
+            master: "Price_Request_Master_"
         }
-        return content.substring(startIdx, endIdx);
-    };
-
-    const funcsToClone = [
-        'Save_Quotation: async function',
-        'Search_Quotation:function',
-        'Get_Quotation_Details:function',
-        'Delete_Quotation_Master: function',
-        'Load_SalesQuotationMaster:function'
     ];
 
-    let appendedCode = '\n';
-    for (let f of funcsToClone) {
-        let code = extractFunc(f);
-        if (code) {
-            code = code.replace(/Quotation/g, 'Price_Request');
-            code = code.replace(/quotation/g, 'price_request');
-            // specifically for Load_SalesQuotationMaster
-            code = code.replace(/Load_SalesPrice_RequestMaster/g, 'Load_Price_Request_Master');
-            appendedCode += '    ,\n' + code;
-        } else {
-            console.log("Could not find", f);
-        }
-    }
-
-    // Insert before module.exports or end of object
-    content = content.replace(/};\s*module\.exports\s*=\s*Sales_Master;/g, appendedCode + '\n};\nmodule.exports=Sales_Master;');
-    fs.writeFileSync('models/Sales_Master.js', content);
-    console.log("Patched models/Sales_Master.js");
-}
-
-function patchRoutes() {
-    let content = fs.readFileSync('routes/Sales_Master.js', 'utf8');
-
-    const funcsToClone = [
-        "router.post('/Save_Quotation/'",
-        "router.get('/Search_Quotation'",
-        "router.get('/Get_Quotation_Details'",
-        "router.get('/Delete_Quotation_Master'",
-        "router.get('/Load_SalesQuotationMaster/'"
-    ];
-
-    let appendedCode = '\n';
-    for (let f of funcsToClone) {
-        const startIdx = content.indexOf(f);
-        if (startIdx === -1) {
-            console.log("Could not find route", f);
-            continue;
-        }
-        
-        let braceCount = 0;
-        let inFunc = false;
-        let endIdx = -1;
-        for (let i = startIdx; i < content.length; i++) {
-            if (content[i] === '{') {
-                braceCount++;
-                inFunc = true;
-            } else if (content[i] === '}') {
-                braceCount--;
-                if (inFunc && braceCount === 0) {
-                    // find the closing parenthesis after }
-                    endIdx = content.indexOf(')', i) + 1;
-                    break;
-                }
+    patches.forEach(p => {
+        const regex = new RegExp(`return \\(new storedProcedure\\("${p.sp}", params, connection\\)\\)\\.result\\(\\);`, 'g');
+        content = content.replace(regex, 
+            `var result = await (new storedProcedure("${p.sp}", params, connection)).result();
+            if (result && result[0] && result[0].${p.pk}_ && ${p.master}.Company_Id) {
+                await connection.query("UPDATE ${p.table} SET Company_Id=? WHERE ${p.pk}=?", [${p.master}.Company_Id, result[0].${p.pk}_]);
             }
-        }
-        let code = content.substring(startIdx, endIdx);
-        code = code.replace(/Quotation/g, 'Price_Request');
-        code = code.replace(/quotation/g, 'price_request');
-        code = code.replace(/Load_SalesPrice_RequestMaster/g, 'Load_Price_Request_Master');
-        appendedCode += code + '\n';
-    }
+            return result;`
+        );
+    });
 
-    content = content.replace(/module\.exports\s*=\s*router;/g, appendedCode + '\nmodule.exports = router;');
-    fs.writeFileSync('routes/Sales_Master.js', content);
-    console.log("Patched routes/Sales_Master.js");
+    fs.writeFileSync(file, content, 'utf8');
+    console.log("Patched " + file);
 }
 
-try {
-    patchModel();
-    patchRoutes();
-} catch (e) {
-    console.error(e);
-}
-
+patchModel('models/Sales_Master.js');

@@ -1801,11 +1801,7 @@ Save_Price_Response(Printstatus:number)
         return
     }
 
-    if(this.Price_Response_Master_.Supplier_Id == undefined || this.Price_Response_Master_.Supplier_Id == 0)
-    {
-        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Supplier is required',Type:"3"}});
-        return
-    }
+    // Supplier validation removed per user request
 
     if(this.Price_Response_Master_.EntryDate == undefined || this.Price_Response_Master_.EntryDate == null || this.Price_Response_Master_.EntryDate === '')
     {

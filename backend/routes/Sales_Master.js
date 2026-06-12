@@ -60,8 +60,42 @@ router.get('/Get_Proforma_History_ByReference/:ReferenceID_?', asyncHandler(asyn
     return sendSuccess(res, { data: rows });
 }));
 
-router.get('/Update_Quotation_Workflow_Status/:SalesQuotationMaster_Id_?/:StatusCode_?', asyncHandler(async function (req, res, next) {
-    const rows = await Sales_Master.Update_Quotation_Workflow_Status(req.params.SalesQuotationMaster_Id_, req.params.StatusCode_);
+router.post('/Get_Item_Name_Typeahead_For_Sales_Return', asyncHandler(async function (req, res, next) {
+    const rows = await Sales_Master.Get_Item_Name_Typeahead_For_Sales_Return(req.body.Sales_Master_Id_, req.body.Item_Name_);
+    return sendSuccess(res, { data: rows });
+}));
+
+router.post('/Save_Price_Request/', asyncHandler(async function (req, res, next) {
+    try {
+        if (!req.body) {
+            return res.status(400).json({ success: false, message: "Payload missing" });
+        }
+        if (req.body.Account_Party_Id === undefined || req.body.Account_Party_Id === null) req.body.Account_Party_Id = 0;
+        if (!req.body.EntryDate) {
+            return res.status(400).json({ success: false, message: "EntryDate is required" });
+        }
+        if (!req.body.Price_Request_Details || !Array.isArray(req.body.Price_Request_Details) || req.body.Price_Request_Details.length === 0) {
+            return res.status(400).json({ success: false, message: "Price_Request_Details array is required and cannot be empty" });
+        }
+        req.body.Price_Request_Details = req.body.Price_Request_Details.map(item => {
+            if (item.ItemId === undefined || item.ItemId === null || item.ItemId === "") item.ItemId = 0;
+            return item;
+        });
+        const resp = await Sales_Master.Save_Price_Request(req.body, { log: req.log });
+        return sendSuccess(res, { message: "Saved", data: Array.isArray(resp) ? resp : [resp] });
+    } catch (err) {
+        console.error("Save_Price_Request Error:", err);
+        return res.status(500).json({ success: false, message: err.message || "Internal Server Error" });
+    }
+}));
+
+router.get('/Search_Price_Request', asyncHandler(async function (req, res, next) {
+    const rows = await Sales_Master.Search_Price_Request(
+        req.query.Is_Date_Check_, req.query.From_Date_, req.query.To_Date_,
+        req.query.Customer_, req.query.QuotNo_, req.query.partNo_,
+        req.query.Item_Group_Id_, req.query.CurrencyDetails_Id_, req.query.User_Details_Id_,
+        req.query.User_Type_, req.query.Login_User_Id_
+    );
     return sendSuccess(res, { data: rows });
 }));
 
@@ -284,8 +318,15 @@ router.get('/Load_Sales_Return_Tax_Report', asyncHandler(async function (req, re
 }));
 
 router.post('/Save_Quotation/', asyncHandler(async function (req, res, next) {
-    const resp = await Sales_Master.Save_Quotation(req.body, { log: req.log });
-    return sendSuccess(res, { message: "Saved", data: Array.isArray(resp) ? resp : [resp] });
+    try {
+        const resp = await Sales_Master.Save_Quotation(req.body, { log: req.log });
+        return sendSuccess(res, { message: "Saved", data: Array.isArray(resp) ? resp : [resp] });
+    } catch (e) {
+        console.error("Save_Quotation Error:", e);
+        const fs = require('fs');
+        fs.appendFileSync('quotation_err.log', JSON.stringify({body: req.body, err: e.message, stack: e.stack}) + '\n');
+        throw e;
+    }
 }));
 
 router.get('/Search_Quotation', asyncHandler(async function (req, res, next) {
@@ -565,25 +606,6 @@ router.get('/Get_Item_Code_Typeahead_For_Sales_Return/:Sales_Master_Id_?/:Item_C
     return sendSuccess(res, { data: rows });
 }));
 
-router.post('/Get_Item_Name_Typeahead_For_Sales_Return', asyncHandler(async function (req, res, next) {
-    const rows = await Sales_Master.Get_Item_Name_Typeahead_For_Sales_Return(req.body.Sales_Master_Id_, req.body.Item_Name_);
-    return sendSuccess(res, { data: rows });
-}));
-
-router.post('/Save_Price_Request/', asyncHandler(async function (req, res, next) {
-    const resp = await Sales_Master.Save_Price_Request(req.body, { log: req.log });
-    return sendSuccess(res, { message: "Saved", data: Array.isArray(resp) ? resp : [resp] });
-}));
-
-router.get('/Search_Price_Request', asyncHandler(async function (req, res, next) {
-    const rows = await Sales_Master.Search_Price_Request(
-        req.query.Is_Date_Check_, req.query.From_Date_, req.query.To_Date_,
-        req.query.Customer_, req.query.QuotNo_, req.query.partNo_,
-        req.query.Item_Group_Id_, req.query.CurrencyDetails_Id_, req.query.User_Details_Id_,
-        req.query.User_Type_, req.query.Login_User_Id_
-    );
-    return sendSuccess(res, { data: rows });
-}));
 
 router.get('/Get_Price_Request_Details/:PriceRequestMaster_Id_?', asyncHandler(async function (req, res, next) {
     const rows = await Sales_Master.Get_Price_Request_Details(req.params.PriceRequestMaster_Id_);

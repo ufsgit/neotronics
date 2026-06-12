@@ -5,6 +5,7 @@ export class Sales_Master
 Sales_Master_Id:number;
 Account_Party_Id:number;
 User_Id:number;
+Company_Id: number;
 Bill_Date:Date;
 EntryDate:string;
 CurrencyId:number;

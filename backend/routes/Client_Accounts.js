@@ -215,15 +215,15 @@ router.get(
 	}
 );
 
-router.post("/Save_Company/", asyncHandler(async function (req, res, next) {
+router.post("/Save_Company/", function (req, res, next) {
 	Client_Accounts.Save_Company(req.body, function (err, rows) {
 		if (err) {
 			res.json(err);
 		} else {
-			return sendSuccess(res, { message: "Saved", data: rows });
+			res.json(rows);
 		}
 	});
-}));
+});
 
 router.get("/Search_Company/", function (req, res, next) {
 	try {

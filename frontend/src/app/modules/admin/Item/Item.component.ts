@@ -156,7 +156,31 @@ Search_Item_Group(event?)
 }
 display_Item_Group(Item_Group_: Item_Group)
 {        
+    if (typeof Item_Group_ === 'string') { return Item_Group_; }
     if (Item_Group_) { return Item_Group_.Item_Group_Name; }
+}
+
+Resolve_Item_Group()
+{
+    const selectedGroup: any = this.Item_Group_;
+    if (typeof selectedGroup !== 'string') {
+        return;
+    }
+
+    const typedGroup = selectedGroup.trim().toLowerCase();
+    if (typedGroup === '' || this.Item_Group_Data == undefined || this.Item_Group_Data == null) {
+        return;
+    }
+
+    const exactMatch = this.Item_Group_Data.find(group =>
+        group.Item_Group_Name != undefined &&
+        group.Item_Group_Name != null &&
+        group.Item_Group_Name.trim().toLowerCase() === typedGroup
+    );
+
+    if (exactMatch != undefined && exactMatch != null) {
+        this.Item_Group_ = exactMatch;
+    }
 }
 
 Search_Sale_Unit()
@@ -293,6 +317,7 @@ Save_Item()
 {
     debugger;
         this.Tax_Errors = {};
+        this.Resolve_Item_Group();
         if (this.Item_.Item_Name == undefined || this.Item_.Item_Name == null || this.Item_.Item_Name == "") {
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Name', Type: "3" } });
         }
@@ -400,11 +425,20 @@ else
         console.log("Item Save API Response:", res);
         
         if (res && res.success) {
-          const data = res.data;
-          const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
-          const result = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null);
+          let resultId: number = NaN;
+          try {
+            const data = res.data;
+            if (data && data[0] && data[0][0] && data[0][0].Item_Id_ !== undefined) {
+              resultId = Number(data[0][0].Item_Id_);
+            } else if (data && data[0] && data[0].Item_Id_ !== undefined) {
+              resultId = Number(data[0].Item_Id_);
+            } else if (data && data.Item_Id_ !== undefined) {
+              resultId = Number(data.Item_Id_);
+            }
+          } catch (e) {
+            resultId = NaN;
+          }
 
-          const resultId = result ? Number(result.Item_Id_) : 0;
           if (resultId > 0) {
             this.dialogBox.open(DialogBox_Component, {
               panelClass: 'Dialogbox-Class',

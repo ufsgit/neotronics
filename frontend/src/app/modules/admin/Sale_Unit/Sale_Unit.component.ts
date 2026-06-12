@@ -144,10 +144,30 @@ Save_Sale_Unit()
       })
     )
     .subscribe({
-      next: (Save_status) => {
+      next: (Save_status: any) => {
         console.log("Sale Unit Save API Response:", Save_status);
-        
-        if (!Save_status || !Save_status[0]) {
+
+        let resultId: number = NaN;
+        try {
+          if (Save_status && Save_status.data && Save_status.data[0]) {
+            const raw = Save_status.data[0];
+            if (raw[0] && raw[0][0] && raw[0][0].Sale_Unit_Id_ !== undefined) {
+              resultId = Number(raw[0][0].Sale_Unit_Id_);
+            } else if (raw[0] && raw[0].Sale_Unit_Id_ !== undefined) {
+              resultId = Number(raw[0].Sale_Unit_Id_);
+            } else if (raw.Sale_Unit_Id_ !== undefined) {
+              resultId = Number(raw.Sale_Unit_Id_);
+            }
+          } else if (Save_status && Save_status[0] && Save_status[0][0]) {
+            resultId = Number(Save_status[0][0].Sale_Unit_Id_);
+          } else if (Save_status && Save_status[0] && Save_status[0].Sale_Unit_Id_ !== undefined) {
+            resultId = Number(Save_status[0].Sale_Unit_Id_);
+          }
+        } catch (e) {
+          resultId = NaN;
+        }
+
+        if (isNaN(resultId)) {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',
             data: { Message: 'Invalid server response', Type: "2" }
@@ -155,7 +175,6 @@ Save_Sale_Unit()
           return;
         }
 
-        const resultId = Number(Save_status[0][0].Sale_Unit_Id_);
         if (resultId > 0) {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',

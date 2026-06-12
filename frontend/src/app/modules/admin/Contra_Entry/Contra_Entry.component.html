@@ -40,10 +40,9 @@
               </div>
     <div class="col-md-12 wle-dv-input-txt-nw-pymnt-vuchr-mod">
     <label class="col-md-4 label-down-alighn-supler-prhse-mstr-down">Amount <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span> </label>
-    <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox led-srch-sctn-nput-tb margin-inputs-edit-portion-jouranl-section" style="border: 1px solid lightgrey !important;
-              height: 41px;padding-left: 10px;">
-    <input matInput type="number" [(ngModel)]="Contra_Entry_.Amount" name="Journal_Entry_.Amount" >
-    </mat-form-field>
+    <div class="col-md-8 margin-lh-rh-to-crect-textbox led-srch-sctn-nput-tb margin-inputs-edit-portion-jouranl-section" style="border: 1px solid lightgrey !important;
+              height: 41px;padding-left: 10px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+    <input type="number" [(ngModel)]="Contra_Entry_.Amount" name="Journal_Entry_.Amount" style="border:none;outline:none;width:100%;background:transparent;" >
     </div>
 <!--     
     <div class="col-md-12">
@@ -57,21 +56,21 @@
     <div class="col-md-6 mrgn-crect-jornal-edit-section">         
         <div class="col-md-12 div-crct-alghn-dwn-ldgr-vuchr-tpe">
           <label class="col-md-4 label-down-alighn-adrs-tre-prhse-mstr-down">Date</label>
-          <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey !important;
-          height: 41px;padding-left: 10px;">
-                  <input matInput [matDatepicker]="dp" placeholder="" [(ngModel)]="Contra_Entry_.Date">
+          <div class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey !important;
+          height: 41px;padding-left: 10px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                  <input [matDatepicker]="dp" placeholder="" [(ngModel)]="Contra_Entry_.Date" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                   <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
                   <mat-datepicker #dp></mat-datepicker>
-                </mat-form-field>
+                </div>
           </div>
 
          <div class="col-md-12 div-crct-alghn-dwn-ldgr-vuchr-tpe">
           <label class="col-md-4 label-down-alighn-adrs-tre-prhse-mstr-down">Voucher No
             </label>
-          <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox led-srch-sctn-nput-tb margin-inputs-edit-portion-jouranl-section" 
-          style="border: 1px solid lightgrey !important; height: 41px;padding-left: 10px;"  >
-          <input matInput type="text" [(ngModel)]="Contra_Entry_.Voucher_No" name="Contra_Entry_.Voucher_No" >
-          </mat-form-field>
+          <div class="col-md-8 margin-lh-rh-to-crect-textbox led-srch-sctn-nput-tb margin-inputs-edit-portion-jouranl-section" 
+          style="border: 1px solid lightgrey !important; height: 41px;padding-left: 10px; display: flex; align-items: center; padding: 0 5px; background: #fff;"  >
+          <input type="text" [(ngModel)]="Contra_Entry_.Voucher_No" name="Contra_Entry_.Voucher_No" style="border:none;outline:none;width:100%;background:transparent;" >
+          </div>
           </div>
 
          <div class="col-md-12 wle-dv-input-txt-nw-pymnt-vuchr-mod">
@@ -82,6 +81,7 @@
           <input matInput type="text" maxlength="1000" [(ngModel)]="Contra_Entry_.PaymentModeName" name="Contra_Entry_.Description">
           </mat-form-field>
           </div>
+
 <div class="col-md-12 wle-dv-input-txt-nw-pymnt-vuchr-mod">
   <label class="col-md-4 label-down-alighn-adrs-tre-prhse-mstr-down">Description</label>
   <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox led-srch-sctn-nput-tb margin-inputs-edit-portion-jouranl-section" style="border: 1px solid lightgrey !important;
@@ -100,7 +100,7 @@
     <!-- </form> -->
     </div>
     </div>
-    </div>  
+    </div>
     </div>
     <div class="row" *ngIf="!Entry_View" style="padding: 0px 0px !important;background-color: #f1f1f1;">    
    <div class="row mb-1 card-body" 
@@ -122,26 +122,23 @@
         </div> 
           <div class="col-md-3 row mb-1 " style="align-items: center;" >
             <label class="col-md-4 mb-0 " style="text-align: end;">From</label>
-            <mat-form-field class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                    <input matInput [matDatepicker]="dp1" placeholder="" [(ngModel)]="Search_FromDate">
+            <div class="col-md-8 " style="height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                    <input [matDatepicker]="dp1" placeholder="" [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                     <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
                     <mat-datepicker #dp1></mat-datepicker>
-                  </mat-form-field>
+                  </div>
             </div>
           <div class="col-md-3 row mb-1" style="align-items: center;">
             <label class="col-md-4 mb-0 " style="text-align: end;">TO</label>
-            <mat-form-field class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                    <input matInput [matDatepicker]="dp2"  placeholder="" [(ngModel)]="Search_ToDate">
+            <div class="col-md-8 " style="height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                    <input [matDatepicker]="dp2"  placeholder="" [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                     <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
                     <mat-datepicker #dp2></mat-datepicker>
-                  </mat-form-field>
+                  </div>
             </div>
                 <div class="col-md-3 row mb-1 " style="align-items: center;" >
-                  <label class="col-md-6 mb-0 " style="text-align: end;" style="top: 0px !important;">Voucher No</label>
-                      <mat-form-field  class="col-md-6 " style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
+                  <label class="col-md-6 mb-0 " style="text-align: end;">Voucher No</label>
+                      <mat-form-field  class="col-md-6 " style="height: 40px; border: 1px solid #b1b1b1; border-radius: 8px;">
                       <input matInput type="number" [(ngModel)]="Voucher_No_search" name="Voucher_No_search">
                       </mat-form-field>
                       </div>  
@@ -149,10 +146,8 @@
              
   <div class="col-md-3 row mb-1" style="align-items: center;">
     <label class="col-md-4 mb-0 " style="text-align: end;">Account</label>
-    <input type="text" [matAutocomplete]="auto3" [(ngModel)]="ToAccount_Search" style="border: 1px solid lightgrey !important;
-    height: 41px;padding-left: 10px;" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Get_Client_Accounts_Typeahead($event)" 
-    class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;" />
+    <input type="text" [matAutocomplete]="auto3" [(ngModel)]="ToAccount_Search"
+    class="col-md-8 " style="height: 40px; border: 1px solid #b1b1b1; border-radius: 8px;" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Get_Client_Accounts_Typeahead($event)" />
     <mat-autocomplete #auto3="matAutocomplete" [displayWith]="display_FromAccount">
     <mat-option *ngIf="issLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
     <ng-container *ngIf="!issLoading">
@@ -228,4 +223,3 @@
     </div>
     </div>
     </div>
-    

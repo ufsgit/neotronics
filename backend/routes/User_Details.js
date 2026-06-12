@@ -10,6 +10,7 @@ router.post('/Save_User_Details/',async function(req,res,next)
       return res.send(resp);
       }
       catch(e){
+      require('fs').appendFileSync('save_error.log', JSON.stringify(e, Object.getOwnPropertyNames(e)) + '\n');
       return res.send(e);
       }
       });

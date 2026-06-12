@@ -102,6 +102,8 @@ const key = `abhrami/${formattedDate}_${file.name}`;
 		  accessKeyId: environment.aws.accessKeyId,
 		  secretAccessKey: environment.aws.secretAccessKey,
 		  region: environment.aws.region,
+		  endpoint: environment.aws.endpoint,
+		  signatureVersion: "v4"
 		});
   
 		const params = {

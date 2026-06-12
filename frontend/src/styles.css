@@ -1,2 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~ngx-toastr/toastr.css';
+
+/* Global Autocomplete Panel Customization */
+.mat-autocomplete-panel {
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 8px 0 !important;
+}
+
+.mat-option {
+    line-height: 48px !important;
+    height: 48px !important;
+    padding: 0 16px !important;
+    font-size: 14px;
+    color: #334155;
+    transition: background-color 0.2s ease, color 0.2s ease !important;
+    border-bottom: 1px solid #f8fafc;
+}
+
+.mat-option:hover, .mat-option.mat-active {
+    background-color: #f1f5f9 !important;
+    color: #0061f2 !important;
+    font-weight: 500;
+}
+
+.mat-option:last-child {
+    border-bottom: none;
+}

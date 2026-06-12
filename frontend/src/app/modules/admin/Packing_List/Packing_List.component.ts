@@ -1826,9 +1826,10 @@ export class Packing_ListComponent implements OnInit, AfterViewInit {
 
         this.issLoading = true;
         debugger
-        this.Sales_Master_Service_.Save_PackingDetails(this.packinglist_master_).subscribe(Save_status => {
+        this.Sales_Master_Service_.Save_PackingDetails(this.packinglist_master_).subscribe((res: any) => {
             debugger
-            if (Number(Save_status[0].PackingList_Master_Id_) > 0) {
+            let Save_status = res.success ? res.data : res;
+            if (Save_status && Save_status[0] && Number(Save_status[0].PackingList_Master_Id_) > 0) {
                 this.packinglist_master_.PackingList_Master_Id = Save_status[0].PackingList_Master_Id_;
                 this.PackingList_Master_Id_Edit = this.packinglist_master_.PackingList_Master_Id
                 this.packinglist_master_.PackingList_No = Save_status[0].PackingList_No_;

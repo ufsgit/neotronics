@@ -2,18 +2,38 @@ var express = require('express');
 var router = express.Router();
 var requirementmaster = require('../models/requirementmaster');
 const asyncHandler = require("../helpers/async-handler");
-const { sendSuccess } = require("../helpers/api-response");
+const { sendSuccess, sendFailure } = require("../helpers/api-response");
 const { generatePdf } = require("../helpers/pdf-generator");
 const { getRequirementTemplate } = require("../templates/requirement-template");
 
 router.post('/Save_Requirement/', asyncHandler(async function(req, res, next) {
     try {
-        require('fs').writeFileSync('c:/Users/nanda/OneDrive/Desktop/UFS PROJECT/netronics/req_body.json', JSON.stringify(req.body));
+        if (!req.body) {
+            return sendFailure(res, { status: 400, message: "Payload missing" });
+        }
+        if (req.body.Account_Party_Id === undefined || req.body.Account_Party_Id === null) {
+            return sendFailure(res, { status: 400, message: "Account_Party_Id is required" });
+        }
+        if (!req.body.EntryDate) {
+            return sendFailure(res, { status: 400, message: "EntryDate is required" });
+        }
+        if (!req.body.Requirement_Details || !Array.isArray(req.body.Requirement_Details) || req.body.Requirement_Details.length === 0) {
+            return sendFailure(res, { status: 400, message: "Requirement_Details array is required and cannot be empty" });
+        }
+        
+        for (let i = 0; i < req.body.Requirement_Details.length; i++) {
+            const item = req.body.Requirement_Details[i];
+            if (item.ItemId === undefined || item.ItemId === null || item.ItemId === "") {
+                item.ItemId = 0;
+            }
+        }
+        
         const resp = await requirementmaster.Save_Requirement(req.body, { log: req.log });
         return sendSuccess(res, { message: "Saved", data: resp });
     } catch (err) {
-        require('fs').writeFileSync('c:/Users/nanda/OneDrive/Desktop/UFS PROJECT/netronics/req_error.json', JSON.stringify({ message: err.message, stack: err.stack, code: err.code }));
-        throw err;
+        console.error("Save_Requirement Error:", err);
+        const message = err && (err.sqlMessage || err.message) ? (err.sqlMessage || err.message) : "Internal Server Error";
+        return sendFailure(res, { status: 500, message });
     }
 }));
 

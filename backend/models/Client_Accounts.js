@@ -375,7 +375,8 @@ var Client_Accounts = {
 				"@PANNO_ :=?," +
 				"@Note_ :=?,"+
 				"@Doc_Photo_ :=?,"+
-				"@File_Path_ :=?)",
+				"@File_Path_ :=?,"+
+				"@file_url_ :=?)",
 			[
 				Company_.Company_Id,
 				Company_.Company_Name,
@@ -392,10 +393,11 @@ var Client_Accounts = {
 				Company_.Code,
 				Company_.GSTNO,
 				Company_.CINO,
-				Company_.PANNO,
-				Company_.Note,
-				Company_.Doc_Photo,
-				Company_.File_Path
+				Company_.PANNO || '',
+				Company_.Note || '',
+				Company_.Doc_Photo || '',
+				Company_.File_Path || '',
+				Company_.file_url || ''
 			],
 			callback
 		);

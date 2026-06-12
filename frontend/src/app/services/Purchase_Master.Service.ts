@@ -379,12 +379,14 @@ uploadFile(file){
 		const currentDate = new Date();
 const formattedDate = currentDate.toISOString().replace(/[-:.TZ]/g, "").replace("T", "");
 console.log(formattedDate);
-const key = `https://ufsnabeelphotoalbum.s3.us-east-2.amazonaws.com/abhrami/${formattedDate}_${file.name}`;
+const key = `abhrami/${formattedDate}_${file.name}`;
   
 		const bucket = new S3({
 		  accessKeyId: environment.aws.accessKeyId,
 		  secretAccessKey: environment.aws.secretAccessKey,
 		  region: environment.aws.region,
+		  endpoint: environment.aws.endpoint,
+		  signatureVersion: "v4"
 		});
   
 		const params = {

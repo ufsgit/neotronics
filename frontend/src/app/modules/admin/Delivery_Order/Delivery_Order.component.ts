@@ -1885,13 +1885,13 @@ Final_Amounts()
     console.log('this.Delivery_Order_Details_Data.length :',this.Delivery_Order_Details_Data.length);
     for(var i = 0; i< this.Delivery_Order_Details_Data.length ; i++)
     {
-        this.Delivery_Order_Master_.TotalAmount = Number(this.Delivery_Order_Master_.TotalAmount) + Number(this.Delivery_Order_Details_Data[i].UnitPrice) * Number(this.Delivery_Order_Details_Data[i].Quantity);
+        this.Delivery_Order_Master_.TotalAmount = this.safeNumber(Number(this.Delivery_Order_Master_.TotalAmount)) + this.safeNumber(Number(this.Delivery_Order_Details_Data[i].UnitPrice)) * this.safeNumber(Number(this.Delivery_Order_Details_Data[i].Quantity));
 
-        this.Tot_discount = Number(this.Tot_discount)+  (Number(this.Delivery_Order_Details_Data[i].Unit_Discount) * Number(this.Delivery_Order_Details_Data[i].Quantity) );
-        this.Delivery_Order_Master_.Basic_Discount = this.Delivery_Order_Master_.Basic_Discount + Number(this.Delivery_Order_Details_Data[i].Item_Discount_Amount)
+        this.Tot_discount = this.safeNumber(Number(this.Tot_discount)) + (this.safeNumber(Number(this.Delivery_Order_Details_Data[i].Unit_Discount)) * this.safeNumber(Number(this.Delivery_Order_Details_Data[i].Quantity)));
+        this.Delivery_Order_Master_.Basic_Discount = this.safeNumber(Number(this.Delivery_Order_Master_.Basic_Discount)) + this.safeNumber(Number(this.Delivery_Order_Details_Data[i].Item_Discount_Amount));
         
     }
-    this.Delivery_Order_Master_.TotalAmount = Number(this.Delivery_Order_Master_.TotalAmount.toFixed(3));
+    this.Delivery_Order_Master_.TotalAmount = this.safeNumber(Number(this.Delivery_Order_Master_.TotalAmount.toFixed(3)));
     this.Tot_discount = Number(this.Tot_discount.toFixed(3));
     if(Number(this.Delivery_Order_Master_.Discount_Description)>0){
         this.Delivery_Order_Master_.Additional_Discount = Number(this.Delivery_Order_Master_.TotalAmount) * (Number(this.Delivery_Order_Master_.Discount_Description)/ 100);
@@ -1907,7 +1907,7 @@ Final_Amounts()
     }else{
         this.Delivery_Order_Master_.charge1_Amount =  0;
     }
-    this.Total = Number(this.Delivery_Order_Master_.TotalAmount)-Number(this.Delivery_Order_Master_.TotalDiscount) + this.safeNumber(Number(this.Delivery_Order_Master_.charge2_Amount)) + Number(this.Delivery_Order_Master_.charge1_Amount)
+    this.Total = this.safeNumber(Number(this.Delivery_Order_Master_.TotalAmount)) - this.safeNumber(Number(this.Delivery_Order_Master_.TotalDiscount)) + this.safeNumber(Number(this.Delivery_Order_Master_.charge2_Amount)) + this.safeNumber(Number(this.Delivery_Order_Master_.charge1_Amount));
     console.log('this.Total: ', this.Total);
     this.Total = Number(this.Total.toFixed(3))
     this.Delivery_Order_Master_.VAT_Amount = 0;
@@ -2320,7 +2320,7 @@ debugger
     .subscribe({
         next: (response: any) => {
             if (response.success && response.data) {
-                const saveResult = response.data;
+                const saveResult = Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : response.data;
                 if (Number(saveResult.DeliveryOrderMaster_Id_) > 0) {
                     this.Delivery_Order_Master_.DeliveryOrderMaster_Id = saveResult.DeliveryOrderMaster_Id_;
                     this.Delivery_Order_Master_.DONo = saveResult.DONo_;

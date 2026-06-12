@@ -32,20 +32,20 @@
                     <!-- Date Range (From - To) -->
             <div class="col-md-3 row mb-1" style="align-items: center;">
                 <label class="col-md-4 mb-0" style="text-align: end;">From</label>
-                <mat-form-field class="col-md-8" style="height: 40px; border: 1px solid #b1b1b1; border-radius: 8px;">
-                    <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate" [(ngModel)]="Search_FromDate">
+                <div class="col-md-8" style="height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                    <input [matDatepicker]="dp1" placeholder="" name="Search_FromDate" [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                     <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
                     <mat-datepicker #dp1></mat-datepicker>
-                </mat-form-field>
+                </div>
             </div>
         
             <div class="col-md-3 row mb-1" style="align-items: center;">
                 <label class="col-md-4 mb-0" style="text-align: end;">To</label>
-                <mat-form-field class="col-md-8" style="height: 40px; border: 1px solid #b1b1b1; border-radius: 8px;">
-                    <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder="" [(ngModel)]="Search_ToDate">
+                <div class="col-md-8" style="height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                    <input [matDatepicker]="dp2" name="Search_ToDate" placeholder="" [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                     <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
                     <mat-datepicker #dp2></mat-datepicker>
-                </mat-form-field>
+                </div>
             </div>
         
             <!-- Invoice Number Section -->
@@ -161,7 +161,7 @@
                                             vertical-align: middle;">{{Sales_Master["FormattedPurchaseDate"]}}</td>
                                           <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["NetTotal"]}}</td>
+                                            vertical-align: middle;">{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</td>
                                           <td>
                                               <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                   [hidden]="Sales_Master_Edit==false"
@@ -249,7 +249,7 @@
                   </div>
                   <div class="col-md-12 mb-1">
                       <label
-                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections"></label>
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address</label>
                       <input type="text" [(ngModel)]="Address1" readonly
                           class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                   </div>
@@ -273,6 +273,30 @@
                 </div>
                   <div class="col-md-12 mb-1">
                       <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Phone</label>
+                      <input type="text" [(ngModel)]="Purchase_Master_.Mobile" readonly
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                  </div>
+                  <div class="col-md-12 mb-1">
+                      <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Email</label>
+                      <input type="text" [(ngModel)]="Customer_.Email" readonly
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                  </div>
+                  <div class="col-md-12 mb-1">
+                      <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">WhatsApp</label>
+                      <input type="text" [(ngModel)]="Customer_.Mobile" readonly
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                  </div>
+                  <div class="col-md-12 mb-1">
+                      <label
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">GST No</label>
+                      <input type="text" [(ngModel)]="Purchase_Master_.GSTNo" readonly
+                          class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                  </div>
+                  <div class="col-md-12 mb-1">
+                      <label
                           class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">PO Number</label>
                       <input type="text" [(ngModel)]="Purchase_Master_.Ponumber" 
                           class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
@@ -294,15 +318,15 @@
               <div class="col-md-6 croct-float-purchase-master-section">
                   <div class="col-md-12 mb-1">
                       <label
-                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Purchase Date</label>
-                      <mat-form-field
+                          class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date</label>
+                      <div
                           class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                          style="height: 47px !important">
-                          <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate"
-                              [(ngModel)]="Purchase_Master_.PurchaseDate">
+                          style="height: 47px !important display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                          <input [matDatepicker]="dpdate" placeholder="" name="EntryDate"
+                              [(ngModel)]="Purchase_Master_.PurchaseDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                           <mat-datepicker-toggle matSuffix [for]="dpdate" ></mat-datepicker-toggle>
                           <mat-datepicker #dpdate></mat-datepicker>
-                      </mat-form-field>
+                      </div>
                   </div>
                   <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
                       <label
@@ -343,7 +367,7 @@
                   </div>
 
                   <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                    <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Supplier Ref No
+                    <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Ref No
                     </label>
                     <input type="text" name="Supplier_Ref_No" [(ngModel)]="Purchase_Master_.Supplier_Ref_No"
                         class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
@@ -360,7 +384,7 @@
                                       <div
                                           class="col-md-4 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
                                           <label
-                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Part Number
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item Name
                                               <span
                                               style="color:#ef071e; ">*</span>
                                             </label>
@@ -411,6 +435,36 @@
                                               </mat-autocomplete>
                                       </div>
                                       <div
+                                          class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Model</label>
+                                          <input type="text" [matAutocomplete]="autoModel" [(ngModel)]="Purchase_Details_.Model"
+                                              (click)="Search_Model_Typeahead($event)"
+                                              (input)="Search_Model_Typeahead($event)"
+                                              style="padding-left: 5px !important;"
+                                              class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                          <mat-autocomplete #autoModel="matAutocomplete" [displayWith]="displayFnModel">
+                                              <mat-option *ngFor="let model of ModelData" [value]="model">
+                                                  <span (click)="selectModel(model)">{{model.Model_Name}}</span>
+                                              </mat-option>
+                                          </mat-autocomplete>
+                                      </div>
+                                      <div
+                                          class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Brand</label>
+                                          <input type="text" [matAutocomplete]="autoBrand" [(ngModel)]="Purchase_Details_.Brand"
+                                              (click)="Search_Brand_Typeahead($event)"
+                                              (input)="Search_Brand_Typeahead($event)"
+                                              style="padding-left: 5px !important;"
+                                              class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                          <mat-autocomplete #autoBrand="matAutocomplete" [displayWith]="displayFnBrand">
+                                              <mat-option *ngFor="let brand of BrandData" [value]="brand">
+                                                  <span (click)="selectBrand(brand)">{{brand.Brand_Name}}</span>
+                                              </mat-option>
+                                          </mat-autocomplete>
+                                      </div>
+                                      <div
                                           class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
                                           <label
                                               class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Uom
@@ -439,7 +493,7 @@
                                       <div
                                           class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
                                           <label
-                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Purchase Rate
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Sales Rate
                                               <span
                                                   style="color:#ef071e; ">*</span></label>
                                           <input type="number" [(ngModel)]="Purchase_Details_.UnitPrice" (ngModelChange)="Calculate_Purchase_Details_Amount()"
@@ -451,14 +505,46 @@
                                       <div
                                       class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
                                       <label
-                                          class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Sale Rate
+                                          class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Amount
                                           <span
                                                   style="color:#ef071e; "></span></label>
-                                      <input type="number" [(ngModel)]="Purchase_Details_.SaleRate" (ngModelChange)="Calculate_Purchase_Details_Amount()"
+                                      <input type="number" [(ngModel)]="Purchase_Details_.Amount" readonly
                                       (keyup.enter)="Plus_Purchase_Details($event)"
-                                          style="padding-left: 5px !important;" id="Purchase_Details_.SaleRate"  name="Purchase_Details_.SaleRate"
+                                          style="padding-left: 5px !important;" id="Purchase_Details_.Amount"  name="Purchase_Details_.Amount"
                                           class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
                                   </div>
+                                      <div
+                                          class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">CGST %</label>
+                                          <input type="number" [(ngModel)]="Purchase_Details_.CGST" (ngModelChange)="Calculate_Purchase_Details_Amount()"
+                                              style="padding-left: 5px !important;"
+                                              class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                      </div>
+                                      <div
+                                          class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">SGST %</label>
+                                          <input type="number" [(ngModel)]="Purchase_Details_.SGST" (ngModelChange)="Calculate_Purchase_Details_Amount()"
+                                              style="padding-left: 5px !important;"
+                                              class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                      </div>
+                                      <div
+                                          class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">CGST Amt</label>
+                                          <input type="number" [(ngModel)]="Purchase_Details_.CGST_AMT" readonly
+                                              style="padding-left: 5px !important;"
+                                              class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                      </div>
+                                      <div
+                                          class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
+                                          <label
+                                              class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">SGST Amt</label>
+                                          <input type="number" [(ngModel)]="Purchase_Details_.SGST_AMT" readonly
+                                              style="padding-left: 5px !important;"
+                                              class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                      </div>
                                 
                                       
                                       <div
@@ -495,26 +581,34 @@
                                               <table class="table table-hover table-for-sale-search-section-diary">
                                                   <thead class="bg-col-stock-add-diary">
                                                       <th>No </th>
-                                                      <th>Part Number</th>
-                                                      <th>Description </th>
+                                                      <th>Item Name</th>
+                                                      <th>Model</th>
+                                                      <th>Brand</th>
                                                       <th>Uom</th>
                                                       <th>Qty</th>
-                                                      <th>Purchase Rate</th>
-                                                      <th>Cost</th>
-                                                      <th>Sale Rate</th>
-                                                      <th>Total Price</th>
+                                                      <th>Sales Rate</th>
+                                                      <th>Amount</th>
+                                                      <th>CGST %</th>
+                                                      <th>SGST %</th>
+                                                      <th>CGST Amount</th>
+                                                      <th>SGST Amount</th>
+                                                      <th>Total</th>
                                                       <th></th>
                                                   </thead>
                                                   <tbody class="bk_tb_bg"
                                                       *ngFor="let Sales_Details of Purchase_DetailsData; let i = index">
                                                       <td>{{i+1}}</td>
-                                                      <td>{{Sales_Details["Item_Code"]}}</td>
                                                       <td [id]="'cell' + (i + 1)">{{Sales_Details["ItemName"]}}</td>
+                                                      <td>{{Sales_Details["Model"]}}</td>
+                                                      <td>{{Sales_Details["Brand"]}}</td>
                                                       <td>{{Sales_Details["UnitName"]}}</td>
                                                       <td>{{Sales_Details["Quantity"] }}</td>
                                                       <td>{{Sales_Details["UnitPrice"] | number: '1.3-3'}}</td>
-                                                      <td>0</td>
-                                                      <td>{{Sales_Details["SaleRate"] | number: '1.3-3'}}</td>
+                                                      <td>{{Sales_Details["Amount"] | number: '1.3-3'}}</td>
+                                                      <td>{{Sales_Details["CGST"] | number: '1.3-3'}}</td>
+                                                      <td>{{Sales_Details["SGST"] | number: '1.3-3'}}</td>
+                                                      <td>{{Sales_Details["CGST_AMT"] | number: '1.3-3'}}</td>
+                                                      <td>{{Sales_Details["SGST_AMT"] | number: '1.3-3'}}</td>
                                                       <td>{{Sales_Details["NetValue"] | number: '1.3-3'}}</td>
                                                       <td style="width: 75px;">
                                                         <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
@@ -568,20 +662,19 @@
                                   <div class="col-md-4">
                                       <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
                                           <label
-                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Make</label>
-                                          <input type="text"  [(ngModel)]="Purchase_Master_.Brand"
-                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                                              >
-                                      </div>
-                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Price
-                                              Basis</label>
-                                          <input type="text" [(ngModel)]="Purchase_Master_.PriceBasis"
+                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Terms & Condition</label>
+                                          <input type="text"  [(ngModel)]="Purchase_Master_.Description1"
                                               class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
                                               >
                                       </div>
                                       <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
                                           <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment Term</label>
+                                          <input type="text" [(ngModel)]="Purchase_Master_.PaymentTerms"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                              >
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment Days</label>
                                           <input type="number" [(ngModel)]="Purchase_Master_.PaymentTermValue" style="width: 12%;border: 1px solid lightgrey;
                                           border-radius: 5px;padding-left: 5px !important;height: 36px;"
                                               class="mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
@@ -679,21 +772,29 @@
                                               >
                                       </div>
                                       <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total Discount</label>
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Sub Total</label>
+                                          <input type="text"[ngModel]="Tot_Amount  | number:'1.3-3'"
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly>
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Discount</label>
                                           <input type="text"[ngModel]="Purchase_Master_.TotalDiscount  | number:'1.3-3'"
                                               class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly>
                                       </div>
                                       <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
                                           <label
-                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total</label>
+                                              class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Taxable Amount</label>
                                           <input type="text" [ngModel]="Purchase_Master_.TotalAmount  | number:'1.3-3'"
                                               class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly>
                                       </div>
                                       <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">VAT
-                                              Amount</label>
-                                          <input type="text" [ngModel]="Purchase_Master_.VAT_Amount  | number:'1.3-3'" 
-                                          (ngModelChange)="Final_Amounts()" readonly
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total CGST</label>
+                                          <input type="text" [ngModel]="Purchase_Master_.TotalCGST  | number:'1.3-3'" readonly
+                                              class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                      </div>
+                                      <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total SGST</label>
+                                          <input type="text" [ngModel]="Purchase_Master_.TotalSGST  | number:'1.3-3'" readonly
                                               class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                                       </div>
 
@@ -706,8 +807,7 @@
                                     </div>
 
                                       <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
-                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">NET
-                                              Amount</label>
+                                          <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Total</label>
                                           <input type="text"   [ngModel]="Purchase_Master_.NetTotal  | number:'1.3-3'"
                                               class="mrgn-crct-input-text-div-tre-prt-sles  mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly>
                                       </div>
@@ -1229,3 +1329,4 @@
         </div>
     </div> -->
   </div>
+

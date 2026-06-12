@@ -3,6 +3,7 @@ export class Price_Response_Master {
     Price_Response_Master_Id: number;
     Account_Party_Id: number;
     User_Id: number;
+    Company_Id: number;
     EntryDate: string;
     Price_RequestNo: string;
     CurrencyId: number;
@@ -97,6 +98,7 @@ export class Price_Response_Master {
     Supplier_Address: string;
     Response_No: string;
     Taxable_Amount: number;
+    FormattedEntryDate: string;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);

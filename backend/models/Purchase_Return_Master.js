@@ -105,7 +105,16 @@ Save_Purchase_Return_Master: function (Purchase_Data, callback)
        Purchase_Value_document_Value_ = 1;
        console.log("Purchase_ : ", Purchase_);
         return db.query("CALL Save_Purchase_Return_Master(@Purchase_:=?," + "@Purchase_Value_ :=?)", 
-        [Purchase_,Purchase_Value_],callback); 
+        [Purchase_,Purchase_Value_], function(err, result) {
+            if (err) return callback(err);
+            if (result && result[0] && result[0][0] && result[0][0].Purchase_Return_Master_Id_ && Purchase_Data.Company_Id) {
+                db.query("UPDATE purchase_return_master SET Company_Id=? WHERE Purchase_Return_Master_Id=?", [Purchase_Data.Company_Id, result[0][0].Purchase_Return_Master_Id_], function() {
+                    callback(err, result);
+                });
+            } else {
+                callback(err, result);
+            }
+        });
 },
 
  Delete_purchase_return_master:function(purchase_return_master_Id_,callback)

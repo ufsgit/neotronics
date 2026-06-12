@@ -5,124 +5,90 @@
 <div class="main-content" style="padding: 0px 0px !important;background-color: #f1f1f1;">
     <div class="container-fluid" #topDiv1>
         <div class="row col-md-12  mb-0" *ngIf="!Entry_View">
-            <div class="row mb-1 card-body" style="align-items: center;
-             border: 0;
-             border-radius: 6px;
-             margin-left: 2px;
-             color: #333333;
-             background: #fff;
-             width: 100%;padding: 3px;background-color: #f1f1f1;
-             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-         ">
-                <div class="col-md-1 row mb-1" style="align-items: center;">
-
-                    <label class="col-md-6 mb-0">Date</label>
-                    <div class="checkbox-to-crect-sales-search-section">
-                        <div class="form-check uper-dte-lbel-sales-sctn-new">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" name="Date_checks"
-                                    [(ngModel)]="Date_Check" />
-                                <span class="form-check-sign"
-                                    style="left: 15px !important ; top: -13px !important;"><span
-                                        class="check"></span></span>
+            <div class="row mb-3 card-body" style="align-items: flex-end; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%; padding: 15px; background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);">
+                <div class="row w-100 mb-3" style="margin-left: 0;">
+                    <!-- Date Checkbox -->
+                    <div class="col-md-1" style="display: flex; flex-direction: column; justify-content: center; height: 60px;">
+                        <label class="mb-1" style="font-weight: 500; font-size: 13px;">Date</label>
+                        <div class="form-check uper-dte-lbel-sales-sctn-new m-0 p-0" style="margin-top: 5px !important;">
+                            <label class="form-check-label m-0">
+                                <input type="checkbox" class="form-check-input" name="Date_checks" [(ngModel)]="Date_Check" />
+                                <span class="form-check-sign" style="left: 0px !important; top: -10px !important;"><span class="check"></span></span>
                             </label>
                         </div>
                     </div>
 
-                </div>
-                <div class="col-md-3 row mb-1 " style="align-items: center;">
-                    <label class="col-md-4 mb-0 " style="text-align: end;">From</label>
-                    <mat-form-field class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                        <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
-                            [(ngModel)]="Search_FromDate">
-                        <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
-                        <mat-datepicker #dp1></mat-datepicker>
-                    </mat-form-field>
-                </div>
-                <div class="col-md-3 row mb-1" style="align-items: center;">
+                    <!-- From Date -->
+                    <div class="col-md-3">
+                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">From Date</label>
+                        <div style="background: #fff; border: 1px solid #b1b1b1; border-radius: 8px; height: 40px; display: flex; align-items: center; padding: 0 5px;">
+                            <input [matDatepicker]="dp1" placeholder="DD/MM/YYYY" name="Search_FromDate" [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
+                            <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                            <mat-datepicker #dp1></mat-datepicker>
+                        </div>
+                    </div>
 
-                    <label class="col-md-4 mb-0 " style="text-align: end;">To</label>
-                    <mat-form-field class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                        <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
-                            [(ngModel)]="Search_ToDate">
-                        <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
-                        <mat-datepicker #dp2></mat-datepicker>
-                    </mat-form-field>
-                </div>
+                    <!-- To Date -->
+                    <div class="col-md-3">
+                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">To Date</label>
+                        <div style="background: #fff; border: 1px solid #b1b1b1; border-radius: 8px; height: 40px; display: flex; align-items: center; padding: 0 5px;">
+                            <input [matDatepicker]="dp2" name="Search_ToDate" placeholder="DD/MM/YYYY" [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
+                            <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                            <mat-datepicker #dp2></mat-datepicker>
+                        </div>
+                    </div>
 
-                <div class="col-md-5 row mb-1" style="align-items: center;">
-                    <label class="col-md-3 mb-0" style="text-align: end;">Customer</label>
-                    <input type="text" [matAutocomplete]="auto_Customer" [(ngModel)]="Search_Customer" name="Customer"
-                        (click)="Search_Customer_Typeahead($event)" (input)="Search_Customer_Typeahead($event)"
-                        class="col-md-9 " style="height: 40px;border: 1px solid #b1b1b1;">
-                    <mat-autocomplete #auto_Customer="matAutocomplete" [displayWith]="display_Customer">
-                        <mat-option *ngIf="isLoading">
-                            <mat-spinner diameter="20"></mat-spinner>
-                        </mat-option>
-                        <ng-container *ngIf="!isLoading">
-                            <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
-                                <span>{{Customer_T.Client_Accounts_Name}}</span>
-                            </mat-option>
-                        </ng-container>
-                    </mat-autocomplete>
+                    <!-- Customer / Supplier -->
+                    <div class="col-md-5">
+                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">Customer</label>
+                        <input type="text" [matAutocomplete]="auto_Customer" [(ngModel)]="Search_Customer" name="Customer" (click)="Search_Customer_Typeahead($event)" (input)="Search_Customer_Typeahead($event)" style="width: 100%; height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; padding: 0 10px; background: #fff;">
+                        <mat-autocomplete #auto_Customer="matAutocomplete" [displayWith]="display_Customer">
+                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                            <ng-container *ngIf="!isLoading">
+                                <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
+                                    <span>{{Customer_T.Client_Accounts_Name}}</span>
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </div>
                 </div>
 
-                <div class="col-md-3 row  mb-1" style="align-items: center;">
-                    <label class="col-md-6 mb-0" style="text-align: end;">Requirement No</label>
-                    <input type="text" class="col-md-6 " [(ngModel)]="QuotNo" [ngModelOptions]="{standalone: true}"
-                        style="height: 40px;border: 1px solid #b1b1b1;">
+                <div class="row w-100" style="margin-left: 0; align-items: flex-end;">
+                    <!-- Document No -->
+                    <div class="col-md-3">
+                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">Requirement No</label>
+                        <input type="text" [(ngModel)]="QuotNo" [ngModelOptions]="{standalone: true}" style="width: 100%; height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; padding: 0 10px; background: #fff;">
+                    </div>
+
+                    <!-- Item / Part No -->
+                    <div class="col-md-2" >
+                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">Item</label>
+                        <input type="text" [(ngModel)]="partNo" [ngModelOptions]="{standalone: true}" style="width: 100%; height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; padding: 0 10px; background: #fff;">
+                    </div>
+
+                    <!-- Group -->
+                    <div class="col-md-3">
+                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">Group</label>
+                        <select [(ngModel)]="Item_Group_Search" id="Item_Group_Search" name="Item_Group_Search" required style="width: 100%; height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; padding: 0 10px; background: #fff;">
+                            <option *ngFor="let itemGroup of itemGroupData" [ngValue]="itemGroup">{{itemGroup.Item_Group_Name}}</option>
+                        </select>
+                    </div>
+
+                    
+
+                    <!-- Buttons -->
+                    <div class="col-md-4" style="display: flex; gap: 10px; justify-content: flex-end; align-items: flex-end; height: 60px;">
+                        <button mat-raised-button type="button" (click)="Search_Requirement()" class="btn btn-danger m-0" style="height: 40px; border-radius: 8px; padding: 0 20px;">
+                            <i class="fa fa-search" aria-hidden="true" style="margin-right: 5px;"></i> Search
+                        </button>
+                        <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger m-0" style="height: 40px; border-radius: 8px; padding: 0 15px;">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                        <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true" class="btn btn-primary m-0" style="background-color: #3e6bdd; color: white; height: 40px; border-radius: 8px; padding: 0 20px;">
+                            Export
+                        </button>
+                    </div>
                 </div>
-
-                <div class="col-md-2 row mb-1" style="align-items: center;">
-                    <label class="col-md-6 mb-0  " style="text-align: end;">Item</label>
-                    <input type="text" class="col-md-6 " style="height: 40px;border: 1px solid #b1b1b1;"
-                        [(ngModel)]="partNo" [ngModelOptions]="{standalone: true}">
-                </div>
-
-                <div class="col-md-3 row  mb-1" style="align-items: center;">
-                    <label class="col-md-4 mb-0 " style="text-align: end;">Group</label>
-                    <select [(ngModel)]="Item_Group_Search" id="Item_Group_Search" name="Item_Group_Search" required
-                        class="col-md-8 " style="height: 40px;border: 1px solid #b1b1b1;">
-                        <option *ngFor="let itemGroup of itemGroupData" [ngValue]="itemGroup">
-                            {{itemGroup.Item_Group_Name}}
-                        </option>
-                    </select>
-                </div>
-
-                <!-- <div class="col-md-2 row  mb-1" style="align-items: center;">
-                    <label class="col-md-5 mb-0 " style="text-align: end;">Currency</label>
-                    <select [(ngModel)]="Currency_Search" id="Currency_Search" name="Currency_Search" required
-                        class="col-md-7 " style="height: 40px;border: 1px solid #b1b1b1;">
-                        <option *ngFor="let curr of currencyData" [ngValue]="curr">
-                            {{curr?.CurrecnyName}}
-                        </option>
-                    </select> -->
-                <!-- </div> -->
-
-                <div class="col-md-3 row mb-1" style="align-items: center; justify-content: center;">
-                    <!-- <button mat-raised-button type="button" class="btn btn-danger pull-right mt-0 mb-0"  (click)="Print_Search_Click()">
-                                        <i class="fa fa-print" aria-hidden="true"></i>
-                                    </button> -->
-                    <button mat-raised-button type="button" (click)="Search_Requirement()"
-                        style="margin-top: -1px !important;"
-                        class="btn btn-danger mb-0 pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
-                        <i class="fa fa-search" aria-hidden="true"></i>
-                    </button>
-                    <button mat-raised-button type="button" (click)="Create_New()" style="margin-top: -1px !important;"
-                        class="btn btn-danger  mb-0 pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                    </button>
-
-                    <button style="background-color: #3e6bdd; color: white" (click)="Export()"
-                        [hidden]="Export_View == true" mat-raised-button type="button"
-                        class="mt-0  mb-0  btn btn-danger pull-right">
-                        Export
-                    </button>
-
-                </div>
-
                 <div class="clearfix"></div>
             </div>
 
@@ -162,7 +128,7 @@
                                             vertical-align: middle;">{{Sales_Master["FormattedEntryDate"]}}</td>
                                 <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["NetTotal"]}}</td>
+                                            vertical-align: middle;">{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</td>
                                 <td>
                                     <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                         [hidden]="Sales_Master_Edit==false" aria-describedby="cdk-describedby-message-0"
@@ -333,13 +299,19 @@
                     </div>
                 </div>
                 <div class="col-md-6 croct-float-purchase-master-section">
-                    <div class="col-md-12 mb-1" *ngIf="showDate">
+                    <div class="col-md-12 mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Branch/Company <span style="color:#ef071e; ">*</span></label>
+                        <select class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn form-control-standard" [(ngModel)]="Requirement_Master_.Company_Id" (ngModelChange)="Company_Dropdown_Change()" name="Company_Id">
+                            <option *ngFor="let c of Company_Data" [ngValue]="c.Company_Id">{{c.Company_Name}}</option>
+                        </select>
+                    </div>
+<div class="col-md-12 mb-1" *ngIf="showDate">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date <span style="color:#ef071e; ">*</span></label>
-                        <mat-form-field class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 47px !important">
-                            <input matInput [matDatepicker]="dpdate" placeholder="" name="EntryDate" [(ngModel)]="Requirement_Master_.EntryDate">
+                        <div class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 47px !important display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                            <input [matDatepicker]="dpdate" placeholder="" name="EntryDate" [(ngModel)]="Requirement_Master_.EntryDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                             <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
                             <mat-datepicker #dpdate></mat-datepicker>
-                        </mat-form-field>
+                        </div>
                     </div>
                     <div class="col-md-12 wole-div-margin-to-down-proper mb-1" *ngIf="showReferenceNo">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Reference No</label>
@@ -480,9 +452,9 @@
                                                     <th>Item </th>
                                                     <th>Description</th>
                                                     <th>Model</th>
-                                                    <th>Brand</th>
                                                     <th>Qty</th>
                                                     <th>Unit </th>
+                                                    <th>Brand</th>
                                                     <th></th>
                                                 </thead>
                                                 <tbody class="bk_tb_bg"
@@ -622,7 +594,7 @@
                                     class="btn btn-danger pull-right no-print" (click)="Download_PDF()" title="Download PDF">
                                     <i class="fa fa-download" aria-hidden="true"></i> Download</button>
                             </div>
-                            <div class="clearfix"></div>
+                            </div><div class="clearfix"></div>
                         </div>
                     </div>
                 </div>
@@ -649,7 +621,7 @@
                                             *ngFor="let item of performainvoice_Data; let i = index">
                                             <td style="text-align: center;">{{i+1}}</td>
                                             <td style="text-align: center;">{{item["FormattedEntryDate"]}}</td>
-                                            <td style="text-align: center;">{{item["NetTotal"]}}</td>
+                                            <td style="text-align: center;">{{item["NetTotal"] || item["TotalAmount"] || item["Total_Amount"] || item["GrandTotal"]}}</td>
                                             <td>
                                                 <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                     [hidden]="Sales_Master_Edit==false"
@@ -718,7 +690,7 @@
                                         <tbody class="bk_tb_bg" *ngFor="let item of Sales_Master_Data; let i = index">
                                             <td style="text-align: center;">{{i+1}}</td>
                                             <td style="text-align: center;">{{item["FormattedEntryDate"]}}</td>
-                                            <td style="text-align: center;">{{item["NetTotal"]}}</td>
+                                            <td style="text-align: center;">{{item["NetTotal"] || item["TotalAmount"] || item["Total_Amount"] || item["GrandTotal"]}}</td>
                                             <td>
                                                 <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                     [hidden]="Sales_Master_Edit==false"
@@ -788,7 +760,7 @@
                                         <tbody class="bk_tb_bg" *ngFor="let item of DO_Data; let i = index">
                                             <td style="text-align: center;">{{i+1}}</td>
                                             <td style="text-align: center;">{{item["FormattedEntryDate"]}}</td>
-                                            <td style="text-align: center;">{{item["NetTotal"]}}</td>
+                                            <td style="text-align: center;">{{item["NetTotal"] || item["TotalAmount"] || item["Total_Amount"] || item["GrandTotal"]}}</td>
                                             <td>
                                                 <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                     [hidden]="Sales_Master_Edit==false"
@@ -857,7 +829,7 @@
                                             *ngFor="let item of Purchase_Orderdetails_Data; let i = index">
                                             <td style="text-align: center;">{{i+1}}</td>
                                             <td style="text-align: center;">{{item["FormattedEntryDate"]}}</td>
-                                            <td style="text-align: center;">{{item["NetTotal"]}}</td>
+                                            <td style="text-align: center;">{{item["NetTotal"] || item["TotalAmount"] || item["Total_Amount"] || item["GrandTotal"]}}</td>
                                             <td>
                                                 <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                     [hidden]="Sales_Master_Edit==false"
@@ -2848,3 +2820,4 @@
 </table>
 
     </div> 
+

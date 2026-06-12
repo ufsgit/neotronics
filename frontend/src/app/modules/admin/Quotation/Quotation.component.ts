@@ -81,6 +81,8 @@ export class QuotationComponent implements OnInit, AfterViewInit  {
     this.Save_Quotation(1);
   }
   Quotation_Master_Data:Quotation_Master[]
+  pageIndex: number = 0;
+  pageSize: number = 50;
 Quotation_Master_:Quotation_Master= new Quotation_Master();
 Quotation_Details_Data:Quotation_Details[];
 Quotation_Details_Data1:Quotation_Details[];
@@ -2267,6 +2269,7 @@ Search_Quotation()
     else
         User_Details_Id_=this.Employee_Search.User_Details_Id;        
     this.issLoading = true;
+    this.pageIndex = 0;
     this.QuotNo = this.QuotNo == "" ? undefined : this.QuotNo;
     this.partNo = this.partNo == "" ? undefined : this.partNo;
 
@@ -2296,6 +2299,10 @@ Search_Quotation()
         }
     });
 }
+pageChanged(event: any) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+}
 Add_Sales_Details()
 { 
     if (this.Quotation_Details_Index >= 0) {
@@ -2307,8 +2314,21 @@ Add_Sales_Details()
 }
 this.Final_Amounts();
 this.Quotation_Details_Index=-1;
-this.Clr_Sales_Details();
+this.Clr_Quotation_Details();
  }
+
+Clr_Quotation_Details()
+{
+    this.Quotation_Details_ = new Quotation_Details();
+    this.Quotation_Details_Temp_ = new Quotation_Details();
+    this.Item_ = new Quotation_Details();
+    this.Item_Temp = new Quotation_Details();
+    this.Barcode_ = new Quotation_Details();
+    this.Barcode_Temp_ = new Quotation_Details();
+    this.Pricing_Rates = [];
+    this.Selected_Rate = null;
+}
+
 Plus_Quotation_Details()
 {
 if(this.Quotation_Details_.StockId>0)
@@ -2387,7 +2407,7 @@ if( this.Item_==null)
    // console.log('this.Quotation_Details_Data: ', this.Quotation_Details_Data);
     this.addBlankRows();
     this.Quotation_Details_Index=-1;
-    this.Clr_Sales_Details();  
+    this.Clr_Quotation_Details();  
     this.Final_Amounts();
 }
 }
@@ -3902,9 +3922,8 @@ debugger;
             tempht1 -= 50;
             //  tempht1 -= 0;
             //  console.clear();            
-             console.log("***********************************");
-            console.log('tempht1 first: ', tempht1);
-            if(this.Quotation_Details_Data[index].ItemName.length > 96)
+             console.log("***********************************");             console.log('tempht1 first: ', tempht1);
+            if(this.Quotation_Details_Data[index].ItemName && typeof this.Quotation_Details_Data[index].ItemName === 'string' && this.Quotation_Details_Data[index].ItemName.length > 96)
                 {
                     this.marginTopItemNameCount = true;                    
                 }
@@ -3913,7 +3932,7 @@ debugger;
                 //     tempht1 -= 30;
                 // }
                 console.log('tempht1 second: ', tempht1);    
-                console.log('this.Quotation_Details_Data[index].ItemName.length: ', this.Quotation_Details_Data[index].ItemName.length);
+                console.log('this.Quotation_Details_Data[index].ItemName.length: ', this.Quotation_Details_Data[index].ItemName ? this.Quotation_Details_Data[index].ItemName.length : 0);
             // if(this.Quotation_Details_Data[index].Item_Code.length > 13)
             //     {
             //         this.marginTopItemNameCount = true;

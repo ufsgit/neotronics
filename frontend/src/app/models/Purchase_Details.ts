@@ -5,6 +5,8 @@ Purchase_Master_Id:number;
 ItemId:number;
 Barcode:string;
 ItemName:string;
+Model:string;
+Brand:string;
 GroupId:number;
 GroupName:string;
 UnitId:number;

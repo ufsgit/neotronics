@@ -257,9 +257,6 @@ Save_Brand()
         if (this.Brand_.Brand_Name == undefined || this.Brand_.Brand_Name == null || this.Brand_.Brand_Name == "") {
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Brand Name', Type: "3" } });
         }
-        else if (this.Brand_.Item_Name == undefined || this.Brand_.Item_Name == null || this.Brand_.Item_Name == "") {
-        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Item Name', Type: "3" } });
-        }
         // else  if (this.Brand_.Brand_Code == undefined || this.Brand_.Brand_Code == null || this.Brand_.Brand_Code == "") {
         // const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Brand Code', Type: "3" } });
         // }

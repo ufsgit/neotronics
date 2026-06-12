@@ -3,7 +3,8 @@ export class Quotation_Master
 {
 SalesQuotationMaster_Id: number;
 Account_Party_Id:number;
-User_Id:number;
+    User_Id: number;
+    Company_Id: number;
 EntryDate:string;
 QuotationNo:string;
 CurrencyId:number;

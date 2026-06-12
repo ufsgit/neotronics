@@ -325,12 +325,14 @@ if(this.PerformaInvoiceId >0){
 }
 Load_Company() 
   {   
-  this.Sales_Master_Service_.Load_Company().subscribe(Rows => {    
-  if (Rows != null) {
-      debugger;
-  this.Print_Company_ = Rows[0][0];   
-  this.Company_ = Rows[0];
-  this.Bank_ = Rows[1];
+  this.Sales_Master_Service_.Load_Company().subscribe((response: any) => {
+  // API wraps with sendSuccess: { success: true, data: [[companyRows],[bankRows]] }
+  const Rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+  if (Rows != null && Array.isArray(Rows[0]) && Rows[0].length > 0) {
+  this.Company_Data = Rows[0];
+  this.Print_Company_ = Rows[0][0];
+  this.Company_ = Rows[0][0];
+  this.Bank_ = Rows[1] || [];
 }
 },
 Rows => {

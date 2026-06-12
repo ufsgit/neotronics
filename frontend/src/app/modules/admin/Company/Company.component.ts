@@ -75,7 +75,7 @@ Page_Load()
     this.Clr_Company();
 this.Search_Company();
 //this.Get_Account_Group();
-this.Entry_View=true;
+this.Entry_View=false;
 }
 Create_New()
 {
@@ -111,6 +111,9 @@ return index;
      this.Company_.GSTNO= "";
      this.Company_.CINO= "";
      this.Company_.PANNO= "";
+     this.Doc_Photo = "";
+     this.ImageFile_Doc = null;
+     this.If_file_changed = false;
 
 }
 Search_Company()
@@ -123,16 +126,13 @@ debugger;
 this.Client_Accounts_Service_.Search_Company(this.Company_Name_Search).subscribe(Rows => {
             debugger;
             console.log('rows:',Rows)
-            if(Rows[0][0]){
-
-                this.Company_=Rows[0][0];
-                this.Doc_Photo = this.Company_.Logo;
-            }
-// this.Total_Entries=this.Company_Data.length;
-// if(this.Company_Data.length==0)
-// {
-// const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
-// }
+            this.Company_Data = Rows[0];
+            
+ this.Total_Entries=this.Company_Data.length;
+ if(this.Company_Data.length==0)
+ {
+ const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
+ }
 this.issLoading=false;
  },
  Rows => { 
@@ -188,12 +188,12 @@ else
     this.upload();
 }
 }
-Edit_Company(Company_e:Company,index)
+Edit_Company(Company_e:any,index)
 {
      
 this.Entry_View=true;
-this.Company_=Company_e;
 this.Company_=Object.assign({},Company_e);
+this.Doc_Photo = this.Company_.Logo;
 }
 
 
@@ -234,11 +234,17 @@ upload()
       {
       
         this.Client_Accounts_Service_.uploadFile(file).then(res=>{
-        console.log('res: ', res);
-        this.Company_.File_Path=res['Location']
-        debugger;
-        this.Save()
-      });
+          console.log('res: ', res);
+          this.Company_.File_Path = res['Location'] || '';
+          this.Save()
+        }).catch(err => {
+          console.error("File upload failed: ", err);
+          this.issLoading = false;
+          this.dialogBox.open(DialogBox_Component, {
+            panelClass: 'dialogbox-class',
+            data: { Message: 'File upload failed (check AWS S3 CORS/Credentials). Data not saved.', Type: "3" }
+          });
+        });
       }	
     
     }
@@ -254,16 +260,24 @@ upload()
   {
     debugger;
     this.issLoading=true;
-this.Client_Accounts_Service_.Save_Company(this.Company_).subscribe(Save_status => {
-     
-    Save_status=Save_status[0];
-if(Number(Save_status[0].Company_Id_)>0)
-{
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
-}
-else{
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-}
+this.Client_Accounts_Service_.Save_Company(this.Company_).subscribe((res: any) => {
+    let Save_status = res;
+    if (res && res.success !== undefined) {
+        Save_status = res.data;
+    }
+    
+    let resultRow = Save_status;
+    if (Array.isArray(resultRow)) resultRow = resultRow[0];
+    if (Array.isArray(resultRow)) resultRow = resultRow[0];
+
+    if(resultRow && Number(resultRow.Company_Id_) > 0)
+    {
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
+        this.Close_Click();
+    }
+    else{
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
+    }
 
 this.issLoading=false;
  },

@@ -37,22 +37,22 @@
 
                      <div class="col-md-3" style="margin-top: 12px;">
                         <label class="col-md-3 margin-crect-dte-account-group-diary label-down-alighn-supler-prhse-mstr-down" style="top: 0px !important;">From</label>
-                        <mat-form-field class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
-                        height: 46px;">
-                                <input matInput [matDatepicker]="dp" placeholder="" [(ngModel)]="Search_FromDate">
+                        <div class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
+                        height: 46px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                <input [matDatepicker]="dp" placeholder="" [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                                 <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
                                 <mat-datepicker #dp></mat-datepicker>
-                        </mat-form-field>
+                        </div>
                         </div>
                         
                         <div class="col-md-3" style="margin-top: 12px;" >
                                 <label class="col-md-2 margin-crect-dte-account-group-diary label-down-alighn-supler-prhse-mstr-down" style="top: 0px !important;">To</label>
-                                <mat-form-field class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
-                                height: 46px;">
-                                        <input matInput [matDatepicker]="dp1" placeholder="" [(ngModel)]="Search_ToDate"> 
+                                <div class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
+                                height: 46px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                        <input [matDatepicker]="dp1" placeholder="" [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;"> 
                                         <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
                                         <mat-datepicker #dp1></mat-datepicker>
-                                </mat-form-field>
+                                </div>
                                 </div>
                        
                                         

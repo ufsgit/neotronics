@@ -11,6 +11,8 @@ import { Stock_Service } from '../../../services/Stock.Service';
 import { Item_Group_Service } from '../../../services/Item_Group.Service';
 import { payment_term_Service } from '../../../services/payment_term.Service';
 import { Client_Accounts_Service } from '../../../services/Client_Accounts.Service';
+import { Model_Service } from '../../../services/Model.Service';
+import { Brand_Service } from '../../../services/Brand.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Sales_Master } from '../../../models/Sales_Master';
 import { Company } from '../../../models/Company';
@@ -190,6 +192,8 @@ Accounttype: accounttype = new accounttype();
 PaymentTerm: payment_term = new payment_term();
 PaymentTerm_Data: payment_term[];
 PaymentTerm_Temp: payment_term = new payment_term();
+Model_Data: any[] = [];
+Brand_Data: any[] = [];
 Customer_Email: string = '';
 Customer_WhatsApp: string = '';
 
@@ -240,12 +244,15 @@ constructor(public Sales_Master_Service_:Sales_Master_Service,public currencydet
 ,private el: ElementRef, private zone: NgZone, private renderer: Renderer2 , public purchaseordermaster_Service_:purchaseordermaster_Service, public Employee_Details_Service_:Employee_Details_Service, public Stock_Service_:Stock_Service,
 public Item_Group_Service_:Item_Group_Service, public payment_term_Service_:payment_term_Service, public salesquotationmaster_Service_:salesquotationmaster_Service,
 public Client_Accounts_Service_:Client_Accounts_Service,
+public Model_Service_: Model_Service, public Brand_Service_: Brand_Service,
 private cdr: ChangeDetectorRef) { 
     this.Load_Bill_Type();
     this.Load_Currency();   
     this.Load_Payment_Term();
     this.Load_InvoiceType();
     this.Load_Item_Group();
+    this.Load_Model_Dropdown();
+    this.Load_Brand_Dropdown();
     this.Load_Vat_Percentage();
     this.Load_Company() ;
    // this.Load_Employees();
@@ -306,6 +313,8 @@ Page_Load()
   this.Date_Check=false;
   this.Clr_Sales_Master();
   this.Clr_Sales_Details();
+  this.Load_Model_Dropdown();
+  this.Load_Brand_Dropdown();
   this.Sales_Print=true;
   this.Entry_View=false;
   //this.myDate=new Date();
@@ -2064,11 +2073,6 @@ Save_Sales(Printstatus:number)
       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Choose Customer',Type:"3"}});
       return
   }    
-  if(this.Currency.CurrencyDetails_Id == undefined || this.Currency.CurrencyDetails_Id == 0 ){
-      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class'  ,data:{Message:'Choose currency',Type:"3"}});
-      return
-  }
-
   let unitPriceCheck = 0;
 
   for(let i = 0; i< this.Sales_Details_Data.length; i++)
@@ -2089,7 +2093,7 @@ Save_Sales(Printstatus:number)
   this.Sales_Master_.User_Id=Number(this.Login_User_Id);
   this.Sales_Master_.Sales_Details=this.Sales_Details_Data;
 
-  this.Sales_Master_.CurrencyId = this.Currency.CurrencyDetails_Id;
+  this.Sales_Master_.CurrencyId = this.Currency && this.Currency.CurrencyDetails_Id ? this.Currency.CurrencyDetails_Id : 0;
 
   this.Sales_Master_.TypeId = this.Accounttype.AccountType_Id;
 
@@ -2118,12 +2122,14 @@ if(this.PaymentTerm == undefined || this.PaymentTerm == null){
   this.Sales_Master_.DueDate = this.New_Date(new Date(moment(this.Sales_Master_.DueDate).format('YYYY-MM-DD')));
 
   this.issLoading=true;   
-  this.Sales_Master_Service_.Save_Sales_Master(this.Sales_Master_).subscribe(Save_status => {   
-      
-      if(Number(Save_status[0].Sales_Master_Id_)>0)
+  this.Sales_Master_Service_.Save_Sales_Master(this.Sales_Master_).subscribe((response: any) => {   
+      const Save_status = this.normalizeDropdownRows(response);
+      const saveRow = Save_status && Save_status.length > 0 ? Save_status[0] : null;
+
+      if(saveRow && Number(saveRow.Sales_Master_Id_)>0)
       {
-          this.Sales_Master_.Sales_Master_Id = Save_status[0].Sales_Master_Id_;
-          this.Sales_Master_.Invoice_No = Save_status[0].Voucher_No_;
+          this.Sales_Master_.Sales_Master_Id = saveRow.Sales_Master_Id_;
+          this.Sales_Master_.Invoice_No = saveRow.Voucher_No_;
 
           this.Sales_Master_Id_Edit=this.Sales_Master_.Sales_Master_Id;
           this.Edit_Sales=1;
@@ -2418,6 +2424,67 @@ Get_Stock_Item(){
   
     
 
+}
+
+private normalizeDropdownRows(response: any): any[] {
+    const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+    return (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
+}
+
+Load_Model_Dropdown() {
+    this.Model_Service_.Search_Model('').subscribe(response => {
+        this.Model_Data = this.normalizeDropdownRows(response);
+    }, err => {
+        console.error('Error loading models:', err);
+        this.Model_Data = [];
+    });
+}
+
+Load_Brand_Dropdown() {
+    this.Brand_Service_.Search_Brand('').subscribe(response => {
+        this.Brand_Data = this.normalizeDropdownRows(response);
+    }, err => {
+        console.error('Error loading brands:', err);
+        this.Brand_Data = [];
+    });
+}
+
+Model_Typeahead(event: any) {
+    const value = event && event.target && event.target.value != undefined ? event.target.value : '';
+    this.Model_Service_.Search_Model(value).subscribe(response => {
+        this.Model_Data = this.normalizeDropdownRows(response);
+    }, err => {
+        console.error('Error searching models:', err);
+        this.Model_Data = [];
+    });
+}
+
+Brand_Typeahead(event: any) {
+    const value = event && event.target && event.target.value != undefined ? event.target.value : '';
+    this.Brand_Service_.Search_Brand(value).subscribe(response => {
+        this.Brand_Data = this.normalizeDropdownRows(response);
+    }, err => {
+        console.error('Error searching brands:', err);
+        this.Brand_Data = [];
+    });
+}
+
+display_Model(model?: any): string {
+    if (!model) return '';
+    return typeof model === 'string' ? model : (model.Model_Name || '');
+}
+
+display_Brand(brand?: any): string {
+    if (!brand) return '';
+    return typeof brand === 'string' ? brand : (brand.Brand_Name || '');
+}
+
+Model_Change(model: any) {
+    this.Sales_Details_.Model = typeof model === 'string' ? model : (model && model.Model_Name ? model.Model_Name : '');
+}
+
+Brand_Change(brand: any) {
+    this.Sales_Details_.Brand = typeof brand === 'string' ? brand : (brand && brand.Brand_Name ? brand.Brand_Name : '');
 }
 
 numberToWordsIndianCurrency(amount) {

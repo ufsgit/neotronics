@@ -323,23 +323,31 @@ Page_Load()
   this.Load_InvoiceType();
   //this.myDate=new Date();
 }
-Load_Company() 
-  {   
-  this.Sales_Master_Service_.Load_Company().subscribe(Rows => {    
-  if (Rows != null) {
-      debugger;
-  this.Print_Company_ = Rows[0][0];   
-  this.Company_ = Rows[0];
-  //this.Bank_Data=Rows[1];
-  this.Bank_ = Rows[1];
-  //this.Bank_Data=this.Bank_;
+Company_Dropdown_Change() {
+    if(this.Company_Data) {
+        const c = this.Company_Data.find(x => x.Company_Id == this.Sales_Return_Master_.Company_Id);
+        if (c) {
+            this.Company_ = c;
+            this.Print_Company_ = c;
+        }
+    }
 }
-this.issLoading = false;
-},
-Rows => {
-this.issLoading = false;
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-});
+Load_Company() 
+    {   
+    this.Sales_Master_Service_.Load_Company().subscribe((response) => {
+    // API wraps with sendSuccess: { success: true, data: [[companyRows],[bankRows]] }
+    const Rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+    if (Rows != null && Array.isArray(Rows[0]) && Rows[0].length > 0) {
+    this.Company_Data = Rows[0];
+    this.Print_Company_ = Rows[0][0];
+    this.Company_ = Rows[0][0];
+    this.Bank_ = Rows[1] || [];
+ }
+ this.issLoading = false;
+ },
+ err => {
+ this.issLoading = false;
+ });
 }
 
 Load_Currency() {
@@ -852,6 +860,12 @@ Clr_Sales_Master()
   this.Sales_Return_Master_.Address3="";
   this.Sales_Return_Master_.Address4="";
   this.Sales_Return_Master_.Mobile="";
+    if (this.Company_Data && this.Company_Data.length > 0) {
+        this.Sales_Return_Master_.Company_Id = this.Company_Data[0].Company_Id;
+        this.Company_ = this.Company_Data[0];
+        this.Print_Company_ = this.Company_Data[0];
+    }
+
   this.Sales_Return_Master_.Customer_Name="";
   this.Sales_Return_Master_.PinCode="";
   this.Sales_Return_Master_.GSTNo="";    

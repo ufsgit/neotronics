@@ -24,6 +24,7 @@ export class Requirement_Master {
     Validity: string;
     Description1: string;
     User_Id: number;
+    Company_Id: number;
     Delivery_Address1: string;
     Delivery_Address2: string;
     Delivery_Address3: string;

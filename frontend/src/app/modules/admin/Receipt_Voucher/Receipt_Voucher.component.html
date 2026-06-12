@@ -149,7 +149,7 @@
                           </td>
                           <td class="inner-tables-colmn-to-crect-alighn-location td-padding" style="width: 20%;">{{Sales_Receipt1["Date"]}}</td>
                           <td class="inner-tables-colmn-to-crect-alighn-location td-padding" style="width: 20%;">{{Sales_Receipt1["Invoice_No"]}}</td>
-                          <td class="inner-tables-colmn-to-crect-alighn-location td-padding" style="width: 20%;">{{Sales_Receipt1["NetTotal"]}}</td>
+                          <td class="inner-tables-colmn-to-crect-alighn-location td-padding" style="width: 20%;">{{Sales_Receipt1["NetTotal"] || Sales_Receipt1["TotalAmount"] || Sales_Receipt1["Total_Amount"] || Sales_Receipt1["GrandTotal"]}}</td>
                           <td class="inner-tables-colmn-to-crect-alighn-location td-padding">
                             <input matInput type="text"  name={{Sales_Receipt1.Account_Party_Id}}a{{Sales_Receipt1.Account_Party_Id}} [(ngModel)]="Sales_Receipt1.Discount"
                               class="col-md-7 input-text-item-sales-section-group-diary input-allighn-to-crect-wole-paddings mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">

@@ -1,133 +1,27 @@
-const db = require('./dbconnection');
-
-const dropSaveUser = "DROP PROCEDURE IF EXISTS Save_User_Details";
-const createSaveUser = `
-CREATE PROCEDURE Save_User_Details(
-    IN User_Details_Id_ DECIMAL,
-    IN User_Details_Name_ VARCHAR(250),
-    IN Password_ VARCHAR(250),
-    IN User_Type_ INT,
-    IN User_Menu_Selection JSON,
-    IN Working_Status_Id_ INT,
-    IN Working_Status_ VARCHAR(100),
-    IN Role_Id_ BIGINT,
-    IN Department_Id_ INT,
-    IN Branch_Id_ INT
-)
-BEGIN
-    DECLARE Menu_Id_ INT;
-    DECLARE IsEdit_ VARCHAR(25);
-    DECLARE IsSave_ VARCHAR(25);
-    DECLARE IsDelete_ VARCHAR(25);
-    DECLARE IsView_ VARCHAR(25);
-    DECLARE Menu_Status_ VARCHAR(25);
-    DECLARE i INT DEFAULT 0;
-
-    IF User_Details_Id_ > 0 THEN
-        DELETE FROM User_Menu_Selection WHERE User_Id = User_Details_Id_;
-        UPDATE User_Details 
-        SET User_Details_Name = User_Details_Name_,
-            Password = Password_,
-            User_Type = User_Type_,
-            Working_Status = Working_Status_,
-            Working_Status_Id = Working_Status_Id_,
-            Role_Id = Role_Id_,
-            Department_Id = Department_Id_,
-            Branch_Id = Branch_Id_
-        WHERE User_Details_Id = User_Details_Id_;
-    ELSE
-        SET User_Details_Id_ = (SELECT COALESCE(MAX(User_Details_Id), 0) + 1 FROM User_Details);
-        INSERT INTO User_Details (User_Details_Id, User_Details_Name, Password, User_Type, DeleteStatus, Working_Status, Working_Status_Id, Role_Id, Department_Id, Branch_Id)
-        VALUES (User_Details_Id_, User_Details_Name_, Password_, User_Type_, FALSE, Working_Status_, Working_Status_Id_, Role_Id_, Department_Id_, Branch_Id_);
-    END IF;
-
-    WHILE i < JSON_LENGTH(User_Menu_Selection) DO
-        SELECT JSON_UNQUOTE(JSON_EXTRACT(User_Menu_Selection, CONCAT('$[', i, '].Menu_Id'))) INTO Menu_Id_;
-        SELECT JSON_UNQUOTE(JSON_EXTRACT(User_Menu_Selection, CONCAT('$[', i, '].IsEdit'))) INTO IsEdit_;
-        IF (IsEdit_ = 'true') THEN SET IsEdit_ = 1; ELSE SET IsEdit_ = 0; END IF;
-        
-        SELECT JSON_UNQUOTE(JSON_EXTRACT(User_Menu_Selection, CONCAT('$[', i, '].IsSave'))) INTO IsSave_;
-        IF (IsSave_ = 'true') THEN SET IsSave_ = 1; ELSE SET IsSave_ = 0; END IF;
-        
-        SELECT JSON_UNQUOTE(JSON_EXTRACT(User_Menu_Selection, CONCAT('$[', i, '].IsDelete'))) INTO IsDelete_;
-        IF (IsDelete_ = 'true') THEN SET IsDelete_ = 1; ELSE SET IsDelete_ = 0; END IF;
-        
-        SELECT JSON_UNQUOTE(JSON_EXTRACT(User_Menu_Selection, CONCAT('$[', i, '].IsView'))) INTO IsView_;
-        IF (IsView_ = 'true') THEN SET IsView_ = 1; ELSE SET IsView_ = 0; END IF;
-        
-        SELECT JSON_UNQUOTE(JSON_EXTRACT(User_Menu_Selection, CONCAT('$[', i, '].Menu_Status'))) INTO Menu_Status_;
-        IF (Menu_Status_ = 'true') THEN SET Menu_Status_ = 1; ELSE SET Menu_Status_ = 0; END IF;
-        
-        INSERT INTO User_Menu_Selection (Menu_Id, User_Id, IsEdit, IsSave, IsDelete, IsView, Menu_Status, DeleteStatus)
-        VALUES (Menu_Id_, User_Details_Id_, IsEdit_, IsSave_, IsDelete_, IsView_, Menu_Status_, FALSE);
-        
-        SET i = i + 1;
-    END WHILE;
-    
-    SELECT User_Details_Id_ AS User_Details_Id_;
-END
-`;
-
-const dropSearchUser = "DROP PROCEDURE IF EXISTS Search_User_Details";
-const createSearchUser = `
-CREATE PROCEDURE Search_User_Details(User_Type_In INT, Login_User_Id INT, In User_Details_Name_ VARCHAR(100))
-BEGIN
-    DECLARE SearchbyName_Value VARCHAR(2000);
-    
-    IF User_Details_Name_ IS NULL OR User_Details_Name_ = 'undefined' THEN
-        SET User_Details_Name_ = '';
-    END IF;
-
-    SET SearchbyName_Value = CONCAT(" AND UD.User_Details_Name like '%", User_Details_Name_, "%' ");
-    
-    IF User_Type_In = 2 THEN
-        SET SearchbyName_Value = CONCAT(" AND UD.User_Details_Id = ", Login_User_Id);
-    END IF;
-    
-    SET @query = CONCAT("
-        SELECT 
-            UD.User_Details_Id, 
-            UD.User_Details_Name, 
-            UD.Password, 
-            UD.Working_Status, 
-            UD.User_Type, 
-            UD.Role_Id, 
-            UD.Address1, 
-            UD.Address2, 
-            UD.Address3, 
-            UD.Address4, 
-            UD.Pincode, 
-            UD.Mobile, 
-            UD.Email, 
-            UD.Employee_Id, 
-            UD.Working_Status_Id,
-            UD.Department_Id,
-            UD.Branch_Id,
-            UT.User_Type_Name,
-            UR.User_Role_Name,
-            DP.Department_Name,
-            CA.Client_Accounts_Name AS Branch_Name
-        FROM User_Details UD
-        LEFT JOIN User_Type UT ON UD.User_Type = UT.User_Type_Id
-        LEFT JOIN User_Role UR ON UD.Role_Id = UR.User_Role_Id
-        LEFT JOIN Department DP ON UD.Department_Id = DP.Department_Id
-        LEFT JOIN Client_Accounts CA ON UD.Branch_Id = CA.Client_Accounts_Id
-        WHERE UD.DeleteStatus = false
-        ", SearchbyName_Value);
-        
-    PREPARE QUERY FROM @query;
-    EXECUTE QUERY;
-    DEALLOCATE PREPARE QUERY;
-END
-`;
-
+const db = require('./dbconnection').promise();
 async function run() {
-    const pool = db.promise();
-    await pool.query(dropSaveUser);
-    await pool.query(createSaveUser);
-    await pool.query(dropSearchUser);
-    await pool.query(createSearchUser);
-    console.log("Stored procedures updated");
-    process.exit();
+    try {
+        await db.query("DROP PROCEDURE IF EXISTS Load_Company");
+        await db.query(`CREATE PROCEDURE Load_Company() 
+BEGIN 
+    Select * from Company_info where DeleteStatus=false ORDER BY Company_Id DESC LIMIT 1; 
+    select Client_Accounts_Id,Client_Accounts_Name,Client_Accounts_No,Address1,Address2 from client_accounts where Account_Group_Id in(4,5) and DeleteStatus=0; 
+END`);
+        console.log('Load_Company updated');
+
+        await db.query("DROP PROCEDURE IF EXISTS Search_Company");
+        await db.query(`CREATE PROCEDURE Search_Company()
+BEGIN 
+ SELECT 
+	Company_Name, Address1, Address2, Address3, Phone, Gsm, Email, CR_No, Company_Id, File_Upload, Note, Vat_No
+ From Company_info where DeleteStatus=false 
+ ORDER BY Company_Id DESC LIMIT 1;
+END`);
+        console.log('Search_Company updated');
+        process.exit(0);
+    } catch (err) {
+        console.error(err);
+        process.exit(1);
+    }
 }
 run();

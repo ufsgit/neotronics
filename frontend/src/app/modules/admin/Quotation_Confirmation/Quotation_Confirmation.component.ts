@@ -53,8 +53,6 @@ export class Quotation_ConfirmationComponent implements OnInit, AfterViewInit {
     Payment_Status_Filter: any = 0;
 
     Status_Data: any[] = [
-        { id: 0, name: 'All Status' },
-        { id: 1, name: 'Draft' },
         { id: 2, name: 'Pending' },
         { id: 3, name: 'Approved' },
         { id: 4, name: 'Rejected' },
@@ -137,27 +135,39 @@ export class Quotation_ConfirmationComponent implements OnInit, AfterViewInit {
                         // Fallback using traditional Status column if Status_Id is missing
                         const statusVal = parseInt(q.Status);
                         if (statusVal === 2) {
+                            q.Status = 2;
                             q.Status_Id = 1;
                             q.Status_Name = 'Pending';
                         } else if (statusVal === 3) {
-                            q.Status_Id = 2;
-                            q.Status_Name = 'Approved';
+                            if (q.workflow_status === 'CONFIRMED') {
+                                q.Status = 5;
+                                q.Status_Id = 2;
+                                q.Status_Name = 'Confirmed';
+                            } else {
+                                q.Status = 3;
+                                q.Status_Id = 2;
+                                q.Status_Name = 'Approved';
+                            }
                         } else if (statusVal === 4) {
+                            q.Status = 4;
                             q.Status_Id = 3;
                             q.Status_Name = 'Rejected';
                         } else if (statusVal === 5) {
+                            q.Status = 5;
                             q.Status_Id = 2;
-                            q.Status_Name = 'Approved';
+                            q.Status_Name = 'Confirmed';
                         } else if (statusVal === 1) {
+                            // Status=1 means saved without a proper status update — treat as Pending
+                            q.Status = 2;
                             q.Status_Id = 1;
-                            q.Status_Name = 'Draft';
+                            q.Status_Name = 'Pending';
                         }
                     }
                 });
                 
                 // Client-side filtering for Status if needed
-                if (this.Status_Filter != 0) {
-                    this.Quotation_Master_Data = this.Quotation_Master_Data.filter(q => q.Status == this.Status_Filter);
+                if (this.Status_Filter && this.Status_Filter != 0) {
+                    this.Quotation_Master_Data = this.Quotation_Master_Data.filter(q => String(q.Status) === String(this.Status_Filter));
                 }
                 
                 this.Total_Entries = this.Quotation_Master_Data.length;
@@ -354,6 +364,8 @@ export class Quotation_ConfirmationComponent implements OnInit, AfterViewInit {
 
     Get_Status_Name(statusId: any) {
         const id = parseInt(statusId);
+        if (id === 0) return 'All Status';
+        if (id === 1) return 'Draft';
         const status = this.Status_Data.find(s => s.id == id);
         return status ? status.name : (statusId || 'Unknown');
     }

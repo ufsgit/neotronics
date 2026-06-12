@@ -225,7 +225,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 croct-float-purchase-master-section">
-                    <div class="col-md-12 mb-1">
+                    <div class="col-md-12 mb-1 d-flex align-items-center">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer</label>
                         <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer"
                             (ngModelChange)="selectCustomer()" (click)="Search_Customer_Typeahead($event)"
@@ -240,27 +240,27 @@
                             </ng-container>
                         </mat-autocomplete>
                     </div>
-                    <div class="col-md-12 mb-1">
+                    <div class="col-md-12 mb-1 d-flex align-items-center">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer Name <span style="color:#ef071e; ">*</span></label>
                         <input type="text" [(ngModel)]="Quotation_Master_.Customer_Name" readonly name="Customer_Name_Display"
                             class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <div class="col-md-12 mb-1">
+                    <div class="col-md-12 mb-1 d-flex align-items-center">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address</label>
                         <textarea rows="2" [(ngModel)]="Address1" readonly
                             class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: auto;"></textarea>
                     </div>
-                    <div class="col-md-12 mb-1">
+                    <div class="col-md-12 mb-1 d-flex align-items-center">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Phone</label>
                         <input type="text" [(ngModel)]="Quotation_Master_.Mobile" 
                             class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <div class="col-md-12 mb-1">
+                    <div class="col-md-12 mb-1 d-flex align-items-center">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Email</label>
                         <input type="email" [(ngModel)]="Quotation_Master_.Email" 
                             class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <div class="col-md-12 mb-1">
+                    <div class="col-md-12 mb-1 d-flex align-items-center">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">WhatsApp</label>
                         <input type="text" [(ngModel)]="Quotation_Master_.WhatsApp" 
                             class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
@@ -268,7 +268,7 @@
                 </div>
 
                 <div class="col-md-6 croct-float-purchase-master-section">
-                    <div class="col-md-12 mb-1">
+                    <div class="col-md-12 mb-1 d-flex align-items-center">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date <span style="color:#ef071e; ">*</span></label>
                         <mat-form-field class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px !important; border: 1px solid #b1b1b1; border-radius: 4px; background: white;">
                             <input matInput [matDatepicker]="dpdate" name="EntryDate" [(ngModel)]="Quotation_Master_.EntryDate">
@@ -276,17 +276,17 @@
                             <mat-datepicker #dpdate></mat-datepicker>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-12 mb-1">
+                    <div class="col-md-12 mb-1 d-flex align-items-center">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Quotation No</label>
                         <input type="text" [(ngModel)]="Quotation_Master_.QuotationNo" readonly
                             class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn bg-light">
                     </div>
-                    <div class="col-md-12 mb-1">
+                    <div class="col-md-12 mb-1 d-flex align-items-center">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Reference No</label>
                         <input type="text" [(ngModel)]="Quotation_Master_.Supplier_Ref_No"
                             class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <div class="col-md-12 mb-1">
+                    <div class="col-md-12 mb-1 d-flex align-items-center">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Status</label>
                         <select class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" [(ngModel)]="Status_" (ngModelChange)="OnStatusChange()" style="height: 40px; border: 1px solid #b1b1b1;" [disabled]="!Quotation_Master_.SalesQuotationMaster_Id">
                             <option *ngFor="let s of Status_Data" [ngValue]="s">{{s.name}}</option>
@@ -301,7 +301,7 @@
                     <div class="card-body p-0">
                         <div style="display: flex; gap: 8px; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap;">
                             <!-- Item Name -->
-                            <div style="flex: 0 0 250px;">
+                            <div style="flex: 2 1 200px;">
                                 <label class="label-to-crect-all-names-to-divs">Item Name</label>
                                 <input type="text" [matAutocomplete]="autoItem" [(ngModel)]="Item_"
                                     (input)="Search_Item_Typeahead($event)"
@@ -321,7 +321,7 @@
                                 </mat-autocomplete>
                             </div>
                             <!-- Model -->
-                            <div style="flex: 0 0 120px;">
+                            <div style="flex: 1 1 120px;">
                                 <label class="label-to-crect-all-names-to-divs">Model</label>
                                 <select [(ngModel)]="Quotation_Details_.Model"
                                     class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
@@ -332,7 +332,7 @@
                             </div>
 
                             <!-- Brand -->
-                            <div style="flex: 0 0 120px;">
+                            <div style="flex: 1 1 120px;">
                                 <label class="label-to-crect-all-names-to-divs">Brand</label>
                                 <select [(ngModel)]="Quotation_Details_.Brand"
                                     class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
@@ -342,17 +342,17 @@
                                 </select>
                             </div>
                             <!-- UOM -->
-                            <div style="flex: 0 0 80px;">
+                            <div style="flex: 1 1 80px;">
                                 <label class="label-to-crect-all-names-to-divs">UOM</label>
                                 <input type="text" [(ngModel)]="Quotation_Details_.UnitName" readonly class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn bg-light" style="height: 40px; margin-bottom: 0; text-align: center;">
                             </div>
                             <!-- Qty -->
-                            <div style="flex: 0 0 80px;">
+                            <div style="flex: 1 1 80px;">
                                 <label class="label-to-crect-all-names-to-divs">Qty</label>
                                 <input type="number" [(ngModel)]="Quotation_Details_.Quantity" (ngModelChange)="Calculate_Quotation_Details_Amount()" class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px; margin-bottom: 0; text-align: center;">
                             </div>
                             <!-- Sales Rate (Multi Selection) -->
-                            <div style="flex: 0 0 180px;">
+                            <div style="flex: 1 1 150px;">
                                 <label class="label-to-crect-all-names-to-divs">Sales Rate</label>
                                 <select class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" [(ngModel)]="Selected_Rate" (ngModelChange)="OnRateChange()" style="height: 40px; margin-bottom: 0;">
                                     <option *ngFor="let rate of Pricing_Rates" [ngValue]="rate">{{rate.name}} - {{rate.value}}</option>
@@ -360,12 +360,12 @@
                                 </select>
                             </div>
                             <!-- Rate (Visible if Custom) -->
-                            <div style="flex: 0 0 100px;" *ngIf="!Selected_Rate">
+                            <div style="flex: 1 1 100px;" *ngIf="!Selected_Rate">
                                 <label class="label-to-crect-all-names-to-divs">Rate</label>
                                 <input type="number" [(ngModel)]="Quotation_Details_.UnitPrice" (ngModelChange)="Calculate_Quotation_Details_Amount()" class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 40px; margin-bottom: 0;">
                             </div>
                             <!-- Amount -->
-                            <div style="flex: 0 0 120px;">
+                            <div style="flex: 1 1 120px;">
                                 <label class="label-to-crect-all-names-to-divs">Amount</label>
                                 <input type="number" [(ngModel)]="Quotation_Details_.Amount" readonly class="col-md-12 for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn bg-light" style="height: 40px; margin-bottom: 0; text-align: right; font-weight: bold;">
                             </div>
@@ -2244,3 +2244,4 @@
 </table>
 
     </div> -->
+

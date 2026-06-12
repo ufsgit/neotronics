@@ -37,22 +37,22 @@
 
                      <div class="col-md-3" style="margin-top: 12px;">
                         <label class="col-md-3 margin-crect-dte-account-group-diary label-down-alighn-supler-prhse-mstr-down" style="top: 0px !important;">From</label>
-                        <mat-form-field class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
-                        height: 46px;">
-                                <input matInput [matDatepicker]="dp" placeholder="" [(ngModel)]="Search_FromDate">
+                        <div class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
+                        height: 46px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                <input [matDatepicker]="dp" placeholder="" [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                                 <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
                                 <mat-datepicker #dp></mat-datepicker>
-                        </mat-form-field>
+                        </div>
                         </div>
                         
                         <div class="col-md-3" style="margin-top: 12px;" >
                                 <label class="col-md-2 margin-crect-dte-account-group-diary label-down-alighn-supler-prhse-mstr-down" style="top: 0px !important;">To</label>
-                                <mat-form-field class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
-                                height: 46px;">
-                                        <input matInput [matDatepicker]="dp1" placeholder="" [(ngModel)]="Search_ToDate"> 
+                                <div class="mat-field-date-box-section col-md-9" style="border: 1px solid lightgrey;
+                                height: 46px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                        <input [matDatepicker]="dp1" placeholder="" [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;"> 
                                         <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
                                         <mat-datepicker #dp1></mat-datepicker>
-                                </mat-form-field>
+                                </div>
                                 </div>
                                        
     <div class="col-md-3" style="margin-top: 10px;">         
@@ -117,7 +117,7 @@
                 <td>{{Accounts1["InvoiceNo"]}}</td> 
                 <td>{{Accounts1["Customer"]}}</td> 
                 <td>{{Accounts1["GSTNo"]}}</td> 
-                <td>{{Accounts1["NetTotal"]}}</td> 
+                <td>{{Accounts1["NetTotal"] || Accounts1["TotalAmount"] || Accounts1["Total_Amount"] || Accounts1["GrandTotal"]}}</td> 
                 <td>{{Accounts1["Vat %"]}}</td> 
                 <td>{{Accounts1["VATAmount"]}}</td> 
                 <td>{{Accounts1["Total"]}}</td> 
@@ -320,7 +320,7 @@
         <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["Invoice_No"]}}</td> 
         <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["Client_Accounts_Name"]}}</td> 
         <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["GSTNo"]}}</td> 
-        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["NetTotal"]}}</td> 
+        <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["NetTotal"] || Accounts1["TotalAmount"] || Accounts1["Total_Amount"] || Accounts1["GrandTotal"]}}</td> 
         <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["VAT_percentage"]}}</td> 
         <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["VAT_Amount"]}}</td> 
         <td style="border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px;font-family:'arial', sans-serif; ">{{Accounts1["Total_Amount"]}}</td> 

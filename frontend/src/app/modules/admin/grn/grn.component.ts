@@ -11,6 +11,8 @@ import { Client_Accounts_Service } from '../../../services/Client_Accounts.Servi
 import { Stock_Service } from '../../../services/Stock.Service';
 import { Item_Group_Service } from '../../../services/Item_Group.Service';
 import { payment_term_Service } from '../../../services/payment_term.Service';
+import { Brand_Service } from '../../../services/Brand.Service';
+import { Model_Service } from '../../../services/Model.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Purchase_Master } from '../../../models/Purchase_Master';
 import { Company } from '../../../models/Company';
@@ -191,6 +193,8 @@ AccounttypeData: accounttype[];
 accounttype_search:accounttype = new accounttype();
 Accounttype_Temp : accounttype = new accounttype();
 Accounttype: accounttype = new accounttype();
+BrandData: any[] = [];
+ModelData: any[] = [];
 
 
 PaymentTerm: payment_term = new payment_term();
@@ -255,9 +259,12 @@ constructor(public Sales_Master_Service_:Sales_Master_Service,public currencydet
 ,private el: ElementRef, private zone: NgZone, private renderer: Renderer2 , public purchaseordermaster_Service_:purchaseordermaster_Service, public Employee_Details_Service_:Employee_Details_Service, public Stock_Service_:Stock_Service,
 public Item_Group_Service_:Item_Group_Service, 
 public payment_term_Service_:payment_term_Service, public Purchase_Master_Service_:Purchase_Master_Service, 
-public Client_Accounts_Service_:Client_Accounts_Service,  private cdr: ChangeDetectorRef) { 
+public Client_Accounts_Service_:Client_Accounts_Service, public Brand_Service_: Brand_Service,
+public Model_Service_: Model_Service,  private cdr: ChangeDetectorRef) { 
     this.Load_Currency();
   this.Load_Payment_Term();
+  this.Load_Brand_Dropdown();
+  this.Load_Model_Dropdown();
   this.Load_InvoiceType();
   this.Load_Bill_Type();
   //this.Load_Employees();
@@ -851,6 +858,8 @@ Clr_Sales_Details()
   //this.Purchase_Details_.Stock_Details_Id=0;
   this.Purchase_Details_.ItemId=0;
   this.Purchase_Details_.ItemName="";
+  this.Purchase_Details_.Model="";
+  this.Purchase_Details_.Brand="";
   this.Purchase_Details_.Item_Code="";
   this.Purchase_Details_.GroupId=0;
   this.Purchase_Details_.GroupName="";
@@ -1493,12 +1502,22 @@ Calculate_Total_Amount()
     this.Purchase_Details_.Item_Discount_Amount =Number(this.Purchase_Details_.Unit_Discount) * Number(this.Purchase_Details_.Quantity);
     this.Purchase_Details_.Amount = Number(this.Purchase_Details_.Quantity) * Number(this.Purchase_Details_.UnitPrice);
     this.Purchase_Details_.TaxableAmount = Number(this.Purchase_Details_.Amount) - Number(this.Purchase_Details_.Item_Discount_Amount);
-    this.Purchase_Details_.TaxAmount = Number(this.Purchase_Details_.TaxableAmount) * Number(this.Purchase_Details_.SaleTax) /100;
+    if(this.Purchase_Details_.CGST == undefined || this.Purchase_Details_.CGST == null)
+        this.Purchase_Details_.CGST = 0;
+    if(this.Purchase_Details_.SGST == undefined || this.Purchase_Details_.SGST == null)
+        this.Purchase_Details_.SGST = 0;
+    this.Purchase_Details_.CGST_AMT = Number(this.Purchase_Details_.TaxableAmount) * Number(this.Purchase_Details_.CGST) / 100;
+    this.Purchase_Details_.SGST_AMT = Number(this.Purchase_Details_.TaxableAmount) * Number(this.Purchase_Details_.SGST) / 100;
+    this.Purchase_Details_.TaxAmount = Number(this.Purchase_Details_.CGST_AMT) + Number(this.Purchase_Details_.SGST_AMT);
+    if(this.Purchase_Details_.TaxAmount == 0)
+        this.Purchase_Details_.TaxAmount = Number(this.Purchase_Details_.TaxableAmount) * Number(this.Purchase_Details_.SaleTax) /100;
     this.Purchase_Details_.NetValue= Number(this.Purchase_Details_.TaxableAmount) + Number(this.Purchase_Details_.TaxAmount);
 
     this.Purchase_Details_.Item_Discount_Amount=Number(this.Purchase_Details_.Item_Discount_Amount.toFixed(3));    
     this.Purchase_Details_.Amount=Number(this.Purchase_Details_.Amount.toFixed(3));    
     this.Purchase_Details_.TaxableAmount=Number(this.Purchase_Details_.TaxableAmount.toFixed(3));
+    this.Purchase_Details_.CGST_AMT=Number(this.Purchase_Details_.CGST_AMT.toFixed(3));
+    this.Purchase_Details_.SGST_AMT=Number(this.Purchase_Details_.SGST_AMT.toFixed(3));
     this.Purchase_Details_.TaxAmount=Number(this.Purchase_Details_.TaxAmount.toFixed(3));  
     this.Purchase_Details_.NetValue= Number(this.Purchase_Details_.NetValue.toFixed(3));
   
@@ -2884,12 +2903,18 @@ debugger;
 
 Final_Amounts(){
     ;
-    this.Tot_Amount = 0;this.Total = 0;this.Purchase_Master_.TotalAmount=0
+    this.Tot_Amount = 0;this.Total = 0;this.Purchase_Master_.TotalAmount=0;
+    this.Purchase_Master_.TotalCGST = 0;
+    this.Purchase_Master_.TotalSGST = 0;
     for(var i = 0; i< this.Purchase_DetailsData.length ; i++)
   {
       this.Tot_Amount = Number(this.Tot_Amount) +  Number(this.Purchase_DetailsData[i].Amount);
+      this.Purchase_Master_.TotalCGST = Number(this.Purchase_Master_.TotalCGST) + Number(this.Purchase_DetailsData[i].CGST_AMT || 0);
+      this.Purchase_Master_.TotalSGST = Number(this.Purchase_Master_.TotalSGST) + Number(this.Purchase_DetailsData[i].SGST_AMT || 0);
       
   }
+  this.Purchase_Master_.TotalCGST = Number(this.Purchase_Master_.TotalCGST.toFixed(3));
+  this.Purchase_Master_.TotalSGST = Number(this.Purchase_Master_.TotalSGST.toFixed(3));
 ;
   if(this.addDiscCheck == 0)
   {
@@ -3271,6 +3296,72 @@ addBlankRows(): void {
     //   printDiv.style.visibility = 'hidden';
     //   printDiv.style.display = 'none';
     // }
+  }
+
+  Load_Brand_Dropdown() {
+      this.Brand_Service_.Search_Brand('').subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.BrandData = (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error('Error loading brands:', err);
+          this.BrandData = [];
+      });
+  }
+
+  Load_Model_Dropdown() {
+      this.Model_Service_.Search_Model('').subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.ModelData = (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error('Error loading models:', err);
+          this.ModelData = [];
+      });
+  }
+
+  Search_Brand_Typeahead(event: any) {
+      let Value = "";
+      if (event && event.target && event.target.value != undefined) {
+          Value = event.target.value;
+      } else {
+          Value = this.Purchase_Details_.Brand && typeof this.Purchase_Details_.Brand === 'string' ? this.Purchase_Details_.Brand : '';
+      }
+      this.Brand_Service_.Search_Brand(Value).subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.BrandData = (rows && rows[0]) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error(err);
+      });
+  }
+
+  displayFnBrand(brand?: any): string | undefined {
+      return brand ? brand.Brand_Name : undefined;
+  }
+
+  selectBrand(brand: any) {
+      this.Purchase_Details_.Brand = brand.Brand_Name;
+  }
+
+  Search_Model_Typeahead(event: any) {
+      let Value = "";
+      if (event && event.target && event.target.value != undefined) {
+          Value = event.target.value;
+      } else {
+          Value = this.Purchase_Details_.Model && typeof this.Purchase_Details_.Model === 'string' ? this.Purchase_Details_.Model : '';
+      }
+      this.Model_Service_.Search_Model(Value).subscribe(response => {
+          const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+          this.ModelData = (rows && rows[0]) ? rows[0] : (Array.isArray(rows) ? rows : []);
+      }, err => {
+          console.error(err);
+      });
+  }
+
+  displayFnModel(model?: any): string | undefined {
+      return model ? model.Model_Name : undefined;
+  }
+
+  selectModel(model: any) {
+      this.Purchase_Details_.Model = model.Model_Name;
   }
 
 }

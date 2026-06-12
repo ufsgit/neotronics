@@ -18,3 +18,304 @@ input{
     padding: 5px 0px !important;
     border: #d3d3d3 solid 1px !important;
 }
+
+/* ================================
+   PACKING LIST UI REFRESH
+   CSS only: preserves existing bindings and actions
+================================ */
+:host {
+    display: block;
+    background: #eef3f8;
+}
+
+:host ::ng-deep .main-content {
+    background: #eef3f8 !important;
+    min-height: calc(100vh - 66px);
+    padding: 20px 24px !important;
+}
+
+:host ::ng-deep .main-content > .container-fluid {
+    background: #ffffff;
+    border: 1px solid #d9e2ef;
+    border-radius: 10px;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+    max-width: calc(100% - 28px);
+    overflow: hidden;
+    padding: 24px 28px !important;
+}
+
+:host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12),
+:host ::ng-deep .row[ng-reflect-ng-if="true"] {
+    background: #ffffff !important;
+    margin: 0 !important;
+}
+
+:host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) > .container-fluid:first-child,
+:host ::ng-deep .row[ng-reflect-ng-if="true"] > .container-fluid:first-child {
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+    border-bottom: 1px solid #e6edf5;
+    display: grid;
+    gap: 18px 34px;
+    grid-template-columns: minmax(360px, 1fr) minmax(360px, 1fr);
+    padding: 8px 6px 24px !important;
+}
+
+.croct-float-purchase-master-section {
+    max-width: none !important;
+    padding: 0 4px !important;
+    width: 100% !important;
+}
+
+.croct-float-purchase-master-section .col-md-12 {
+    align-items: center;
+    display: grid;
+    gap: 14px;
+    grid-template-columns: 190px minmax(0, 1fr);
+    margin-bottom: 8px !important;
+    padding: 0 !important;
+}
+
+.label-to-crect-all-names-to-divs,
+.label-to-crect-all-names-to-div-tre-prt-sles,
+.mrgin-alghn-label-text-otrs-nxt {
+    color: #243447 !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    line-height: 1.25;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.mrgn-crct-input-text-div-tre-prt-sles1,
+.mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn,
+.for-input-selct-tblelst,
+select,
+textarea,
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+    background: #ffffff !important;
+    border: 1px solid #cfd8e5 !important;
+    border-radius: 7px !important;
+    color: #182230 !important;
+    font-size: 15px !important;
+    min-height: 44px !important;
+    outline: none !important;
+    padding: 8px 12px !important;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn:focus,
+.for-input-selct-tblelst:focus {
+    background: #fbfdff !important;
+    border-color: #0f8fcf !important;
+    box-shadow: 0 0 0 3px rgba(15, 143, 207, 0.12) !important;
+}
+
+input[readonly],
+input[disabled] {
+    background: #f8fafc !important;
+    color: #52647d !important;
+}
+
+:host ::ng-deep .mat-datepicker-toggle {
+    color: #40546f;
+}
+
+:host ::ng-deep .croct-float-purchase-master-section .mat-datepicker-toggle {
+    align-items: center;
+    display: inline-flex;
+    height: 44px;
+    justify-content: center;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    z-index: 2;
+}
+
+:host ::ng-deep .croct-float-purchase-master-section .mat-datepicker-toggle button {
+    height: 36px !important;
+    line-height: 36px !important;
+    width: 36px !important;
+}
+
+:host ::ng-deep .croct-float-purchase-master-section div.mrgn-crct-input-text-div-tre-prt-sles1 {
+    position: relative;
+}
+
+:host ::ng-deep .croct-float-purchase-master-section div.mrgn-crct-input-text-div-tre-prt-sles1 input[matinput],
+:host ::ng-deep .croct-float-purchase-master-section div.mrgn-crct-input-text-div-tre-prt-sles1 input[matInput] {
+    padding-right: 48px !important;
+}
+
+:host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) > .row,
+:host ::ng-deep .row[ng-reflect-ng-if="true"] > .row {
+    background: #f8fafc !important;
+    border-top: 1px solid #e6edf5;
+    margin: 0 -28px !important;
+    padding: 22px 28px !important;
+}
+
+:host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) .card,
+:host ::ng-deep .row[ng-reflect-ng-if="true"] .card {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+}
+
+:host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) .card-body,
+:host ::ng-deep .row[ng-reflect-ng-if="true"] .card-body {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+:host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) > .row .card-body > .row > .col-md-12:first-child,
+:host ::ng-deep .card-body > .row > .col-md-12 {
+    background: #ffffff;
+    border: 1px solid #d9e2ef;
+    border-radius: 10px;
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(260px, 2fr) minmax(260px, 2fr) minmax(100px, 0.7fr) minmax(100px, 0.7fr) minmax(190px, 1.2fr);
+    margin-bottom: 18px !important;
+    padding: 16px !important;
+}
+
+:host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) > .row .card-body > .row > .col-md-12:first-child > .tab-wole-div-alyn,
+:host ::ng-deep .card-body > .row > .col-md-12 > .tab-wole-div-alyn,
+:host ::ng-deep .card-body > .row > .col-md-12 > div {
+    max-width: none !important;
+    min-width: 0;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+:host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) > .row .card-body > .row > .col-md-12:first-child label,
+:host ::ng-deep .card-body > .row > .col-md-12 label {
+    color: #40546f !important;
+    display: block;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    margin-bottom: 7px !important;
+    text-transform: uppercase;
+}
+
+:host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) > .row .card-body > .row > .col-md-12:first-child input,
+:host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) > .row .card-body > .row > .col-md-12:first-child select,
+:host ::ng-deep .card-body > .row > .col-md-12 input,
+:host ::ng-deep .card-body > .row > .col-md-12 select {
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+.change-colour-button,
+.buton-to-upward-crect-alighn-boxes,
+.btn-danger,
+.btn-primary,
+.btn-info {
+    border-radius: 7px !important;
+    box-shadow: 0 10px 20px rgba(15, 102, 208, 0.16) !important;
+    font-weight: 800 !important;
+    min-height: 42px;
+    text-transform: none !important;
+}
+
+.change-colour-button,
+.buton-to-upward-crect-alighn-boxes,
+.btn-danger {
+    background: #0f66d0 !important;
+    border-color: #0f66d0 !important;
+    color: #ffffff !important;
+}
+
+.btn-primary,
+.btn-info {
+    background: #123d74 !important;
+    border-color: #123d74 !important;
+    color: #ffffff !important;
+}
+
+.btn-danger:hover,
+.btn-primary:hover,
+.btn-info:hover {
+    background: #0b2e55 !important;
+    border-color: #0b2e55 !important;
+}
+
+.table-responsive {
+    border-radius: 9px;
+}
+
+.table-for-sale-search-section-diary {
+    background: #ffffff;
+    border: 1px solid #e2eaf4;
+    border-radius: 9px;
+    overflow: hidden;
+}
+
+.table-for-sale-search-section-diary thead th,
+.bg-col-stock-add-diary th,
+.table thead th {
+    background: #f3f6fa !important;
+    border-bottom: 1px solid #e2eaf4 !important;
+    color: #52647d !important;
+    font-size: 12px !important;
+    font-weight: 900 !important;
+    height: 48px;
+    padding: 12px 14px !important;
+    text-transform: uppercase;
+}
+
+.table-for-sale-search-section-diary td,
+.table td {
+    border-bottom: 1px solid #edf1f6 !important;
+    color: #344054;
+    font-size: 13px !important;
+    min-height: 48px;
+    padding: 11px 14px !important;
+}
+
+.table-hover tbody:hover td,
+.table-hover tr:hover td {
+    background: #f7fbff !important;
+}
+
+.div-rspnsv-pstn-crct-sls-mstr {
+    margin: 6px 0 6px 8px !important;
+    padding: 10px 20px !important;
+}
+
+#Save_Button {
+    background: #0f66d0 !important;
+}
+
+@media (max-width: 1280px) {
+    :host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) > .row .card-body > .row > .col-md-12:first-child,
+    :host ::ng-deep .card-body > .row > .col-md-12 {
+        grid-template-columns: repeat(3, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 920px) {
+    :host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) > .container-fluid:first-child,
+    :host ::ng-deep .row[ng-reflect-ng-if="true"] > .container-fluid:first-child {
+        grid-template-columns: 1fr;
+    }
+
+    .croct-float-purchase-master-section .col-md-12 {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    :host ::ng-deep .main-content > .container-fluid > .row:not(.col-md-12) > .row .card-body > .row > .col-md-12:first-child,
+    :host ::ng-deep .card-body > .row > .col-md-12 {
+        grid-template-columns: 1fr;
+    }
+}

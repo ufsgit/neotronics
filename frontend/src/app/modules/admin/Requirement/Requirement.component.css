@@ -12,6 +12,46 @@
 input{
     padding-left: 15px  !important;
 }
+
+.requirement-entry-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+
+.requirement-entry-field {
+    min-width: 120px;
+}
+
+.requirement-entry-item {
+    flex: 1 1 260px;
+}
+
+.requirement-entry-description {
+    flex: 1 1 180px;
+}
+
+.requirement-entry-small {
+    flex: 0 1 120px;
+}
+
+.requirement-entry-button {
+    flex: 0 0 auto;
+    padding-bottom: 5px;
+}
+
+.table-for-sale-search-section-diary {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table-for-sale-search-section-diary th,
+.table-for-sale-search-section-diary td {
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
 .for-input-selct-tblelst {
     margin: 10px 0px 25px 0px;
     padding: 5px 0px !important;
@@ -153,3 +193,324 @@ input{
 
   
   
+/* ================================
+   REQUIREMENT ENTRY UI REFRESH
+   CSS only: preserves existing fields, bindings, and actions
+================================ */
+:host {
+    display: block;
+    background: #eef3f8;
+}
+
+:host ::ng-deep .main-content {
+    background: #eef3f8 !important;
+    min-height: calc(100vh - 66px);
+    padding: 20px 24px !important;
+}
+
+:host ::ng-deep .main-content > .container-fluid {
+    background: #ffffff;
+    border: 1px solid #d9e2ef;
+    border-radius: 10px;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+    max-width: calc(100% - 28px);
+    overflow: hidden;
+    padding: 24px 28px !important;
+}
+
+:host ::ng-deep .row.mt-2[style*="background-color"] {
+    background: #ffffff !important;
+    margin: 0 !important;
+}
+
+:host ::ng-deep .row.mt-2[style*="background-color"] > .container-fluid:first-child {
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+    border-bottom: 1px solid #e6edf5;
+    display: grid;
+    gap: 18px 34px;
+    grid-template-columns: minmax(360px, 1fr) minmax(360px, 1fr);
+    padding: 8px 6px 24px !important;
+}
+
+.croct-float-purchase-master-section {
+    max-width: none !important;
+    padding: 0 4px !important;
+    width: 100% !important;
+}
+
+.croct-float-purchase-master-section .col-md-12 {
+    align-items: center;
+    display: grid;
+    gap: 14px;
+    grid-template-columns: 180px minmax(0, 1fr);
+    margin-bottom: 8px !important;
+    padding: 0 !important;
+}
+
+.label-to-crect-all-names-to-divs,
+.label-to-crect-all-names-to-div-tre-prt-sles,
+.mrgin-alghn-label-text-otrs-nxt {
+    color: #243447 !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    line-height: 1.25;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.mrgn-crct-input-text-div-tre-prt-sles1,
+.mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn,
+.for-input-selct-tblelst,
+select,
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+    background: #ffffff !important;
+    border: 1px solid #cfd8e5 !important;
+    border-radius: 7px !important;
+    color: #182230 !important;
+    font-size: 15px !important;
+    min-height: 44px !important;
+    outline: none !important;
+    padding: 8px 12px !important;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+input:focus,
+select:focus,
+.mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn:focus,
+.for-input-selct-tblelst:focus {
+    background: #fbfdff !important;
+    border-color: #0f8fcf !important;
+    box-shadow: 0 0 0 3px rgba(15, 143, 207, 0.12) !important;
+}
+
+input[readonly] {
+    background: #f8fafc !important;
+    color: #52647d !important;
+}
+
+:host ::ng-deep .mat-datepicker-toggle {
+    color: #40546f;
+}
+
+:host ::ng-deep .croct-float-purchase-master-section .mat-datepicker-toggle {
+    align-items: center;
+    display: inline-flex;
+    height: 44px;
+    justify-content: center;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    z-index: 2;
+}
+
+:host ::ng-deep .croct-float-purchase-master-section .mat-datepicker-toggle button {
+    height: 36px !important;
+    line-height: 36px !important;
+    width: 36px !important;
+}
+
+:host ::ng-deep .croct-float-purchase-master-section div.mrgn-crct-input-text-div-tre-prt-sles1 {
+    position: relative;
+}
+
+:host ::ng-deep .croct-float-purchase-master-section div.mrgn-crct-input-text-div-tre-prt-sles1 input[matinput],
+:host ::ng-deep .croct-float-purchase-master-section div.mrgn-crct-input-text-div-tre-prt-sles1 input[matInput] {
+    padding-right: 48px !important;
+}
+
+:host ::ng-deep .row.mt-2[style*="background-color"] > .row {
+    background: #f8fafc !important;
+    border-top: 1px solid #e6edf5;
+    margin: 0 -28px !important;
+    padding: 22px 28px !important;
+}
+
+:host ::ng-deep .row.mt-2[style*="background-color"] .card {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+}
+
+:host ::ng-deep .row.mt-2[style*="background-color"] .card-body {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+:host ::ng-deep .card-body > .row > .col-md-12[style*="display: flex"] {
+    background: #ffffff;
+    border: 1px solid #d9e2ef;
+    border-radius: 10px;
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
+    display: grid !important;
+    gap: 12px !important;
+    grid-template-columns: minmax(260px, 2fr) minmax(190px, 1.35fr) minmax(120px, 0.8fr) minmax(110px, 0.7fr) minmax(110px, 0.7fr) minmax(180px, 1.3fr) auto;
+    margin-bottom: 18px !important;
+    padding: 16px !important;
+}
+
+:host ::ng-deep .card-body > .row > .col-md-12[style*="display: flex"] > div {
+    flex: none !important;
+    min-width: 0;
+}
+
+:host ::ng-deep .card-body > .row > .col-md-12[style*="display: flex"] label {
+    color: #40546f !important;
+    display: block;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    margin-bottom: 7px !important;
+    text-transform: uppercase;
+}
+
+:host ::ng-deep .card-body > .row > .col-md-12[style*="display: flex"] input,
+:host ::ng-deep .card-body > .row > .col-md-12[style*="display: flex"] select {
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+.change-colour-button,
+.buton-to-upward-crect-alighn-boxes,
+.btn-danger,
+.btn-primary,
+.btn-info {
+    border-radius: 7px !important;
+    box-shadow: 0 10px 20px rgba(15, 102, 208, 0.16) !important;
+    font-weight: 800 !important;
+    min-height: 42px;
+    text-transform: none !important;
+}
+
+.change-colour-button,
+.buton-to-upward-crect-alighn-boxes,
+.btn-danger {
+    background: #0f66d0 !important;
+    border-color: #0f66d0 !important;
+    color: #ffffff !important;
+}
+
+.btn-primary,
+.btn-info {
+    background: #123d74 !important;
+    border-color: #123d74 !important;
+    color: #ffffff !important;
+}
+
+.btn-danger:hover,
+.btn-primary:hover,
+.btn-info:hover {
+    background: #0b2e55 !important;
+    border-color: #0b2e55 !important;
+}
+
+.table-responsive {
+    border-radius: 9px;
+}
+
+.table-for-sale-search-section-diary {
+    background: #ffffff;
+    border: 1px solid #e2eaf4;
+    border-radius: 9px;
+    overflow: hidden;
+}
+
+.table-for-sale-search-section-diary thead th,
+.bg-col-stock-add-diary th,
+.table thead th {
+    background: #f3f6fa !important;
+    border-bottom: 1px solid #e2eaf4 !important;
+    color: #52647d !important;
+    font-size: 12px !important;
+    font-weight: 900 !important;
+    height: 48px;
+    padding: 12px 14px !important;
+    text-transform: uppercase;
+}
+
+.table-for-sale-search-section-diary td,
+.table td {
+    border-bottom: 1px solid #edf1f6 !important;
+    color: #344054;
+    font-size: 13px !important;
+    min-height: 48px;
+    padding: 11px 14px !important;
+}
+
+.table-hover tbody:hover td,
+.table-hover tr:hover td {
+    background: #f7fbff !important;
+}
+
+:host ::ng-deep .col-md-12.mt-5 h4,
+:host ::ng-deep h4[style*="font-weight: bold"] {
+    align-items: center;
+    color: #0b1f35 !important;
+    display: flex;
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    gap: 10px;
+    margin: 28px 0 18px !important;
+}
+
+:host ::ng-deep .col-md-12.mt-5 h4:before,
+:host ::ng-deep h4[style*="font-weight: bold"]:before {
+    background: #00a8c6;
+    border-radius: 999px;
+    content: "";
+    height: 10px;
+    width: 10px;
+}
+
+:host ::ng-deep .col-md-6 .wole-div-margin-to-down-proper {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    padding: 0 !important;
+}
+
+:host ::ng-deep .col-md-6 .wole-div-margin-to-down-proper input[type="number"] {
+    width: 90px !important;
+}
+
+:host ::ng-deep .col-md-6 .wole-div-margin-to-down-proper select {
+    min-width: 260px;
+    width: 260px !important;
+}
+
+.div-rspnsv-pstn-crct-sls-mstr {
+    margin: 6px 0 6px 8px !important;
+    padding: 10px 20px !important;
+}
+
+#Save_Button {
+    background: #0f66d0 !important;
+}
+
+:host ::ng-deep .row.mt-2[style*="background-color"] .clearfix {
+    clear: both;
+}
+
+@media (max-width: 1280px) {
+    :host ::ng-deep .card-body > .row > .col-md-12[style*="display: flex"] {
+        grid-template-columns: repeat(3, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 920px) {
+    :host ::ng-deep .row.mt-2[style*="background-color"] > .container-fluid:first-child {
+        grid-template-columns: 1fr;
+    }
+
+    .croct-float-purchase-master-section .col-md-12 {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    :host ::ng-deep .card-body > .row > .col-md-12[style*="display: flex"] {
+        grid-template-columns: 1fr;
+    }
+}

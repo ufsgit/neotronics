@@ -1,14 +1,8 @@
-import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 
-@Component({
-    selector: 'app-user-role',
-    templateUrl: './User_Role.component.html',
-    styleUrls: ['./User_Role.component.css']
-})
-export class User_RoleComponent implements OnInit {
+export class User_RoleCleanComponent {
     User_Role_Data: any[] = [];
     Search_User_Role_Name_: string = '';
     User_Role_Name: string = '';

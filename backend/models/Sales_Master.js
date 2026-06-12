@@ -25,7 +25,11 @@ var Sales_Master = {
             ]);
 
             if (log) log.info("sp.call", { name: "Save_Sales_Master" });
-            return (new storedProcedure("Save_Sales_Master", params, connection)).result();
+            var result = await (new storedProcedure("Save_Sales_Master", params, connection)).result();
+            if (result && result[0] && result[0].Sales_Master_Id_ && Sales_Master_.Company_Id) {
+                await connection.query("UPDATE sales_master SET Company_Id=? WHERE Sales_Master_Id=?", [Sales_Master_.Company_Id, result[0].Sales_Master_Id_]);
+            }
+            return result;
         }, { log });
     },
 
@@ -150,13 +154,34 @@ var Sales_Master = {
                 Quotation_Master_.charge1_Amount, Quotation_Master_.Charge2, Quotation_Master_.charge2_Amount, Quotation_Master_.Discount_Description,
                 Quotation_Master_.Additional_Discount, Quotation_Master_.Description2, Quotation_Master_.Amount_In_Words, Quotation_Master_.PreparedBy,
                 Quotation_Master_.Charge1per, Quotation_Master_.Payment_Term_Description, Quotation_Master_.VAT_Percentage, Quotation_Master_.VAT_Amount, Quotation_Master_.TaxableAmount,
-                Quotation_Master_.KindAttend, Quotation_Master_.PaymentTermValue, Quotation_Master_.Supplier_Ref_No, Quotation_Master_.Quotation_Details,
+                Quotation_Master_.KindAttend, Quotation_Master_.PaymentTermValue, Quotation_Master_.Supplier_Ref_No, typeof Quotation_Master_.Quotation_Details === 'object' ? JSON.stringify(Quotation_Master_.Quotation_Details) : Quotation_Master_.Quotation_Details,
             ]);
             if (log) log.info("sp.call", { name: "Save_Quotation" });
-            const result = await (new storedProcedure("Save_Quotation", params, connection)).result();
+            // Build the SP call SQL directly to use the transaction connection reliably
+            const placeholders = params.map(() => '?').join(',');
+            const spSql = `CALL Save_Quotation(${placeholders})`;
+            const [spResult] = await connection.query(spSql, params);
+            // spResult is an array of result sets; the last SELECT returns SalesQuotationMaster_Id_
+            let result = (Array.isArray(spResult) && Array.isArray(spResult[0])) ? spResult[0] : spResult;
             let qid = Quotation_Master_.SalesQuotationMaster_Id;
-            if (!qid && result && result[0] && result[0][0]) {
-                qid = result[0][0].SalesQuotationMaster_Id_;
+            if (!qid) {
+                // Try to extract from the SP SELECT result
+                if (Array.isArray(spResult)) {
+                    for (const rs of spResult) {
+                        if (rs && rs[0] && rs[0].SalesQuotationMaster_Id_) {
+                            qid = rs[0].SalesQuotationMaster_Id_;
+                            break;
+                        }
+                    }
+                }
+                // Reliable fallback: LAST_INSERT_ID() is set by the SP's INSERT
+                if (!qid) {
+                    const [[lastIdRow]] = await connection.query("SELECT LAST_INSERT_ID() AS lid");
+                    if (lastIdRow && lastIdRow.lid) qid = lastIdRow.lid;
+                }
+            }
+            if (qid && Quotation_Master_.Company_Id) {
+                await connection.query("UPDATE salesquotationmaster SET Company_Id=? WHERE SalesQuotationMaster_Id=?", [Quotation_Master_.Company_Id, qid]);
             }
             if (qid) {
                 let status = Quotation_Master_.Status;
@@ -265,7 +290,11 @@ var Sales_Master = {
                 performainvoicemaster_.AccountType_Id, performainvoicemaster_.PaymentTermValue, performainvoicemaster_.Total,
             ]);
             if (log) log.info("sp.call", { name: "Save_PerformaInvoice" });
-            return (new storedProcedure("Save_PerformaInvoice", params, connection)).result();
+            var result = await (new storedProcedure("Save_PerformaInvoice", params, connection)).result();
+            if (result && result[0] && result[0].PerformaInvoiceMaster_Id_ && performainvoicemaster_.Company_Id) {
+                await connection.query("UPDATE performainvoicemaster SET Company_Id=? WHERE PerformaInvoiceMaster_Id=?", [performainvoicemaster_.Company_Id, result[0].PerformaInvoiceMaster_Id_]);
+            }
+            return result;
         }, { log });
     },
 
@@ -306,7 +335,11 @@ var Sales_Master = {
                 Purchase_Ordermaster_.AccountType_Id, Purchase_Ordermaster_.PaymentTermValue, Purchase_Ordermaster_.Basic_Discount, Purchase_Ordermaster_.Customer_Reference, Purchase_Ordermaster_.Supplier_Ref_No,
             ]);
             if (log) log.info("sp.call", { name: "Save_Purchase_order" });
-            return (new storedProcedure("Save_Purchase_order", params, connection)).result();
+            var result = await (new storedProcedure("Save_Purchase_order", params, connection)).result();
+            if (result && result[0] && result[0].PurchaseOrderMaster_Id_ && Purchase_Ordermaster_.Company_Id) {
+                await connection.query("UPDATE purchaseordermaster SET Company_Id=? WHERE PurchaseOrderMaster_Id=?", [Purchase_Ordermaster_.Company_Id, result[0].PurchaseOrderMaster_Id_]);
+            }
+            return result;
         }, { log });
     },
 
@@ -426,7 +459,11 @@ var Sales_Master = {
                 Sales_Return_Master_.Sales_Return_Details,
             ]);
             if (log) log.info("sp.call", { name: "Save_Sales_Returns_Master" });
-            return (new storedProcedure("Save_Sales_Returns_Master", params, connection)).result();
+            var result = await (new storedProcedure("Save_Sales_Returns_Master", params, connection)).result();
+            if (result && result[0] && result[0].Sales_Return_Master_Id_ && Sales_Return_Master_.Company_Id) {
+                await connection.query("UPDATE sales_return_master SET Company_Id=? WHERE Sales_Return_Master_Id=?", [Sales_Return_Master_.Company_Id, result[0].Sales_Return_Master_Id_]);
+            }
+            return result;
         }, { log });
     },
 
@@ -480,7 +517,11 @@ var Sales_Master = {
                 Price_Request_Master_.Mobile_No, Price_Request_Master_.Email, Price_Request_Master_.Price_Request_Details,
             ]);
             if (log) log.info("sp.call", { name: "Save_Price_Request" });
-            return (new storedProcedure("Save_Price_Request", params, connection)).result();
+            var result = await (new storedProcedure("Save_Price_Request", params, connection)).result();
+            if (result && result[0] && result[0].Price_Request_Master_Id_ && Price_Request_Master_.Company_Id) {
+                await connection.query("UPDATE price_request_master SET Company_Id=? WHERE Price_Request_Master_Id=?", [Price_Request_Master_.Company_Id, result[0].Price_Request_Master_Id_]);
+            }
+            return result;
         }, { log });
     },
 

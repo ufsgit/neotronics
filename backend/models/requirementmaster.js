@@ -8,24 +8,71 @@ var requirementmaster = {
         if (!requirementmaster_) throw new Error("Payload missing");
         const { withTransaction, normalizeParams } = require("../helpers/transaction");
         return withTransaction(async ({ connection }) => {
+            
+            const safeNum = (val) => {
+                const parsed = Number(val);
+                return isNaN(parsed) ? 0 : parsed;
+            };
+
             const params = normalizeParams([
-                requirementmaster_.RequirementMaster_Id, requirementmaster_.Account_Party_Id, requirementmaster_.EntryDate,
-                requirementmaster_.RequirementNo, requirementmaster_.POnumber, requirementmaster_.CurrencyId,
-                requirementmaster_.PaymentTerms, requirementmaster_.AttendEmployee, requirementmaster_.TotalAmount,
-                requirementmaster_.TotalDiscount, requirementmaster_.Roundoff_Amt, requirementmaster_.Total_Amount,
-                requirementmaster_.Basic_Discount, requirementmaster_.NetTotal, requirementmaster_.Brand,
-                requirementmaster_.PriceBasis, requirementmaster_.Delivery, requirementmaster_.Validity,
-                requirementmaster_.Description1, requirementmaster_.User_Id, requirementmaster_.Delivery_Address1,
-                requirementmaster_.Delivery_Address2, requirementmaster_.Delivery_Address3, requirementmaster_.Delivery_Address4,
-                requirementmaster_.Charge1, requirementmaster_.charge1_Amount, requirementmaster_.Charge2,
-                requirementmaster_.charge2_Amount, requirementmaster_.Discount_Description, requirementmaster_.Additional_Discount,
-                requirementmaster_.Description2, requirementmaster_.Amount_In_Words, requirementmaster_.PreparedBy,
-                requirementmaster_.Charge1per, requirementmaster_.Payment_Term_Description, requirementmaster_.VAT_Percentage,
-                requirementmaster_.VAT_Amount, requirementmaster_.TaxableAmount, requirementmaster_.KindAttend,
-                requirementmaster_.PaymentTermValue, requirementmaster_.Supplier_Ref_No, requirementmaster_.Requirement_Details
+                safeNum(requirementmaster_.RequirementMaster_Id), 
+                safeNum(requirementmaster_.Account_Party_Id), 
+                requirementmaster_.EntryDate || new Date().toISOString().split('T')[0],
+                requirementmaster_.RequirementNo || "0", 
+                requirementmaster_.POnumber || "", 
+                safeNum(requirementmaster_.CurrencyId),
+                requirementmaster_.PaymentTerms || "", 
+                safeNum(requirementmaster_.AttendEmployee), 
+                safeNum(requirementmaster_.TotalAmount),
+                safeNum(requirementmaster_.TotalDiscount), 
+                safeNum(requirementmaster_.Roundoff_Amt), 
+                safeNum(requirementmaster_.Total_Amount),
+                safeNum(requirementmaster_.Basic_Discount), 
+                safeNum(requirementmaster_.NetTotal), 
+                requirementmaster_.Brand || "",
+                requirementmaster_.PriceBasis || "", 
+                requirementmaster_.Delivery || "", 
+                requirementmaster_.Validity || "",
+                requirementmaster_.Description1 || "", 
+                safeNum(requirementmaster_.User_Id), 
+                requirementmaster_.Delivery_Address1 || "",
+                requirementmaster_.Delivery_Address2 || "", 
+                requirementmaster_.Delivery_Address3 || "", 
+                requirementmaster_.Delivery_Address4 || "",
+                safeNum(requirementmaster_.Charge1), 
+                safeNum(requirementmaster_.charge1_Amount), 
+                safeNum(requirementmaster_.Charge2),
+                safeNum(requirementmaster_.charge2_Amount), 
+                safeNum(requirementmaster_.Discount_Description), 
+                safeNum(requirementmaster_.Additional_Discount),
+                requirementmaster_.Description2 || "", 
+                requirementmaster_.Amount_In_Words || "", 
+                safeNum(requirementmaster_.PreparedBy),
+                safeNum(requirementmaster_.Charge1per), 
+                safeNum(requirementmaster_.Payment_Term_Description), 
+                safeNum(requirementmaster_.VAT_Percentage),
+                safeNum(requirementmaster_.VAT_Amount), 
+                safeNum(requirementmaster_.TaxableAmount), 
+                safeNum(requirementmaster_.KindAttend),
+                safeNum(requirementmaster_.PaymentTermValue), 
+                requirementmaster_.Supplier_Ref_No || "", 
+                requirementmaster_.Requirement_Details
             ]);
             if (log) log.info("sp.call", { name: "Save_Requirement" });
-            const result = await (new storedProcedure("Save_Requirement", params, connection)).result();
+            let result;
+            try {
+                result = await (new storedProcedure("Save_Requirement", params, connection)).result();
+            } catch (err) {
+                if (err && err.code === "ER_SP_WRONG_NO_OF_ARGS") {
+                    const legacyParams = params.slice(0, 40).concat(params.slice(41));
+                    result = await (new storedProcedure("Save_Requirement", legacyParams, connection)).result();
+                } else {
+                    throw err;
+                }
+            }
+            if (result && result[0] && result[0].RequirementMaster_Id_ && requirementmaster_.Company_Id) {
+                await connection.query("UPDATE requirementmaster SET Company_Id=? WHERE RequirementMaster_Id=?", [requirementmaster_.Company_Id, result[0].RequirementMaster_Id_]);
+            }
             if (requirementmaster_.Lead_Id) {
                 Lead.Add_Lead_Activity({
                     Lead_Id: Number(requirementmaster_.Lead_Id),

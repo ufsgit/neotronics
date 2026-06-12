@@ -33,27 +33,27 @@
                               <div class="col-md-3 row mb-1 " style="align-items: center;">
                                   <label
                                   class="col-md-4 mb-0 " style="text-align: end;">From</label>
-                                  <mat-form-field
+                                  <div
                                       class="col-md-8 "
                                       style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                                      <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
-                                          [(ngModel)]="Search_FromDate">
+                                        border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                      <input [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
+                                          [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                                       <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
                                       <mat-datepicker #dp1></mat-datepicker>
-                                  </mat-form-field>
+                                  </div>
                               </div>
                               <div class="col-md-3 row mb-1" style="align-items: center;">
                                   <label
                                   class="col-md-4 mb-0 " style="text-align: end;">TO</label>
-                                  <mat-form-field
+                                  <div
                                   class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                                      <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
-                                          [(ngModel)]="Search_ToDate">
+                                        border-radius: 8px; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                      <input [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
+                                          [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                                       <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
                                       <mat-datepicker #dp2></mat-datepicker>
-                                  </mat-form-field>
+                                  </div>
                               </div>
                               <div class="col-md-5 row mb-1" style="align-items: center;">
                                   <label
@@ -194,7 +194,7 @@
                                             vertical-align: middle;">{{Sales_Master["FormattedEntryDate"]}}</td>
                                           <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["NetTotal"]}}</td>
+                                            vertical-align: middle;">{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</td>
                                           <td style="    padding: 0px;
                                             padding-left: 5px;
                                             vertical-align: middle;">{{Sales_Master["CurrecnyName"]}}</td>
@@ -409,11 +409,27 @@
                           </div>
                           <div class="col d-flex flex-column" style="min-width:90px;">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Model</label>
-                              <input type="text" [(ngModel)]="Sales_Details_.Model" id="Sales_Details_.Model" name="Sales_Details_.Model" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly/>
+                              <input type="text" [(ngModel)]="Sales_Details_.Model"
+                                     id="Sales_Details_.Model" name="Sales_Details_.Model"
+                                     style="padding-left:5px !important;"
+                                     class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                     [matAutocomplete]="auto_Model"
+                                     (input)="Model_Typeahead($event)"/>
+                              <mat-autocomplete #auto_Model="matAutocomplete" [displayWith]="display_Model.bind(this)" (optionSelected)="Model_Change($event.option.value)">
+                                  <mat-option *ngFor="let m of Model_Data" [value]="m">{{m.Model_Name}}</mat-option>
+                              </mat-autocomplete>
                           </div>
                           <div class="col d-flex flex-column" style="min-width:90px;">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Brand</label>
-                              <input type="text" [(ngModel)]="Sales_Details_.Brand" id="Sales_Details_.Brand" name="Sales_Details_.Brand" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly/>
+                              <input type="text" [(ngModel)]="Sales_Details_.Brand"
+                                     id="Sales_Details_.Brand" name="Sales_Details_.Brand"
+                                     style="padding-left:5px !important;"
+                                     class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                     [matAutocomplete]="auto_Brand"
+                                     (input)="Brand_Typeahead($event)"/>
+                              <mat-autocomplete #auto_Brand="matAutocomplete" [displayWith]="display_Brand.bind(this)" (optionSelected)="Brand_Change($event.option.value)">
+                                  <mat-option *ngFor="let b of Brand_Data" [value]="b">{{b.Brand_Name}}</mat-option>
+                              </mat-autocomplete>
                           </div>
                           <div class="col d-flex flex-column" style="min-width:70px;">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">UOM</label>
@@ -1090,5 +1106,6 @@
         </div>
     </div> -->
   </div>
+
 
 

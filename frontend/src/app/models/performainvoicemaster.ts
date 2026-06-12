@@ -25,6 +25,7 @@ Makes:string;
 PriceBasis:string;
 Description1:string;
 User_Id:number;
+Company_Id: number;
 KindAttend:string;
 Charge1:string;
 charge1_Amount:number;

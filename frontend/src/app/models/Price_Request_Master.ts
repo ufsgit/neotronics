@@ -3,7 +3,8 @@ export class Price_Request_Master
 {
 Price_Request_Master_Id: number;
 Account_Party_Id:number;
-User_Id:number;
+    User_Id: number;
+    Company_Id: number;
 EntryDate:string;
 Price_RequestNo:string;
 CurrencyId:number;

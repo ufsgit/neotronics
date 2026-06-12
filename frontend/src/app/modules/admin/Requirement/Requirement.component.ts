@@ -449,6 +449,7 @@ Load_Company()
             debugger;
             this.Print_Company_ = rawData[0][0];
             this.Company_ = rawData[0][0];
+            this.Company_Data = rawData[0];
             this.Bank_ = rawData[1] || [];
         }
         this.isLoading = false;
@@ -2104,16 +2105,16 @@ Calculate_Total_Amount()
         this.Requirement_Details_.Discount = 0;
     if(this.Requirement_Details_.Item_Discount_Amount == undefined || this.Requirement_Details_.Item_Discount_Amount == null)
         this.Requirement_Details_.Item_Discount_Amount =0;
-    this.Requirement_Details_.Unit_Discount = (Number(this.Requirement_Details_.UnitPrice) * Number(this.Requirement_Details_.Discount))/ 100;
+    this.Requirement_Details_.Unit_Discount = (this.safeNumber(this.Requirement_Details_.UnitPrice) * this.safeNumber(this.Requirement_Details_.Discount))/ 100;
     this.Requirement_Details_.Unit_Discount = Number(this.Requirement_Details_.Unit_Discount.toFixed(3));
-    this.Requirement_Details_.Item_Discount_Amount =Number(this.Requirement_Details_.Unit_Discount) * Number(this.Requirement_Details_.Quantity);
-    this.Requirement_Details_.Item_Discount_Amount =Number(this.Requirement_Details_.Item_Discount_Amount.toFixed(3));
-    this.Requirement_Details_.Amount = Number(this.Requirement_Details_.Quantity) * Number(this.Requirement_Details_.UnitPrice);
-    this.Requirement_Details_.Amount =Number(this.Requirement_Details_.Amount.toFixed(3));
-     this.Requirement_Details_.TaxableAmount = Number(this.Requirement_Details_.Amount) - Number(this.Requirement_Details_.Item_Discount_Amount);
-     this.Requirement_Details_.TaxableAmount = Number(this.Requirement_Details_.TaxableAmount.toFixed(3));
-    this.Requirement_Details_.TaxAmount = Number(this.Requirement_Details_.TaxableAmount) * Number(this.Requirement_Details_.SaleTax) /100;
-    this.Requirement_Details_.NetValue= Number(this.Requirement_Details_.TaxableAmount) + Number(this.Requirement_Details_.TaxAmount);
+    this.Requirement_Details_.Item_Discount_Amount = this.safeNumber(this.Requirement_Details_.Unit_Discount) * this.safeNumber(this.Requirement_Details_.Quantity);
+    this.Requirement_Details_.Item_Discount_Amount = Number(this.Requirement_Details_.Item_Discount_Amount.toFixed(3));
+    this.Requirement_Details_.Amount = this.safeNumber(this.Requirement_Details_.Quantity) * this.safeNumber(this.Requirement_Details_.UnitPrice);
+    this.Requirement_Details_.Amount = Number(this.Requirement_Details_.Amount.toFixed(3));
+    this.Requirement_Details_.TaxableAmount = this.safeNumber(this.Requirement_Details_.Amount) - this.safeNumber(this.Requirement_Details_.Item_Discount_Amount);
+    this.Requirement_Details_.TaxableAmount = Number(this.Requirement_Details_.TaxableAmount.toFixed(3));
+    this.Requirement_Details_.TaxAmount = this.safeNumber(this.Requirement_Details_.TaxableAmount) * this.safeNumber(this.Requirement_Details_.SaleTax) / 100;
+    this.Requirement_Details_.NetValue = this.safeNumber(this.Requirement_Details_.TaxableAmount) + this.safeNumber(this.Requirement_Details_.TaxAmount);
     this.Requirement_Details_.Item_Discount_Amount=Number(this.Requirement_Details_.Item_Discount_Amount.toFixed(3));    
     this.Requirement_Details_.Amount=Number(this.Requirement_Details_.Amount.toFixed(3));    
     this.Requirement_Details_.TaxableAmount=Number(this.Requirement_Details_.TaxableAmount.toFixed(3));
@@ -2392,9 +2393,15 @@ Save_Requirement(Printstatus:number)
         },
         error: (error: any) => {
             console.error("Requirement API ERROR:", error);
+            let errorMessage = error.message || 'Connection failed';
+            if (error.error && error.error.message) {
+                errorMessage = error.error.message;
+            } else if (typeof error.error === 'string') {
+                errorMessage = error.error;
+            }
             this.dialogBox.open(DialogBox_Component, {
                 panelClass: 'Dialogbox-Class',
-                data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" }
+                data: { Message: 'Server Error: ' + errorMessage, Type: "2" }
             });
         }
     });
@@ -3500,21 +3507,19 @@ debugger;
       this.Tot_Gross=0,this.Tot_discount=0,this.Tot_Net=0,this.Requirement_Master_.TotalAmount=0;this.Requirement_Master_.Basic_Discount=0
       for(var i = 0; i< this.Requirement_Details_Data.length ; i++)
       {  
-          this.Requirement_Master_.TotalAmount = Number(this.Requirement_Master_.TotalAmount) + Number(this.Requirement_Details_Data[i].Amount);  
-          // Number(this.Requirement_Details_Data[i].UnitPrice) * Number(this.Requirement_Details_Data[i].Quantity);
+          this.Requirement_Master_.TotalAmount = this.safeNumber(this.Requirement_Master_.TotalAmount) + this.safeNumber(this.Requirement_Details_Data[i].Amount);  
           this.Requirement_Master_.TotalAmount = Number(this.Requirement_Master_.TotalAmount.toFixed(3));          
-          this.Tot_discount = Number(this.Tot_discount)+  Number(this.Requirement_Details_Data[i].Item_Discount_Amount);
-          //(Number(this.Requirement_Details_Data[i].Unit_Discount) * Number(this.Requirement_Details_Data[i].Quantity) );
+          this.Tot_discount = this.safeNumber(this.Tot_discount)+  this.safeNumber(this.Requirement_Details_Data[i].Item_Discount_Amount);
           this.Tot_discount= Number(this.Tot_discount.toFixed(3));  
-          this.Requirement_Master_.Basic_Discount = this.Requirement_Master_.Basic_Discount + Number(this.Requirement_Details_Data[i].Item_Discount_Amount);
+          this.Requirement_Master_.Basic_Discount = this.safeNumber(this.Requirement_Master_.Basic_Discount) + this.safeNumber(this.Requirement_Details_Data[i].Item_Discount_Amount);
           this.Requirement_Master_.Basic_Discount = Number(this.Requirement_Master_.Basic_Discount.toFixed(3));      
       }  
       this.Requirement_Master_.TotalAmount = Number(this.Requirement_Master_.TotalAmount.toFixed(3));
       this.Tot_discount = Number(this.Tot_discount.toFixed(3));
       if(this.addDiscCheck == 0)
       {
-        if(Number(this.Requirement_Master_.Discount_Description)>0){
-            this.Requirement_Master_.Additional_Discount = Number(this.Requirement_Master_.TotalAmount) * (Number(this.Requirement_Master_.Discount_Description)/ 100);
+        if(this.safeNumber(this.Requirement_Master_.Discount_Description)>0){
+            this.Requirement_Master_.Additional_Discount = this.safeNumber(this.Requirement_Master_.TotalAmount) * (this.safeNumber(this.Requirement_Master_.Discount_Description)/ 100);
             this.Requirement_Master_.Additional_Discount = Number(this.Requirement_Master_.Additional_Discount.toFixed(3));    
             this.addDiscCheck = 0;        
         }else{
@@ -3525,27 +3530,26 @@ debugger;
       }
       debugger;
       this.addDiscCheck = 0;
-      //this.Requirement_Master_.Discount_Description = (this.safeNumber(this.Requirement_Master_.Additional_Discount) * 100)/this.Requirement_Master_.TotalAmount
-      this.Requirement_Master_.TotalDiscount = Number(this.Tot_discount.toFixed(3))+ Number(this.Requirement_Master_.Additional_Discount);
+      this.Requirement_Master_.TotalDiscount = Number(this.Tot_discount.toFixed(3))+ this.safeNumber(this.Requirement_Master_.Additional_Discount);
       this.Requirement_Master_.TotalDiscount = Number(this.Requirement_Master_.TotalDiscount.toFixed(3));     
-      if(this.Requirement_Master_.Charge1per > 0){
-          this.Requirement_Master_.charge1_Amount = (Number(this.Requirement_Master_.TotalAmount.toFixed(3)) - Number(this.Requirement_Master_.Additional_Discount))* (Number(this.Requirement_Master_.Charge1per)/100)
+      if(this.safeNumber(this.Requirement_Master_.Charge1per) > 0){
+          this.Requirement_Master_.charge1_Amount = (Number(this.Requirement_Master_.TotalAmount.toFixed(3)) - this.safeNumber(this.Requirement_Master_.Additional_Discount))* (this.safeNumber(this.Requirement_Master_.Charge1per)/100)
           this.Requirement_Master_.charge1_Amount = Number(this.Requirement_Master_.charge1_Amount.toFixed(3))
       }else{
           this.Requirement_Master_.charge1_Amount =  0.000;
       }      
       this.Total = Number(this.Requirement_Master_.TotalAmount.toFixed(3))-Number(this.Requirement_Master_.TotalDiscount.toFixed(3)) + 
-      this.safeNumber(Number(this.Requirement_Master_.charge2_Amount)) + Number(this.Requirement_Master_.charge1_Amount.toFixed(3))
+      this.safeNumber(this.Requirement_Master_.charge2_Amount) + Number(this.Requirement_Master_.charge1_Amount.toFixed(3))
       this.Total = Number(this.Total.toFixed(3))
       this.Requirement_Master_.VAT_Amount = 0.000;
-      if(this.Requirement_Master_.VAT_Percentage>0){
-          this.Requirement_Master_.VAT_Amount = this.Total * (this.Requirement_Master_.VAT_Percentage/100)
+      if(this.safeNumber(this.Requirement_Master_.VAT_Percentage)>0){
+          this.Requirement_Master_.VAT_Amount = this.Total * (this.safeNumber(this.Requirement_Master_.VAT_Percentage)/100)
       }
       this.Requirement_Master_.VAT_Amount = Number(this.Requirement_Master_.VAT_Amount.toFixed(3))    
       this.Requirement_Master_.TaxableAmount = this.Total;
-      this.Requirement_Master_.Total_Amount = this.Total + this.Requirement_Master_.VAT_Amount
+      this.Requirement_Master_.Total_Amount = this.Total + this.safeNumber(this.Requirement_Master_.VAT_Amount)
       this.Requirement_Master_.Total_Amount = Number(this.Requirement_Master_.Total_Amount.toFixed(3))
-      this.Requirement_Master_.NetTotal = Number((this.Requirement_Master_.Total_Amount - this.safeNumber(this.Requirement_Master_.Roundoff_Amt)).toFixed(3))
+      this.Requirement_Master_.NetTotal = Number((this.safeNumber(this.Requirement_Master_.Total_Amount) - this.safeNumber(this.Requirement_Master_.Roundoff_Amt)).toFixed(3))
       this.Requirement_Master_.NetTotal = Number(this.Requirement_Master_.NetTotal.toFixed(3))
       this.Requirement_Master_.TotalAmount = parseFloat(this.Requirement_Master_.TotalAmount.toFixed(3));
       this.Requirement_Master_.Amount_In_Words = this.numberToWordsIndianCurrency(this.Requirement_Master_.NetTotal)       

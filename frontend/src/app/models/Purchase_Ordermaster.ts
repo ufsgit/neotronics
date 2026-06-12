@@ -62,6 +62,7 @@ NetTotal:number;
 charge1_Amount:number;
 BillType_Name:string;
 User_Id:number;
+Company_Id: number;
 Address1:string;
 Address2:string;
 Address3:string;
