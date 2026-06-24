@@ -42,8 +42,8 @@
                         <input type="text" [(ngModel)]="From_Party_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Get_Client_Accounts_Typeahead($event)"
                                [matAutocomplete]="auto_party" placeholder="Select Account" class="soa-input">
                         <mat-autocomplete #auto_party="matAutocomplete" [displayWith]="display_FromAccount">
-                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
-                            <ng-container *ngIf="!isLoading">
+                            <mat-option *ngIf="issLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                            <ng-container *ngIf="!issLoading">
                                 <mat-option *ngFor="let acc of Client_Accounts_Data" [value]="acc">
                                     <span>{{acc.Client_Accounts_Name}}</span>
                                 </mat-option>

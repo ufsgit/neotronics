@@ -7,6 +7,7 @@ router.post('/Save_User_Details/',async function(req,res,next)
       try 
       {
       const resp=await User_Details.Save_User_Details(req.body);
+      console.log('Sending response for Save_User_Details:', resp);
       return res.send(resp);
       }
       catch(e){

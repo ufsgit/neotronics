@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Company_Size_Service } from '../../../services/Company_Size.Service';
 import { Company_Size } from '../../../models/Company_Size';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 
 @Component({
   selector: 'app-Company-Size',
@@ -27,7 +28,8 @@ export class Company_SizeComponent implements OnInit {
     public Company_Size_Service_: Company_Size_Service,
     private route: ActivatedRoute,
     private router: Router,
-    public dialogBox: MatDialog
+    public dialogBox: MatDialog,
+    private Master_Refresh_Service_: Master_Refresh_Service
   ) { }
 
   ngOnInit() {
@@ -90,6 +92,7 @@ export class Company_SizeComponent implements OnInit {
         this.Clr_Company_Size();
         this.Search_Company_Size();
         this.Entry_View = false;
+        this.Master_Refresh_Service_.refreshMaster('Company_Size');
       },
       error: (error) => {
         this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: '2' } });
@@ -114,6 +117,7 @@ export class Company_SizeComponent implements OnInit {
           this.issLoading = false;
           this.Search_Company_Size();
           this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted', Type: 'false' } });
+          this.Master_Refresh_Service_.refreshMaster('Company_Size');
         },
         error => {
           this.issLoading = false;

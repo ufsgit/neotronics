@@ -6,6 +6,7 @@ export const environment = {
 	BasePath: "http://localhost:3502/",
 	// BasePath: "https://neotronicsapi.trackbox.live/",
 	FilePath: "http://localhost:3502/uploads/",
+	// FilePath: "https://neotronicsapi.trackbox.live/uploads/",
 
 	// Cloudflare R2 / AWS S3 Configuration
 	aws: {

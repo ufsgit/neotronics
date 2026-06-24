@@ -50,16 +50,12 @@ try
 {
 	Item.Search_Item( req.query.Item_Name_,req.query.Group_Id_,req.query.Item_Code_, function (err, rows)
 {
-if (err) 
-{
-  console.log(err);
-res.json(err);
-}
-else 
-{
-res.json(rows);
-}
-});
+      if (err) {
+        console.log(err);
+        return next(err);
+      }
+      return sendSuccess(res, { message: "OK", data: rows || [] });
+    });
 }
 catch (e) 
 {
@@ -97,16 +93,11 @@ router.get('/Item_Typeahead',function(req,res,next)
 { 
 try 
 {
-  Item.Item_Typeahead(req.query.Item_Name, function (err, rows)
-{
-  if (err) 
-  {
-  res.json(err);
-  }
-  else 
-  {
-    res.json(rows);
-  }
+  Item.Item_Typeahead(req.query.Item_Name, function (err, rows) {
+    if (err) {
+      return next(err);
+    }
+    return sendSuccess(res, { message: "OK", data: rows || [] });
   });
   }
 catch (e) 

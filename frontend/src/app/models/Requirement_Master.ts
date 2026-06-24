@@ -77,6 +77,7 @@ export class Requirement_Master {
     No: string;
     TotalC: number;
     ToalS: number;
+    Lead_Id: number;
 
 
     // Frontend helper fields (to be aligned with Quotation logic)

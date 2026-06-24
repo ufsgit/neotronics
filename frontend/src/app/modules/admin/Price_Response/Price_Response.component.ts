@@ -37,6 +37,7 @@ import { Sales_Master_Service } from '../../../services/Sales_Master.Service';
 import { Requirement_Master_Service } from '../../../services/Requirement_Master.Service';
 import { RequirementWorkflowService } from '../../../services/RequirementWorkflow.Service';
 import { Item_Service } from '../../../services/Item.Service';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 import { CommonModule } from '@angular/common';
 import { DecimalPipe } from '@angular/common';
 import { WorkDocs } from 'aws-sdk';
@@ -82,7 +83,7 @@ export class Price_ResponseComponent implements OnInit, AfterViewInit  {
       if(event.key=='F2')
     this.Save_Price_Response(1);
   }
-  Price_Response_Master_Data:Price_Response_Master[]
+  Price_Response_Master_Data:Price_Response_Master[] = [];
 Price_Response_Master_:Price_Response_Master= new Price_Response_Master();
 Price_Response_Details_Data:Price_Response_Details[]
 Price_Response_Details_:Price_Response_Details= new Price_Response_Details();
@@ -268,7 +269,8 @@ constructor(public Price_Response_Service_: Price_Response_Service, public Sales
         public RequirementWorkflowService_: RequirementWorkflowService,
         public Item_Service_: Item_Service,
         public Brand_Service_: Brand_Service,
-        public Model_Service_: Model_Service
+        public Model_Service_: Model_Service,
+        private Master_Refresh_Service_: Master_Refresh_Service
     ) { 
         this.Load_Bill_Type();       
         this.Load_Currency();
@@ -287,7 +289,7 @@ constructor(public Price_Response_Service_: Price_Response_Service, public Sales
     }
     ngOnInit() 
 {
-    debugger;
+    // debugger;
     this.User_Type=(localStorage.getItem('User_Type'));
     this.User_Type_Id=Number(localStorage.getItem('User_Type_Id'));
     this.Login_User_Id=localStorage.getItem('Login_User');
@@ -306,7 +308,17 @@ constructor(public Price_Response_Service_: Price_Response_Service, public Sales
     this.Sales_Master_Edit=this.Permissions.Edit;
     this.Sales_Master_Save=this.Permissions.Save;
     this.Sales_Master_Delete=this.Permissions.Delete;
-    this.Page_Load()
+    this.Page_Load();
+
+    // Subscribe to master data updates
+    this.Master_Refresh_Service_.masterUpdated$.subscribe(masterName => {
+        if (masterName === 'Brand') this.Load_Brand_Dropdown();
+        if (masterName === 'Model') this.Load_Model_Dropdown();
+        if (masterName === 'Item_Group') this.Load_Item_Group();
+        if (masterName === 'Item') { /* Items are usually typeahead */ }
+        if (masterName === 'Accounts') { /* Customer_Data is usually typeahead */ }
+        if (masterName === 'Payment_Term') this.Load_Payment_Term();
+    });
     }
 }
 call_api()
@@ -322,13 +334,14 @@ Page_Load()
 {
     this.myInnerHeight = (window.innerHeight);
     this.myInnerHeight = this.myInnerHeight - 200;
-    this.Price_Response_Master_.EntryDate=new Date("dd-MMM-yyyy").toString();
-    this.Search_FromDate=this.formatDate(this.Search_FromDate);
-    this.Search_ToDate=this.formatDate(this.Search_ToDate);
+    this.Price_Response_Master_.EntryDate=new Date().toString();
+    this.Search_FromDate=this.formatDate(new Date());
+    this.Search_ToDate=this.formatDate(new Date());
     this.Clr_Sales_Master();
     this.Clr_Sales_Details();
     this.Sales_Print=true;
     this.Entry_View=false;
+
     this.Load_Brand_Dropdown();
     this.Load_Model_Dropdown();
 
@@ -503,7 +516,7 @@ Load_Company()
     const bankRows = Array.isArray(Rows) && Array.isArray(Rows[1]) ? Rows[1] : [];
     this.Print_Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
     this.Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
-    this.Bank_ = bankRows;
+    this.Bank_ = bankRows.length > 0 ? bankRows[0] : new Client_Accounts();
  }
  this.issLoading = false;
  },
@@ -803,7 +816,7 @@ debugger;
     {
         this.printAcknowledgeChargeAmount2 = true;
     }
-    debugger;
+    // debugger;
     if(this.Price_Response_Master_.TotalDiscount != 0)
         if(this.Price_Response_Master_.TotalDiscount != null )
            if(this.Price_Response_Master_.TotalDiscount != undefined )
@@ -814,7 +827,7 @@ debugger;
                         {
                             this.printAcknowledgeTotalDiscount = true;
                         }
-                        debugger;
+                        // debugger;
     if(this.Price_Response_Master_.VAT_Amount != 0)
         if(this.Price_Response_Master_.VAT_Amount != null )
            if(this.Price_Response_Master_.VAT_Amount != undefined )
@@ -885,7 +898,7 @@ debugger;
 //         this.printChargeAmount1 = true;
 //     }
 
-// debugger;
+// // debugger;
 //     if(this.Price_Response_Master_.charge2_Amount != 0 &&
 //         this.Price_Response_Master_.charge2_Amount != null &&
 //         this.Price_Response_Master_.charge2_Amount.toString() != 'null'&&
@@ -1178,6 +1191,7 @@ Delete_Price_Response_Master(Price_Response_Master_Id,index)
   else if(Delete_status[0][0].Price_Response_Master_Id_>0){
     this.Price_Response_Master_Data.splice(index, 1);
       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});      
+      this.Master_Refresh_Service_.refreshMaster('Price_Response');
       this.Search_Price_Response();
     }
     else
@@ -1693,22 +1707,60 @@ Search_Price_Response()
     this.Price_Response_Service_.Search_Price_Response(look_In_Date_Value, moment(this.Search_FromDate).format('YYYY-MM-DD'), 
     moment(this.Search_ToDate).format('YYYY-MM-DD'), SupplierId_, this.QuotNo).subscribe({
         next: (response: any) => {
-            const Rows = response.success ? response.data : (Array.isArray(response) ? response : []);
-            this.Price_Response_Master_Data = Rows[0];
+            console.log("Raw Response from Search API:", response);
+            if (response != null) {
+                let data_: any = response;
+
+                // Unwrap success wrapper if present
+                if (response && response.success === true && response.data !== undefined) {
+                    data_ = response.data;
+                    console.log("Unwrapped data:", data_);
+                }
+
+                // Handle Array(2) format: [[rows], fields] — MySQL2 raw result
+                if (Array.isArray(data_) && data_.length >= 1) {
+                    if (Array.isArray(data_[0])) {
+                        // data_[0] is the actual rows array
+                        this.Price_Response_Master_Data = data_[0];
+                        console.log("Rows found in nested array:", this.Price_Response_Master_Data);
+                    } else if (data_[0] && typeof data_[0] === 'object' && !Array.isArray(data_[0])) {
+                        // data_ itself is flat array of row objects
+                        this.Price_Response_Master_Data = data_;
+                        console.log("Rows found in flat array:", this.Price_Response_Master_Data);
+                    } else {
+                        console.log("Data format not recognized or empty nested array");
+                        this.Price_Response_Master_Data = [];
+                    }
+                } else {
+                    console.log("Data is not a valid array or empty:", data_);
+                    this.Price_Response_Master_Data = [];
+                }
+            } else {
+                console.log("Response is null");
+                this.Price_Response_Master_Data = [];
+            }
+            
             if (this.Price_Response_Master_Data && this.Price_Response_Master_Data.length > 0) {
+                this.Sales_Master_Total_Amount = 0; // Reset total before loop
                 for (var i = 0; i < this.Price_Response_Master_Data.length; i++) {
-                    this.Price_Response_Master_Data[i].Price_RequestNo = this.Price_Response_Master_Data[i].Price_Response_No;
-                    this.Price_Response_Master_Data[i].Customer = this.Price_Response_Master_Data[i].Supplier_Name;
-                    this.Price_Response_Master_Data[i].FormattedEntryDate = moment(this.Price_Response_Master_Data[i].EntryDate).format('DD/MM/YYYY');
-                    this.Price_Response_Master_Data[i].NetTotal = Number(this.Price_Response_Master_Data[i].Net_Amount || this.Price_Response_Master_Data[i].Total_Amount || 0);
-                    this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Price_Response_Master_Data[i].NetTotal);
+                    const row = this.Price_Response_Master_Data[i];
+                    row.Price_RequestNo = row.Price_Response_No || row.Price_RequestNo;
+                    row.Customer = row.Supplier_Name || row.Customer;
+                    row.FormattedEntryDate = row.EntryDate ? moment(row.EntryDate).format('DD/MM/YYYY') : '';
+                    row.NetTotal = Number(row.Net_Amount || row.Total_Amount || row.TotalAmount || row.GrandTotal || 0);
+                    this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(row.NetTotal);
                 }
                 this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount.toFixed(3));
+                console.log("Mapped Data:", this.Price_Response_Master_Data);
+            } else {
+                console.log("No data to map.");
             }
             this.Total_Entries = (this.Price_Response_Master_Data || []).length;
             this.issLoading = false;
+            this.cdr.detectChanges();
         },
         error: (err) => {
+            console.error("Search API Error:", err);
             this.issLoading = false;
             this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
         }
@@ -1878,6 +1930,14 @@ Save_Price_Response(Printstatus:number)
                     data: { Message: 'Saved Successfully', Type: "false" }
                 });
                 this.Edit_Sales = 1;
+                this.Entry_View = false;
+                this.cdr.detectChanges(); // Ensure UI updates
+                console.log("Triggering Price Response List Refresh...");
+                this.Master_Refresh_Service_.refreshMaster('Price_Response');
+                // Reset search filters to ensure newly saved record shows up
+                this.QuotNo = "";
+                this.Search_Customer = new Client_Accounts();
+                this.Date_Check = false;
                 this.Search_Price_Response();
             } else {
                 this.dialogBox.open(DialogBox_Component, {

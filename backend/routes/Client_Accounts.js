@@ -218,7 +218,8 @@ router.get(
 router.post("/Save_Company/", function (req, res, next) {
 	Client_Accounts.Save_Company(req.body, function (err, rows) {
 		if (err) {
-			res.json(err);
+			console.error("Save_Company failed:", err);
+			res.status(500).json({ message: "Save_Company failed", error: err.message || err });
 		} else {
 			res.json(rows);
 		}

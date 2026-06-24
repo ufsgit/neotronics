@@ -5,6 +5,7 @@ import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { TermsAndCondition } from '../../../models/TermsAndCondition';
 import { MatDialog } from '@angular/material/dialog';
 import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 
 @Component({
     selector: 'app-TermsAndCondition',
@@ -30,7 +31,8 @@ export class TermsAndConditionComponent implements OnInit {
 
     constructor(
         public Terms_Service_: TermsAndCondition_Service,
-        public dialogBox: MatDialog
+        public dialogBox: MatDialog,
+        private Master_Refresh_Service_: Master_Refresh_Service
     ) {}
 
     ngOnInit() {
@@ -149,6 +151,7 @@ export class TermsAndConditionComponent implements OnInit {
                         this.Clr_Term();
                         this.Entry_View = false;
                         this.Search_Term();
+                        this.Master_Refresh_Service_.refreshMaster('TermsAndCondition');
                     } else {
                         this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: '2' } });
                     }

@@ -27,7 +27,11 @@ var Sales_Master = {
             if (log) log.info("sp.call", { name: "Save_Sales_Master" });
             var result = await (new storedProcedure("Save_Sales_Master", params, connection)).result();
             if (result && result[0] && result[0].Sales_Master_Id_ && Sales_Master_.Company_Id) {
-                await connection.query("UPDATE sales_master SET Company_Id=? WHERE Sales_Master_Id=?", [Sales_Master_.Company_Id, result[0].Sales_Master_Id_]);
+                try {
+                    await connection.query("UPDATE sales_master SET Company_Id=? WHERE Sales_Master_Id=?", [Sales_Master_.Company_Id, result[0].Sales_Master_Id_]);
+                } catch (e) {
+                    if (log) log.error("Failed to update Company_Id in sales_master. Column might be missing.", e);
+                }
             }
             return result;
         }, { log });
@@ -181,7 +185,11 @@ var Sales_Master = {
                 }
             }
             if (qid && Quotation_Master_.Company_Id) {
-                await connection.query("UPDATE salesquotationmaster SET Company_Id=? WHERE SalesQuotationMaster_Id=?", [Quotation_Master_.Company_Id, qid]);
+                try {
+                    await connection.query("UPDATE salesquotationmaster SET Company_Id=? WHERE SalesQuotationMaster_Id=?", [Quotation_Master_.Company_Id, qid]);
+                } catch (e) {
+                    if (log) log.error("Failed to update Company_Id in salesquotationmaster. Column might be missing.", e);
+                }
             }
             if (qid) {
                 let status = Quotation_Master_.Status;
@@ -292,7 +300,11 @@ var Sales_Master = {
             if (log) log.info("sp.call", { name: "Save_PerformaInvoice" });
             var result = await (new storedProcedure("Save_PerformaInvoice", params, connection)).result();
             if (result && result[0] && result[0].PerformaInvoiceMaster_Id_ && performainvoicemaster_.Company_Id) {
-                await connection.query("UPDATE performainvoicemaster SET Company_Id=? WHERE PerformaInvoiceMaster_Id=?", [performainvoicemaster_.Company_Id, result[0].PerformaInvoiceMaster_Id_]);
+                try {
+                    await connection.query("UPDATE performainvoicemaster SET Company_Id=? WHERE PerformaInvoiceMaster_Id=?", [performainvoicemaster_.Company_Id, result[0].PerformaInvoiceMaster_Id_]);
+                } catch (e) {
+                    if (log) log.error("Failed to update Company_Id in performainvoicemaster. Column might be missing.", e);
+                }
             }
             return result;
         }, { log });
@@ -337,7 +349,11 @@ var Sales_Master = {
             if (log) log.info("sp.call", { name: "Save_Purchase_order" });
             var result = await (new storedProcedure("Save_Purchase_order", params, connection)).result();
             if (result && result[0] && result[0].PurchaseOrderMaster_Id_ && Purchase_Ordermaster_.Company_Id) {
-                await connection.query("UPDATE purchaseordermaster SET Company_Id=? WHERE PurchaseOrderMaster_Id=?", [Purchase_Ordermaster_.Company_Id, result[0].PurchaseOrderMaster_Id_]);
+                try {
+                    await connection.query("UPDATE purchaseordermaster SET Company_Id=? WHERE PurchaseOrderMaster_Id=?", [Purchase_Ordermaster_.Company_Id, result[0].PurchaseOrderMaster_Id_]);
+                } catch (e) {
+                    if (log) log.error("Failed to update Company_Id in purchaseordermaster. Column might be missing.", e);
+                }
             }
             return result;
         }, { log });
@@ -461,7 +477,11 @@ var Sales_Master = {
             if (log) log.info("sp.call", { name: "Save_Sales_Returns_Master" });
             var result = await (new storedProcedure("Save_Sales_Returns_Master", params, connection)).result();
             if (result && result[0] && result[0].Sales_Return_Master_Id_ && Sales_Return_Master_.Company_Id) {
-                await connection.query("UPDATE sales_return_master SET Company_Id=? WHERE Sales_Return_Master_Id=?", [Sales_Return_Master_.Company_Id, result[0].Sales_Return_Master_Id_]);
+                try {
+                    await connection.query("UPDATE sales_return_master SET Company_Id=? WHERE Sales_Return_Master_Id=?", [Sales_Return_Master_.Company_Id, result[0].Sales_Return_Master_Id_]);
+                } catch (e) {
+                    if (log) log.error("Failed to update Company_Id in sales_return_master. Column might be missing.", e);
+                }
             }
             return result;
         }, { log });
@@ -519,7 +539,11 @@ var Sales_Master = {
             if (log) log.info("sp.call", { name: "Save_Price_Request" });
             var result = await (new storedProcedure("Save_Price_Request", params, connection)).result();
             if (result && result[0] && result[0].Price_Request_Master_Id_ && Price_Request_Master_.Company_Id) {
-                await connection.query("UPDATE price_request_master SET Company_Id=? WHERE Price_Request_Master_Id=?", [Price_Request_Master_.Company_Id, result[0].Price_Request_Master_Id_]);
+                try {
+                    await connection.query("UPDATE price_request_master SET Company_Id=? WHERE Price_Request_Master_Id=?", [Price_Request_Master_.Company_Id, result[0].Price_Request_Master_Id_]);
+                } catch (e) {
+                    if (log) log.error("Failed to update Company_Id in price_request_master. Column might be missing.", e);
+                }
             }
             return result;
         }, { log });

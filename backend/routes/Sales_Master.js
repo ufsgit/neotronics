@@ -132,14 +132,19 @@ router.get('/Get_Receipt_Voucher_Mobile/:Sales_Master_Id_?', asyncHandler(async 
 router.get('/Print_Quotation/:Sales_Master_Id', asyncHandler(async function (req, res, next) {
     try {
         const sales_Master_Id = req.params.Sales_Master_Id;
-        console.log("Print_Quotation started for ID:", sales_Master_Id);
+        console.log("Print_Quotation request received for ID:", sales_Master_Id);
         
+        if (!sales_Master_Id || sales_Master_Id === 'undefined') {
+            return res.status(400).json({ success: false, message: 'Invalid Quotation ID provided' });
+        }
+
         // Fetch Master Data
         const masterRows = await Sales_Master.Load_SalesQuotationMaster(sales_Master_Id);
         const master = (masterRows && masterRows[0]) ? masterRows[0][0] : null;
         
         if (!master) {
-            return res.status(404).send('Quotation not found');
+            console.error(`Quotation master data not found for ID: ${sales_Master_Id}`);
+            return res.status(404).json({ success: false, message: 'Quotation not found in database' });
         }
 
         // Fetch Details Data
@@ -159,27 +164,32 @@ router.get('/Print_Quotation/:Sales_Master_Id', asyncHandler(async function (req
             bank: bank
         });
 
+        if (!htmlContent) {
+            throw new Error('Failed to generate HTML content from template');
+        }
+
         // Generate PDF
         const pdfBuffer = await generatePdf(htmlContent);
         
         if (!pdfBuffer || pdfBuffer.length === 0) {
             console.error("Error: Generated PDF buffer is empty");
-            return res.status(500).send({ message: 'Error: Generated PDF buffer is empty' });
+            return res.status(500).json({ success: false, message: 'Generated PDF buffer is empty' });
         }
 
-        console.log("PDF generated successfully, buffer size:", pdfBuffer.length);
+        console.log(`PDF successfully generated for ID ${sales_Master_Id}, size: ${pdfBuffer.length} bytes`);
 
         // Send PDF response
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Length', pdfBuffer.length);
-        res.setHeader('Content-Disposition', `inline; filename=Quotation_${master.QuotationNo || sales_Master_Id}.pdf`);
+        res.setHeader('Content-Disposition', `inline; filename=Quotation_${(master.QuotationNo || sales_Master_Id).toString().replace(/[/\\?%*:|"<>]/g, '-')}.pdf`);
         res.status(200).send(pdfBuffer);
 
     } catch (error) {
-        console.error('Print Error:', error);
-        res.status(500).send({ 
-            message: 'Error generating PDF', 
-            error: error.message
+        console.error('Print Route Error:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'An error occurred during PDF generation', 
+            error: error.message 
         });
     }
 }));
@@ -639,6 +649,11 @@ router.get('/Get_Max_Quotation_No', asyncHandler(async function (req, res, next)
 
 router.get('/Get_Max_Sales_Invoice_No', asyncHandler(async function (req, res, next) {
     const rows = await Sales_Master.Get_Max_Sales_Invoice_No();
+    return sendSuccess(res, { data: rows });
+}));
+
+router.get('/Update_Quotation_Workflow_Status/:SalesQuotationMaster_Id_?/:StatusCode_?', asyncHandler(async function (req, res, next) {
+    const rows = await Sales_Master.Update_Quotation_Workflow_Status(req.params.SalesQuotationMaster_Id_, req.params.StatusCode_);
     return sendSuccess(res, { data: rows });
 }));
 

@@ -5,7 +5,10 @@ import { finalize } from 'rxjs/operators';
 import { Item_Group_Service } from '../../../services/Item_Group.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Item_Group } from '../../../models/Item_Group';
-import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';
+import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
+@Component({
 selector: 'app-Item_Group',
 templateUrl: './Item_Group.component.html',
 styleUrls: ['./Item_Group.component.css']
@@ -25,11 +28,11 @@ mode = 'indeterminate';
 value = 50;
 issLoading: boolean;
 Permissions: any;
-search_Item_Group_:string;
+search_Item_Group_:string="";
 Item_Group_Edit:boolean;
 Item_Group_Save:boolean;
 Item_Group_Delete:boolean;
-constructor(public Item_Group_Service_:Item_Group_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
+constructor(public Item_Group_Service_:Item_Group_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog, private Master_Refresh_Service_: Master_Refresh_Service) { }
 ngOnInit() 
 {
 this.Permissions = Get_Page_Permission(6);
@@ -49,10 +52,9 @@ this.Page_Load()
 Page_Load()
 {
     this.myInnerHeight = (window.innerHeight);
-    this.myInnerHeight = this.myInnerHeight - 320;
+    this.myInnerHeight = this.myInnerHeight - 200;
 this.Clr_Item_Group();
 this.Search_Item_Group();
-// this.Load_Item_Group();
 this.Entry_View=false;
 }
 
@@ -65,7 +67,6 @@ this.Clr_Item_Group();
 Close_Click()
 {
 this.Entry_View = false;
-this.Clr_Item_Group();
 }
 trackByFn(index, item) 
 {
@@ -175,20 +176,15 @@ this.Item_Group_Service_.Delete_Item_Group(Item_Group_Id).subscribe(Delete_statu
    
     Delete_status=Delete_status[0];
    Delete_status=Delete_status[0].DeleteStatus_.data[0];
-if(Delete_status==1){
-
-this.Item_Group_Data.splice(index, 1);
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
-this.Search_Item_Group();
-}
-else
-{
-
-//this.Item_Group_Data.splice(index, 1);
-
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Cannot be Deleted',Type:"2"}});
-//this.Search_Item_Group();
-}
+    if(Delete_status==1){
+        this.Page_Load();
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
+        this.Master_Refresh_Service_.refreshMaster('Item_Group');
+    }
+    else
+    {
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Cannot be Deleted',Type:"2"}});
+    }
 this.issLoading=false;
  },
  Rows => { 
@@ -260,8 +256,8 @@ Save_Item_Group()
             panelClass: 'Dialogbox-Class',
             data: { Message: 'Saved Successfully', Type: "false" }
           });
-          this.Search_Item_Group();
-          this.Clr_Item_Group();
+          this.Page_Load();
+          this.Master_Refresh_Service_.refreshMaster('Item_Group');
         } else if (resultId == -1) {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',

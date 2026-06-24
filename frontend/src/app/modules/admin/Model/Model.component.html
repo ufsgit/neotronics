@@ -1,127 +1,130 @@
-<div *ngIf="issLoading" class="overlay">
-    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value"></mat-progress-spinner>
+<!-- Loading Overlay -->
+<div *ngIf="issLoading" class="ig-overlay">
+  <mat-progress-spinner [color]="color" [mode]="mode" [value]="value" diameter="36"></mat-progress-spinner>
 </div>
 
-<div class="main-content">
-    <div class="container-fluid px-0">
+<div class="ig-page">
 
-        <!-- LIST VIEW -->
-        <div *ngIf="!Entry_View">
-            <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h4 class="page-title-main">Model Management</h4>
-                </div>
-                <div class="d-flex align-items-center" style="gap: 10px;">
-                    <button mat-raised-button type="button" (click)="Create_New()" class="btn-new-lead">
-                        <i class="material-icons" style="font-size:18px;">add</i>
-                        Create New
-                    </button>
-                </div>
-            </div>
-
-            <div class="lead-filter-panel mb-3">
-                <div class="filter-grid">
-                    <mat-form-field appearance="legacy" floatLabel="never">
-                        <input matInput placeholder="Model Name" [(ngModel)]="Search_Model_" name="Search_Model_" (keyup.enter)="Search_Model()">
-                    </mat-form-field>
-
-                    <button mat-raised-button type="button" class="btn-new-lead" (click)="Search_Model()" style="min-width: 100px;">
-                        SEARCH
-                    </button>
-                </div>
-            </div>
-
-            <div class="lead-table-container">
-                <div class="table-scroll-area" [style.max-height.px]="myInnerHeight">
-                    <table class="lead-data-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 90px;">Sl No</th>
-                                <th>Model</th>
-                                <th>Item Name</th>
-                                <th style="text-align:right;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let model of Model_Data; let i = index">
-                                <td>{{ i + 1 }}</td>
-                                <td style="font-weight:500;">{{ model.Model_Name }}</td>
-                                <td>{{ model.Item_Name }}</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <div class="action-icon-btn btn-edit-tb"
-                                             [hidden]="Model_Edit==false"
-                                             (click)="Edit_Model(model, i)"
-                                             title="Edit">
-                                            <i class="material-icons">edit</i>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr *ngIf="Model_Data?.length === 0">
-                                <td colspan="4" class="text-center py-5 text-muted">No records found</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="pagination-container d-flex justify-content-between align-items-center">
-                    <span class="page-info">Total Entries: <strong>{{ Total_Entries }}</strong></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ENTRY VIEW -->
-        <div *ngIf="Entry_View">
-            <div class="lead-entry-header d-flex justify-content-between align-items-center">
-                <h4 class="page-title-main">{{ Model_.Model_Id > 0 ? 'Edit Model' : 'Add New Model' }}</h4>
-                <button class="btn-close-custom" (click)="Close_Click()">
-                    <i class="material-icons">close</i> Close
-                </button>
-            </div>
-
-            <form>
-                <div class="lead-entry-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6>Basic Information</h6>
-
-                            <div class="trackbox-input-group">
-                                <label class="input-label">Model Name <span class="required-star">*</span></label>
-                                <mat-form-field appearance="legacy" floatLabel="never">
-                                    <input matInput placeholder="Enter Model Name" [(ngModel)]="Model_.Model_Name" name="Model_Name">
-                                </mat-form-field>
-                            </div>
-
-                            <div class="trackbox-input-group">
-                                <label class="input-label">Item Name <span class="required-star">*</span></label>
-                                <mat-form-field appearance="legacy" floatLabel="never">
-                                    <input matInput placeholder="Search Item Name"
-                                           [matAutocomplete]="autoItem"
-                                           [(ngModel)]="Item_"
-                                           name="Item_"
-                                           (input)="Search_Item_Typeahead($event)"
-                                           (click)="Search_Item_Typeahead($event)"
-                                           autocomplete="off">
-                                    <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item" (optionSelected)="Select_Item($event.option.value)">
-                                        <mat-option *ngIf="issLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
-                                        <ng-container *ngIf="!issLoading">
-                                            <mat-option *ngFor="let item of Item_Data" [value]="item">
-                                                <span (click)="Select_Item(item)">{{ item.Item_Name || item.ItemName }}</span>
-                                            </mat-option>
-                                        </ng-container>
-                                    </mat-autocomplete>
-                                </mat-form-field>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-end mt-4" style="gap: 12px;">
-                        <button mat-raised-button type="button" class="btn-cancel" (click)="Close_Click()">Cancel</button>
-                        <button mat-raised-button type="button" class="btn-save" [hidden]="Model_Save==false" id="Save_Button" (click)="Save_Model()">Save</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+  <!-- ── HEADER ── -->
+  <div class="ig-header">
+    <div>
+      <h1 class="ig-title">Model Management</h1>
+      <p class="ig-subtitle">Manage product models</p>
     </div>
+    <button mat-button class="ig-btn-add" type="button" (click)="Create_New()" *ngIf="!Entry_View">
+      <i class="material-icons">add</i> Add Model
+    </button>
+  </div>
+
+  <!-- ── ENTRY FORM ── -->
+  <div class="ig-form-card" *ngIf="Entry_View">
+    <p class="ig-form-label">{{ Model_.Model_Id > 0 ? 'Edit Model' : 'New Model' }}</p>
+    <form>
+      <div class="ig-form-row">
+
+        <!-- Model Name -->
+        <div class="ig-field">
+          <label class="ig-label">Model Name <span class="ig-req">*</span></label>
+          <input
+            type="text"
+            class="ig-input"
+            [(ngModel)]="Model_.Model_Name"
+            name="Model_Name"
+            placeholder="Enter model name"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- Item Name (Autocomplete) -->
+        <div class="ig-field">
+          <label class="ig-label">Item Name <span class="ig-req">*</span></label>
+          <div class="ig-autocomplete-wrap">
+            <input
+              type="text"
+              class="ig-input"
+              placeholder="Search item name"
+              [matAutocomplete]="autoItem"
+              [(ngModel)]="Item_"
+              name="Item_"
+              (input)="Search_Item_Typeahead($event)"
+              (click)="Search_Item_Typeahead($event)"
+              autocomplete="off"
+            />
+            <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item" (optionSelected)="Select_Item($event.option.value)">
+              <mat-option *ngIf="issLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+              <ng-container *ngIf="!issLoading">
+                <mat-option *ngFor="let item of Item_Data" [value]="item">
+                  <span (click)="Select_Item(item)">{{ item.Item_Name || item.ItemName }}</span>
+                </mat-option>
+              </ng-container>
+            </mat-autocomplete>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="ig-form-actions">
+          <button class="ig-btn-cancel" type="button" (click)="Close_Click()">Cancel</button>
+          <button
+            class="ig-btn-save"
+            type="button"
+            id="Save_Button"
+            [hidden]="Model_Save == false"
+            (click)="Save_Model()"
+          >Save</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <!-- ── SEARCH ── -->
+  <div class="ig-search-bar" *ngIf="!Entry_View">
+    <div class="ig-search-wrap">
+      <i class="material-icons">search</i>
+      <input
+        type="text"
+        class="ig-search-input"
+        [(ngModel)]="Search_Model_"
+        name="Search_Model_"
+        placeholder="Search models…"
+        (keyup.enter)="Search_Model()"
+      />
+    </div>
+    <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
+  </div>
+
+  <!-- ── TABLE ── -->
+  <div class="ig-table-card" *ngIf="!Entry_View">
+    <div class="ig-table-wrap" [style.max-height.px]="myInnerHeight">
+      <table class="ig-table">
+        <thead>
+          <tr>
+            <th class="ig-th ig-th-no">#</th>
+            <th class="ig-th">Model Name</th>
+            <th class="ig-th">Item Name</th>
+            <th class="ig-th ig-th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let model of Model_Data; let i = index" class="ig-tr">
+            <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+            <td class="ig-td ig-td-name">{{ model.Model_Name }}</td>
+            <td class="ig-td">{{ model.Item_Name }}</td>
+            <td class="ig-td ig-td-actions">
+              <button
+                class="ig-icon-btn ig-edit"
+                [hidden]="Model_Edit == false"
+                (click)="Edit_Model(model, i)"
+                title="Edit"
+              ><i class="material-icons">edit</i></button>
+            </td>
+          </tr>
+          <tr *ngIf="Model_Data?.length === 0">
+            <td colspan="4" class="ig-empty">No records found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>

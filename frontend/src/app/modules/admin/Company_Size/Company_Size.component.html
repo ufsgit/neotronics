@@ -1,115 +1,120 @@
-<div *ngIf="issLoading" class="overlay">
-    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
-    </mat-progress-spinner>
+<!-- Loading Overlay -->
+<div *ngIf="issLoading" class="ig-overlay">
+  <mat-progress-spinner [color]="color" [mode]="mode" [value]="value" diameter="36"></mat-progress-spinner>
 </div>
 
-<div class="main-content">
-    <div class="container-fluid px-0">
+<div class="ig-page">
 
-        <!-- LIST VIEW -->
-        <div *ngIf="!Entry_View">
-            <!-- PAGE HEADER -->
-            <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h4 class="page-title-main">Company Size</h4>
-                </div>
-                <div class="d-flex align-items-center" style="gap: 10px;">
-                    <button mat-raised-button (click)="Create_New()" class="btn-new-lead">
-                        <i class="material-icons" style="font-size:18px;">add</i>
-                        Create New
-                    </button>
-                </div>
-            </div>
-
-            <!-- FILTER PANEL -->
-            <div class="lead-filter-panel mb-3">
-                <div class="filter-grid">
-                    <mat-form-field appearance="legacy" floatLabel="never">
-                        <input matInput placeholder="Company Size Name" [(ngModel)]="Search_Company_Size_" name="Search_Company_Size_">
-                    </mat-form-field>
-
-                    <button mat-raised-button class="btn-new-lead" (click)="Search_Company_Size()" style="min-width: 100px;">
-                        SEARCH
-                    </button>
-                </div>
-            </div>
-
-            <!-- TABLE -->
-            <div class="lead-table-container">
-                <div class="table-scroll-area" [style.max-height.px]="myInnerHeight">
-                    <table class="lead-data-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 80px;">Sl No</th>
-                                <th>Company Size</th>
-                                <th>Description</th>
-                                <th style="text-align:right;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let cs of Company_Size_Data; let i = index">
-                                <td>{{ i + 1 }}</td>
-                                <td style="font-weight:600;">{{ cs["Company_Size_Name"] }}</td>
-                                <td>{{ cs["Description"] }}</td>
-                                <td>
-                                    <div class="action-buttons justify-content-end">
-                                        <div class="action-icon-btn btn-edit-tb" (click)="Edit_Company_Size(cs)" title="Edit">
-                                            <i class="material-icons">edit</i>
-                                        </div>
-                                        <div class="action-icon-btn btn-delete-tb" (click)="Delete_Company_Size(cs.Company_Size_Id, i)" title="Delete">
-                                            <i class="material-icons">close</i>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr *ngIf="Company_Size_Data?.length === 0">
-                                <td colspan="4" class="text-center py-5 text-muted">No records found</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="entry-num">Total Entries: {{ Total_Entries }}</div>
-            </div>
-        </div>
-
-        <!-- ENTRY VIEW (ADD / EDIT) -->
-        <div *ngIf="Entry_View">
-            <div class="lead-entry-header d-flex justify-content-between align-items-center">
-                <h4 class="page-title-main">{{ Company_Size_.Company_Size_Id > 0 ? 'Edit Company Size' : 'Add New Company Size' }}</h4>
-                <button class="btn-close-custom" (click)="Close_Click()">
-                    <i class="material-icons">close</i> Close
-                </button>
-            </div>
-
-            <form>
-                <div class="lead-entry-body">
-                    <div class="user-entry-sections">
-                        <div class="basic-info-section">
-                            <div class="basic-info-grid">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Company Size Name <span class="required-star">*</span></label>
-                                    <mat-form-field appearance="legacy" floatLabel="never">
-                                        <input matInput type="text" [(ngModel)]="Company_Size_.Company_Size_Name" name="Company_Size_Name">
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Description</label>
-                                    <mat-form-field appearance="legacy" floatLabel="never">
-                                        <input matInput type="text" [(ngModel)]="Company_Size_.Description" name="Description">
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- FORM ACTIONS -->
-                    <div class="d-flex justify-content-end mt-4" style="gap: 12px;">
-                        <button mat-raised-button class="btn-cancel" (click)="Close_Click()">Cancel</button>
-                        <button mat-raised-button class="btn-save" (click)="Save_Company_Size()">Save</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+  <!-- ── HEADER ── -->
+  <div class="ig-header">
+    <div>
+      <h1 class="ig-title">Company Size</h1>
+      <p class="ig-subtitle">Manage company size categories</p>
     </div>
+    <button mat-button class="ig-btn-add" type="button" (click)="Create_New()" *ngIf="!Entry_View">
+      <i class="material-icons">add</i> Add Company Size
+    </button>
+  </div>
+
+  <!-- ── ENTRY FORM ── -->
+  <div class="ig-form-card" *ngIf="Entry_View">
+    <p class="ig-form-label">{{ Company_Size_.Company_Size_Id > 0 ? 'Edit Company Size' : 'New Company Size' }}</p>
+    <form>
+      <div class="ig-form-row">
+
+        <!-- Company Size Name -->
+        <div class="ig-field">
+          <label class="ig-label">Company Size Name <span class="ig-req">*</span></label>
+          <input
+            type="text"
+            class="ig-input"
+            [(ngModel)]="Company_Size_.Company_Size_Name"
+            name="Company_Size_Name"
+            placeholder="Enter company size name"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- Description -->
+        <div class="ig-field ig-field-wide">
+          <label class="ig-label">Description</label>
+          <input
+            type="text"
+            class="ig-input"
+            [(ngModel)]="Company_Size_.Description"
+            name="Description"
+            placeholder="Enter description"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="ig-form-actions">
+          <button class="ig-btn-cancel" type="button" (click)="Close_Click()">Cancel</button>
+          <button
+            class="ig-btn-save"
+            type="button"
+            id="Save_Button"
+            (click)="Save_Company_Size()"
+          >Save</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <!-- ── SEARCH ── -->
+  <div class="ig-search-bar" *ngIf="!Entry_View">
+    <div class="ig-search-wrap">
+      <i class="material-icons">search</i>
+      <input
+        type="text"
+        class="ig-search-input"
+        [(ngModel)]="Search_Company_Size_"
+        name="Search_Company_Size_"
+        placeholder="Search company sizes…"
+        (keyup.enter)="Search_Company_Size()"
+      />
+    </div>
+    <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
+  </div>
+
+  <!-- ── TABLE ── -->
+  <div class="ig-table-card" *ngIf="!Entry_View">
+    <div class="ig-table-wrap" [style.max-height.px]="myInnerHeight">
+      <table class="ig-table">
+        <thead>
+          <tr>
+            <th class="ig-th ig-th-no">#</th>
+            <th class="ig-th">Company Size</th>
+            <th class="ig-th">Description</th>
+            <th class="ig-th ig-th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cs of Company_Size_Data; let i = index" class="ig-tr">
+            <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+            <td class="ig-td ig-td-name">{{ cs['Company_Size_Name'] }}</td>
+            <td class="ig-td">{{ cs['Description'] }}</td>
+            <td class="ig-td ig-td-actions">
+              <button
+                class="ig-icon-btn ig-edit"
+                (click)="Edit_Company_Size(cs)"
+                title="Edit"
+              ><i class="material-icons">edit</i></button>
+              <button
+                class="ig-icon-btn ig-delete"
+                (click)="Delete_Company_Size(cs.Company_Size_Id, i)"
+                title="Delete"
+              ><i class="material-icons">delete_outline</i></button>
+            </td>
+          </tr>
+          <tr *ngIf="Company_Size_Data?.length === 0">
+            <td colspan="4" class="ig-empty">No records found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>

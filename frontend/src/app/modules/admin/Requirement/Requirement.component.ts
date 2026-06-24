@@ -35,6 +35,7 @@ import { currencydetails } from '../../../models/currencydetails';
 import { User_Details } from '../../../models/User_Details';
 import { payment_term } from '../../../models/payment_term';
 import { RequirementWorkflowService } from '../../../services/RequirementWorkflow.Service';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 // import { Sales_Master_Service } from '../../../services/Sales_Master.Service';
 import { CommonModule } from '@angular/common';
 import { DecimalPipe } from '@angular/common';
@@ -308,8 +309,8 @@ constructor(public Requirement_Master_Service_: Requirement_Master_Service, publ
         private Brand_Service_: Brand_Service,
         private Model_Service_: Model_Service,
         public RequirementWorkflowService_: RequirementWorkflowService,
-        private cdr: ChangeDetectorRef
-        // public decimalPipe: DecimalPipe
+        private cdr: ChangeDetectorRef,
+        private Master_Refresh_Service_: Master_Refresh_Service
     ) { 
         this.Load_Bill_Type();       
         this.Load_Currency();
@@ -343,6 +344,16 @@ ngOnInit()
     this.Sales_Master_Delete=this.Permissions.Delete;
     this.Page_Load();
     this.Load_Field_Visibility_Settings();
+
+    this.Master_Refresh_Service_.masterUpdated$.subscribe(masterName => {
+        if (masterName === 'Brand') this.Load_Brand_Dropdown();
+        if (masterName === 'Model') this.Load_Model_Dropdown();
+        if (masterName === 'Item_Group') this.Load_Item_Group();
+        if (masterName === 'Item') { /* Items are usually typeahead so maybe no-op or clear cache */ }
+        if (masterName === 'Accounts') { /* Customer_Data is usually typeahead */ }
+        if (masterName === 'Payment_Term') this.Load_Payment_Term();
+        if (masterName === 'TermsAndCondition') { /* Load_TermsAndCondition if exists */ }
+    });
     }
 }
 call_api()
@@ -378,55 +389,100 @@ Page_Load()
     }
     else {
         this.Load_Next_Requirement_No();
+
+        // Auto-fill from Lead if navigated via Requirement button
+        const leadJson = localStorage.getItem('Lead_For_Requirement');
+        if (leadJson) {
+            localStorage.removeItem('Lead_For_Requirement');
+            const lead = JSON.parse(leadJson);
+            this.Entry_View = true;
+            this.Sales_Print = true;
+            this.Requirement_Master_.Lead_Id = lead.Lead_Id;
+            // Fill Attention with Contact Person
+            this.Requirement_Master_.KindAttend = lead.Contact_Person || '';
+            // Fill Employee with Contact Number
+            this.Requirement_Master_.AttendEmployee = lead.Contact_Number || lead.Phone || '';
+            // Fill Delivery Address with Lead Address
+            this.Requirement_Master_.Delivery_Address1 = lead.Address || '';
+            // Fill Customer Ref No with Lead phone
+            this.Requirement_Master_.Supplier_Ref_No = lead.Phone || '';
+            // Set Customer autocomplete from Lead_Name
+            this.Customer_Temp.Client_Accounts_Id = 0;
+            this.Customer_Temp.Client_Accounts_Name = lead.Lead_Name || '';
+            this.Customer_ = Object.assign({}, this.Customer_Temp);
+            this.Requirement_Master_.Customer_Name = lead.Lead_Name || '';
+            this.Requirement_Master_.Customer = lead.Lead_Name || '';
+            this.Requirement_Master_.Mobile = lead.Phone || '';
+            this.Requirement_Master_.Mobile_No = lead.Contact_Number || lead.Phone || '';
+            // Try to find matching customer account
+            this.Requirement_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39', lead.Lead_Name).subscribe(Rows => {
+                if (Rows && Rows[0] && Rows[0].length > 0) {
+                    this.Customer_Data = Rows[0];
+                    const match = Rows[0].find((c: any) =>
+                        c.Client_Accounts_Name && c.Client_Accounts_Name.toLowerCase() === (lead.Lead_Name || '').toLowerCase()
+                    ) || Rows[0][0];
+                    this.Customer_ = match;
+                    this.Requirement_Master_.Account_Party_Id = match.Client_Accounts_Id;
+                    this.Requirement_Master_.Customer_Name = match.Client_Accounts_Name;
+                    this.Requirement_Master_.Customer = match.Client_Accounts_Name;
+                    this.Requirement_Master_.Address1 = match.Address1 || '';
+                    this.Requirement_Master_.Address2 = match.Address2 || '';
+                    this.Requirement_Master_.Address3 = match.Address3 || '';
+                    this.Requirement_Master_.Address4 = match.Address4 || '';
+                    this.Requirement_Master_.Mobile = match.Mobile || lead.Phone || '';
+                    this.Address1 = match.Address1 || '';
+                    this.Address2 = match.Address2 || '';
+                    this.Address3 = match.Address3 || '';
+                    this.Address4 = match.Address4 || '';
+                    this.Vatin = match.GSTNo || '';
+                }
+            });
+        }
     }
-    // Auto-fill from Lead if navigated via Requirement button
-    const leadJson = localStorage.getItem('Lead_For_Requirement');
-    if (leadJson) {
-        localStorage.removeItem('Lead_For_Requirement');
-        const lead = JSON.parse(leadJson);
-        this.Entry_View = true;
-        this.Sales_Print = true;
-        // Fill Attention with Contact Person
-        this.Requirement_Master_.KindAttend = lead.Contact_Person || '';
-        // Fill Employee with Contact Number
-        this.Requirement_Master_.AttendEmployee = lead.Contact_Number || lead.Phone || '';
-        // Fill Delivery Address with Lead Address
-        this.Requirement_Master_.Delivery_Address1 = lead.Address || '';
-        // Fill Customer Ref No with Lead phone
-        this.Requirement_Master_.Supplier_Ref_No = lead.Phone || '';
-        // Set Customer autocomplete from Lead_Name
-        this.Customer_Temp.Client_Accounts_Id = 0;
-        this.Customer_Temp.Client_Accounts_Name = lead.Lead_Name || '';
-        this.Customer_ = Object.assign({}, this.Customer_Temp);
-        this.Requirement_Master_.Customer_Name = lead.Lead_Name || '';
-        this.Requirement_Master_.Customer = lead.Lead_Name || '';
-        this.Requirement_Master_.Mobile = lead.Phone || '';
-        this.Requirement_Master_.Mobile_No = lead.Contact_Number || lead.Phone || '';
-        // Try to find matching customer account
-        this.Requirement_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39', lead.Lead_Name).subscribe(Rows => {
-            if (Rows && Rows[0] && Rows[0].length > 0) {
-                this.Customer_Data = Rows[0];
-                const match = Rows[0].find((c: any) =>
-                    c.Client_Accounts_Name && c.Client_Accounts_Name.toLowerCase() === (lead.Lead_Name || '').toLowerCase()
-                ) || Rows[0][0];
-                this.Customer_ = match;
-                this.Requirement_Master_.Account_Party_Id = match.Client_Accounts_Id;
-                this.Requirement_Master_.Customer_Name = match.Client_Accounts_Name;
-                this.Requirement_Master_.Customer = match.Client_Accounts_Name;
-                this.Requirement_Master_.Address1 = match.Address1 || '';
-                this.Requirement_Master_.Address2 = match.Address2 || '';
-                this.Requirement_Master_.Address3 = match.Address3 || '';
-                this.Requirement_Master_.Address4 = match.Address4 || '';
-                this.Requirement_Master_.Mobile = match.Mobile || lead.Phone || '';
-                this.Address1 = match.Address1 || '';
-                this.Address2 = match.Address2 || '';
-                this.Address3 = match.Address3 || '';
-                this.Address4 = match.Address4 || '';
-                this.Vatin = match.GSTNo || '';
+
+    // Handle lead-based filtering for listing view
+    const filterLeadId = localStorage.getItem('Requirement_Filter_Lead_Id');
+    if (filterLeadId) {
+        localStorage.removeItem('Requirement_Filter_Lead_Id');
+        const filterLeadName = localStorage.getItem('Requirement_Filter_Lead_Name');
+        localStorage.removeItem('Requirement_Filter_Lead_Name');
+        
+        this.Entry_View = false;
+        this.isLoading = true;
+        this.Date_Check = false; // Show all requirements regardless of date
+        
+        if (filterLeadName) {
+            this.Search_Customer = { Client_Accounts_Name: filterLeadName } as any;
+        }
+
+        this.Requirement_Master_Service_.Check_Requirement_By_Lead(filterLeadId).subscribe({
+            next: (res: any) => {
+                this.Requirement_Master_Data = (res && res[0]) ? res[0] : [];
+                this.Total_Entries = this.Requirement_Master_Data.length;
+                this.isLoading = false;
+                
+                if (this.Requirement_Master_Data.length === 0) {
+                    this.dialogBox.open(DialogBox_Component, {
+                        panelClass: 'Dialogbox-Class',
+                        data: { Message: 'No requirements found for this lead', Type: "3" }
+                    });
+                }
+            },
+            error: () => {
+                this.isLoading = false;
             }
         });
     }
-    //this.myDate=new Date();
+}
+
+Company_Dropdown_Change() {
+    if(this.Company_Data) {
+        const c = this.Company_Data.find(x => x.Company_Id == this.Requirement_Master_.Company_Id);
+        if (c) {
+            this.Company_ = c;
+            this.Print_Company_ = c;
+        }
+    }
 }
 
 Load_Next_Requirement_No() {
@@ -1398,6 +1454,7 @@ Delete_Requirement_Master(RequirementMaster_Id,index)
             this.Requirement_Master_Data.splice(index, 1);
             const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});      
             this.Search_Requirement();
+            this.Master_Refresh_Service_.refreshMaster('Requirement');
         }
         else
         {
@@ -2053,7 +2110,29 @@ Price_Response_Listing_Click() {
         ? this.Requirement_Master_.RequirementMaster_Id
         : 0;
     if (id > 0) {
-        localStorage.setItem('Requirement_For_PriceResponse_List', JSON.stringify({ RequirementMaster_Id: id }));
+        localStorage.setItem('Requirement_For_PriceRequest', JSON.stringify({ RequirementMaster_Id: id }));
+    }
+    this.router.navigateByUrl('/PriceResponse');
+}
+
+Requirement_Quotation_Click(master: any) {
+    const id = Number(master.RequirementMaster_Id || master.RequirementMaster_Id_ || master.Requirement_Master_Id || 0);
+    if (!id) return;
+    localStorage.setItem('Requirement_For_Quotation', JSON.stringify({ RequirementMaster_Id: id }));
+    this.router.navigateByUrl('/Quotation');
+}
+
+Requirement_PriceRequest_Click(master: any) {
+    const id = Number(master.RequirementMaster_Id || master.RequirementMaster_Id_ || master.Requirement_Master_Id || 0);
+    if (!id) return;
+    localStorage.setItem('Requirement_For_PriceRequest', JSON.stringify({ RequirementMaster_Id: id }));
+    this.router.navigateByUrl('/PriceRequest');
+}
+
+Price_Response_Click(master: any) {
+    const id = Number(master.RequirementMaster_Id || master.RequirementMaster_Id_ || master.Requirement_Master_Id || 0);
+    if (id > 0) {
+        localStorage.setItem('Requirement_For_PriceRequest', JSON.stringify({ RequirementMaster_Id: id }));
     }
     this.router.navigateByUrl('/PriceResponse');
 }
@@ -2359,6 +2438,7 @@ Save_Requirement(Printstatus:number)
             console.log("Requirement API Response:", res);
 
             if (res && res.success) {
+                console.log("Requirement Saved Successfully - triggering list refresh");
                 const data = res.data;
                 const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
                 const result = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data[0] : null);
@@ -2377,6 +2457,9 @@ Save_Requirement(Printstatus:number)
                         this.Edit_Sales = 1;
                     }        
                     this.Sales_Print = false;
+                    console.log("Refreshing Requirement List...");
+                    this.Search_Requirement();
+                    this.Master_Refresh_Service_.refreshMaster('Requirement');
                 } else {
                     const msg = (result && result.Message) || (res && res.message) || 'Save failed';
                     this.dialogBox.open(DialogBox_Component, {

@@ -1,15 +1,16 @@
-<nav [hidden]="getView()" class="navbar navbar-expand-lg topnav" style="padding: 0 15px !important; min-height: 50px;">
-	<div class="container-fluid d-flex align-items-center justify-content-between" style="height: 100%;">
+<nav [hidden]="getView()" class="navbar navbar-expand-lg topnav" >
+	<div class="container-fluid d-flex align-items-center justify-content-between" >
 		<div class="d-flex align-items-center">
 			<img
 				src="/assets/img/ADAT.png"
 				width="150px"
 				height="40px"
+				class="logo-img"
 				*ngIf="isDesktopMenu()"
 			/>
 			<div
 				class="navbar-wrapper ml-2 pl-2"
-				style="border-left: white solid 1px"
+				
 				*ngIf="isDesktopMenu()"
 			>
 				<a
@@ -43,9 +44,7 @@
 		</button>
 
 		<div class="d-flex align-items-center flex-grow-1" *ngIf="isDesktopMenu()">
-			<ul
-				class="navbar-nav flex-grow-1 d-flex flex-row align-items-center justify-content-center"
-			>
+			<ul class="navbar-nav flex-grow-1 d-flex flex-row align-items-center justify-content-end">
 			<li class="nav-item dropdown">
 				<a
 					class="nav-link"
@@ -55,12 +54,11 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-					<span class="label-name-crect-stck-ad-nw-sctn-unt">
-						<i class="fa fa-university"></i></span
-					><i>Master</i></a
+					
+						<i class="fa fa-university"></i> Master</a
 				>
 				<div
-					class="dropdown-menu dropdown-menu"
+					class="dropdown-menu"
 					aria-labelledby="navbarDropdownMenuLink"
 				>
 				<a
@@ -246,17 +244,15 @@
 			<!-- <li class="nav-item dropdown" *ngIf="menuArray[86] > -1">
 				<a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink"
 					data-toggle="dropdown" [routerLink]="[menuItems[menuArray[86]].path]" aria-haspopup="true"aria-expanded="false">
-					<span class="label-name-crect-stck-ad-nw-sctn-unt">
-						<i class="fa fa-th-large"  aria-hidden="true"></i></span>
-						
-						<i>Dashboard</i>						
+					
+						<i class="fa fa-th-large"  aria-hidden="true"></i> Dashboard						
 				</a>				
 			</li> -->
 
 			<li class="nav-item">
 				<a class="nav-link" [routerLink]="['/Lead']">
-					<span class="label-name-crect-stck-ad-nw-sctn-unt"> <i
-							class="fa fa-bullhorn"></i></span><i>Lead</i></a>
+					 <i
+							class="fa fa-bullhorn"></i> Lead</a>
 			</li>
 
 			<li class="nav-item dropdown">
@@ -268,12 +264,11 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-					<span class="label-name-crect-stck-ad-nw-sctn-unt">
-						<i class="fa fa-credit-card"></i></span
-					><i>Transactions</i></a
+					
+						<i class="fa fa-credit-card"></i> Transactions</a
 				>
 				<div
-					class="dropdown-menu dropdown-menu"
+					class="dropdown-menu"
 					aria-labelledby="navbarDropdownMenuLink"
 				>
 					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Requirement']">Requirement</a>
@@ -488,12 +483,11 @@ href="javascript:void(0)"
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-					<span class="label-name-crect-stck-ad-nw-sctn-unt">
-						<i class="fa fa-book"></i></span
-					><i>Account Voucher</i></a
+					
+						<i class="fa fa-book"></i> Account Voucher</a
 				>
 				<div
-					class="dropdown-menu dropdown-menu"
+					class="dropdown-menu"
 					aria-labelledby="navbarDropdownMenuLink"
 				>
 					<a
@@ -550,12 +544,11 @@ href="javascript:void(0)"
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-					<span class="label-name-crect-stck-ad-nw-sctn-unt">
-						<i class="fa fa-window-restore"></i></span
-					><i>Account Report</i></a
+					
+						<i class="fa fa-window-restore"></i> Account Report</a
 				>
 				<div
-					class="dropdown-menu dropdown-menu"
+					class="dropdown-menu"
 					aria-labelledby="navbarDropdownMenuLink"
 				>
 					<a
@@ -613,12 +606,11 @@ href="javascript:void(0)"
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-					<span class="label-name-crect-stck-ad-nw-sctn-unt">
-						<i class="fa fa-money"></i></span
-					><i>Tax Report</i></a
+					
+						<i class="fa fa-money"></i> Tax Report</a
 				>
 				<div
-					class="dropdown-menu dropdown-menu"
+					class="dropdown-menu"
 					aria-labelledby="navbarDropdownMenuLink"
 				>
 					<a
@@ -696,12 +688,11 @@ href="javascript:void(0)"
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-					<span class="label-name-crect-stck-ad-nw-sctn-unt">
-						<i class="fa fa-database"></i></span
-					><i>Report</i></a
+					
+						<i class="fa fa-database"></i> Report</a
 				>
 				<div
-					class="dropdown-menu dropdown-menu"
+					class="dropdown-menu"
 					aria-labelledby="navbarDropdownMenuLink"
 				>
 					<!-- <a
@@ -896,12 +887,11 @@ href="javascript:void(0)"
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-					<span class="label-name-crect-stck-ad-nw-sctn-unt">
-						<i class="fa fa-cog"></i></span
-					><i>General Settings</i></a
+					
+						<i class="fa fa-cog"></i> General Settings</a
 				>
 				<div
-					class="dropdown-menu dropdown-menu"
+					class="dropdown-menu"
 					aria-labelledby="navbarDropdownMenuLink"
 				>
 					<a
@@ -921,42 +911,15 @@ href="javascript:void(0)"
 				</div>
 			</li> -->
 			</ul>
-			<ul class="navbar-nav d-flex flex-row align-items-center">
-				<li class="nav-item">
-					<a class="nav-link" style="margin: 0 10px">
-						<i
-							class="fa fa-user-circle-o"
-							aria-hidden="true"
-							style="
-								margin-top: -2px;
-								margin-left: 5px;
-								margin-right: 5px;
-								font-size: 15px;
-							"
-						></i
-						>{{ uname }}</a
-					>
-				</li>
-				<li class="nav-item">
-					<a
-						class="nav-link"
-						(click)="logout()"
-						style="cursor: pointer"
-					>
-						<i
-							class="fa fa-power-off"
-							aria-hidden="true"
-							style="
-								margin-top: -2px;
-								margin-left: 5px;
-								margin-right: 5px;
-								font-size: 15px;
-							"
-						></i
-						>Logout</a
-					>
-				</li>
-			</ul>
+			<div class="right-section ml-auto">
+				<div class="user-profile">
+					<i class="fa fa-user-circle-o" aria-hidden="true"></i>
+					<span>{{ uname }}</span>
+				</div>
+				<button class="nav-link logout-btn" (click)="logout()" title="Logout">
+					<i class="fa fa-power-off" aria-hidden="true"></i>
+				</button>
+			</div>
 		</div>
 	</div>
 </nav>

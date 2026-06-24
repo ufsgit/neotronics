@@ -29,9 +29,9 @@ return body || { };
 }
 
 Load_Item_Group(): Observable<any> {
-         
-
-    return this.http.get(environment.BasePath + 'Item_Group/Load_Item_Group/');
+    return this.http.get(environment.BasePath + 'Item_Group/Load_Item_Group/').pipe(
+        map((res: any) => (res && res.success) ? res.data : res)
+    );
 }
 
 
@@ -49,7 +49,9 @@ Search_Item_Group(Item_Group_Name):Observable<any>
         'Item_Group_Name_': Item_Group_Name
        
     }
-    return this.http.get(environment.BasePath + 'Item_Group/Search_Item_Group/',  { params: Search_Data });
+    return this.http.get(environment.BasePath + 'Item_Group/Search_Item_Group/',  { params: Search_Data }).pipe(
+        map((res: any) => (res && res.success) ? res.data : res)
+    );
 }
 
 Delete_Item_Group(Item_Group_Id)
@@ -58,7 +60,10 @@ Delete_Item_Group(Item_Group_Id)
 Get_Item_Group(Item_Group_Id)
 {
      
- return this.http.get(environment.BasePath +'Item_Group/Get_Item_Group/'+Item_Group_Id);}
+ return this.http.get(environment.BasePath +'Item_Group/Get_Item_Group/'+Item_Group_Id).pipe(
+    map((res: any) => (res && res.success) ? res.data : res)
+);
+}
 
 
 /*** Added on 17-7-24 */

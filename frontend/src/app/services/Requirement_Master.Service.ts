@@ -189,4 +189,8 @@ Search_Requirement(look_In_Date_Value,From_Date,To_Date,Customer,RequirementNo,p
             responseType: 'blob'
         });
     }
+
+    Check_Requirement_By_Lead(Lead_Id): Observable<any> {
+        return this.http.get(environment.BasePath + 'requirementmaster/Check_Requirement_By_Lead/' + Lead_Id);
+    }
 }

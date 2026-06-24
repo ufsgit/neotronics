@@ -92,7 +92,7 @@ var Price_Response = {
                     connection.query(
                         `UPDATE price_response_master SET
                         Price_Response_No = ?, EntryDate = ?, Supplier_Id = ?, Response_No = ?, Reference_No = ?,
-                        Currency_Id = ?, Total_Amount = ?, Vat_Amount = ?, Net_Amount = ?, Description1 = ?, Payment_Term_Description = ?
+                        Currency_Id = ?, Total_Amount = ?, Vat_Amount = ?, Net_Amount = ?, Description1 = ?, Payment_Term_Description = ?, DeleteStatus = 0
                         WHERE Price_Response_Master_Id = ?`,
                         masterValues.concat([masterId]),
                         function (masterError) {
@@ -123,8 +123,8 @@ var Price_Response = {
 
                 connection.query(
                     `INSERT INTO price_response_master
-                    (Price_Response_No, EntryDate, Supplier_Id, Response_No, Reference_No, Currency_Id, Total_Amount, Vat_Amount, Net_Amount, Description1, Payment_Term_Description)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+                    (Price_Response_No, EntryDate, Supplier_Id, Response_No, Reference_No, Currency_Id, Total_Amount, Vat_Amount, Net_Amount, Description1, Payment_Term_Description, DeleteStatus)
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,0)`,
                     masterValues,
                     function (masterError, result) {
                         if (masterError) {

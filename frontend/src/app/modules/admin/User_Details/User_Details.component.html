@@ -1,263 +1,276 @@
-<div *ngIf="issLoading" class="overlay">
-    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
-    </mat-progress-spinner>
+<!-- Loading Overlay -->
+<div *ngIf="issLoading" class="ig-overlay">
+  <mat-progress-spinner [color]="color" [mode]="mode" [value]="value" diameter="36"></mat-progress-spinner>
 </div>
 
-<div class="main-content">
-    <div class="container-fluid px-0">
+<div class="ig-page">
 
-        <!-- LIST VIEW -->
-        <div *ngIf="!Entry_View">
-            <!-- PAGE HEADER -->
-            <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h4 class="page-title-main">User Management</h4>
-                </div>
-                <div class="d-flex align-items-center" style="gap: 10px;">
-                    <button mat-raised-button (click)="Create_New()" class="btn-new-lead">
-                        <i class="material-icons" style="font-size:18px;">add</i>
-                        Create New
-                    </button>
-                </div>
-            </div>
+  <!-- ══════════════════════════════
+       LIST VIEW
+  ══════════════════════════════ -->
+  <div *ngIf="!Entry_View">
 
-            <!-- FILTER PANEL -->
-            <div class="lead-filter-panel mb-3">
-                <div class="filter-grid">
-                    <mat-form-field appearance="legacy" floatLabel="never">
-                        <input matInput placeholder="User Name" [(ngModel)]="Search_User_Name_" name="Search_User_Name_">
-                    </mat-form-field>
-
-                    <button mat-raised-button class="btn-new-lead" (click)="Search_User_Details()" style="min-width: 100px;">
-                        SEARCH
-                    </button>
-                </div>
-            </div>
-
-            <!-- TABLE -->
-            <div class="lead-table-container">
-                <div class="table-scroll-area" [style.max-height.px]="myInnerHeight">
-                    <table class="lead-data-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 80px;">Sl No</th>
-                                <th>User Name</th>
-                                <th>User Type</th>
-                                <th>User Role</th>
-                                <th style="text-align:right;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let User_Menu1 of User_Details_Data; let i =index">
-                                <td>{{ i + 1 }}</td>
-                                <td style="font-weight:600;">{{ User_Menu1["User_Details_Name"] }}</td>
-                                <td>{{ User_Menu1["User_Type_Name"] }}</td>
-                                <td>{{ User_Menu1["User_Role_Name"] }}</td>
-                                <td>
-                                    <div class="action-buttons justify-content-end">
-                                        <div class="action-icon-btn btn-edit-tb"
-                                             [hidden]="User_Details_Edit==false"
-                                             (click)="Edit_User_Details(User_Menu1, i)"
-                                             title="Edit">
-                                            <i class="material-icons">edit</i>
-                                        </div>
-                                        <div class="action-icon-btn btn-delete-tb"
-                                             [hidden]="User_Details_Delete==false"
-                                             (click)="Delete_User_Details(User_Menu1.User_Details_Id, i)"
-                                             title="Delete">
-                                            <i class="material-icons">close</i>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr *ngIf="User_Details_Data?.length === 0">
-                                <td colspan="5" class="text-center py-5 text-muted">No records found</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="entry-num">Total Entries: {{ Total_Entries }}</div>
-            </div>
-        </div>
-
-        <!-- ENTRY VIEW (ADD / EDIT) -->
-        <div *ngIf="Entry_View">
-            <div class="lead-entry-header d-flex justify-content-between align-items-center" *ngIf="!Menu_Permission_Page">
-                <h4 class="page-title-main">{{ User_Details_.User_Details_Id > 0 ? 'Edit User' : 'Add New User' }}</h4>
-                <button class="btn-close-custom" (click)="Close_Click()">
-                    <i class="material-icons">close</i> Close
-                </button>
-            </div>
-
-            <form *ngIf="!Menu_Permission_Page">
-                <div class="lead-entry-body">
-                    <div class="user-entry-sections">
-                        <div class="basic-info-section">
-                            <h6>Basic Information</h6>
-
-                            <div class="basic-info-grid">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">User Name <span class="required-star">*</span></label>
-                                    <mat-form-field appearance="legacy" floatLabel="never">
-                                        <input matInput type="text" maxlength="50" [(ngModel)]="User_Details_.User_Details_Name" name="User_Details_Name">
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Password <span class="required-star">*</span></label>
-                                    <mat-form-field appearance="legacy" floatLabel="never">
-                                        <input matInput type="text" maxlength="50" [(ngModel)]="User_Details_.Password" name="Password">
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Email ID</label>
-                                    <mat-form-field appearance="legacy" floatLabel="never">
-                                        <input matInput type="email" maxlength="250" [(ngModel)]="User_Details_.Email" name="Email">
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Mobile Number</label>
-                                    <mat-form-field appearance="legacy" floatLabel="never">
-                                        <input matInput type="text" maxlength="250" [(ngModel)]="User_Details_.Mobile" name="Mobile">
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">User Type <span class="required-star">*</span></label>
-                                    <mat-form-field appearance="legacy" floatLabel="never">
-                                        <select matNativeControl [(ngModel)]="User_Type_" name="User_Type_" required>
-                                            <option [ngValue]="null">Select Type</option>
-                                            <option *ngFor="let User_Type_T of User_Type_Data" [ngValue]="User_Type_T">{{User_Type_T.User_Type_Name}}</option>
-                                        </select>
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Working Status <span class="required-star">*</span></label>
-                                    <mat-form-field appearance="legacy" floatLabel="never">
-                                        <select matNativeControl [(ngModel)]="Working_Status_" name="Working_Status_" required>
-                                            <option [ngValue]="null">Select Status</option>
-                                            <option *ngFor="let Working_Status_T of Working_Status_Data" [ngValue]="Working_Status_T">{{Working_Status_T.Working_Status_Name}}</option>
-                                        </select>
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">User Role <span class="required-star">*</span></label>
-                                    <mat-form-field appearance="legacy" floatLabel="never">
-                                        <select matNativeControl [(ngModel)]="User_Role_" name="User_Role_" required>
-                                            <option [ngValue]="null">Select Role</option>
-                                            <option *ngFor="let User_Role_T of User_Role_Data" [ngValue]="User_Role_T">{{User_Role_T.User_Role_Name}}</option>
-                                        </select>
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Department <span class="required-star">*</span></label>
-                                    <mat-form-field appearance="legacy" floatLabel="never">
-                                        <select matNativeControl [(ngModel)]="Department_" name="Department_" required>
-                                            <option [ngValue]="null">Select Department</option>
-                                            <option *ngFor="let Department_T of Department_Data" [ngValue]="Department_T">{{Department_T.Department_Name}}</option>
-                                        </select>
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="menu-permission-toggle-section">
-                            <label class="menu-permission-toggle">
-                                <input class="form-check-input" type="checkbox" [(ngModel)]="Menu_Permission_Selected" name="Menu_Permission_Selected" (change)="Menu_Permission_Change($event)">
-                                <span>Menu Permission</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- FORM ACTIONS -->
-                    <div class="d-flex justify-content-end mt-4" style="gap: 12px;">
-                        <button mat-raised-button class="btn-cancel" (click)="Close_Click()">Cancel</button>
-                        <button mat-raised-button class="btn-save" [hidden]="User_Details_Save==false" (click)="Save_User_Details()">Save User</button>
-                    </div>
-                </div>
-            </form>
-
-            <div class="menu-permission-page-wrapper" *ngIf="Menu_Permission_Page">
-                <div class="lead-entry-header d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center" style="gap: 12px;">
-                        <button type="button" class="btn-back-custom" (click)="Back_To_User_Form()" title="Back">
-                            <i class="material-icons">arrow_back</i>
-                        </button>
-                        <h4 class="page-title-main">Menu Permissions</h4>
-                    </div>
-                    <button class="btn-close-custom" (click)="Close_Click()">
-                        <i class="material-icons">close</i> Close
-                    </button>
-                </div>
-
-                <div class="lead-entry-body menu-permission-page">
-                    <!-- Global Selection Checks -->
-                    <div class="lead-table-container mb-3" style="padding: 10px 20px; border-radius: 8px;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <span class="slct-chck-al-bx-usr-nw-sctn">Global Actions:</span>
-                            <div class="d-flex" style="gap: 25px;">
-                                <div class="d-flex align-items-center" style="gap: 6px;">
-                                    <input class="form-check-input" type="checkbox" [(ngModel)]="Select_View" name="Select_View" (click)="View_Click()">
-                                    <span class="page-info">View All</span>
-                                </div>
-                                <div class="d-flex align-items-center" style="gap: 6px;">
-                                    <input class="form-check-input" type="checkbox" [(ngModel)]="Select_Save" name="Select_Save" (click)="Save_Click()">
-                                    <span class="page-info">Save All</span>
-                                </div>
-                                <div class="d-flex align-items-center" style="gap: 6px;">
-                                    <input class="form-check-input" type="checkbox" [(ngModel)]="Select_Edit" name="Select_Edit" (click)="Edit_Click()">
-                                    <span class="page-info">Edit All</span>
-                                </div>
-                                <div class="d-flex align-items-center" style="gap: 6px;">
-                                    <input class="form-check-input" type="checkbox" [(ngModel)]="Select_Delete" name="Select_Delete" (click)="Delete_Click()">
-                                    <span class="page-info">Delete All</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Detailed Permissions Table -->
-                    <div class="lead-table-container">
-                        <div class="table-scroll-area" [style.height.px]="myInnerHeightTwo">
-                            <table class="lead-data-table">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 60px;">#</th>
-                                        <th>Menu Name</th>
-                                        <th class="text-center">View</th>
-                                        <th class="text-center">Save</th>
-                                        <th class="text-center">Edit</th>
-                                        <th class="text-center">Delete</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let menu of User_Menu_Selection_Data; let i = index">
-                                        <td>{{ i + 1 }}</td>
-                                        <td style="font-weight:600;">{{ menu.Menu_Name }}</td>
-                                        <td class="text-center">
-                                            <input class="form-check-input" type="checkbox" [(ngModel)]="menu.IsView" name="view_{{i}}">
-                                        </td>
-                                        <td class="text-center">
-                                            <input class="form-check-input" type="checkbox" [(ngModel)]="menu.IsSave" name="save_{{i}}" [hidden]="menu.Save_Check==false">
-                                        </td>
-                                        <td class="text-center">
-                                            <input class="form-check-input" type="checkbox" [(ngModel)]="menu.IsEdit" name="edit_{{i}}" [hidden]="menu.Edit_Check==false">
-                                        </td>
-                                        <td class="text-center">
-                                            <input class="form-check-input" type="checkbox" [(ngModel)]="menu.IsDelete" name="delete_{{i}}" [hidden]="menu.Delete_Check==false">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="ig-header">
+      <div>
+        <h1 class="ig-title">Users</h1>
+        <p class="ig-subtitle">Manage system users and their permissions</p>
+      </div>
+      <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
+        <i class="material-icons">add</i> Add User
+      </button>
     </div>
+
+    <!-- Filter -->
+    <div class="ig-filter-card">
+      <div class="ig-filter-grid">
+        <div class="ig-field">
+          <label class="ig-label">User Name</label>
+          <input type="text" class="ig-input" [(ngModel)]="Search_User_Name_"
+            name="Search_User_Name_" placeholder="Search by name…" (keyup.enter)="Search_User_Details()" />
+        </div>
+        <div class="ig-filter-action">
+          <button class="ig-btn-save" type="button" (click)="Search_User_Details()">Search</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meta -->
+    <div class="ig-meta-bar">
+      <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
+    </div>
+
+    <!-- Table -->
+    <div class="ig-table-card">
+      <div class="ig-table-wrap" [style.max-height.px]="myInnerHeight">
+        <table class="ig-table">
+          <thead>
+            <tr>
+              <th class="ig-th ig-th-no">#</th>
+              <th class="ig-th">User Name</th>
+              <th class="ig-th">User Type</th>
+              <th class="ig-th">User Role</th>
+              <th class="ig-th ig-th-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of User_Details_Data; let i = index" class="ig-tr">
+              <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+              <td class="ig-td ig-td-name">{{ user['User_Details_Name'] }}</td>
+              <td class="ig-td">{{ user['User_Type_Name'] }}</td>
+              <td class="ig-td">{{ user['User_Role_Name'] }}</td>
+              <td class="ig-td ig-td-actions">
+                <button class="ig-icon-btn ig-edit" [hidden]="User_Details_Edit == false"
+                  (click)="Edit_User_Details(user, i)" title="Edit">
+                  <i class="material-icons">edit</i>
+                </button>
+                <button class="ig-icon-btn ig-delete" [hidden]="User_Details_Delete == false"
+                  (click)="Delete_User_Details(user.User_Details_Id, i)" title="Delete">
+                  <i class="material-icons">delete_outline</i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="User_Details_Data?.length === 0">
+              <td colspan="5" class="ig-empty">No users found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════
+       ENTRY / EDIT FORM
+  ══════════════════════════════ -->
+  <div *ngIf="Entry_View">
+
+    <!-- ── User Form ── -->
+    <div *ngIf="!Menu_Permission_Page">
+
+      <div class="ig-header">
+        <div>
+          <h1 class="ig-title">{{ User_Details_.User_Details_Id > 0 ? 'Edit User' : 'New User' }}</h1>
+          <p class="ig-subtitle">{{ User_Details_.User_Details_Id > 0 ? 'Update user details and permissions' : 'Fill in the details to create a new user' }}</p>
+        </div>
+        <button class="ig-btn-cancel" type="button" (click)="Close_Click()">
+          <i class="material-icons" style="font-size:15px;">close</i> Cancel
+        </button>
+      </div>
+
+      <div class="ig-form-card">
+        <p class="ig-section-title">Basic Information</p>
+        <div class="ig-grid-2">
+
+          <div class="ig-field">
+            <label class="ig-label">User Name <span class="ig-req">*</span></label>
+            <input type="text" class="ig-input" maxlength="50"
+              [(ngModel)]="User_Details_.User_Details_Name" name="User_Details_Name"
+              placeholder="Enter user name" autocomplete="off" />
+          </div>
+
+          <div class="ig-field">
+            <label class="ig-label">Password <span class="ig-req">*</span></label>
+            <input type="text" class="ig-input" maxlength="50"
+              [(ngModel)]="User_Details_.Password" name="Password"
+              placeholder="Enter password" autocomplete="off" />
+          </div>
+
+          <div class="ig-field">
+            <label class="ig-label">Email ID</label>
+            <input type="email" class="ig-input" maxlength="250"
+              [(ngModel)]="User_Details_.Email" name="Email"
+              placeholder="Enter email address" />
+          </div>
+
+          <div class="ig-field">
+            <label class="ig-label">Mobile Number</label>
+            <input type="text" class="ig-input" maxlength="250"
+              [(ngModel)]="User_Details_.Mobile" name="Mobile"
+              placeholder="Enter mobile number" />
+          </div>
+
+          <div class="ig-field">
+            <label class="ig-label">User Type <span class="ig-req">*</span></label>
+            <select class="ig-select" [(ngModel)]="User_Type_" name="User_Type_">
+              <option [ngValue]="null">Select Type</option>
+              <option *ngFor="let t of User_Type_Data" [ngValue]="t">{{ t.User_Type_Name }}</option>
+            </select>
+          </div>
+
+          <div class="ig-field">
+            <label class="ig-label">Working Status <span class="ig-req">*</span></label>
+            <select class="ig-select" [(ngModel)]="Working_Status_" name="Working_Status_">
+              <option [ngValue]="null">Select Status</option>
+              <option *ngFor="let s of Working_Status_Data" [ngValue]="s">{{ s.Working_Status_Name }}</option>
+            </select>
+          </div>
+
+          <div class="ig-field">
+            <label class="ig-label">User Role <span class="ig-req">*</span></label>
+            <select class="ig-select" [(ngModel)]="User_Role_" name="User_Role_">
+              <option [ngValue]="null">Select Role</option>
+              <option *ngFor="let r of User_Role_Data" [ngValue]="r">{{ r.User_Role_Name }}</option>
+            </select>
+          </div>
+
+          <div class="ig-field">
+            <label class="ig-label">Department <span class="ig-req">*</span></label>
+            <select class="ig-select" [(ngModel)]="Department_" name="Department_">
+              <option [ngValue]="null">Select Department</option>
+              <option *ngFor="let d of Department_Data" [ngValue]="d">{{ d.Department_Name }}</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Menu Permission Toggle -->
+        <div class="ig-permission-toggle">
+          <label class="ig-toggle-label">
+            <input type="checkbox" class="ig-checkbox" [(ngModel)]="Menu_Permission_Selected"
+              name="Menu_Permission_Selected" (change)="Menu_Permission_Change($event)" />
+            <span>Set Menu Permissions</span>
+          </label>
+        </div>
+
+        <!-- Footer -->
+        <div class="ig-form-footer">
+          <button class="ig-btn-cancel" type="button" (click)="Close_Click()">Cancel</button>
+          <button class="ig-btn-save" type="button" [hidden]="User_Details_Save == false"
+            (click)="Save_User_Details()">
+            {{ User_Details_.User_Details_Id > 0 ? 'Update User' : 'Save User' }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Menu Permissions Page ── -->
+    <div *ngIf="Menu_Permission_Page">
+
+      <div class="ig-header">
+        <div class="ig-back-row">
+          <button class="ig-back-btn" type="button" (click)="Back_To_User_Form()" title="Back">
+            <i class="material-icons">arrow_back</i>
+          </button>
+          <div>
+            <h1 class="ig-title">Menu Permissions</h1>
+            <p class="ig-subtitle">Set access rights for each module</p>
+          </div>
+        </div>
+        <button class="ig-btn-cancel" type="button" (click)="Close_Click()">
+          <i class="material-icons" style="font-size:15px;">close</i> Cancel
+        </button>
+      </div>
+
+      <!-- Global Toggles -->
+      <div class="ig-global-bar">
+        <span class="ig-global-label">Select All:</span>
+        <label class="ig-toggle-label">
+          <input type="checkbox" class="ig-checkbox" [(ngModel)]="Select_View" name="Select_View" (click)="View_Click()" />
+          <span>View</span>
+        </label>
+        <label class="ig-toggle-label">
+          <input type="checkbox" class="ig-checkbox" [(ngModel)]="Select_Save" name="Select_Save" (click)="Save_Click()" />
+          <span>Save</span>
+        </label>
+        <label class="ig-toggle-label">
+          <input type="checkbox" class="ig-checkbox" [(ngModel)]="Select_Edit" name="Select_Edit" (click)="Edit_Click()" />
+          <span>Edit</span>
+        </label>
+        <label class="ig-toggle-label">
+          <input type="checkbox" class="ig-checkbox" [(ngModel)]="Select_Delete" name="Select_Delete" (click)="Delete_Click()" />
+          <span>Delete</span>
+        </label>
+      </div>
+
+      <!-- Permissions Table -->
+      <div class="ig-table-card">
+        <div class="ig-table-wrap" [style.max-height.px]="myInnerHeightTwo">
+          <table class="ig-table">
+            <thead>
+              <tr>
+                <th class="ig-th ig-th-no">#</th>
+                <th class="ig-th">Menu Name</th>
+                <th class="ig-th ig-th-chk">View</th>
+                <th class="ig-th ig-th-chk">Save</th>
+                <th class="ig-th ig-th-chk">Edit</th>
+                <th class="ig-th ig-th-chk">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let menu of User_Menu_Selection_Data; let i = index" class="ig-tr">
+                <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+                <td class="ig-td ig-td-name">{{ menu.Menu_Name }}</td>
+                <td class="ig-td ig-td-chk">
+                  <input type="checkbox" class="ig-checkbox" [(ngModel)]="menu.IsView" name="view_{{i}}" />
+                </td>
+                <td class="ig-td ig-td-chk">
+                  <input type="checkbox" class="ig-checkbox" [(ngModel)]="menu.IsSave" name="save_{{i}}" [hidden]="menu.Save_Check == false" />
+                </td>
+                <td class="ig-td ig-td-chk">
+                  <input type="checkbox" class="ig-checkbox" [(ngModel)]="menu.IsEdit" name="edit_{{i}}" [hidden]="menu.Edit_Check == false" />
+                </td>
+                <td class="ig-td ig-td-chk">
+                  <input type="checkbox" class="ig-checkbox" [(ngModel)]="menu.IsDelete" name="delete_{{i}}" [hidden]="menu.Delete_Check == false" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Save on permission page -->
+      <div class="ig-form-footer" style="padding-top: 16px;">
+        <button class="ig-btn-cancel" type="button" (click)="Back_To_User_Form()">
+          <i class="material-icons" style="font-size:15px;">arrow_back</i> Back
+        </button>
+        <button class="ig-btn-save" type="button" [hidden]="User_Details_Save == false"
+          (click)="Save_User_Details()">
+          {{ User_Details_.User_Details_Id > 0 ? 'Update User' : 'Save User' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 </div>

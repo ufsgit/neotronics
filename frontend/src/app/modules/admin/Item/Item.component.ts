@@ -13,6 +13,7 @@ import { Sale_Unit } from '../../../models/Sale_Unit';
 import { Item_Group } from '../../../models/Item_Group';
 import { MatDialog } from '@angular/material/dialog';
 import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 @Component({
 selector: 'app-Item',
 templateUrl: './Item.component.html',
@@ -48,7 +49,7 @@ Item_Save:boolean;
 Item_Delete:boolean;
 Check_Hide:boolean=true;
 Tax_Errors: any = {};
-constructor(public Item_Service_:Item_Service,public Item_Group_Service_:Item_Group_Service,public Sale_Unit_Service_:Sale_Unit_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
+constructor(public Item_Service_:Item_Service,public Item_Group_Service_:Item_Group_Service,public Sale_Unit_Service_:Sale_Unit_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog, private Master_Refresh_Service_: Master_Refresh_Service) { }
 ngOnInit() 
 {
 this.Permissions = Get_Page_Permission(5);
@@ -63,6 +64,12 @@ if(this.Permissions==undefined || this.Permissions==null)
     this.Item_Save=this.Permissions.Save;
     this.Item_Delete=this.Permissions.Delete;
     this.Page_Load()
+
+    this.Master_Refresh_Service_.masterUpdated$.subscribe(masterName => {
+        if (masterName === 'Item_Group') this.Search_Item_Group();
+        if (masterName === 'HSN') this.Get_HSN_Dropdown();
+        if (masterName === 'Sale_Unit') this.Search_Sale_Unit();
+    });
     }
 }
 trackByFn(index, item) 
@@ -75,7 +82,7 @@ Page_Load()
     this.myInnerHeight = this.myInnerHeight - 300;
     this.Search_Item_Group();    
     this.Get_HSN_Dropdown();
-    //this.Search_Item();
+    this.Search_Item();
     this.Search_Sale_Unit();
     this.Clr_Item();
     this.Entry_View = false;
@@ -115,10 +122,12 @@ Clr_Item()
    this.Item_.HSNCODE="";
    this.Item_.Checkbox=false;
    this.Item_.Is_Update=false;
+   if(this.Item_Group_ == null || this.Item_Group_ == undefined) {
+       this.Item_Group_ = new Item_Group();
+   }
    this.Item_Group_.Item_Group_Id=0;
    this.Item_Group_.Item_Group_Name='';
    this.Item_.Sales_Tax=0;
-    this.Item_Group_ = null;
 //    if(this.Item_Group_Data!=null && this.Item_Group_Data != undefined)
 //    this.Item_Group_=this.Item_Group_Data[0];
    if(this.Sale_Unit_Data!=null && this.Sale_Unit_Data != undefined)
@@ -253,11 +262,11 @@ Search_Item(){
             srchcode_="undefined";
         else
             srchcode_=this.Search_Part_;
-        if(serchuitm_=="undefined" && srchcode_=="undefined")
-        {
-            const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Name or Part No', Type: "3" } });
-            return
-        }
+        // if(serchuitm_=="undefined" && srchcode_=="undefined")
+        // {
+        //     const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Name or Part No', Type: "3" } });
+        //     return
+        // }
 
     //this.Search_Item_=undefined;
     // if(this.Search_Part_=="" || this.Search_Part_==null)   
@@ -298,6 +307,7 @@ Delete_Item(Item_Id,index)
      if(Delete_status==1){ 
     this.Item_Data.splice(index, 1);
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
+    this.Master_Refresh_Service_.refreshMaster('Item');
     //this.Search_Item();
     }
     else
@@ -320,9 +330,6 @@ Save_Item()
         this.Resolve_Item_Group();
         if (this.Item_.Item_Name == undefined || this.Item_.Item_Name == null || this.Item_.Item_Name == "") {
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Name', Type: "3" } });
-        }
-        else  if (this.Item_.Item_Code == undefined || this.Item_.Item_Code == null || this.Item_.Item_Code == "") {
-        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter the Item Code', Type: "3" } });
         }
         else if(this.Item_Group_==undefined||this.Item_Group_==null||this.Item_Group_.Item_Group_Id==undefined||this.Item_Group_.Item_Group_Id==0)
         {
@@ -444,7 +451,10 @@ else
               panelClass: 'Dialogbox-Class',
               data: { Message: 'Saved Successfully', Type: "false" }
             });
+            this.Search_Item();
             this.Clr_Item();
+            this.Entry_View = false;
+            this.Master_Refresh_Service_.refreshMaster('Item');
           } else if (resultId == -1) {
             this.dialogBox.open(DialogBox_Component, {
               panelClass: 'Dialogbox-Class',

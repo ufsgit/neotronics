@@ -4,6 +4,7 @@ import { payment_term_Service } from '../../../services/payment_term.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { payment_term } from '../../../models/payment_term';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 @Component({
 selector: 'app-Payment_Term',
 templateUrl: './Payment_Term.component.html',
@@ -29,7 +30,7 @@ search_payment_term_:string;
 payment_term_Edit:boolean;
 payment_term_Save:boolean;
 payment_term_Delete:boolean;
-constructor(public payment_term_Service_:payment_term_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
+constructor(public payment_term_Service_:payment_term_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog, private Master_Refresh_Service_: Master_Refresh_Service) { }
 ngOnInit() 
 {
 this.Permissions = Get_Page_Permission(92);
@@ -50,6 +51,7 @@ Page_Load()
 {
     this.myInnerHeight = (window.innerHeight);
     this.myInnerHeight = this.myInnerHeight - 320;
+    this.search_payment_term_ = "";
 this.Clr_payment_term();
 this.Search_payment_term();
 // this.Load_payment_term();
@@ -154,6 +156,7 @@ if(Delete_status[0][0].DeleteStatus_>0){
     this.payment_term_Data.splice(this.EditIndex, 1);
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type: "false"}});
     this.Search_payment_term();
+    this.Master_Refresh_Service_.refreshMaster('Payment_Term');
     }else if(Number(Delete_status[0][0].DeleteStatus_)== -2)
     {
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Unable to delete: You are attempting to delete a Payment Term currently in use',Type:"3"}});
@@ -187,9 +190,11 @@ Save_payment_term() {
 
         if (savedId > 0) {
             this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
+            this.search_payment_term_ = "";
             this.Search_payment_term();
             this.Clr_payment_term();
             this.Entry_View = false;
+            this.Master_Refresh_Service_.refreshMaster('Payment_Term');
         } else if (savedId == -1) {
             this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Already Exists', Type: "2" } });
         } else {

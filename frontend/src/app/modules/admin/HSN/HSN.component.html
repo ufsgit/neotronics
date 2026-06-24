@@ -1,100 +1,101 @@
-<div *ngIf="issLoading" class="overlay">
-    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
-    </mat-progress-spinner>
+<!-- Loading Overlay -->
+<div *ngIf="issLoading" class="ig-overlay">
+  <mat-progress-spinner [color]="color" [mode]="mode" [value]="value" diameter="36"></mat-progress-spinner>
 </div>
 
-<div class="main-trackbox-content">
-    <div class="trackbox-container">
+<div class="ig-page">
 
-        <!-- FORM ENTRY VIEW -->
-        <div class="row" *ngIf="Entry_View">
-            <div class="col-md-12">
-                <div class="trackbox-table-card p-4">
-                    <form>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="input-label mb-2 d-block" style="font-weight: 600; font-size: 13px; color: #4e5e7a;">
-                                    HSN Code <span style="color:#ef071e;">*</span>
-                                </label>
-                                <div class="modern-form-field">
-                                    <input matInput type="text" [(ngModel)]="HSN_.HSN_CODE" name="HSN_CODE_Entry" placeholder="Enter HSN Code" style="border:none; width: 100%; outline: none; font-size: 14px;">
-                                </div>
-                            </div>
-                            <div class="col-md-6 d-flex align-items-end justify-content-end gap-3">
-                                <button mat-raised-button type="button" class="btn-add-new-trackbox" style="background-color: #6c757d !important;" (click)="Close_Click()">Close</button>
-                                <button mat-raised-button type="button" [hidden]="HSN_Save==false" id="Save_Button" class="btn-add-new-trackbox" (click)="Save_HSN()">Save HSN</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- LIST VIEW -->
-        <div *ngIf="!Entry_View">
-            
-            <!-- SEARCH AND ACTION SECTION -->
-            <div class="trackbox-filter-area">
-                <div class="modern-search-wrapper">
-                    <i class="material-icons">search</i>
-                    <input type="text" 
-                           class="modern-search-input" 
-                           [(ngModel)]="Search_Name" 
-                           name="search_input" 
-                           placeholder="Search HSN Code..."
-                           (keyup.enter)="Search_HSN()">
-                </div>
-                
-                <button mat-raised-button type="button" (click)="Create_New()" class="btn-add-new-trackbox">
-                    <i class="material-icons">add</i>
-                    Add HSN
-                </button>
-            </div>
-
-            <!-- DATA TABLE SECTION -->
-            <div class="trackbox-table-card">
-                <div class="table-responsive" [style.height.px]="myInnerHeight" style="overflow-y: scroll;">
-                    <table class="modern-trackbox-table">
-                        <thead>
-                            <tr>
-                                <th class="col-no">Sl No</th>
-                                <th>HSN Code</th>
-                                <th class="col-actions">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let HSN1 of HSN_Data; let i = index">
-                                <td class="col-no">{{ i + 1 }}</td>
-                                <td style="font-weight: 500;">{{ HSN1["HSN_CODE"] }}</td>
-                                <td class="col-actions">
-                                    <div class="d-flex justify-content-center">
-                                        <div class="action-icon-btn btn-edit-tb" 
-                                             [hidden]="HSN_Edit==false"
-                                             (click)="Edit_HSN(HSN1, i)" 
-                                             title="Edit">
-                                            <i class="material-icons">edit</i>
-                                        </div>
-                                        <div class="action-icon-btn btn-delete-tb" 
-                                             [hidden]="HSN_Delete==false"
-                                             (click)="Delete_HSN(HSN1.HSN_Id, i)" 
-                                             title="Delete">
-                                            <i class="material-icons">delete_outline</i>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr *ngIf="HSN_Data?.length === 0">
-                                <td colspan="3" class="text-center py-5 text-muted">No records found</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="entries-summary">
-                Entries : {{Total_Entries}}
-            </div>
-        </div>
-
+  <!-- ── HEADER ── -->
+  <div class="ig-header">
+    <div>
+      <h1 class="ig-title">HSN Codes</h1>
+      <p class="ig-subtitle">Manage HSN / tax classification codes</p>
     </div>
+    <button mat-button class="ig-btn-add" type="button" (click)="Create_New()" *ngIf="!Entry_View">
+      <i class="material-icons">add</i> Add HSN
+    </button>
+  </div>
+
+  <!-- ── ENTRY FORM ── -->
+  <div class="ig-form-card" *ngIf="Entry_View">
+    <p class="ig-form-label">{{ HSN_.HSN_Id > 0 ? 'Edit HSN Code' : 'New HSN Code' }}</p>
+    <div class="ig-form-row">
+      <div class="ig-field">
+        <label class="ig-label">HSN Code <span class="ig-req">*</span></label>
+        <input
+          type="text"
+          class="ig-input"
+          [(ngModel)]="HSN_.HSN_CODE"
+          name="HSN_CODE_Entry"
+          placeholder="Enter HSN code"
+          autocomplete="off"
+        />
+      </div>
+      <div class="ig-form-actions">
+        <button class="ig-btn-cancel" type="button" (click)="Close_Click()">Cancel</button>
+        <button
+          class="ig-btn-save"
+          type="button"
+          id="Save_Button"
+          [hidden]="HSN_Save == false"
+          (click)="Save_HSN()"
+        >Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEARCH ── -->
+  <div class="ig-search-bar" *ngIf="!Entry_View">
+    <div class="ig-search-wrap">
+      <i class="material-icons">search</i>
+      <input
+        type="text"
+        class="ig-search-input"
+        [(ngModel)]="Search_Name"
+        name="search_input"
+        placeholder="Search HSN codes…"
+        (keyup.enter)="Search_HSN()"
+      />
+    </div>
+    <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
+  </div>
+
+  <!-- ── TABLE ── -->
+  <div class="ig-table-card" *ngIf="!Entry_View">
+    <div class="ig-table-wrap" [style.max-height.px]="myInnerHeight">
+      <table class="ig-table">
+        <thead>
+          <tr>
+            <th class="ig-th ig-th-no">#</th>
+            <th class="ig-th">HSN Code</th>
+            <th class="ig-th ig-th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let hsn of HSN_Data; let i = index" class="ig-tr">
+            <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+            <td class="ig-td ig-td-name">{{ hsn['HSN_CODE'] }}</td>
+            <td class="ig-td ig-td-actions">
+              <button
+                class="ig-icon-btn ig-edit"
+                [hidden]="HSN_Edit == false"
+                (click)="Edit_HSN(hsn, i)"
+                title="Edit"
+              ><i class="material-icons">edit</i></button>
+              <button
+                class="ig-icon-btn ig-delete"
+                [hidden]="HSN_Delete == false"
+                (click)="Delete_HSN(hsn.HSN_Id, i)"
+                title="Delete"
+              ><i class="material-icons">delete_outline</i></button>
+            </td>
+          </tr>
+          <tr *ngIf="HSN_Data?.length === 0">
+            <td colspan="3" class="ig-empty">No records found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>

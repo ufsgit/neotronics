@@ -31,12 +31,18 @@ return body || { };
 }
 Search_Stock(Stock_Name):Observable<any>
 {
- return this.http.get(environment.BasePath +'Stock/Search_Stock/'+Stock_Name);}
+ return this.http.get(environment.BasePath +'Stock/Search_Stock/'+Stock_Name).pipe(
+    map((res: any) => (res && res.success) ? res.data : res)
+);
+}
 Delete_Stock(Stock_Id)
 {
  return this.http.get(environment.BasePath +'Stock/Delete_Stock/'+Stock_Id);}
 Get_Stock(Stock_Id)
 {
- return this.http.get(environment.BasePath +'Stock/Get_Stock/'+Stock_Id);}
+ return this.http.get(environment.BasePath +'Stock/Get_Stock/'+Stock_Id).pipe(
+    map((res: any) => (res && res.success) ? res.data : res)
+);
+}
 }
 

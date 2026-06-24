@@ -2667,6 +2667,8 @@ Save_PerformaInvoice(Printstatus:number)
                         });
                     }
                     this.Sales_Print = false;
+                    this.Entry_View = false;
+                    this.Search_PerformaInvoice();
                 } else {
                     const msg = (result && result.Message) || (res && res.message) || 'Save failed';
                     this.dialogBox.open(DialogBox_Component, {
@@ -2727,7 +2729,7 @@ Search_PerformaInvoice()
             if (res && res.success) {
                 const data = res.data;
                 const rows = Array.isArray(data) ? data : (data && data.rows ? data.rows : []);
-                this.performainvoice_Data = rows && rows[0] ? rows[0] : (Array.isArray(data) ? data : []);
+                this.performainvoice_Data = Array.isArray(data) && Array.isArray(data[0]) ? data[0] : (Array.isArray(data) ? data : (data ? [data] : []));
 
                 if (this.performainvoice_Data.length > 0) {
                     for (var i = 0; i < this.performainvoice_Data.length; i++) {

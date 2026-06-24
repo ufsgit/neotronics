@@ -5,125 +5,97 @@
 <div class="main-content" style="padding: 0px 0px !important;background-color: #f1f1f1;">
     <div class="container-fluid" #topDiv1>
         <div class="row col-md-12  mb-0" *ngIf="!Entry_View">
-            <div class="row mb-1 card-body" style="align-items: center;
-             border: 0;
-             border-radius: 6px;
-             margin-left: 2px;
-             color: #333333;
-             background: #fff;
-             width: 100%;padding: 3px;background-color: #f1f1f1;
-             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-         ">
-                <div class="col-md-1 row mb-1" style="align-items: center;">
+            <div class="row mb-3 card-body"
+                style="align-items: flex-end; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%; padding: 15px; background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.2),0 1px 5px 0 rgba(0,0,0,0.12);">
 
-                    <label class="col-md-6 mb-0">Date</label>
-                    <div class="checkbox-to-crect-sales-search-section">
-                        <div class="form-check uper-dte-lbel-sales-sctn-new">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" name="Date_checks"
-                                    [(ngModel)]="Date_Check" />
-                                <span class="form-check-sign"
-                                    style="left: 15px !important ; top: -13px !important;"><span
-                                        class="check"></span></span>
-                            </label>
+                <div class="row w-100 mb-3" style="margin-left:0;">
+                    <!-- Date checkbox + From Date -->
+                    <div class="col-md-1" style="display:flex; flex-direction:column; justify-content:flex-end;">
+                        <label class="mb-1" style="display:block; font-weight:500; font-size:13px;">Date</label>
+                        <div class="form-check" style="height:40px; display:flex; align-items:center;">
+                            <input type="checkbox" class="form-check-input" name="Date_checks" [(ngModel)]="Date_Check">
                         </div>
                     </div>
-
-                </div>
-                <div class="col-md-3 row mb-1 " style="align-items: center;">
-                    <label class="col-md-4 mb-0 " style="text-align: end;">From</label>
-                    <mat-form-field class="col-md-8 " style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                        <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
-                            [(ngModel)]="Search_FromDate">
-                        <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
-                        <mat-datepicker #dp1></mat-datepicker>
-                    </mat-form-field>
-                </div>
-                <div class="col-md-3 row mb-1" style="align-items: center;">
-
-                    <label class="col-md-4 mb-0 " style="text-align: end;">To</label>
-                    <mat-form-field class="col-md-8" style="height: 40px;     border: 1px solid #b1b1b1;
-                                        border-radius: 8px;">
-                        <input matInput [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
-                            [(ngModel)]="Search_ToDate">
-                        <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
-                        <mat-datepicker #dp2></mat-datepicker>
-                    </mat-form-field>
-                </div>
-
-                <div class="col-md-5 row mb-1" style="align-items: center;">
-                    <label class="col-md-3 mb-0" style="text-align: end;">Customer</label>
-                    <input type="text" [matAutocomplete]="auto_Customer" [(ngModel)]="Search_Customer" name="Customer"
-                        (click)="Search_Customer_Typeahead($event)" (input)="Search_Customer_Typeahead($event)"
-                        class="col-md-9 " style="height: 40px;border: 1px solid #b1b1b1;">
-                    <mat-autocomplete #auto_Customer="matAutocomplete" [displayWith]="display_Customer">
-                        <mat-option *ngIf="isLoading">
-                            <mat-spinner diameter="500"></mat-spinner>
-                        </mat-option>
-                        <ng-container *ngIf="!isLoading">
-                            <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
-                                <span>{{Customer_T.Client_Accounts_Name}}</span>
-                            </mat-option>
-                        </ng-container>
-                    </mat-autocomplete>
-                </div>
-
-                <div class="col-md-3 row  mb-1" style="align-items: center;">
-                    <label class="col-md-6 mb-0" style="text-align: end;">Quotation No</label>
-                    <input type="text" class="col-md-6 " [(ngModel)]="QuotNo" [ngModelOptions]="{standalone: true}"
-                        style="height: 40px;border: 1px solid #b1b1b1;">
-                </div>
-
-                <div class="col-md-2 row mb-1" style="align-items: center;">
-                    <label class="col-md-6 mb-0  " style="text-align: end;">Part No</label>
-                    <input type="text" class="col-md-6 " style="height: 40px;border: 1px solid #b1b1b1;"
-                        [(ngModel)]="partNo" [ngModelOptions]="{standalone: true}">
+                    <div class="col-md-2">
+                        <label class="mb-1" style="display:block; font-weight:500; font-size:13px;">From Date</label>
+                        <div style="background:#fff; border:1px solid #b1b1b1; border-radius:8px; height:40px; display:flex; align-items:center; padding:0 5px;">
+                            <input [matDatepicker]="dp1" placeholder="DD/MM/YYYY" name="Search_FromDate" [(ngModel)]="Search_FromDate"
+                                style="border:none; outline:none; width:100%; height:100%; background:transparent; padding-left:10px;">
+                            <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                            <mat-datepicker #dp1></mat-datepicker>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="mb-1" style="display:block; font-weight:500; font-size:13px;">To Date</label>
+                        <div style="background:#fff; border:1px solid #b1b1b1; border-radius:8px; height:40px; display:flex; align-items:center; padding:0 5px;">
+                            <input [matDatepicker]="dp2" name="Search_ToDate" placeholder="DD/MM/YYYY" [(ngModel)]="Search_ToDate"
+                                style="border:none; outline:none; width:100%; height:100%; background:transparent; padding-left:10px;">
+                            <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                            <mat-datepicker #dp2></mat-datepicker>
+                        </div>
+                    </div>
+                    <!-- Customer autocomplete -->
+                    <div class="col-md-3">
+                        <label class="mb-1" style="display:block; font-weight:500; font-size:13px;">Customer</label>
+                        <input type="text" [matAutocomplete]="auto_Customer" [(ngModel)]="Search_Customer" name="Customer"
+                            (click)="Search_Customer_Typeahead($event)" (input)="Search_Customer_Typeahead($event)"
+                            placeholder="Search customer..."
+                            style="width:100%; height:40px; border:1px solid #b1b1b1; border-radius:8px; padding:0 10px; background:#fff;">
+                        <mat-autocomplete #auto_Customer="matAutocomplete" [displayWith]="display_Customer">
+                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                            <ng-container *ngIf="!isLoading">
+                                <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
+                                    <span>{{Customer_T.Client_Accounts_Name}}</span>
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </div>
+                    <!-- Quotation No -->
+                    <div class="col-md-2">
+                        <label class="mb-1" style="display:block; font-weight:500; font-size:13px;">Quotation No</label>
+                        <input type="text" [(ngModel)]="QuotNo" [ngModelOptions]="{standalone: true}" placeholder="No..."
+                            style="width:100%; height:40px; border:1px solid #b1b1b1; border-radius:8px; padding:0 10px; background:#fff;">
+                    </div>
+                    <!-- Part No -->
+                    <div class="col-md-2">
+                        <label class="mb-1" style="display:block; font-weight:500; font-size:13px;">Part No</label>
+                        <input type="text" [(ngModel)]="partNo" [ngModelOptions]="{standalone: true}" placeholder="Part no..."
+                            style="width:100%; height:40px; border:1px solid #b1b1b1; border-radius:8px; padding:0 10px; background:#fff;">
+                    </div>
                 </div>
 
-                <div class="col-md-3 row  mb-1" style="align-items: center;">
-                    <label class="col-md-4 mb-0 " style="text-align: end;">Group</label>
-                    <select [(ngModel)]="Item_Group_Search" id="Item_Group_Search" name="Item_Group_Search" required
-                        class="col-md-8 " style="height: 40px;border: 1px solid #b1b1b1;">
-                        <option *ngFor="let itemGroup of itemGroupData" [ngValue]="itemGroup">
-                            {{itemGroup.Item_Group_Name}}
-                        </option>
-                    </select>
+                <div class="row w-100 mb-2" style="margin-left:0;">
+                    <!-- Item Group -->
+                    <div class="col-md-3">
+                        <label class="mb-1" style="display:block; font-weight:500; font-size:13px;">Item Group</label>
+                        <select [(ngModel)]="Item_Group_Search" id="Item_Group_Search" name="Item_Group_Search"
+                            style="width:100%; height:40px; border:1px solid #b1b1b1; border-radius:8px; padding:0 10px; background:#fff;">
+                            <option *ngFor="let itemGroup of itemGroupData" [ngValue]="itemGroup">{{itemGroup.Item_Group_Name}}</option>
+                        </select>
+                    </div>
+                    <!-- Buttons -->
+                    <div class="col-md-9" style="display:flex; gap:10px; justify-content:flex-end; align-items:flex-end; height:50px;">
+                        <button mat-raised-button type="button" (click)="Search_Quotation()"
+                            class="btn btn-danger m-0" style="height:40px; border-radius:8px; padding:0 20px;">
+                            <i class="fa fa-search" aria-hidden="true" style="margin-right:5px;"></i> Search
+                        </button>
+                        <button mat-raised-button type="button" (click)="Create_New()"
+                            class="btn btn-danger m-0" style="height:40px; border-radius:8px; padding:0 18px;">
+                            <i class="fa fa-plus" aria-hidden="true" style="margin-right:5px;"></i> Add New
+                        </button>
+                        <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true"
+                            class="btn btn-primary m-0" style="background-color:#3e6bdd; color:white; height:40px; border-radius:8px; padding:0 20px;">
+                            <i class="material-icons" style="font-size:16px; vertical-align:middle; margin-right:4px;">file_download</i>
+                            Export
+                        </button>
+                    </div>
                 </div>
-
-
-
-                <div class="col-md-3 row mb-1" style="align-items: center; justify-content: center;">
-                    <!-- <button mat-raised-button type="button" class="btn btn-danger pull-right mt-0 mb-0"  (click)="Print_Search_Click()">
-                                        <i class="fa fa-print" aria-hidden="true"></i>
-                                    </button> -->
-                    <button mat-raised-button type="button" (click)="Search_Quotation()"
-                        style="margin-top: -1px !important;"
-                        class="btn btn-danger mb-0 pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
-                        <i class="fa fa-search" aria-hidden="true"></i>
-                    </button>
-                    <button mat-raised-button type="button" (click)="Create_New()" style="margin-top: -1px !important;"
-                        class="btn btn-danger  mb-0 pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                    </button>
-
-                    <button style="background-color: #3e6bdd; color: white" (click)="Export()"
-                        [hidden]="Export_View == true" mat-raised-button type="button"
-                        class="mt-0  mb-0  btn btn-danger pull-right">
-                        Export
-                    </button>
-
-                </div>
-
                 <div class="clearfix"></div>
             </div>
+
             <div class="col-md-12">
-                <!-- <div class="card card-plain"> -->
-                <!-- <div class="card-body"> -->
-                <div class="table-responsive card ">
-                    <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90"> -->
-                    <div class="table-responsive" [style.height.px]="myInnerHeight"
-                        style="overflow-y: scroll;background-color: #f1f1f1;">
+                <div class="table-responsive card">
+                    <div class="table-responsive" [style.height.px]="myInnerHeight">
                         <table class="table table-hover">
                             <thead class="thead">
                                 <th>Sl No</th>
@@ -134,103 +106,53 @@
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </thead>
-                            <!-- <ng-container
-                                        *cdkVirtualFor="let Sales_Master of Quotation_Master_Data; let i =index"> -->
-                            <tr *ngFor="let Sales_Master of Quotation_Master_Data; let i =index">
-                                <td style="    padding: 0px;
-                                            padding-left: 5px;
-                                            vertical-align: middle;">{{ i+1 }}</td>
-                                <td style="    padding: 0px;
-                                            padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["Customer"]}}</td>
-                                <td style="    padding: 0px;
-                                            padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["QuotationNo"]}}</td>
-                                <td style="    padding: 0px;
-                                            padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["FormattedEntryDate"]}}</td>
-                                <td style="    padding: 0px;
-                                            padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["NetTotal"]}}</td>
+                            <tr *ngFor="let Sales_Master of Quotation_Master_Data; let i = index">
+                                <td style="padding:0px; padding-left:5px; vertical-align:middle;">{{ i+1 }}</td>
+                                <td style="padding:0px; padding-left:5px; vertical-align:middle;">{{Sales_Master["Customer"]}}</td>
+                                <td style="padding:0px; padding-left:5px; vertical-align:middle;">{{Sales_Master["QuotationNo"]}}</td>
+                                <td style="padding:0px; padding-left:5px; vertical-align:middle;">{{Sales_Master["FormattedEntryDate"]}}</td>
+                                <td style="padding:0px; padding-left:5px; vertical-align:middle;">{{Sales_Master["NetTotal"]}}</td>
                                 <td>
-                                    <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
-                                        [hidden]="Sales_Master_Edit==false" aria-describedby="cdk-describedby-message-0"
-                                        cdk-describedby-host=""
+                                    <button [hidden]="Sales_Master_Edit==false"
                                         class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
-                                        mat-raised-button="" mattooltip="Edit Task" ng-reflect-message="Edit Task"
-                                        ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span
-                                                _ngcontent-jry-c5="" class="mat-button-wrapper">
-                                                <i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons"
-                                                    (click)="Edit_Quotation_Master(Sales_Master,i)">edit</i></span>
-                                            <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple=""
-                                                ng-reflect-centered="false" ng-reflect-disabled="false"
-                                                ng-reflect-trigger="[object HTMLButtonElement]"></div>
-                                            <div _ngcontent-jry-c5="" class="mat-button-focus-overlay">
-                                            </div>
+                                        mat-raised-button="" mattooltip="Edit" type="button">
+                                        <span class="mat-button-wrapper">
+                                            <i class="material-icons" (click)="Edit_Quotation_Master(Sales_Master,i)">edit</i>
                                         </span>
-                                        <div class="mat-button-ripple mat-ripple" matripple=""
-                                            ng-reflect-centered="false" ng-reflect-disabled="false"
-                                            ng-reflect-trigger="[object HTMLButtonElement]"></div>
-                                        <div class="mat-button-focus-overlay"></div>
                                     </button>
                                 </td>
                                 <td>
-                                    <button _ngcontent-gdi-c11="" [hidden]="Sales_Master_Delete==false"
+                                    <button [hidden]="Sales_Master_Delete==false"
                                         class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
-                                        mat-raised-button="" mattooltip="Remove" type="button"
-                                        aria-describedby="cdk-describedby-message-1" cdk-describedby-host=""
-                                        ng-reflect-position="above" ng-reflect-message="Remove"><span
-                                            class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"
-                                                (click)="Delete_Quotation_Master(Sales_Master.SalesQuotationMaster_Id,i)">close</i></span>
-                                        <div class="mat-button-ripple mat-ripple" matripple=""
-                                            ng-reflect-centered="false" ng-reflect-disabled="false"
-                                            ng-reflect-trigger="[object HTMLButtonElement]"></div>
-                                        <div class="mat-button-focus-overlay"></div>
+                                        mat-raised-button="" mattooltip="Delete" type="button">
+                                        <span class="mat-button-wrapper">
+                                            <i class="material-icons" (click)="Delete_Quotation_Master(Sales_Master.SalesQuotationMaster_Id,i)">close</i>
+                                        </span>
                                     </button>
                                 </td>
-                                <!-- <td> 
-        <button _ngcontent-gdi-c11="" class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" 
-        mat-raised-button="" mattooltip="Remove" type="button" aria-describedby="cdk-describedby-message-1" 
-        cdk-describedby-host="" ng-reflect-position="above" ng-reflect-message="Remove"><span class="mat-button-wrapper">
-            <i _ngcontent-gdi-c11="" class="material-icons"  
-            (click)="Change_Bill_Status(Sales_Master.Quotation_Master_Id,Sales_Master.BillType,i)" >trending_flat</i></span>
-            <div class="mat-button-ripple mat-ripple" matripple="" ng-reflect-centered="false" ng-reflect-disabled="false" 
-            ng-reflect-trigger="[object HTMLButtonElement]"></div><div class="mat-button-focus-overlay"></div></button>
-        </td> -->
                             </tr>
-                            <!-- </ng-container> -->
                         </table>
                     </div>
-                    <!-- </cdk-virtual-scroll-viewport> -->
                 </div>
             </div>
-            <div class="col-md-4 no-print">
-                <label class="entry-num">Entries : {{Total_Entries}}</label>
-                &nbsp;&nbsp;&nbsp;&nbsp; <label class="entry-num">Total:
-                    {{Sales_Master_Total_Amount | number:'1.3-3'}}</label>
+            <div class="col-md-12 no-print" style="padding: 6px 4px;">
+                <label class="entry-num">Entries: {{Total_Entries}}</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <label class="entry-num">Total: {{Sales_Master_Total_Amount | number:'1.3-3'}}</label>
             </div>
-            <!-- </div> -->
-            <!-- </div> -->
         </div>
 
         <div class="row mt-2" *ngIf="Entry_View">
             <div class="container-fluid" #topDiv>
-                <div class="col-md-12 d-flex justify-content-between align-items-center mb-4 info-card" style="margin-bottom: 20px !important;">
-                    <h5><i class="fa fa-file-text-o"></i> Quotation Details</h5>
-                    <div class="d-flex align-items-center">
-                        <span class="mr-2 text-muted font-weight-bold" style="font-size: 13px; text-transform: uppercase;">Current Status:</span>
-                        <div class="quotation-status" [ngClass]="getQuotationStatusClass()">
-                            {{ Quotation_Master_.Status_Name || 'Pending' }}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 croct-float-purchase-master-section info-card" style="box-shadow:none; border:1px solid #edf2f9;">
+                <!-- Left panel -->
+                <div class="col-md-6 croct-float-purchase-master-section">
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 standard-label">Customer</label>
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer</label>
                         <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer"
                             (ngModelChange)="selectCustomer()" (click)="Search_Customer_Typeahead($event)"
                             (input)="Search_Customer_Typeahead($event)"
-                            class="form-control-standard" placeholder="Search Customer..." />
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                            placeholder="Search Customer..." />
                         <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Customer">
                             <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
                             <ng-container *ngIf="!isLoading">
@@ -241,250 +163,289 @@
                         </mat-autocomplete>
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 standard-label">Customer Name <span style="color:#ef071e; ">*</span></label>
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer Name <span style="color:#ef071e;">*</span></label>
                         <input type="text" [(ngModel)]="Quotation_Master_.Customer_Name" readonly name="Customer_Name_Display"
-                            class="form-control-standard">
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 standard-label">Address</label>
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address</label>
                         <textarea rows="2" [(ngModel)]="Address1" readonly
-                            class="form-control-standard" style="height: auto;"></textarea>
+                            class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                            style="height:auto; border:1px solid #d1d5db; border-radius:7px; padding:8px 12px; resize:vertical; flex:1;"></textarea>
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 standard-label">Phone</label>
-                        <input type="text" [(ngModel)]="Quotation_Master_.Mobile" 
-                            class="form-control-standard">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Phone</label>
+                        <input type="text" [(ngModel)]="Quotation_Master_.Mobile"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 standard-label">Email</label>
-                        <input type="email" [(ngModel)]="Quotation_Master_.Email" 
-                            class="form-control-standard">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Email</label>
+                        <input type="email" [(ngModel)]="Quotation_Master_.Email"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 standard-label">WhatsApp</label>
-                        <input type="text" [(ngModel)]="Quotation_Master_.WhatsApp" 
-                            class="form-control-standard">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">WhatsApp</label>
+                        <input type="text" [(ngModel)]="Quotation_Master_.WhatsApp"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
                 </div>
 
-                <div class="col-md-6 croct-float-purchase-master-section info-card" style="box-shadow:none; border:1px solid #edf2f9;">
+                <!-- Right panel -->
+                <div class="col-md-6 croct-float-purchase-master-section">
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 standard-label">Date <span style="color:#ef071e; ">*</span></label>
-                        <div class="form-control-standard" style="display: flex; align-items: center; padding: 0 10px; height: 42px;">
-                            <input [matDatepicker]="dpdate" name="EntryDate" [(ngModel)]="Quotation_Master_.EntryDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent;">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date <span style="color:#ef071e;">*</span></label>
+                        <div class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                            style="height:47px !important; display:flex; align-items:center; padding:0 5px; background:#fff;">
+                            <input [matDatepicker]="dpdate" name="EntryDate" [(ngModel)]="Quotation_Master_.EntryDate"
+                                style="border:none; outline:none; width:100%; height:100%; background:transparent; padding-left:10px;">
                             <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
                             <mat-datepicker #dpdate></mat-datepicker>
                         </div>
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 standard-label">Quotation No</label>
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Quotation No</label>
                         <input type="text" [(ngModel)]="Quotation_Master_.QuotationNo" readonly
-                            class="form-control-standard bg-light">
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 standard-label">Reference No</label>
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Reference No</label>
                         <input type="text" [(ngModel)]="Quotation_Master_.Supplier_Ref_No"
-                            class="form-control-standard">
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 standard-label">Status</label>
-                        <select class="form-control-standard" [(ngModel)]="Status_" (ngModelChange)="OnStatusChange()"  [disabled]="!Quotation_Master_.SalesQuotationMaster_Id">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Status</label>
+                        <select class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn form-control-standard"
+                            [(ngModel)]="Status_" (ngModelChange)="OnStatusChange()" [disabled]="!Quotation_Master_.SalesQuotationMaster_Id">
                             <option *ngFor="let s of Status_Data" [ngValue]="s">{{s.name}}</option>
                         </select>
                     </div>
+                    <div class="col-md-12 mb-1" style="justify-content:flex-end;">
+                        <div class="quotation-status" [ngClass]="getQuotationStatusClass()">
+                            {{ Quotation_Master_.Status_Name || 'Pending' }}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Item Entry Section (Requirement Style) -->
-            <div class="col-md-12 mt-3">
-                <div class="item-entry-container">
-                    <div class="card-body p-0">
-                        <div class="flex-entry-row mb-3">
-                            <!-- Item Name -->
-                            <div class="flex-item">
-                                <label class="label-to-crect-all-names-to-divs">Item Name</label>
-                                <input type="text" [matAutocomplete]="autoItem" [(ngModel)]="Item_"
-                                    (input)="Search_Item_Typeahead($event)"
-                                    (click)="Search_Item_Typeahead($event)" (ngModelChange)="Get_Stock_Item()"
-                                    class="form-control-standard" 
-                                     placeholder="Search Item...">
-                                <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item" (optionSelected)="Item_Name_Change($event.option.value)">
-                                    <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
-                                    <ng-container *ngIf="!isLoading">
-                                        <mat-option *ngFor="let stock of Stock_Data" [value]="stock">
-                                            <div style="display: flex; flex-direction: column; line-height: 1.3; padding: 5px 0;">
-                                                <span style="font-weight: 600;">{{stock.Item_Code || '---'}} - {{stock.ItemName || '---'}}</span>
-                                                <small class="text-muted">Stock: {{stock.Quantity || stock.Stock || 0}} | Model: {{stock.ModelName || '---'}}</small>
-                                            </div>
-                                        </mat-option>
+            <!-- Item Entry Section -->
+            <div class="row" style="background-color:#f1f1f1;">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body" style="background-color:#f1f1f1;">
+                            <div class="row">
+                                <!-- Item entry row -->
+                                <div class="col-md-12" style="display:flex; gap:10px; align-items:flex-end; margin-bottom:20px; flex-wrap:wrap;">
+                                    <!-- Item Name -->
+                                    <div style="flex:0 0 calc(22% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item Name</label>
+                                        <input type="text" [matAutocomplete]="autoItem" [(ngModel)]="Item_"
+                                            (input)="Search_Item_Typeahead($event)" (click)="Search_Item_Typeahead($event)"
+                                            (ngModelChange)="Get_Stock_Item()"
+                                            style="width:100%; box-sizing:border-box;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            placeholder="Search Item..." />
+                                        <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item"
+                                            (optionSelected)="Item_Name_Change($event.option.value)">
+                                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                                            <ng-container *ngIf="!isLoading">
+                                                <mat-option *ngFor="let stock of Stock_Data" [value]="stock">
+                                                    <span style="font-weight:600;">{{stock.Item_Code || '---'}} - {{stock.ItemName || '---'}}</span>
+                                                    <small class="text-muted"> | Stock: {{stock.Quantity || 0}}</small>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-autocomplete>
+                                    </div>
+                                    <!-- Model -->
+                                    <div style="flex:0 0 calc(10% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Model</label>
+                                        <select [(ngModel)]="Quotation_Details_.Model" style="width:100%;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                            <option value="">-- Model --</option>
+                                            <option *ngFor="let model of ModelData" [ngValue]="model.Model_Name">{{model.Model_Name}}</option>
+                                        </select>
+                                    </div>
+                                    <!-- Brand -->
+                                    <div style="flex:0 0 calc(10% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Brand</label>
+                                        <select [(ngModel)]="Quotation_Details_.Brand" style="width:100%;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                            <option value="">-- Brand --</option>
+                                            <option *ngFor="let brand of BrandData" [ngValue]="brand.Brand_Name">{{brand.Brand_Name}}</option>
+                                        </select>
+                                    </div>
+                                    <!-- UOM -->
+                                    <div style="flex:0 0 calc(7% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">UOM</label>
+                                        <input type="text" [(ngModel)]="Quotation_Details_.UnitName" readonly style="width:100%;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+                                    <!-- Qty -->
+                                    <div style="flex:0 0 calc(7% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty</label>
+                                        <input type="number" [(ngModel)]="Quotation_Details_.Quantity"
+                                            (ngModelChange)="Calculate_Quotation_Details_Amount()" style="width:100%;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+                                    <!-- Sales Rate -->
+                                    <div style="flex:0 0 calc(14% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Sales Rate</label>
+                                        <select class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            style="width:100%;" [(ngModel)]="Selected_Rate" (ngModelChange)="OnRateChange()">
+                                            <option *ngFor="let rate of Pricing_Rates" [ngValue]="rate">{{rate.name}} - {{rate.value}}</option>
+                                            <option [ngValue]="null">Custom Rate...</option>
+                                        </select>
+                                    </div>
+                                    <!-- Custom Rate -->
+                                    <div style="flex:0 0 calc(9% - 8px);" *ngIf="!Selected_Rate">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Rate</label>
+                                        <input type="number" [(ngModel)]="Quotation_Details_.UnitPrice"
+                                            (ngModelChange)="Calculate_Quotation_Details_Amount()" style="width:100%;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+                                    <!-- Amount -->
+                                    <div style="flex:0 0 calc(9% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Amount</label>
+                                        <input type="number" [(ngModel)]="Quotation_Details_.Amount" readonly style="width:100%;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                    </div>
+                                    <!-- Add Button -->
+                                    <div style="flex:0 0 auto; padding-bottom:5px;">
+                                        <button mat-raised-button type="button" (click)="Plus_Quotation_Details($event)"
+                                            class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes"
+                                            style="border-radius:5px !important; padding:8px 20px; font-size:14px;">
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Item Table -->
+                                <div class="col-md-12">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-for-sale-search-section-diary">
+                                                <thead class="bg-col-stock-add-diary">
+                                                    <th width="50">No</th>
+                                                    <th>Item Details</th>
+                                                    <th width="80" class="text-center">UOM</th>
+                                                    <th width="80" class="text-center">Qty</th>
+                                                    <th width="120" class="text-right">Rate</th>
+                                                    <th width="120" class="text-right">Amount</th>
+                                                    <th width="100" class="text-center">Action</th>
+                                                </thead>
+                                                <tbody class="bk_tb_bg">
+                                                    <tr *ngFor="let detail of Quotation_Details_Data; let i = index" [id]="'cell' + (i + 1)">
+                                                        <td class="text-center">{{i+1}}</td>
+                                                        <td>
+                                                            <div style="font-weight:600;">{{detail.ItemName}}</div>
+                                                            <div class="text-muted small">{{detail.Item_Code}}
+                                                                <span *ngIf="detail.Model"> | {{detail.Model}}</span>
+                                                                <span *ngIf="detail.Brand"> | {{detail.Brand}}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-center">{{detail.UnitName}}</td>
+                                                        <td class="text-center">{{detail.Quantity}}</td>
+                                                        <td class="text-right">{{detail.UnitPrice | number:'1.3-3'}}</td>
+                                                        <td class="text-right">{{detail.Amount | number:'1.3-3'}}</td>
+                                                        <td class="text-center" style="width:75px;">
+                                                            <button [hidden]="Sales_Master_Edit==false"
+                                                                class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                                mat-raised-button="" mattooltip="Edit" type="button">
+                                                                <span class="mat-button-wrapper">
+                                                                    <i class="material-icons" (click)="Edit_Sales_Details(detail, i)">edit</i>
+                                                                </span>
+                                                            </button>
+                                                            <button [hidden]="Sales_Master_Delete==false"
+                                                                class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                                                mat-raised-button="" mattooltip="Remove" type="button">
+                                                                <span class="mat-button-wrapper">
+                                                                    <i class="material-icons" (click)="Delete_Quotation_Detail(i)">close</i>
+                                                                </span>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr *ngIf="!Quotation_Details_Data || Quotation_Details_Data.length === 0">
+                                                        <td colspan="7" class="text-center py-4 text-muted">No items added.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Terms & Totals -->
+                                <div class="col-md-12 mt-5">
+                                    <h4 style="font-weight: bold;">Terms &amp; Conditions</h4>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment Term</label>
+                                        <select class="mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe"
+                                            style="width:55%; border:1px solid lightgrey; border-radius:5px; padding-left:5px !important; height:36px;"
+                                            [(ngModel)]="Payment_Term" [compareWith]="comparePaymentTerm">
+                                            <option *ngFor="let pt of PaymentTermData" [ngValue]="pt">{{pt.Payment_Term_Description}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Terms &amp; Conditions</label>
+                                        <textarea rows="5" [(ngModel)]="Quotation_Master_.Description1"
+                                            class="col-md-7 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            style="height:100px; border:1px solid lightgrey; border-radius:5px; padding:5px; resize:vertical;"
+                                            placeholder="Enter Terms &amp; Conditions..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 summary-card">
+                                    <div class="summary-item">
+                                        <label class="summary-label">Sub Total</label>
+                                        <span class="summary-value">{{ Quotation_Master_.TotalAmount | number:'1.3-3' }}</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <label class="summary-label">Discount (%)</label>
+                                        <input type="number" [(ngModel)]="Quotation_Master_.Discount_Description"
+                                            (ngModelChange)="Final_Amounts()"
+                                            class="text-right" style="width:80px; border:1px solid #d1d5db; border-radius:6px; height:32px; padding:0 8px;">
+                                    </div>
+                                    <div class="summary-item">
+                                        <label class="summary-label">VAT / Tax (%)</label>
+                                        <input type="number" [(ngModel)]="Quotation_Master_.VAT_Percentage"
+                                            (ngModelChange)="Final_Amounts()"
+                                            class="text-right" style="width:80px; border:1px solid #d1d5db; border-radius:6px; height:32px; padding:0 8px;">
+                                    </div>
+                                    <div class="summary-item grand-total-item">
+                                        <label class="grand-total-label font-weight-bold mb-0">Grand Total</label>
+                                        <span class="grand-total-value font-weight-bold">{{ Quotation_Master_.NetTotal | number:'1.3-3' }}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="col-md-12">
+                                    <button mat-raised-button type="button" class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Close_Click();">Close</button>
+                                    <button mat-raised-button type="button" class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Save_Quotation(0)">Save</button>
+                                    <button mat-raised-button type="button" class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Save_Quotation(1)"><i class="fa fa-print mr-1"></i> Save &amp; Print</button>
+                                    <button mat-raised-button type="button" class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Print_Click()"><i class="fa fa-print mr-1"></i> Print</button>
+                                    <button mat-raised-button type="button" class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Preview_PDF()"><i class="fa fa-eye mr-1"></i> Preview</button>
+                                    <button mat-raised-button type="button" class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Download_PDF()"><i class="fa fa-download mr-1"></i> Download</button>
+
+                                    <ng-container *ngIf="Edit_Sales > 0">
+                                        <button mat-raised-button type="button" class="btn pull-right btn-info div-rspnsv-pstn-crct-sls-mstr" (click)="PackingList_Pending_Click()">Packing List Pending</button>
+                                        <button mat-raised-button type="button" class="btn pull-right btn-primary div-rspnsv-pstn-crct-sls-mstr" (click)="PackingList_Click()">Packing List</button>
+                                        <button mat-raised-button type="button" class="btn pull-right btn-info div-rspnsv-pstn-crct-sls-mstr" (click)="Purchase_Pending_Click()">Purchase Pending</button>
+                                        <button mat-raised-button type="button" class="btn pull-right btn-primary div-rspnsv-pstn-crct-sls-mstr" (click)="PO_Click()">Purchase Order</button>
+                                        <button mat-raised-button type="button" class="btn pull-right btn-info div-rspnsv-pstn-crct-sls-mstr" (click)="Delivery_Pending_Click()">Delivery Pending</button>
+                                        <button mat-raised-button type="button" class="btn pull-right btn-primary div-rspnsv-pstn-crct-sls-mstr" (click)="DO_Click()">Delivery Order</button>
+                                        <button mat-raised-button type="button" class="btn pull-right btn-info div-rspnsv-pstn-crct-sls-mstr" (click)="Invoice_Pending_Click()">Invoice Pending</button>
+                                        <button mat-raised-button type="button" class="btn pull-right btn-primary div-rspnsv-pstn-crct-sls-mstr" (click)="Invoice_Click()">Invoice</button>
+                                        <button mat-raised-button type="button" class="btn pull-right btn-info div-rspnsv-pstn-crct-sls-mstr" (click)="Proforma_Pending_Click()">Proforma Pending</button>
+                                        <button mat-raised-button type="button" class="btn pull-right btn-primary div-rspnsv-pstn-crct-sls-mstr" (click)="Proforma_Click()">Proforma</button>
                                     </ng-container>
-                                </mat-autocomplete>
+                                </div>
                             </div>
-                            <!-- Model -->
-                            <div class="flex-item">
-                                <label class="label-to-crect-all-names-to-divs">Model</label>
-                                <select [(ngModel)]="Quotation_Details_.Model"
-                                    class="form-control-standard"
-                                    >
-                                    <option value="">-- Select Model --</option>
-                                    <option *ngFor="let model of ModelData" [ngValue]="model.Model_Name">{{model.Model_Name}}</option>
-                                </select>
-                            </div>
-
-                            <!-- Brand -->
-                            <div class="flex-item">
-                                <label class="label-to-crect-all-names-to-divs">Brand</label>
-                                <select [(ngModel)]="Quotation_Details_.Brand"
-                                    class="form-control-standard"
-                                    >
-                                    <option value="">-- Select Brand --</option>
-                                    <option *ngFor="let brand of BrandData" [ngValue]="brand.Brand_Name">{{brand.Brand_Name}}</option>
-                                </select>
-                            </div>
-                            <!-- UOM -->
-                            <div class="flex-item">
-                                <label class="label-to-crect-all-names-to-divs">UOM</label>
-                                <input type="text" [(ngModel)]="Quotation_Details_.UnitName" readonly class="form-control-standard bg-light" >
-                            </div>
-                            <!-- Qty -->
-                            <div class="flex-item">
-                                <label class="label-to-crect-all-names-to-divs">Qty</label>
-                                <input type="number" [(ngModel)]="Quotation_Details_.Quantity" (ngModelChange)="Calculate_Quotation_Details_Amount()" class="form-control-standard" >
-                            </div>
-                            <!-- Sales Rate (Multi Selection) -->
-                            <div class="flex-item">
-                                <label class="label-to-crect-all-names-to-divs">Sales Rate</label>
-                                <select class="form-control-standard" [(ngModel)]="Selected_Rate" (ngModelChange)="OnRateChange()" >
-                                    <option *ngFor="let rate of Pricing_Rates" [ngValue]="rate">{{rate.name}} - {{rate.value}}</option>
-                                    <option [ngValue]="null">Custom Rate...</option>
-                                </select>
-                            </div>
-                            <!-- Rate (Visible if Custom) -->
-                            <div class="flex-item" *ngIf="!Selected_Rate">
-                                <label class="label-to-crect-all-names-to-divs">Rate</label>
-                                <input type="number" [(ngModel)]="Quotation_Details_.UnitPrice" (ngModelChange)="Calculate_Quotation_Details_Amount()" class="form-control-standard" >
-                            </div>
-                            <!-- Amount -->
-                            <div class="flex-item">
-                                <label class="label-to-crect-all-names-to-divs">Amount</label>
-                                <input type="number" [(ngModel)]="Quotation_Details_.Amount" readonly class="form-control-standard bg-light" >
-                            </div>
-                            <!-- Add Button -->
-                            <div class="flex-item-btn">
-                                <button mat-raised-button type="button" (click)="Plus_Quotation_Details($event)" class="btn btn-primary-resp" style="height: 42px;">Add</button>
-                            </div>
-                        </div>
-
-                        <!-- Item Table -->
-                        <div class="table-responsive table-container">
-                            <table class="table table-hover table-for-sale-search-section-diary">
-                                <thead>
-                                    <th width="50">No</th>
-                                    <th>Item Details</th>
-                                    <th width="80" class="text-center">UOM</th>
-                                    <th width="80" class="text-center">Qty</th>
-                                    <th width="120" class="text-right">Rate</th>
-                                    <th width="120" class="text-right">Amount</th>
-                                    <th width="100" class="text-center">Action</th>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let detail of Quotation_Details_Data; let i = index" [id]="'cell' + (i + 1)">
-                                        <td class="text-center">{{i+1}}</td>
-                                        <td>
-                                            <div style="font-weight: 600;">{{detail.ItemName}}</div>
-                                            <div class="text-muted small">{{detail.Item_Code}} <span *ngIf="detail.Model">| {{detail.Model}}</span> <span *ngIf="detail.Brand">| {{detail.Brand}}</span></div>
-                                        </td>
-                                        <td class="text-center">{{detail.UnitName}}</td>
-                                        <td class="text-center">{{detail.Quantity}}</td>
-                                        <td class="text-right">{{detail.UnitPrice | number:'1.3-3'}}</td>
-                                        <td class="text-right">{{detail.Amount | number:'1.3-3'}}</td>
-                                        <td class="text-center">
-                                            <button class="btn btn-link btn-sm text-primary p-0 mr-2" (click)="Edit_Sales_Details(detail, i)"><i class="fa fa-edit"></i></button>
-                                            <button class="btn btn-link btn-sm text-danger p-0" (click)="Delete_Quotation_Detail(i)"><i class="fa fa-close"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr *ngIf="!Quotation_Details_Data || Quotation_Details_Data.length === 0">
-                                        <td colspan="7" class="text-center py-4 text-muted">No items added.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Footer Section -->
-            <div class="col-md-12 mt-4">
-                <div class="row">
-                    <!-- Terms -->
-                    <div class="col-md-7">
-                        <div class="col-md-12 mb-2">
-                            <label class="standard-label">Payment Term</label>
-                            <select [(ngModel)]="Payment_Term" [compareWith]="comparePaymentTerm" class="form-control-standard" style="width: 100%; border-radius: 4px; height: 36px;">
-                                <option *ngFor="let pt of PaymentTermData" [ngValue]="pt">{{pt.Payment_Term_Description}}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="standard-label">Terms & Conditions</label>
-                            <textarea rows="5" [(ngModel)]="Quotation_Master_.Description1" class="form-control-standard" style="width: 100%; border-radius: 4px; padding: 10px !important;" placeholder="Enter Terms & Conditions..."></textarea>
-                        </div>
-                    </div>
-                    <!-- Totals -->
-                    <div class="col-md-5 summary-card">
-                        <div class="summary-item">
-                            <label class="summary-label">Sub Total</label>
-                            <span class="summary-value">{{ Quotation_Master_.TotalAmount | number:'1.3-3' }}</span>
-                        </div>
-                        <div class="summary-item">
-                            <label class="summary-label">Discount (%)</label>
-                            <input type="number" [(ngModel)]="Quotation_Master_.Discount_Description" (ngModelChange)="Final_Amounts()" class="text-right" style="width: 80px; border: 1px solid #b1b1b1; border-radius: 4px; height: 32px;">
-                        </div>
-                        <div class="summary-item">
-                            <label class="summary-label">VAT / Tax (%)</label>
-                            <input type="number" [(ngModel)]="Quotation_Master_.VAT_Percentage" (ngModelChange)="Final_Amounts()" class="text-right" style="width: 80px; border: 1px solid #b1b1b1; border-radius: 4px; height: 32px;">
-                        </div>
-                        <div class="summary-item grand-total-item">
-                            <label class="grand-total-label font-weight-bold mb-0">Grand Total</label>
-                            <span class="grand-total-value font-weight-bold">{{ Quotation_Master_.NetTotal | number:'1.3-3' }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="col-md-12 mt-4" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
-                <button mat-raised-button type="button" class="btn btn-danger" (click)="Close_Click();">Close</button>
-                
-                <!-- Workflow Buttons (Visible when editing an existing Quotation) -->
-                <ng-container *ngIf="Edit_Sales > 0">
-                    <button mat-raised-button type="button" class="btn btn-light-resp" (click)="PackingList_Pending_Click()">Packing List Pending</button>
-                    <button mat-raised-button type="button" class="btn btn-primary-resp" (click)="PackingList_Click()">Packing List</button>
-                    
-                    <button mat-raised-button type="button" class="btn btn-light-resp" (click)="Purchase_Pending_Click()">Purchase Pending</button>
-                    <button mat-raised-button type="button" class="btn btn-primary-resp" (click)="PO_Click()">Purchase Order</button>
-                    
-                    <button mat-raised-button type="button" class="btn btn-light-resp" (click)="Delivery_Pending_Click()">Delivery Pending</button>
-                    <button mat-raised-button type="button" class="btn btn-primary-resp" (click)="DO_Click()">Delivery Order</button>
-                    
-                    <button mat-raised-button type="button" class="btn btn-light-resp" (click)="Invoice_Pending_Click()">Invoice Pending</button>
-                    <button mat-raised-button type="button" class="btn btn-primary-resp" (click)="Invoice_Click()">Invoice</button>
-                    
-                    <button mat-raised-button type="button" class="btn btn-light-resp" (click)="Proforma_Pending_Click()">Proforma Pending</button>
-                    <button mat-raised-button type="button" class="btn btn-primary-resp" (click)="Proforma_Click()">Proforma</button>
-                </ng-container>
-
-                <button mat-raised-button type="button" class="btn btn-danger" (click)="Save_Quotation(0)">Save</button>
-                <button mat-raised-button type="button" class="btn btn-light-resp" (click)="Save_Quotation(1)"><i class="fa fa-print mr-1"></i> Save & Print</button>
-                
-                <!-- Print and PDF Actions -->
-                <button mat-raised-button type="button" class="btn btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Print_Click()"><i class="fa fa-print mr-1"></i> Print</button>
-                <button mat-raised-button type="button" class="btn btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Preview_PDF()"><i class="fa fa-eye mr-1"></i> Preview</button>
-                <button mat-raised-button type="button" class="btn btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Download_PDF()"><i class="fa fa-download mr-1"></i> Download</button>
             </div>
         </div>
 
-
-            <div class="container-fluid mt-1" *ngIf="proformaListView" #bottomDiv>
+        <div class="container-fluid mt-1" *ngIf="proformaListView" #bottomDiv>
                 <div class="col-md-12">
                     <div class="card" style="background-color: #f1f1f1;">
                         <div class="card-body" style="overflow: scroll; height: 40em;">

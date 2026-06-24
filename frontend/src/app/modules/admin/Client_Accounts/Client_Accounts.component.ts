@@ -8,7 +8,7 @@ import { Client_Accounts, Contact_Person } from '../../../models/Client_Accounts
 import {Account_Group } from '../../../models/Account_Group';
 import { Designation_Service } from '../../../services/Designation.Service';
 import { Designation } from '../../../models/Designation';
-
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
 selector: 'app-Client_Accounts',
 templateUrl: './Client_Accounts.component.html',
@@ -53,7 +53,7 @@ User_Type:number;
 Employee_Edit:boolean=false;
 Login_User:string="0";
 Designation_Data: Designation[] = [];
-constructor(public Client_Accounts_Service_:Client_Accounts_Service,public Journal_Entry_Service_:Journal_Entry_Service, public Account_Group_Service_:Account_Group_Service, public Designation_Service_: Designation_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
+constructor(public Client_Accounts_Service_:Client_Accounts_Service,public Journal_Entry_Service_:Journal_Entry_Service, public Account_Group_Service_:Account_Group_Service, public Designation_Service_: Designation_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog, private Master_Refresh_Service_: Master_Refresh_Service) { }
 ngOnInit() 
 {
 this.Permissions = Get_Page_Permission(9);
@@ -71,7 +71,13 @@ else
 this.Client_Accounts_Edit=this.Permissions.Edit;
 this.Client_Accounts_Save=this.Permissions.Save;
 this.Client_Accounts_Delete=this.Permissions.Delete;
-this.Page_Load()
+this.Page_Load();
+
+this.Master_Refresh_Service_.masterUpdated$.subscribe(masterName => {
+    if (masterName === 'Designation') {
+        this.Get_Designation();
+    }
+});
 }
 }
 
@@ -281,6 +287,7 @@ if(Delete_status[0][0].Client_Accounts_Id_>0){
 this.Client_Accounts_Data.splice(index, 1);
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
     this.Search_Client_Accounts();
+    this.Master_Refresh_Service_.refreshMaster('Accounts');
 }
 else
 {
@@ -361,6 +368,7 @@ this.Client_Accounts_Service_.Save_Client_Accounts(this.Client_Accounts_).subscr
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
         this.Search_Client_Accounts();
         this.Clr_Client_Accounts();
+        this.Master_Refresh_Service_.refreshMaster('Accounts');
     }
     else if (result_id == -1)
     {

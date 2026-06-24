@@ -1,22 +1,22 @@
-<div *ngIf="issLoading" class="overlay">
+﻿<div *ngIf="issLoading" class="overlay">
 <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
 </mat-progress-spinner>
 </div>
 <div class="main-content">
-<div class="container-fluid">
+<div class="container-fluid" #topDiv>
 <div class="row" *ngIf="Entry_View">
 <div class="col-md-12">
 <div class="card">
 <div class="card-body">
 <form>
 <div class="row">
-<div class="col-md-6">
+<div class="col-md-6 croct-float-purchase-master-section">
 
 <div class="col-md-12">
-    <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Supplier</label><!--align-label-tab-lead-->
+    <label class="mb-1">Supplier</label><!--align-label-tab-lead-->
     <input type="text" [matAutocomplete]="auto_Supplier" [(ngModel)]="Supplier_" name="Supplier" (click)="Search_Supplier_Typeahead($event)" (keyup)="Search_Supplier_Typeahead($event)" (ngModelChange)="Supplier_Change()" class="col-md-9 for-input-selct-tblelst ng-pristine ng-valid ng-touched" /><!-- for-input-selct-tblelst nput-laed-tabs-for-wole nput-laed-tabs-for-cuntry-wole-->
     <mat-autocomplete #auto_Supplier="matAutocomplete" [displayWith]="display_Supplier">
-        <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+        <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
         <ng-container *ngIf="!isLoading">
             <mat-option *ngFor="let Supplier_T of Supplier_Data" [value]="Supplier_T">
                 <span>{{Supplier_T.Client_Accounts_Name}}</span>
@@ -27,63 +27,63 @@
 
 
 
-<div class="col-md-12 background-non-editable-input-box-purchase-master margn-aliygn-crect-address-purchase-masters pdng-crct-alghn-non-edtble-sles-mstr-nputbx-one">
-<mat-form-field class="col-md-12 padd-right-crect-alighn-wole-div pdng-crect-rspnsv-mrgn-nptbx-txt-lh">
-<input matInput type="text" [(ngModel)]="Purchase_Return_Master_.Address1" disabled  name="Purchase_Return_Master_.Address1" class="input-text-item-group-diary" readonly>
-</mat-form-field>
+<div class="col-md-12 background-non-editable-input-box-purchase-master margn-aliygn-crect-address-purchase-masters ">
+<div class="col-md-12">
+<input  type="text" [(ngModel)]="Purchase_Return_Master_.Address1" disabled  name="Purchase_Return_Master_.Address1" class="for-input-selct-tblelst" readonly>
+</div>
 </div>
 <div class="col-md-12 background-non-editable-input-box-purchase-master pdng-crct-alghn-non-edtble-prchse-mstr-nputbx-tre">
-<!-- <label class="col-md-3 label-down-alighn-adrs-tre-prhse-mstr-down">Address 2</label> -->
-<mat-form-field class="col-md-12 padd-right-crect-alighn-wole-div pdng-crect-rspnsv-mrgn-nptbx-txt-lh">
-<input matInput type="text" [(ngModel)]="Purchase_Return_Master_.Address2" disabled  name="Purchase_Return_Master_.Address2" class="input-text-item-group-diary" readonly>
-</mat-form-field>
+<!-- <label class="mb-1">Address 2</label> -->
+<div class="col-md-12">
+<input  type="text" [(ngModel)]="Purchase_Return_Master_.Address2" disabled  name="Purchase_Return_Master_.Address2" class="for-input-selct-tblelst" readonly>
+</div>
 </div>
 <div class="col-md-12 background-non-editable-input-box-purchase-master pdng-crct-alghn-non-edtble-sles-mstr-nputbx-for">
-<!-- <label class="col-md-3 label-down-alighn-adrs-tre-prhse-mstr-down">Address 3</label> -->
-<mat-form-field class="col-md-12 padd-right-crect-alighn-wole-div pdng-crect-rspnsv-mrgn-nptbx-txt-lh">
-<input matInput type="text" [(ngModel)]="Purchase_Return_Master_.Address3"  disabled  name="Purchase_Return_Master_.Address3" class="input-text-item-group-diary" readonly>
-</mat-form-field>
+<!-- <label class="mb-1">Address 3</label> -->
+<div class="col-md-12">
+<input  type="text" [(ngModel)]="Purchase_Return_Master_.Address3"  disabled  name="Purchase_Return_Master_.Address3" class="for-input-selct-tblelst" readonly>
+</div>
 </div>
             
 </div>
-<div class="col-md-6 mrgn-up-wrd-wle-div-rspnsv-prhse-mstr-nw-sctn">
+<div class="col-md-6 croct-float-purchase-master-section">
 <div class="col-md-12 div-crct-wdth-crct-date-prhse-mstr-new-sctn">
-    <label class="col-md-3 label-down-alighn-adrs-tre-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Date</label>
-        <mat-form-field class="col-md-9 input-allighn-to-crect-wole-paddings">
-            <input matInput [matDatepicker]="dp"  name="Purchase_Return_Master_.Date" placeholder="" [(ngModel)]="Purchase_Return_Master_.PurchaseDate">
+    <label class="mb-1">Date</label>
+        <div class="col-md-9">
+            <input  [matDatepicker]="dp"  name="Purchase_Return_Master_.Date" placeholder="" [(ngModel)]="Purchase_Return_Master_.PurchaseDate">
             <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
             <mat-datepicker #dp></mat-datepicker>
-        </mat-form-field>
+        </div>
 </div>
 
 <div class="col-md-12 npt-crct-mrgn-dwn-prhse-mstr-bl-nmbr">
-<label class="col-md-3 label-down-alighn-adrs-tre-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Purchase Invoice No</label>
-<mat-form-field class="col-md-9 margin-lh-rh-to-crect-textbox">
-<input matInput type="number" [(ngModel)]="Purchase_Return_Master_.InvoiceNo" name="Purchase_Return_Master_.InvoiceNo" class="input-text-item-group-diary">
-</mat-form-field>
+<label class="mb-1">Purchase Invoice No</label>
+<div class="col-md-9">
+<input  type="number" [(ngModel)]="Purchase_Return_Master_.InvoiceNo" name="Purchase_Return_Master_.InvoiceNo" class="for-input-selct-tblelst">
+</div>
 </div>
 
 <div class="col-md-12 npt-crct-mrgn-dwn-prhse-mstr-bl-nmbr">
-<label class="col-md-3 label-down-alighn-adrs-tre-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Bill No</label>
-<mat-form-field class="col-md-9 margin-lh-rh-to-crect-textbox">
-<input matInput type="text" [(ngModel)]="Purchase_Return_Master_.Bill_No" name="Purchase_Return_Master_.Bill_No" class="input-text-item-group-diary">
-</mat-form-field>
+<label class="mb-1">Bill No</label>
+<div class="col-md-9">
+<input  type="text" [(ngModel)]="Purchase_Return_Master_.Bill_No" name="Purchase_Return_Master_.Bill_No" class="for-input-selct-tblelst">
+</div>
 </div>
 <div class="col-md-12 npt-crct-mrgn-dwn-prhse-mstr-bl-typ">
-    <label class="col-md-3 label-down-alighn-supler-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Bill Type</label>
+    <label class="mb-1">Bill Type</label>
     <select id="Bill_Type_" name="Bill_Type" [(ngModel)]="Bill_Type_"  (ngModelChange)="Amount_Calculation()" required class="col-md-9 for-input-selct-tblelst ng-pristine ng-valid ng-touched">
             <option *ngFor="let Bill_Type_T of Bill_Type_Data" [ngValue]="Bill_Type_T">{{Bill_Type_T.Bill_Type_Name}}</option>
     </select> 
     </div>                                                        
 </div>
-<div class="col-md-12 alighn-right-inputs-sales-grid mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-up-ward pdng-crect-rspnsv-mrgn-nptbx-txt">                           
-    <div class="col-md-3 tab-wole-div-alyn alighn-right-inputs-sales-grid">
-        <label class="col-md-5 mrgin-alghn-label-text-otrs-nxt pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Barcode</label>
+<div class="col-md-12 mb-3 d-flex align-items-end flex-wrap gap-2">                           
+    <div class="col-md-3 mb-2 d-flex flex-column">
+        <label class="mb-1">Barcode</label>
         <input type="text" id="BARCODE"  [matAutocomplete]="autobar" [(ngModel)]="Barcode_" name="Barcode"
         (click)="Get_Barcode_Purchase($event)" (keyup)="Get_Barcode_Purchase($event)"  
-        class="col-md- 7 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
+        class="for-input-selct-tblelst" />
         <mat-autocomplete #autobar="matAutocomplete" [displayWith]="display_Barcode">
-            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
             <ng-container *ngIf="!isLoading">
                 <mat-option *ngFor="let Item of Barcode_Data" [value]="Item">
                     <span><div (click)="Barcode_Change(Item)" >{{Item.Barcode}}-{{Item.ItemName}}</div></span>
@@ -91,15 +91,15 @@
             </ng-container>
         </mat-autocomplete>
     </div>
-    <div class="col-md-3 alighn-right-inputs-sales-grid">
-        <label class="col-md-4 label-down-alighn-stk-ad-mstr-brcde pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Item
+    <div class="col-md-3 mb-2 d-flex flex-column">
+        <label class="mb-1" style="font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase;">Item
             <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
         <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_" name="item" 
         (click)="Get_Purchase_Return_Item_Typeahead($event)" 
         (keyup)="Get_Purchase_Return_Item_Typeahead($event)"  
         class="col-md-8 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
         <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
-            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
             <ng-container *ngIf="!isLoading">
                 <mat-option *ngFor="let Item of Item_Data" [value]="Item">
                     <span (click)="Item_Name_Change(Item)">{{Item.ItemName}}-{{Item.Barcode}}</span>
@@ -107,136 +107,136 @@
             </ng-container>
         </mat-autocomplete>
     </div>
-    <div class="col-md-2 alighn-right-inputs-sales-grid">  
-    <label class="col-md-5 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Price <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-    <mat-form-field class="col-md-7 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text"[(ngModel)]="Purchase_Return_Details_.PurchaseRate"   name="Purchase_Return_Details_.PurchaseRate" (ngModelChange)="Amount_Calculation()" class="input-text-item-purchase-edit-section-group-diary">
-    </mat-form-field>
+    <div class="col-md-2 mb-2 d-flex flex-column">  
+    <label class="mb-1">Price <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+    <div class="col-md-7">
+    <input  type="text"[(ngModel)]="Purchase_Return_Details_.PurchaseRate"   name="Purchase_Return_Details_.PurchaseRate" (ngModelChange)="Amount_Calculation()" class="input-text-item-purchase-edit-section-group-diary">
     </div>
-    <div class="col-md-2 alighn-right-inputs-sales-grid">  
-    <label class="col-md-4 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Qty<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-    <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" [(ngModel)]="Purchase_Return_Details_.Quantity"  name="Purchase_Return_Details_.Quantity" (ngModelChange)="Amount_Calculation()" class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
+    </div>
+    <div class="col-md-2 mb-2 d-flex flex-column">  
+    <label class="mb-1">Qty<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+    <div class="col-md-8">
+    <input  type="text" [(ngModel)]="Purchase_Return_Details_.Quantity"  name="Purchase_Return_Details_.Quantity" (ngModelChange)="Amount_Calculation()" class="input-text-item-sales-section-group-diary">
+    </div>
     </div>             
-    <div class="col-md-2 alighn-right-inputs-sales-grid">  
-    <label class="col-md-5 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Qty Kg<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-    <mat-form-field class="col-md-7 margin-lh-rh-to-crect-textbox">
-    <input matInput type="number" name="Purchase_Return_Details_.Quantity_Kg" [(ngModel)]="Purchase_Return_Details_.Quantity_Kg"   class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
+    <div class="col-md-2 mb-2 d-flex flex-column">  
+    <label class="mb-1">Qty Kg<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+    <div class="col-md-7">
+    <input  type="number" name="Purchase_Return_Details_.Quantity_Kg" [(ngModel)]="Purchase_Return_Details_.Quantity_Kg"   class="input-text-item-sales-section-group-diary">
+    </div>
     </div>
 </div>     
-<div class="col-md-12 alighn-right-inputs-sales-grid mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-up-ward pdng-crect-rspnsv-mrgn-nptbx-txt">                           
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
-    <label class="col-md-7 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Discount</label>
-    <mat-form-field class="col-md-5 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.Discount"  [(ngModel)]="Purchase_Return_Details_.Discount"  (ngModelChange)="Amount_Calculation()" class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
-    </div>             
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
-    <label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">CGST%</label>
-    <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.CGST" [(ngModel)]="Purchase_Return_Details_.CGST" disabled class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
-    </div>                           
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
-    <label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh"> SGST%  </label>
-    <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.SGST" [(ngModel)]="Purchase_Return_Details_.SGST" disabled class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
-    </div>               
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
-    <label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">IGST%</label>
-    <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.IGST" [(ngModel)]="Purchase_Return_Details_.IGST" disabled class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
-    </div> 
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full" >  
-    <label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">GST%</label>
-    <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.SaleTax" [(ngModel)]="Purchase_Return_Details_.SaleTax" disabled class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
-    </div>  
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
-    <label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Tax Include</label>
-    <mat-form-field class="col-md-5 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.Include_Tax"  [(ngModel)]="Purchase_Return_Details_.Include_Tax" disabled class="input-text-item-sales-section-group-diary" readonly>
-    </mat-form-field>
-    </div> 
-</div> 
-<div class="col-md-12 alighn-right-inputs-sales-grid mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-up-ward pdng-crect-rspnsv-mrgn-nptbx-txt">                           
-  <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full background-non-editable-input-box mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
-    <label class="col-md-7 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-tx-nt-vle-amnt-cigst-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Amount</label>
-    <mat-form-field class="col-md-5 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.GrossValue" [(ngModel)]="Purchase_Return_Details_.GrossValue" disabled class="input-text-item-sales-section-group-diary" readonly>
-    </mat-form-field>
-    </div> 
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
-    <label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-tx-nt-vle-amnt-cigst-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Net value</label>
-    <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.NetValue" [(ngModel)]="Purchase_Return_Details_.NetValue" disabled class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
-    </div>                      
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
-    <label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-tx-nt-vle-amnt-cigst-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">CGST</label>
-    <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.CGST_AMT" [(ngModel)]="Purchase_Return_Details_.CGST_AMT" disabled class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
-    </div>  
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
-    <label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-tx-nt-vle-amnt-cigst-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">SGST</label>
-    <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.SGST_AMT" [(ngModel)]="Purchase_Return_Details_.SGST_AMT" disabled class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
-    </div>  
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
-        <label class="col-md-6 padd-lft-crect-alighn-wole-div mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">IGST</label>
-        <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
-        <input matInput type="text" name="Purchase_Return_Details_.IGST_AMT" [(ngModel)]="Purchase_Return_Details_.IGST_AMT" disabled class="input-text-item-sales-section-group-diary">
-        </mat-form-field>
-    </div>        
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
-        <label class="col-md-6 padd-lft-crect-alighn-wole-div mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel">GST</label>
-    <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.GST_Amount" [(ngModel)]="Purchase_Return_Details_.GST_Amount" disabled class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
-    </div> 
-</div> 
- <div class="col-md-12 alighn-right-inputs-sales-grid mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-up-ward pdng-crect-rspnsv-mrgn-nptbx-txt">                           
-   <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full">  
-    <label class="col-md-7 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total Price</label>
-    <mat-form-field class="col-md-5 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.TotalAmount" [(ngModel)]="Purchase_Return_Details_.TotalAmount" disabled class="input-text-item-sales-section-group-diary" readonly>
-    </mat-form-field>
-    </div>                                                 
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full background-non-editable-input-box">  
-    <label class="col-md-4 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Unit</label>
-    <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.UnitName" [(ngModel)]="Purchase_Return_Details_.UnitName" disabled class="input-text-item-sales-section-group-diary" readonly>
-    </mat-form-field>
-    </div>  
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full padd-right-crect-alighn-wole-div div-to-down-margin-crect-allighn-wole-scton">  
-            <label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-hsn-cde-label pdng-crect-rspnsv-mrgn-nptbx-txt-lh">HSN Code</label>
-            <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox mrgn-crct-alghyn-prhse-mstr-nw-sctn-hsn-cde-nput">
-            <input matInput type="text" name="Purchase_Return_Details_.HSNCODE" [(ngModel)]="Purchase_Return_Details_.HSNCODE" disabled class="input-text-item-sales-section-total-price-group-diary">
-            </mat-form-field>
-    </div> 
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full padd-right-crect-alighn-wole-div">  
-    <label class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-lbel pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Group</label>
-    <mat-form-field class="col-md-6 margin-lh-rh-to-crect-textbox">
-    <input matInput type="text" name="Purchase_Return_Details_.GroupName" [(ngModel)]="Purchase_Return_Details_.GroupName" disabled class="input-text-item-sales-section-group-diary">
-    </mat-form-field>
+<div class="col-md-12 mb-3 d-flex align-items-end flex-wrap gap-2">                           
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column">  
+    <label class="mb-1">Discount</label>
+    <div class="col-md-5">
+    <input  type="text" name="Purchase_Return_Details_.Discount"  [(ngModel)]="Purchase_Return_Details_.Discount"  (ngModelChange)="Amount_Calculation()" class="input-text-item-sales-section-group-diary">
     </div>
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full padd-right-crect-alighn-wole-div">  
-        <label class="col-md-6 label-down-alighn-stk-ad-mstr-brcde pdng-crect-rspnsv-mrgn-nptbx-txt-lh">MRP<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-        <input matInput type="text" name="Purchase_Return_Details_.MRP" [(ngModel)]="Purchase_Return_Details_.MRP" class="input-allighn-prchse-mstr-nw-sctn-sle-rte input-text-item-sales-section-group-diary">
+    </div>             
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column">  
+    <label class="mb-1">CGST%</label>
+    <div class="col-md-6 croct-float-purchase-master-section">
+    <input  type="text" name="Purchase_Return_Details_.CGST" [(ngModel)]="Purchase_Return_Details_.CGST" disabled class="input-text-item-sales-section-group-diary">
+    </div>
+    </div>                           
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column">  
+    <label class="mb-1"> SGST%  </label>
+    <div class="col-md-6 croct-float-purchase-master-section">
+    <input  type="text" name="Purchase_Return_Details_.SGST" [(ngModel)]="Purchase_Return_Details_.SGST" disabled class="input-text-item-sales-section-group-diary">
+    </div>
+    </div>               
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column">  
+    <label class="mb-1">IGST%</label>
+    <div class="col-md-6 croct-float-purchase-master-section">
+    <input  type="text" name="Purchase_Return_Details_.IGST" [(ngModel)]="Purchase_Return_Details_.IGST" disabled class="input-text-item-sales-section-group-diary">
+    </div>
     </div> 
-    <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full padd-right-crect-alighn-wole-div">  
-        <label class="col-md-7 label-down-alighn-stk-ad-mstr-brcde pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Sales Rate<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-        <input matInput type="text" name="Purchase_Return_Details_.SaleRate" [(ngModel)]="Purchase_Return_Details_.SaleRate" class="input-allighn-cstmr-nvoice-nmber-mstr-srch-sctn input-text-item-sales-section-total-price-group-diary">
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column" >  
+    <label class="mb-1">GST%</label>
+    <div class="col-md-6 croct-float-purchase-master-section">
+    <input  type="text" name="Purchase_Return_Details_.SaleTax" [(ngModel)]="Purchase_Return_Details_.SaleTax" disabled class="input-text-item-sales-section-group-diary">
+    </div>
+    </div>  
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column">  
+    <label class="mb-1">Tax Include</label>
+    <div class="col-md-5">
+    <input  type="text" name="Purchase_Return_Details_.Include_Tax"  [(ngModel)]="Purchase_Return_Details_.Include_Tax" disabled class="input-text-item-sales-section-group-diary" readonly>
+    </div>
+    </div> 
+</div> 
+<div class="col-md-12 mb-3 d-flex align-items-end flex-wrap gap-2">                           
+  <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column background-non-editable-input-box mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
+    <label class="mb-1">Amount</label>
+    <div class="col-md-5">
+    <input  type="text" name="Purchase_Return_Details_.GrossValue" [(ngModel)]="Purchase_Return_Details_.GrossValue" disabled class="input-text-item-sales-section-group-diary" readonly>
+    </div>
+    </div> 
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
+    <label class="mb-1">Net value</label>
+    <div class="col-md-6 croct-float-purchase-master-section">
+    <input  type="text" name="Purchase_Return_Details_.NetValue" [(ngModel)]="Purchase_Return_Details_.NetValue" disabled class="input-text-item-sales-section-group-diary">
+    </div>
+    </div>                      
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
+    <label class="mb-1">CGST</label>
+    <div class="col-md-6 croct-float-purchase-master-section">
+    <input  type="text" name="Purchase_Return_Details_.CGST_AMT" [(ngModel)]="Purchase_Return_Details_.CGST_AMT" disabled class="input-text-item-sales-section-group-diary">
+    </div>
+    </div>  
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
+    <label class="mb-1">SGST</label>
+    <div class="col-md-6 croct-float-purchase-master-section">
+    <input  type="text" name="Purchase_Return_Details_.SGST_AMT" [(ngModel)]="Purchase_Return_Details_.SGST_AMT" disabled class="input-text-item-sales-section-group-diary">
+    </div>
+    </div>  
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
+        <label class="mb-1">IGST</label>
+        <div class="col-md-6 croct-float-purchase-master-section">
+        <input  type="text" name="Purchase_Return_Details_.IGST_AMT" [(ngModel)]="Purchase_Return_Details_.IGST_AMT" disabled class="input-text-item-sales-section-group-diary">
+        </div>
+    </div>        
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-div-up-ward-gst-sgst">  
+        <label class="mb-1">GST</label>
+    <div class="col-md-6 croct-float-purchase-master-section">
+    <input  type="text" name="Purchase_Return_Details_.GST_Amount" [(ngModel)]="Purchase_Return_Details_.GST_Amount" disabled class="input-text-item-sales-section-group-diary">
+    </div>
+    </div> 
+</div> 
+ <div class="col-md-12 mb-3 d-flex align-items-end flex-wrap gap-2">                           
+   <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column">  
+    <label class="mb-1">Total Price</label>
+    <div class="col-md-5">
+    <input  type="text" name="Purchase_Return_Details_.TotalAmount" [(ngModel)]="Purchase_Return_Details_.TotalAmount" disabled class="input-text-item-sales-section-group-diary" readonly>
+    </div>
+    </div>                                                 
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column background-non-editable-input-box">  
+    <label class="mb-1">Unit</label>
+    <div class="col-md-8">
+    <input  type="text" name="Purchase_Return_Details_.UnitName" [(ngModel)]="Purchase_Return_Details_.UnitName" disabled class="input-text-item-sales-section-group-diary" readonly>
+    </div>
+    </div>  
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column  div-to-down-margin-crect-allighn-wole-scton">  
+            <label class="mb-1">HSN Code</label>
+            <div class="col-md-6 croct-float-purchase-master-section">
+            <input  type="text" name="Purchase_Return_Details_.HSNCODE" [(ngModel)]="Purchase_Return_Details_.HSNCODE" disabled class="input-text-item-sales-section-total-price-group-diary">
+            </div>
+    </div> 
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column ">  
+    <label class="mb-1">Group</label>
+    <div class="col-md-6 croct-float-purchase-master-section">
+    <input  type="text" name="Purchase_Return_Details_.GroupName" [(ngModel)]="Purchase_Return_Details_.GroupName" disabled class="input-text-item-sales-section-group-diary">
+    </div>
+    </div>
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column ">  
+        <label class="mb-1">MRP<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+        <input  type="text" name="Purchase_Return_Details_.MRP" [(ngModel)]="Purchase_Return_Details_.MRP" class="input-allighn-prchse-mstr-nw-sctn-sle-rte input-text-item-sales-section-group-diary">
+    </div> 
+    <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column ">  
+        <label class="mb-1">Sales Rate<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+        <input  type="text" name="Purchase_Return_Details_.SaleRate" [(ngModel)]="Purchase_Return_Details_.SaleRate" class="input-allighn-cstmr-nvoice-nmber-mstr-srch-sctn input-text-item-sales-section-total-price-group-diary">
     </div> 
 </div>
-<div class="col-md-12 alighn-right-inputs-sales-grid mrgn-crct-alghyn-prhse-mstr-nw-sctn-ful-row-up-ward pdng-crect-rspnsv-mrgn-nptbx-txt">                           
+<div class="col-md-12 mb-3 d-flex align-items-end flex-wrap gap-2">                           
     <div class="col-md-2 croct-float-purchase-master-section wdth-crct-prchse-mstr-expry div-crct-algn-up-wrd-to-crect"> 
         <label class="crecot-alighyn-chck-bx-stck-ad-nw-sctn">Is Expiry</label>
         <div _ngcontent-xmy-c9="" class="crect-chckbx-updte-stck-add-two">
@@ -248,27 +248,27 @@
         </div>   
     </div> 
     <div class="col-md-2 croct-float-purchase-master-section div-crct-algn-up-wrd-to-crect" [hidden]="Is_Expiry_Show">
-        <label class="col-md-4">Date</label>
-        <mat-form-field class="col-md-8 input-allighn-to-crect-wole-paddings">
-            <input matInput [matDatepicker]="dpdate" placeholder="" name="Purchase_Return_Details_Expiry_Date" [(ngModel)]="Purchase_Return_Details_.Expiry_Date">
+        <label class="mb-1">Date</label>
+        <div class="col-md-8">
+            <input  [matDatepicker]="dpdate" placeholder="" name="Purchase_Return_Details_Expiry_Date" [(ngModel)]="Purchase_Return_Details_.Expiry_Date">
             <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
             <mat-datepicker #dpdate></mat-datepicker>
-            </mat-form-field>
+            </div>
     </div> 
-    <div class="col-md-5 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full padd-right-crect-alighn-wole-div">  
-    <label class="col-md-5 label-down-alighn-stk-ad-mstr-brcde pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Descriptions
+    <div class="col-md-5 alighn-right-inputs-sales-grid mb-2 d-flex flex-column ">  
+    <label class="mb-1" style="font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase;">Descriptions
         <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-    <input matInput type="text" name="Purchase_Return_Details_.Description" [(ngModel)]="Purchase_Return_Details_.Description" 
+    <input  type="text" name="Purchase_Return_Details_.Description" [(ngModel)]="Purchase_Return_Details_.Description" 
     class="col-md-7 input-allighn-cstmr-nvoice-nmber-mstr-srch-sctn input-text-item-sales-section-total-price-group-diary">
     </div> 
     <div class="col-md-1 croct-float-purchase-master-section div-crct-algn-up-wrd-to-crect butn-up-alghn-prchse-mstr-nw-sctn">
-    <button _ngcontent-ucu-c5="" class="btn btn-danger button-to-crect-margin change-colour-button mat-raised-button" (click)="Plus_Purchase_Return_Details()" mat-raised-button="" type="button"><span class="mat-button-wrapper"><i _ngcontent-ucu-c5="" aria-hidden="true" class="fa fa-plus"></i></span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></button>
+    <button _ngcontent-ucu-c5="" class="btn btn-danger change-colour-button" (click)="Plus_Purchase_Return_Details()" mat-raised-button="" type="button"><span class="mat-button-wrapper"><i _ngcontent-ucu-c5="" aria-hidden="true" class="fa fa-plus"></i></span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></button>
     </div>
-    <!-- <div class="col-md-2 alighn-right-inputs-sales-grid margin-to-correct-input-sales-full padd-right-crect-alighn-wole-div div-crct-algn-up-wrd-to-crect">
-        <label class="col-md-6 input-allighn-prchse-mstr-nw-sctn-br-cde pdng-crect-rspnsv-mrgn-nptbx-txt-lh">To Stock<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
+    <!-- <div class="col-md-2 alighn-right-inputs-sales-grid mb-2 d-flex flex-column  div-crct-algn-up-wrd-to-crect">
+        <label class="mb-1">To Stock<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
         <input type="text" [matAutocomplete]="auto" [(ngModel)]="To_Stock_" name="stock" (click)="Search_To_Stock_Typeahead($event)" (keyup)="Search_To_Stock_Typeahead($event)" class="col-md-6 mrgn-crct-alghyn-prhse-mstr-nw-sctn-to-stk for-input-selct-tblelst" />
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_To_Stock">
-            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
             <ng-container *ngIf="!isLoading">
                 <mat-option *ngFor="let To_Stock of To_Stock_Data" [value]="To_Stock">
                     <span>{{To_Stock.Client_Accounts_Name}}</span>
@@ -315,7 +315,7 @@
 </thead>
 <!-- <ng-container *cdkVirtualFor="let Purchase_Return_Details of Purchase_Return_Details_Data; let i = index"> -->
 <tbody class="bk_tb_bg" *ngFor="let Purchase_Return_Details of Purchase_Return_Details_Data; let i = index">
-<!-- <td style="padding-left:5px;">{{ i+1 }}</td> -->
+<!-- <td >{{ i+1 }}</td> -->
 <td>{{Purchase_Return_Details["Barcode"]}}</td>
 <td>{{Purchase_Return_Details["ItemName"]}} </td>
 <td>{{Purchase_Return_Details["PurchaseRate"]}}</td>
@@ -355,78 +355,78 @@
 </div>
 <div class="col-md-12">
     <div class="col-md-4 croct-float-purchase-master-section">
-        <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Gross Total</label>
-        <input matInput type="number" name="Purchase_Return_Master_.GrossTotal" [(ngModel)]="Purchase_Return_Master_.GrossTotal" class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" readonly>
+        <div class="col-md-12 mb-2 d-flex flex-column">
+        <label class="mb-1">Gross Total</label>
+        <input  type="number" name="Purchase_Return_Master_.GrossTotal" [(ngModel)]="Purchase_Return_Master_.GrossTotal" class="for-input-selct-tblelst" readonly>
         </div>        
-        <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total Discount</label>
-        <input matInput type="number" name="Purchase_Return_Master_.TotalDiscount" [(ngModel)]="Purchase_Return_Master_.TotalDiscount" class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" readonly>
+        <div class="col-md-12 mb-2 d-flex flex-column">
+        <label class="mb-1">Total Discount</label>
+        <input  type="number" name="Purchase_Return_Master_.TotalDiscount" [(ngModel)]="Purchase_Return_Master_.TotalDiscount" class="for-input-selct-tblelst" readonly>
         </div>        
-        <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total Taxable Amount</label>
-        <input matInput type="number" name="Purchase_Return_Master_.TaxableAmount" [(ngModel)]="Purchase_Return_Master_.TaxableAmount" class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" readonly>
+        <div class="col-md-12 mb-2 d-flex flex-column">
+        <label class="mb-1">Total Taxable Amount</label>
+        <input  type="number" name="Purchase_Return_Master_.TaxableAmount" [(ngModel)]="Purchase_Return_Master_.TaxableAmount" class="for-input-selct-tblelst" readonly>
         </div>          
-        <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total GST</label>
-        <input matInput type="number" name="Purchase_Return_Master_.TotalGST" [(ngModel)]="Purchase_Return_Master_.TotalGST" class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" readonly>
+        <div class="col-md-12 mb-2 d-flex flex-column">
+        <label class="mb-1">Total GST</label>
+        <input  type="number" name="Purchase_Return_Master_.TotalGST" [(ngModel)]="Purchase_Return_Master_.TotalGST" class="for-input-selct-tblelst" readonly>
         </div>                
-        <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Transportation Charge</label>
-        <input matInput type="number" name="Purchase_Return_Master_.Transportation_Charge" [(ngModel)]="Purchase_Return_Master_.Transportation_Charge"  (ngModelChange)="Final_Amounts()"class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" >
+        <div class="col-md-12 mb-2 d-flex flex-column">
+        <label class="mb-1">Transportation Charge</label>
+        <input  type="number" name="Purchase_Return_Master_.Transportation_Charge" [(ngModel)]="Purchase_Return_Master_.Transportation_Charge"  (ngModelChange)="Final_Amounts()"class="for-input-selct-tblelst" >
         </div> 
-        <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-        <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Handling Charge</label>
-        <input matInput type="number" name="Purchase_Return_Master_.Handling_Charge" [(ngModel)]="Purchase_Return_Master_.Handling_Charge" (ngModelChange)="Final_Amounts()" class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" >
+        <div class="col-md-12 mb-2 d-flex flex-column">
+        <label class="mb-1">Handling Charge</label>
+        <input  type="number" name="Purchase_Return_Master_.Handling_Charge" [(ngModel)]="Purchase_Return_Master_.Handling_Charge" (ngModelChange)="Final_Amounts()" class="for-input-selct-tblelst" >
         </div>         
         </div>
 <div class="col-md-4 croct-float-purchase-master-section">
-<div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-<label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total IGST</label>
-<input matInput type="number" name="Purchase_Return_Master_.TotalIGST" [(ngModel)]="Purchase_Return_Master_.TotalIGST" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+<div class="col-md-12 mb-2 d-flex flex-column">
+<label class="mb-1">Total IGST</label>
+<input  type="number" name="Purchase_Return_Master_.TotalIGST" [(ngModel)]="Purchase_Return_Master_.TotalIGST" class="for-input-selct-tblelst" readonly>
 </div>
-<div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-  <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total CGST</label>
-  <input matInput type="number" name="Purchase_Return_Master_.TotalCGST" [(ngModel)]="Purchase_Return_Master_.TotalCGST" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+<div class="col-md-12 mb-2 d-flex flex-column">
+  <label class="mb-1">Total CGST</label>
+  <input  type="number" name="Purchase_Return_Master_.TotalCGST" [(ngModel)]="Purchase_Return_Master_.TotalCGST" class="for-input-selct-tblelst" readonly>
   </div>
-  <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-    <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total SGST</label>
-    <input matInput type="number" name="Purchase_Return_Master_.TotalSGST"  [(ngModel)]="Purchase_Return_Master_.TotalSGST" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+  <div class="col-md-12 mb-2 d-flex flex-column">
+    <label class="mb-1">Total SGST</label>
+    <input  type="number" name="Purchase_Return_Master_.TotalSGST"  [(ngModel)]="Purchase_Return_Master_.TotalSGST" class="for-input-selct-tblelst" readonly>
     </div>
-    <!-- <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-      <label class="col-md-4">Total CESS</label>
-      <input matInput type="number" name="Purchase_Master_.CGST" class="input-text-item-group-diary" readonly>
+    <!-- <div class="col-md-12 mb-2 d-flex flex-column">
+      <label class="mb-1">Total CESS</label>
+      <input  type="number" name="Purchase_Master_.CGST" class="for-input-selct-tblelst" readonly>
       </div> -->
-      <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-        <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Net Total</label>
-        <input matInput type="number" name="Purchase_Return_Master_.NetTotal" [(ngModel)]="Purchase_Return_Master_.NetTotal" 
-        class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+      <div class="col-md-12 mb-2 d-flex flex-column">
+        <label class="mb-1">Net Total</label>
+        <input  type="number" name="Purchase_Return_Master_.NetTotal" [(ngModel)]="Purchase_Return_Master_.NetTotal" 
+        class="for-input-selct-tblelst" readonly>
         </div>  
-        <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-            <label class="col-md-6 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Transportation GST</label>
-            <input matInput type="number"  [(ngModel)]="Purchase_Return_Master_.Transportation_Gst" name="Purchase_Return_Master_.Transportation_GST" (ngModelChange)="Final_Amounts()"class="input-allighn-prchse-mstr-nw-sctn-grs-ttal-ttal-gst input-text-item-sales-section-group-diary" >
+        <div class="col-md-12 mb-2 d-flex flex-column">
+            <label class="mb-1">Transportation GST</label>
+            <input  type="number"  [(ngModel)]="Purchase_Return_Master_.Transportation_Gst" name="Purchase_Return_Master_.Transportation_GST" (ngModelChange)="Final_Amounts()"class="for-input-selct-tblelst" >
             </div> 
-        <div class="col-md-12 background-non-editable-input-box-purchase-master margin-to-correct-input-sales-full">
-            <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Handling GST</label>
-            <input matInput type="number"  [(ngModel)]="Purchase_Return_Master_.Handling_Gst" name="Purchase_Return_Master_.Handling_GST"
-            class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" >
+        <div class="col-md-12 mb-2 d-flex flex-column">
+            <label class="mb-1">Handling GST</label>
+            <input  type="number"  [(ngModel)]="Purchase_Return_Master_.Handling_Gst" name="Purchase_Return_Master_.Handling_GST"
+            class="for-input-selct-tblelst" >
             </div>
 </div>
 <div class="col-md-4 croct-float-purchase-master-section">
-    <div class="col-md-12 margin-to-correct-input-sales-full">
-    <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Other Charge</label>
-    <input matInput type="number" name="Purchase_Return_Master_.Other_Charges" [(ngModel)]="Purchase_Return_Master_.Other_Charges" (ngModelChange)="Final_Amounts()" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary">
+    <div class="col-md-12 mb-2 d-flex flex-column">
+    <label class="mb-1">Other Charge</label>
+    <input  type="number" name="Purchase_Return_Master_.Other_Charges" [(ngModel)]="Purchase_Return_Master_.Other_Charges" (ngModelChange)="Final_Amounts()" class="for-input-selct-tblelst">
     </div>    
-    <div class="col-md-12 margin-to-correct-input-sales-full">
-      <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Discount</label>
-      <input matInput type="number" [(ngModel)]="Purchase_Return_Master_.Discount" (ngModelChange)="Final_Amounts()" name="Purchase_Return_Master_.Discount" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary">
+    <div class="col-md-12 mb-2 d-flex flex-column">
+      <label class="mb-1">Discount</label>
+      <input  type="number" [(ngModel)]="Purchase_Return_Master_.Discount" (ngModelChange)="Final_Amounts()" name="Purchase_Return_Master_.Discount" class="for-input-selct-tblelst">
     </div>    
-      <div class="col-md-12 margin-to-correct-input-sales-full">
-        <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Round Off</label>
-        <input matInput type="number"  [(ngModel)]="Purchase_Return_Master_.Roundoff" (ngModelChange)="Final_Amounts()" name="Purchase_Return_Master_.Roundoff" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary">
+      <div class="col-md-12 mb-2 d-flex flex-column">
+        <label class="mb-1">Round Off</label>
+        <input  type="number"  [(ngModel)]="Purchase_Return_Master_.Roundoff" (ngModelChange)="Final_Amounts()" name="Purchase_Return_Master_.Roundoff" class="for-input-selct-tblelst">
         </div>
-        <div class="col-md-12 margin-to-correct-input-sales-full" style="margin-bottom: 64px;">
-            <label class="date-label-crect-search-sales-section pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Is Gst</label>
+        <div class="col-md-12 mb-2 d-flex flex-column" style="margin-bottom: 64px;">
+            <label class="date-label-crect-search-sales-section ">Is Gst</label>
             <div _ngcontent-xmy-c9="" class="checkbox-to-crect-sales-search-section">
                 <div _ngcontent-xmy-c9="" class="form-check uper-dte-lbel-sales-sctn-new">
                     <label _ngcontent-xmy-c9="" class="form-check-label">
@@ -436,29 +436,29 @@
                 </div>
             </div>
         </div>        
-          <div class="col-md-12 margin-to-correct-input-sales-full">
-            <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Transportation Total</label>
-            <input matInput type="number"  [(ngModel)]="Purchase_Return_Master_.Transportation_Total" name="Purchase_Return_Master_.Transportation_Total" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+          <div class="col-md-12 mb-2 d-flex flex-column">
+            <label class="mb-1">Transportation Total</label>
+            <input  type="number"  [(ngModel)]="Purchase_Return_Master_.Transportation_Total" name="Purchase_Return_Master_.Transportation_Total" class="for-input-selct-tblelst" readonly>
             </div>
-            <div class="col-md-12 margin-to-correct-input-sales-full">
-                <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Handling Total</label>
-                <input matInput type="number"  [(ngModel)]="Purchase_Return_Master_.Handling_Total" name="Purchase_Return_Master_.Handling_Total" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+            <div class="col-md-12 mb-2 d-flex flex-column">
+                <label class="mb-1">Handling Total</label>
+                <input  type="number"  [(ngModel)]="Purchase_Return_Master_.Handling_Total" name="Purchase_Return_Master_.Handling_Total" class="for-input-selct-tblelst" readonly>
                 </div> 
-                <div class="col-md-12 margin-to-correct-input-sales-full">
-                    <label class="col-md-4 label-down-alighn-oter-carge-tal-gst-prhse-mstr-down-new-stcn pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Total Amount</label>
-                    <input matInput type="number"  [(ngModel)]="Purchase_Return_Master_.TotalAmount" name="Purchase_Return_Master_.TotalAmount" class="input-allighn-prchse-mstr-nw-sctn-rp input-text-item-group-diary" readonly>
+                <div class="col-md-12 mb-2 d-flex flex-column">
+                    <label class="mb-1">Total Amount</label>
+                    <input  type="number"  [(ngModel)]="Purchase_Return_Master_.TotalAmount" name="Purchase_Return_Master_.TotalAmount" class="for-input-selct-tblelst" readonly>
                     </div> 
     </div>
 </div>
 
 
 <div class="col-md-12">
-<div class="col-md-12 margin-to-correct-input-sales-full wle-dv-input-txt-nw-pymnt-vuchr-mod">
-<label class="col-md-2 label-down-alighn-adrs-tre-prhse-mstr-down pdng-crect-rspnsv-mrgn-nptbx-txt-lh">Description</label>
-<input matInput type="text" name="Purchase_Return_Master_.Description" [(ngModel)]="Purchase_Return_Master_.Description" class="input-allighn-prchse-mstr-nw-sctn-dscrptns-amunt-n-wrds"><!-- input-text-full-width-item-group-diary-->
+<div class="col-md-12 mb-2 d-flex flex-column wle-dv-input-txt-nw-pymnt-vuchr-mod">
+<label class="mb-1">Description</label>
+<input  type="text" name="Purchase_Return_Master_.Description" [(ngModel)]="Purchase_Return_Master_.Description" class="input-allighn-prchse-mstr-nw-sctn-dscrptns-amunt-n-wrds"><!-- input-text-full-width-item-group-diary-->
 </div>
 </div> 
-<div class="col-md-12 margn-aliygn-crect-address-purchase-masters">
+<div class="col-md-12 d-flex justify-content-end gap-2 mt-3">
     <button mat-raised-button type="button" [hidden]="Purchase_Return_Master_Save==false"id="Save_Button"class="btn btn-danger pull-right"(click)="Save_Purchase_Return_Master()">Save</button>
 <button mat-raised-button type="button" class="btn btn-danger pull-right" (click)="Close_Click()">Close</button>
 </div>
@@ -496,30 +496,30 @@
     <label class="for-down-title-tabs-personal-details">Date</label>
   </div> -->
 <div class="col-md-2">
-<label class="col-md-4 padd-lft-crect-alighn-wole-div">From</label>
-<mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox ">
-        <input matInput [matDatepicker]="dp1" placeholder="" name="Search_FromDate" [(ngModel)]="Search_FromDate">
+<label class="mb-1">From</label>
+<div class="col-md-8">
+        <input  [matDatepicker]="dp1" placeholder="" name="Search_FromDate" [(ngModel)]="Search_FromDate">
         <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
         <mat-datepicker #dp1></mat-datepicker>
-    </mat-form-field>
+    </div>
 </div>
 <div class="col-md-2">
-<label class="col-md-4 padd-lft-crect-alighn-wole-div">TO</label>
-<mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox ">
-        <input matInput [matDatepicker]="dp2" placeholder="" name="Search_ToDate" [(ngModel)]="Search_ToDate">
+<label class="mb-1">TO</label>
+<div class="col-md-8">
+        <input  [matDatepicker]="dp2" placeholder="" name="Search_ToDate" [(ngModel)]="Search_ToDate">
         <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
         <mat-datepicker #dp2></mat-datepicker>
-    </mat-form-field>
+    </div>
 </div>
 <!-- <div class="col-md-3 div-crct-wdth-crct-prty-nme-prhse-mstr-srch-sctn">
-<label class="col-md-4 padd-lft-crect-alighn-wole-div label-down-alighn-prty-nme-prhse-mstr-srch-sctn">Party Name</label>
-<input matInput type="text" name="Search_Customer"  [(ngModel)]="Search_Customer"class="input-allighn-cstmr-nme-prchse-mstr-srch-sctn input-down-alighn-prty-nme-prhse-mstr-srch-sctn">
+<label class="mb-1">Party Name</label>
+<input  type="text" name="Search_Customer"  [(ngModel)]="Search_Customer"class="input-allighn-cstmr-nme-prchse-mstr-srch-sctn input-down-alighn-prty-nme-prhse-mstr-srch-sctn">
 </div>  -->
 <div class="col-md-3 div-crct-wdth-crct-prty-nme-prhse-mstr-srch-sctn">
-        <label class="col-md-3 padd-lft-crect-alighn-wole-div label-down-alighn-prty-nme-prhse-mstr-srch-sctn">Supplier</label><!--align-label-tab-lead-->
+        <label class="mb-1">Supplier</label><!--align-label-tab-lead-->
         <input type="text" [matAutocomplete]="auto_cus" [(ngModel)]="Search_Customer" name="Search_Customer" (click)="Search_Supplier_Typeahead($event)" (keyup)="Search_Supplier_Typeahead($event)" (ngModelChange)="Supplier_Change()" class="col-md-9 for-input-selct-tblelst ng-pristine ng-valid ng-touched" /><!-- for-input-selct-tblelst nput-laed-tabs-for-wole nput-laed-tabs-for-cuntry-wole-->
         <mat-autocomplete #auto_cus="matAutocomplete" [displayWith]="display_Supplier">
-            <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
             <ng-container *ngIf="!isLoading">
                 <mat-option *ngFor="let Supplier_T of Supplier_Data" [value]="Supplier_T">
                     <span>{{Supplier_T.Client_Accounts_Name}}</span>
@@ -528,12 +528,12 @@
         </mat-autocomplete>
  </div>
 <div class="col-md-3 div-crct-wdth-crct-nvce-nmbr-prhse-mstr-srch-sctn">
-<label class="col-md-6 padd-lft-crect-alighn-wole-div label-down-alighn-nvce-nmbr-prhse-mstr-srch-sctn">Purchase Invoice No</label>
-<input matInput type="number"  name="Voucher_Number"[(ngModel)]="Voucher_Number" class="input-allighn-cstmr-nvoice-nmber-mstr-srch-sctn input-down-alighn-prty-nme-prhse-mstr-srch-sctn">
+<label class="mb-1">Purchase Invoice No</label>
+<input  type="number"  name="Voucher_Number"[(ngModel)]="Voucher_Number" class="input-allighn-cstmr-nvoice-nmber-mstr-srch-sctn input-down-alighn-prty-nme-prhse-mstr-srch-sctn">
 </div>
 <div class="col-md-1">
-<button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger pull-right change-colour-button" style="padding: 7px 9px 7px 9px;"><i class="fa fa-plus" aria-hidden="true"></i></button>
-<button mat-raised-button type="button" (click)="Search_Purchase_Return_Master()" class="btn btn-danger pull-right change-colour-button" style="padding: 7px 9px 7px 9px;"><i class="fa fa-search" aria-hidden="true"></i></button>
+<button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger"><i class="fa fa-plus" aria-hidden="true"></i></button>
+<button mat-raised-button type="button" (click)="Search_Purchase_Return_Master()" class="btn btn-danger"><i class="fa fa-search" aria-hidden="true"></i></button>
 </div>
 </div>        
 <div class="clearfix"></div>
@@ -562,7 +562,7 @@
   <th [hidden]="Purchase_Return_Master_Delete==false">Delete</th>
   </thead>
 <tbody class="bk_tb_bg" *ngFor="let Purchase_Return_Master1 of Purchase_Return_Master_Data; let i = index">
-<td style="padding-left:5px;">{{ i+1 }}</td>
+<td >{{ i+1 }}</td>
 <td>{{Purchase_Return_Master1["Customer"]}}</td>
 <td>{{Purchase_Return_Master1["Search_Date"]}}</td>
 <td>{{Purchase_Return_Master1["InvoiceNo"]}}</td>

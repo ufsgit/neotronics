@@ -6,6 +6,7 @@ import { User_RoleService } from '../../../services/User_Role.Service';
 import { User_Role } from '../../../models/User_Role';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 
 @Component({
     selector: 'app-user-role',
@@ -35,7 +36,8 @@ export class User_RoleComponent implements OnInit {
         public User_Role_Service_: User_RoleService,
         private route: ActivatedRoute,
         private router: Router,
-        public dialogBox: MatDialog
+        public dialogBox: MatDialog,
+        private Master_Refresh_Service_: Master_Refresh_Service
     ) { }
 
     ngOnInit() {
@@ -141,6 +143,7 @@ export class User_RoleComponent implements OnInit {
                     this.Clr_User_Role();
                     this.Search_User_Role();
                     this.Entry_View = false;
+                    this.Master_Refresh_Service_.refreshMaster('User_Role');
                 } else {
                     this.dialogBox.open(DialogBox_Component, {
                         panelClass: 'Dialogbox-Class',
@@ -171,6 +174,7 @@ export class User_RoleComponent implements OnInit {
                     this.issLoading = false;
                     this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted Successfully', Type: "false" } });
                     this.Search_User_Role();
+                    this.Master_Refresh_Service_.refreshMaster('User_Role');
                 }, err => {
                     this.issLoading = false;
                     this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occurred', Type: "2" } });

@@ -1837,8 +1837,8 @@ export class Packing_ListComponent implements OnInit, AfterViewInit {
 
                 this.issLoading = false;
                 const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved', Type: "false" } });
-                // this.Entry_View = false;
-                // this.Search_PackingDEtails();
+                this.Entry_View = false;
+                this.Search_PackingDEtails();
                 // this.Clr_Sales_Master(); 
                 // this.Close_Click()
 
@@ -1908,7 +1908,19 @@ export class Packing_ListComponent implements OnInit, AfterViewInit {
             CurrencyDetails_Id_, User_Details_Id_,
             this.User_Type_Id, this.Login_User_Id).subscribe(Rows => {
                 debugger
-                this.packinglist_master_Data = Rows[0];
+                if (Rows && Rows.data) {
+                    if (Array.isArray(Rows.data) && Array.isArray(Rows.data[0])) {
+                        this.packinglist_master_Data = Rows.data[0];
+                    } else if (Array.isArray(Rows.data)) {
+                        this.packinglist_master_Data = Rows.data;
+                    } else {
+                        this.packinglist_master_Data = [Rows.data];
+                    }
+                } else if (Rows && Rows[0]) {
+                    this.packinglist_master_Data = Rows[0];
+                } else {
+                    this.packinglist_master_Data = [];
+                }
                 // this.packinglist_details_Data=Rows[0];
 
                 this.Total_Entries = this.packinglist_master_Data.length;

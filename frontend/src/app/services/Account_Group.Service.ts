@@ -28,19 +28,31 @@ return body || { };
 }
  Search_Account_Group(Account_Group_Name):Observable<any>
 {
- return this.http.get(environment.BasePath +'Account_Group/Search_Account_Group/'+Account_Group_Name);}
+ return this.http.get(environment.BasePath +'Account_Group/Search_Account_Group/'+Account_Group_Name).pipe(
+    map((res: any) => (res && res.success) ? res.data : res)
+ );
+}
  Search_Account_Group_Typeahead(Account_Group_Name):Observable<any>
  {
-  return this.http.get(environment.BasePath +'Account_Group/Search_Account_Group_Typeahead/'+Account_Group_Name);}
+  return this.http.get(environment.BasePath +'Account_Group/Search_Account_Group_Typeahead/'+Account_Group_Name).pipe(
+    map((res: any) => (res && res.success) ? res.data : res)
+  );
+ }
  Load_Account_Group(Account_Group_Name):Observable<any>
  {
-  return this.http.get(environment.BasePath +'Account_Group/Load_Account_Group/'+Account_Group_Name);}
+  return this.http.get(environment.BasePath +'Account_Group/Load_Account_Group/'+Account_Group_Name).pipe(
+    map((res: any) => (res && res.success) ? res.data : res)
+  );
+ }
 
  Delete_Account_Group(Account_Group_Id)
 {
  return this.http.get(environment.BasePath +'Account_Group/Delete_Account_Group/'+Account_Group_Id);}
 Get_Account_Group(Account_Group_Id)
 {
- return this.http.get(environment.BasePath +'Account_Group/Get_Account_Group/'+Account_Group_Id);}
+ return this.http.get(environment.BasePath +'Account_Group/Get_Account_Group/'+Account_Group_Id).pipe(
+    map((res: any) => (res && res.success) ? res.data : res)
+ );
+}
 }
 

@@ -1,123 +1,130 @@
-<div *ngIf="issLoading" class="overlay">
-    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
-    </mat-progress-spinner>
+<!-- Loading Overlay -->
+<div *ngIf="issLoading" class="ig-overlay">
+  <mat-progress-spinner [color]="color" [mode]="mode" [value]="value" diameter="36"></mat-progress-spinner>
 </div>
 
-<div class="main-trackbox-content">
-    <div class="trackbox-container">
+<div class="ig-page">
 
-        <!-- FORM ENTRY VIEW -->
-        <div class="row" *ngIf="Entry_View">
-            <div class="col-md-12">
-                <div class="trackbox-table-card p-4">
-                    <form>
-                        <div class="row">
-                            <div class="col-md-5">
-                                <label class="input-label mb-2 d-block">
-                                    Brand Name <span class="required-star">*</span>
-                                </label>
-                                <div class="modern-form-field">
-                                    <input matInput type="text" [(ngModel)]="Brand_.Brand_Name" name="Brand_Name_Entry" placeholder="Enter Brand Name">
-                                </div>
-                            </div>
+  <!-- ── HEADER ── -->
+  <div class="ig-header">
+    <div>
+      <h1 class="ig-title">Brands</h1>
+      <p class="ig-subtitle">Manage product brands and their linked items</p>
+    </div>
+    <button mat-button class="ig-btn-add" type="button" (click)="Create_New()" *ngIf="!Entry_View">
+      <i class="material-icons">add</i> Add Brand
+    </button>
+  </div>
 
-                            <div class="col-md-5">
-                                <label class="input-label mb-2 d-block">
-                                    Item Name <span class="required-star">*</span>
-                                </label>
-                                <div class="modern-form-field">
-                                    <input matInput type="text"
-                                           [matAutocomplete]="autoItem"
-                                           [(ngModel)]="Item_"
-                                           name="Item_Entry"
-                                           (input)="Search_Item_Typeahead($event)"
-                                           (click)="Search_Item_Typeahead($event)"
-                                           placeholder="Search Item Name">
-                                    <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item">
-                                        <mat-option *ngIf="issLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
-                                        <ng-container *ngIf="!issLoading">
-                                            <mat-option *ngFor="let Item of Item_Data" [value]="Item">
-                                                <span (click)="Item_Change(Item)">{{Item.Item_Name || Item.ItemName}}</span>
-                                            </mat-option>
-                                        </ng-container>
-                                    </mat-autocomplete>
-                                </div>
-                            </div>
+  <!-- ── ENTRY FORM ── -->
+  <div class="ig-form-card" *ngIf="Entry_View">
+    <p class="ig-form-label">{{ Brand_.Brand_Id > 0 ? 'Edit Brand' : 'New Brand' }}</p>
+    <div class="ig-form-row">
 
-                            <div class="col-md-2 d-flex align-items-end justify-content-end gap-3">
-                                <button mat-raised-button type="button" class="btn-add-new-trackbox btn-secondary-trackbox" (click)="Close_Click()">Close</button>
-                                <button mat-raised-button type="button" [hidden]="Brand_Save==false" id="Save_Button" class="btn-add-new-trackbox" (click)="Save_Brand()">Save</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+      <div class="ig-field">
+        <label class="ig-label">Brand Name <span class="ig-req">*</span></label>
+        <input
+          type="text"
+          class="ig-input"
+          [(ngModel)]="Brand_.Brand_Name"
+          name="Brand_Name_Entry"
+          placeholder="Enter brand name"
+          autocomplete="off"
+        />
+      </div>
 
-        <!-- LIST VIEW -->
-        <div *ngIf="!Entry_View">
-            <div class="trackbox-filter-area">
-                <div class="modern-search-wrapper">
-                    <i class="material-icons">search</i>
-                    <input type="text"
-                           class="modern-search-input"
-                           [(ngModel)]="Search_Brand_"
-                           name="Search_Brand_"
-                           placeholder="Search Brand..."
-                           (keyup.enter)="Search_Brand()">
-                </div>
+      <div class="ig-field">
+        <label class="ig-label">Item Name</label>
+        <mat-form-field floatLabel="never" class="ig-mat-field">
+          <input
+            matInput
+            placeholder="Search item…"
+            [matAutocomplete]="autoItem"
+            [(ngModel)]="Item_"
+            name="Item_Entry"
+            (input)="Search_Item_Typeahead($event)"
+            (click)="Search_Item_Typeahead($event)"
+            class="ig-mat-input"
+          />
+          <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item">
+            <mat-option *ngIf="issLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+            <ng-container *ngIf="!issLoading">
+              <mat-option *ngFor="let item of Item_Data" [value]="item">
+                <span (click)="Item_Change(item)">{{ item.Item_Name || item.ItemName }}</span>
+              </mat-option>
+            </ng-container>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
 
-                <button mat-raised-button type="button" (click)="Create_New()" class="btn-add-new-trackbox">
-                    <i class="material-icons">add</i>
-                    Add Brand
-                </button>
-            </div>
-
-            <div class="trackbox-table-card">
-                <div class="table-responsive" [style.height.px]="myInnerHeight" style="overflow-y: scroll;">
-                    <table class="modern-trackbox-table">
-                        <thead>
-                            <tr>
-                                <th class="col-no">No.</th>
-                                <th>Brand</th>
-                                <th>Item Name</th>
-                                <th class="col-actions">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let Brand_1 of Brand_Data; let i = index">
-                                <td class="col-no">{{ i + 1 }}</td>
-                                <td style="font-weight: 500;">{{Brand_1["Brand_Name"]}}</td>
-                                <td>{{Brand_1["Item_Name"] || '-'}}</td>
-                                <td class="col-actions">
-                                    <div class="d-flex justify-content-center">
-                                        <div class="action-icon-btn btn-edit-tb"
-                                             [hidden]="Brand_Edit==false"
-                                             (click)="Edit_Brand(Brand_1, i)"
-                                             title="Edit">
-                                            <i class="material-icons">edit</i>
-                                        </div>
-                                        <div class="action-icon-btn btn-delete-tb"
-                                             [hidden]="Brand_Delete==false"
-                                             (click)="Delete_Brand(Brand_1.Brand_Id, i)"
-                                             title="Delete">
-                                            <i class="material-icons">delete_outline</i>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr *ngIf="Brand_Data?.length === 0">
-                                <td colspan="4" class="text-center py-5 text-muted">No records found</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="entries-summary">
-                Entries : {{Total_Entries}}
-            </div>
-        </div>
+      <div class="ig-form-actions">
+        <button class="ig-btn-cancel" type="button" (click)="Close_Click()">Cancel</button>
+        <button
+          class="ig-btn-save"
+          type="button"
+          id="Save_Button"
+          [hidden]="Brand_Save == false"
+          (click)="Save_Brand()"
+        >Save</button>
+      </div>
 
     </div>
+  </div>
+
+  <!-- ── SEARCH ── -->
+  <div class="ig-search-bar" *ngIf="!Entry_View">
+    <div class="ig-search-wrap">
+      <i class="material-icons">search</i>
+      <input
+        type="text"
+        class="ig-search-input"
+        [(ngModel)]="Search_Brand_"
+        name="Search_Brand_"
+        placeholder="Search brands…"
+        (keyup.enter)="Search_Brand()"
+      />
+    </div>
+    <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
+  </div>
+
+  <!-- ── TABLE ── -->
+  <div class="ig-table-card" *ngIf="!Entry_View">
+    <div class="ig-table-wrap" [style.max-height.px]="myInnerHeight">
+      <table class="ig-table">
+        <thead>
+          <tr>
+            <th class="ig-th ig-th-no">#</th>
+            <th class="ig-th">Brand Name</th>
+            <th class="ig-th">Item Name</th>
+            <th class="ig-th ig-th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let brand of Brand_Data; let i = index" class="ig-tr">
+            <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+            <td class="ig-td ig-td-name">{{ brand['Brand_Name'] }}</td>
+            <td class="ig-td">{{ brand['Item_Name'] || '—' }}</td>
+            <td class="ig-td ig-td-actions">
+              <button
+                class="ig-icon-btn ig-edit"
+                [hidden]="Brand_Edit == false"
+                (click)="Edit_Brand(brand, i)"
+                title="Edit"
+              ><i class="material-icons">edit</i></button>
+              <button
+                class="ig-icon-btn ig-delete"
+                [hidden]="Brand_Delete == false"
+                (click)="Delete_Brand(brand.Brand_Id, i)"
+                title="Delete"
+              ><i class="material-icons">delete_outline</i></button>
+            </td>
+          </tr>
+          <tr *ngIf="Brand_Data?.length === 0">
+            <td colspan="4" class="ig-empty">No brands found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>

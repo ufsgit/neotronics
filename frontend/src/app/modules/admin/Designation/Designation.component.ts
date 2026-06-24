@@ -6,6 +6,7 @@ import { Designation_Service } from '../../../services/Designation.Service';
 import { Designation } from '../../../models/Designation';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 
 @Component({
   selector: 'app-Designation',
@@ -32,7 +33,8 @@ export class DesignationComponent implements OnInit {
     public Designation_Service_: Designation_Service,
     private route: ActivatedRoute,
     private router: Router,
-    public dialogBox: MatDialog
+    public dialogBox: MatDialog,
+    private Master_Refresh_Service_: Master_Refresh_Service
   ) { }
 
   ngOnInit() {
@@ -111,6 +113,7 @@ export class DesignationComponent implements OnInit {
         this.Clr_Designation();
         this.Search_Designation();
         this.Entry_View = false;
+        this.Master_Refresh_Service_.refreshMaster('Designation');
       },
       error: (error) => {
         this.dialogBox.open(DialogBox_Component, {
@@ -135,6 +138,7 @@ export class DesignationComponent implements OnInit {
           this.issLoading = false;
           this.Search_Designation();
           this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted', Type: "false" } });
+          this.Master_Refresh_Service_.refreshMaster('Designation');
         },
         error => {
           this.issLoading = false;

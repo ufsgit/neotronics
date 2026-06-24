@@ -48,10 +48,10 @@
 
                 <!-- From Account -->
                 <mat-form-field appearance="legacy" floatLabel="never">
-                    <input matInput type="text" [matAutocomplete]="auto_from" [(ngModel)]="FromAccount_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Accounts_Typeahead($event)" placeholder="From Account" />
+                    <input matInput type="text" [matAutocomplete]="auto_from" [(ngModel)]="FromAccount_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Get_Client_Accounts_Typeahead($event)" placeholder="From Account" />
                     <mat-autocomplete #auto_from="matAutocomplete" [displayWith]="display_FromAccount">
-                        <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
-                        <ng-container *ngIf="!isLoading">
+                        <mat-option *ngIf="issLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                        <ng-container *ngIf="!issLoading">
                             <mat-option *ngFor="let acc of Client_Accounts_Data" [value]="acc">
                                 <span>{{acc.Client_Accounts_Name}}</span>
                             </mat-option>
@@ -61,10 +61,10 @@
 
                 <!-- To Account -->
                 <mat-form-field appearance="legacy" floatLabel="never">
-                    <input matInput type="text" [matAutocomplete]="auto_to" [(ngModel)]="ToAccount_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Accounts_Typeahead($event)" placeholder="To Account" />
+                    <input matInput type="text" [matAutocomplete]="auto_to" [(ngModel)]="ToAccount_Search" (click)="Get_Client_Accounts_Typeahead($event)" (keyup)="Get_Client_Accounts_Typeahead($event)" placeholder="To Account" />
                     <mat-autocomplete #auto_to="matAutocomplete" [displayWith]="display_FromAccount">
-                        <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
-                        <ng-container *ngIf="!isLoading">
+                        <mat-option *ngIf="issLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                        <ng-container *ngIf="!issLoading">
                             <mat-option *ngFor="let acc of Client_Accounts_Data" [value]="acc">
                                 <span>{{acc.Client_Accounts_Name}}</span>
                             </mat-option>

@@ -8,7 +8,7 @@ var Company = {
       return db.query("CALL Save_Company(" +
       "@Company_Id_ :=?, @Company_Name_ :=?, @Address1_ :=?, @Address2_ :=?, @Address3_ :=?, @Address4_ :=?, " +
       "@Mobile_Number_ :=?, @Phone_Number_ :=?, @FAX_ :=?, @EMail_ :=?, @Website_ :=?, @Logo_ :=?, @Code_ :=?, " +
-      "@GSTNO_ :=?, @CINO_ :=?, @PANNO_ :=?, @Note_ :=?, @Doc_Photo_ :=?, @File_Path_ :=?)",
+      "@GSTNO_ :=?, @CINO_ :=?, @PANNO_ :=?, @Note_ :=?, @Doc_Photo_ :=?, @File_Path_ :=?, @file_url_ :=?)",
       [
           Company_.Company_Id || 0,
           Company_.Company_Name || '',
@@ -28,7 +28,8 @@ var Company = {
           Company_.PANNO || '',
           Company_.Note || '',
           Company_.Doc_Photo || '',
-          Company_.File_Path || ''
+          Company_.File_Path || '',
+          Company_.file_url || ''
       ], callback);
   }
   

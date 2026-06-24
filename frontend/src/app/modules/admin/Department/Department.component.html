@@ -1,91 +1,97 @@
-<div *ngIf="issLoading" class="overlay">
-    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
-    </mat-progress-spinner>
+<!-- Loading Overlay -->
+<div *ngIf="issLoading" class="ig-overlay">
+  <mat-progress-spinner [color]="color" [mode]="mode" [value]="value" diameter="36"></mat-progress-spinner>
 </div>
-<div class="main-content mt-0" style="padding: 0px 0px !important;background-color: #f1f1f1;">
-    <div class="container-fluid">
-        <div class="row mt-2" *ngIf="Entry_View" style="background-color: #f1f1f1 !important;">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body" style="background-color: #f1f1f1 !important;">
-                        <form>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="col-md-12">
-                                        <label class="col-md-4 label-down-alighn-stk-ad-mstr-prhse-rte">Department Name <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-                                        <mat-form-field class="col-md-8 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey; height: 40px;padding-left: 10px;margin-bottom: 0;background-color: #fff;">
-                                            <input matInput type="text" [(ngModel)]="Department_.Department_Name" name="Department_Name" class="input-text-Brand-group-diary">
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-12">
-                                        <button mat-raised-button type="button" [hidden]="Department_Save==false" id="Save_Button" class="btn btn-danger pull-right save-close-new-buttons-to-crect" (click)="Save_Department()">Save</button>
-                                        <button mat-raised-button type="button" class="btn btn-danger pull-right save-close-new-buttons-to-crect" (click)="Close_Click()">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row" *ngIf="!Entry_View">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body" style="align-items: center; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%;padding: 3px;background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);">
-                        <form>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="col-md-12 margin-crect-dte-account-group-diary" style="display: flex;align-items: center;">
-                                        <label class="col-md-3 text-title-to-correct-Brand-group-diary ">Department Name</label>
-                                        <mat-form-field class="col-md-10 margin-lh-rh-to-crect-textbox" style="border: 1px solid lightgrey; height: 40px; background-color: #fff ;">
-                                            <input matInput type="text" [(ngModel)]="Search_Department_" name="Search_Department_" class="col-md-8 input-text-Brand-group-diary">
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <button mat-raised-button type="button" (click)="Search_Department()" class="ml-2 btn btn-danger button-to-crect-margin mt-0">Search</button>
-                                    <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger button-to-crect-margin mt-0">Create New</button>
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="table-responsive card">
-                    <div class="table-responsive" [style.height.px]="myInnerHeight" style="overflow-y: scroll;background-color: #f1f1f1;">
-                        <table class="table table-hover">
-                            <thead class="thead" style="background-color: #3e6bdd; color: white;">
-                                <th class="crect-margin-width-table-header-title">Sl No</th>
-                                <th>Department</th>
-                                <th [hidden]="Department_Edit==false" class="crect-margin-width-table-header-title">Edit</th>
-                                <th [hidden]="Department_Delete==false" class="crect-margin-width-table-header-title">Delete</th>
-                            </thead>
-                            <ng-container *ngFor="let Dept of Department_Data; let i = index">
-                                <tr>
-                                    <td style="padding-left:5px;">{{ i+1 }}</td>
-                                    <td>{{Dept["Department_Name"]}}</td>
-                                    <td>
-                                        <button [hidden]="Department_Edit==false" class="btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button type="button" (click)="Edit_Department(Dept)">
-                                            <i class="material-icons">edit</i>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button [hidden]="Department_Delete==false" class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button" mat-raised-button type="button" (click)="Delete_Department(Dept.Department_Id,i)">
-                                            <i class="material-icons">close</i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </ng-container>
-                        </table>
-                    </div>
-                </div>
-                <label class="entry-num" style="float: right; margin-top: 10px; font-weight: bold;">Entries : {{Total_Entries}}</label>
-            </div>
-        </div>
+
+<div class="ig-page">
+
+  <!-- ── HEADER ── -->
+  <div class="ig-header">
+    <div>
+      <h1 class="ig-title">Departments</h1>
+      <p class="ig-subtitle">Manage company departments</p>
     </div>
+    <button mat-button class="ig-btn-add" type="button" (click)="Create_New()" *ngIf="!Entry_View">
+      <i class="material-icons">add</i> Add Department
+    </button>
+  </div>
+
+  <!-- ── ENTRY FORM ── -->
+  <div class="ig-form-card" *ngIf="Entry_View">
+    <p class="ig-form-label">{{ Department_.Department_Id > 0 ? 'Edit Department' : 'New Department' }}</p>
+    <div class="ig-form-row">
+      <div class="ig-field">
+        <label class="ig-label">Department Name <span class="ig-req">*</span></label>
+        <input
+          type="text"
+          class="ig-input"
+          [(ngModel)]="Department_.Department_Name"
+          name="Department_Name"
+          placeholder="Enter department name"
+          autocomplete="off"
+        />
+      </div>
+      <div class="ig-form-actions">
+        <button class="ig-btn-cancel" type="button" (click)="Close_Click()">Cancel</button>
+        <button
+          class="ig-btn-save"
+          type="button"
+          id="Save_Button"
+          [hidden]="Department_Save == false"
+          (click)="Save_Department()"
+        >Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEARCH ── -->
+  <div class="ig-search-bar" *ngIf="!Entry_View">
+    <div class="ig-search-wrap">
+      <i class="material-icons">search</i>
+      <input
+        type="text"
+        class="ig-search-input"
+        [(ngModel)]="Search_Department_"
+        name="Search_Department_"
+        placeholder="Search departments…"
+        (keyup.enter)="Search_Department()"
+      />
+    </div>
+    <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
+  </div>
+
+  <!-- ── TABLE ── -->
+  <div class="ig-table-card" *ngIf="!Entry_View">
+    <div class="ig-table-wrap" [style.max-height.px]="myInnerHeight">
+      <table class="ig-table">
+        <thead>
+          <tr>
+            <th class="ig-th ig-th-no">#</th>
+            <th class="ig-th">Department Name</th>
+            <th class="ig-th ig-th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let dept of Department_Data; let i = index" class="ig-tr">
+            <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+            <td class="ig-td ig-td-name">{{ dept['Department_Name'] }}</td>
+            <td class="ig-td ig-td-actions">
+              <button class="ig-icon-btn ig-edit" [hidden]="Department_Edit == false"
+                (click)="Edit_Department(dept)" title="Edit">
+                <i class="material-icons">edit</i>
+              </button>
+              <button class="ig-icon-btn ig-delete" [hidden]="Department_Delete == false"
+                (click)="Delete_Department(dept.Department_Id, i)" title="Delete">
+                <i class="material-icons">delete_outline</i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="Department_Data?.length === 0">
+            <td colspan="3" class="ig-empty">No departments found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>

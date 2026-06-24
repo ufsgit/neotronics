@@ -2,195 +2,267 @@
     <mat-progress-spinner class="spinner" color="primary" mode="indeterminate" diameter="50"></mat-progress-spinner>
 </div>
 
-<div class="main-content dashboard-content">
+<div class="main-content" style="padding: 0px 0px !important; background-color: #f1f1f1;">
     <div class="container-fluid">
-        <!-- Header Section -->
-        <div class="header-card mb-4">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h2 class="page-title">Quotation Confirmation List</h2>
-                    <p class="page-subtitle text-muted">Manage and confirm approved quotations efficiently</p>
-                </div>
-                <div class="col-md-4 text-right header-actions">
-                    <button mat-mini-fab color="basic" (click)="Refresh_Click()" title="Refresh" class="mr-2">
-                        <mat-icon>refresh</mat-icon>
-                    </button>
-                    <button mat-raised-button color="primary" (click)="Export_To_Excel()" class="export-btn">
-                        <mat-icon>file_download</mat-icon> Export Excel
-                    </button>
-                </div>
-            </div>
-        </div>
+        <div class="row col-md-12 mb-0">
 
-        <!-- Filter & Search Section -->
-        <div class="card filter-card mb-4">
-            <div class="card-body p-3">
-                <div class="confirmation-filter-grid">
-                    <div class="filter-field date-field">
-                        <div class="form-group mb-0">
-                            <label class="filter-label">From Date</label>
-                            <mat-form-field appearance="outline" class="w-100 compact-field">
-                                <input matInput [matDatepicker]="picker1" [(ngModel)]="Search_FromDate">
-                                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                                <mat-datepicker #picker1></mat-datepicker>
-                            </mat-form-field>
+            <!-- ── Filter Panel ── -->
+            <div class="row mb-3 card-body"
+                style="align-items: flex-end; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%; padding: 15px; background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);">
+
+                <div class="row w-100 mb-3" style="margin-left: 0;">
+                    <!-- From Date -->
+                    <div class="col-md-2">
+                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">From Date</label>
+                        <div style="background: #fff; border: 1px solid #b1b1b1; border-radius: 8px; height: 40px; display: flex; align-items: center; padding: 0 5px;">
+                            <input [matDatepicker]="picker1" placeholder="DD/MM/YYYY" name="Search_FromDate"
+                                [(ngModel)]="Search_FromDate"
+                                style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
+                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                            <mat-datepicker #picker1></mat-datepicker>
                         </div>
                     </div>
-                    <div class="filter-field date-field">
-                        <div class="form-group mb-0">
-                            <label class="filter-label">To Date</label>
-                            <mat-form-field appearance="outline" class="w-100 compact-field">
-                                <input matInput [matDatepicker]="picker2" [(ngModel)]="Search_ToDate">
-                                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                                <mat-datepicker #picker2></mat-datepicker>
-                            </mat-form-field>
+
+                    <!-- To Date -->
+                    <div class="col-md-2">
+                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">To Date</label>
+                        <div style="background: #fff; border: 1px solid #b1b1b1; border-radius: 8px; height: 40px; display: flex; align-items: center; padding: 0 5px;">
+                            <input [matDatepicker]="picker2" name="Search_ToDate" placeholder="DD/MM/YYYY"
+                                [(ngModel)]="Search_ToDate"
+                                style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
+                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker2></mat-datepicker>
                         </div>
                     </div>
-                    <div class="filter-field customer-field">
-                        <div class="form-group mb-0">
-                            <label class="filter-label">Customer Name</label>
-                            <div class="input-group input-group-outline">
-                                <input type="text" class="form-control" placeholder="Search customer..." [(ngModel)]="Search_Customer" (keyup.enter)="Search_Quotation_Confirmation()">
-                            </div>
-                        </div>
+
+                    <!-- Customer Name -->
+                    <div class="col-md-3">
+                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">Customer Name</label>
+                        <input type="text" [(ngModel)]="Search_Customer" placeholder="Search customer..."
+                            (keyup.enter)="Search_Quotation_Confirmation()"
+                            style="width: 100%; height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; padding: 0 10px; background: #fff;">
                     </div>
-                    <div class="filter-field quote-field">
-                        <div class="form-group mb-0">
-                            <label class="filter-label">Quotation No</label>
-                            <div class="input-group input-group-outline">
-                                <input type="text" class="form-control" placeholder="No..." [(ngModel)]="Search_QuotationNo" (keyup.enter)="Search_Quotation_Confirmation()">
-                            </div>
-                        </div>
+
+                    <!-- Quotation No -->
+                    <div class="col-md-2">
+                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">Quotation No</label>
+                        <input type="text" [(ngModel)]="Search_QuotationNo" placeholder="No..."
+                            (keyup.enter)="Search_Quotation_Confirmation()"
+                            style="width: 100%; height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; padding: 0 10px; background: #fff;">
                     </div>
-                    <div class="filter-field status-field">
-                        <div class="form-group mb-0">
-                            <label class="filter-label">Status</label>
-                            <mat-form-field appearance="outline" class="w-100 compact-field">
-                                <mat-select [(ngModel)]="Status_Filter">
-                                    <mat-option *ngFor="let s of Status_Data" [value]="s.id">{{s.name}}</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
+
+                    <!-- Status -->
+                    <div class="col-md-2">
+                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">Status</label>
+                        <select [(ngModel)]="Status_Filter"
+                            style="width: 100%; height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; padding: 0 10px; background: #fff;">
+                            <option *ngFor="let s of Status_Data" [value]="s.id">{{s.name}}</option>
+                        </select>
                     </div>
-                    <div class="filter-actions">
-                        <button mat-raised-button color="primary" (click)="Search_Quotation_Confirmation()" class="mr-2">
-                            <mat-icon>search</mat-icon> Search
+                </div>
+
+                <!-- Buttons row -->
+                <div class="row w-100" style="margin-left: 0; align-items: flex-end;">
+                    <div class="col-md-12" style="display: flex; gap: 10px; justify-content: flex-end; align-items: flex-end; height: 50px;">
+                        <button mat-raised-button type="button" (click)="Search_Quotation_Confirmation()"
+                            class="btn btn-danger m-0" style="height: 40px; border-radius: 8px; padding: 0 20px;">
+                            <i class="fa fa-search" aria-hidden="true" style="margin-right: 5px;"></i> Search
                         </button>
-                        <button mat-button color="basic" (click)="Reset_Filters()">
-                            <mat-icon>undo</mat-icon> Reset
+                        <button mat-raised-button type="button" (click)="Reset_Filters()"
+                            class="btn btn-secondary m-0"
+                            style="height: 40px; border-radius: 8px; padding: 0 18px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db;">
+                            <i class="fa fa-undo" aria-hidden="true" style="margin-right: 5px;"></i> Reset
+                        </button>
+                        <button mat-raised-button type="button" (click)="Refresh_Click()"
+                            class="btn m-0"
+                            style="height: 40px; border-radius: 8px; padding: 0 18px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db;">
+                            <i class="material-icons" style="font-size: 16px; vertical-align: middle;">refresh</i>
+                        </button>
+                        <button mat-raised-button type="button" (click)="Export_To_Excel()"
+                            class="btn btn-primary m-0" style="background-color: #3e6bdd; color: white; height: 40px; border-radius: 8px; padding: 0 20px;">
+                            <i class="material-icons" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">file_download</i>
+                            Export Excel
                         </button>
                     </div>
                 </div>
+                <div class="clearfix"></div>
             </div>
-        </div>
 
-        <!-- Table Section -->
-        <div class="card list-card">
-            <div class="card-body p-0">
-                <div class="table-container sticky-header">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th class="text-center" width="50">No</th>
+            <!-- ── List Table ── -->
+            <div class="col-md-12">
+                <div class="table-responsive card">
+                    <div class="table-responsive"
+                        style="overflow-y: scroll; background-color: #f1f1f1; max-height: calc(100vh - 300px);">
+                        <table class="table table-hover">
+                            <thead class="thead">
+                                <th>No</th>
                                 <th>Date</th>
                                 <th>Quotation No</th>
                                 <th>Customer Name</th>
                                 <th>Reference</th>
-                                <th class="text-right">Total Amount</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center" width="250">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let item of Quotation_Master_Data; let i = index" class="list-row">
-                                <td class="text-center">{{i + 1}}</td>
-                                <td>{{item.FormattedEntryDate || (item.EntryDate | date:'dd/MM/yyyy')}}</td>
-                                <td class="font-weight-bold">{{item.QuotationNo}}</td>
-                                <td>
-                                    <div class="d-flex flex-column">
-                                        <span class="customer-name">{{item.Customer || item.Customer_Name}}</span>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of Quotation_Master_Data; let i = index">
+                                    <td style="padding: 0px; padding-left: 5px; vertical-align: middle;">{{i + 1}}</td>
+                                    <td style="padding: 0px; padding-left: 5px; vertical-align: middle;">
+                                        {{item.FormattedEntryDate || (item.EntryDate | date:'dd/MM/yyyy')}}
+                                    </td>
+                                    <td style="padding: 0px; padding-left: 5px; vertical-align: middle; font-weight: 600;">
+                                        {{item.QuotationNo}}
+                                    </td>
+                                    <td style="padding: 0px; padding-left: 5px; vertical-align: middle;">
+                                        <div>{{item.Customer || item.Customer_Name}}</div>
                                         <small class="text-muted">{{item.Mobile || item.Phone || ''}}</small>
-                                    </div>
-                                </td>
-                                <td>{{item.Reference || item.POnumber || '--'}}</td>
-                                <td class="text-right font-weight-bold text-primary">{{(+item.NetTotal) | number:'1.2-2'}}</td>
-                                <td class="text-center">
-                                    <span class="badge-pill" [ngClass]="Get_Status_Class(item.Status)">
-                                        {{item.Status_Name || Get_Status_Name(item.Status)}}
-                                    </span>
-                                </td>
-                                <td class="text-center action-buttons">
-                                    <button mat-icon-button color="primary" (click)="View_Quotation(item)" title="View Details">
-                                        <mat-icon>visibility</mat-icon>
-                                    </button>
-                                    <button mat-icon-button style="color: #10b981;" *ngIf="item.Status == 2" (click)="Approve_Quotation(item)" title="Approve Quotation">
-                                        <mat-icon>done</mat-icon>
-                                    </button>
-                                    <button mat-icon-button style="color: #ef4444;" *ngIf="item.Status == 2" (click)="Reject_Quotation(item)" title="Reject Quotation">
-                                        <mat-icon>close</mat-icon>
-                                    </button>
-                                    <button mat-icon-button color="accent" *ngIf="item.Status == 3" (click)="Confirm_Quotation(item)" title="Confirm Quotation">
-                                        <mat-icon>check_circle</mat-icon>
-                                    </button>
-                                    <button mat-icon-button color="warn" *ngIf="item.Status == 5" (click)="Cancel_Confirmation(item)" title="Cancel Confirmation">
-                                        <mat-icon>cancel</mat-icon>
-                                    </button>
-                                    <button mat-icon-button (click)="Print_Quotation(item)" title="Print">
-                                        <mat-icon>print</mat-icon>
-                                    </button>
-                                    <button mat-icon-button color="warn" *ngIf="item.Status == 5" (click)="Convert_To_SalesOrder(item)" title="Convert to Sales Order">
-                                        <mat-icon>swap_horiz</mat-icon>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr *ngIf="Quotation_Master_Data.length === 0">
-                                <td colspan="8" class="text-center py-5">
-                                    <div class="empty-state">
-                                        <mat-icon class="empty-icon">search_off</mat-icon>
-                                        <p class="empty-text">No quotations found matching your criteria.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    </td>
+                                    <td style="padding: 0px; padding-left: 5px; vertical-align: middle;">
+                                        {{item.Reference || item.POnumber || '--'}}
+                                    </td>
+                                    <td style="padding: 0px; padding-left: 5px; vertical-align: middle; font-weight: 600;">
+                                        {{(+item.NetTotal) | number:'1.2-2'}}
+                                    </td>
+                                    <td style="padding: 0px; padding-left: 5px; vertical-align: middle;">
+                                        <span class="badge-pill" [ngClass]="Get_Status_Class(item.Status)">
+                                            {{item.Status_Name || Get_Status_Name(item.Status)}}
+                                        </span>
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        <!-- View -->
+                                        <button _ngcontent-jry-c5=""
+                                            class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                            mat-raised-button="" mattooltip="View Details" type="button"
+                                            (click)="View_Quotation(item)" title="View Details">
+                                            <span class="mat-button-wrapper">
+                                                <i class="material-icons">visibility</i>
+                                            </span>
+                                        </button>
+                                        <!-- Approve -->
+                                        <button _ngcontent-jry-c5=""
+                                            class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                            mat-raised-button="" mattooltip="Approve" type="button"
+                                            *ngIf="item.Status == 2" (click)="Approve_Quotation(item)"
+                                            style="color: #10b981 !important;">
+                                            <span class="mat-button-wrapper">
+                                                <i class="material-icons">done</i>
+                                            </span>
+                                        </button>
+                                        <!-- Reject -->
+                                        <button _ngcontent-gdi-c11=""
+                                            class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                            mat-raised-button="" mattooltip="Reject" type="button"
+                                            *ngIf="item.Status == 2" (click)="Reject_Quotation(item)">
+                                            <span class="mat-button-wrapper">
+                                                <i class="material-icons">close</i>
+                                            </span>
+                                        </button>
+                                        <!-- Confirm -->
+                                        <button _ngcontent-jry-c5=""
+                                            class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                            mat-raised-button="" mattooltip="Confirm" type="button"
+                                            *ngIf="item.Status == 3" (click)="Confirm_Quotation(item)"
+                                            style="color: #6366f1 !important;">
+                                            <span class="mat-button-wrapper">
+                                                <i class="material-icons">check_circle</i>
+                                            </span>
+                                        </button>
+                                        <!-- Cancel Confirmation -->
+                                        <button _ngcontent-gdi-c11=""
+                                            class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                            mat-raised-button="" mattooltip="Cancel Confirmation" type="button"
+                                            *ngIf="item.Status == 5" (click)="Cancel_Confirmation(item)">
+                                            <span class="mat-button-wrapper">
+                                                <i class="material-icons">cancel</i>
+                                            </span>
+                                        </button>
+                                        <!-- Print -->
+                                        <button _ngcontent-jry-c5=""
+                                            class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                            mat-raised-button="" mattooltip="Print" type="button"
+                                            (click)="Print_Quotation(item)">
+                                            <span class="mat-button-wrapper">
+                                                <i class="material-icons">print</i>
+                                            </span>
+                                        </button>
+                                        <!-- Convert to Sales Order -->
+                                        <button _ngcontent-jry-c5=""
+                                            class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                            mat-raised-button="" mattooltip="Convert to Sales Order" type="button"
+                                            *ngIf="item.Status == 5" (click)="Convert_To_SalesOrder(item)"
+                                            style="color: #f59e0b !important;">
+                                            <span class="mat-button-wrapper">
+                                                <i class="material-icons">swap_horiz</i>
+                                            </span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="Quotation_Master_Data.length === 0">
+                                    <td colspan="8">
+                                        <div class="empty-state">
+                                            <i class="material-icons empty-icon">search_off</i>
+                                            <p class="empty-text">No quotations found matching your criteria.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <!-- Pagination / Footer -->
-            <div class="card-footer py-2 px-3 d-flex justify-content-between align-items-center bg-light">
-                <span class="text-muted small">Total Entries: <b>{{Total_Entries}}</b></span>
-                <span class="text-muted small">Total Amount: <b class="text-primary">{{(+Total_Amount) | number:'1.2-2'}}</b></span>
+
+            <!-- ── Totals Footer ── -->
+            <div class="col-md-12 d-flex justify-content-between align-items-center" style="padding: 6px 4px;">
+                <label class="entry-num">Entries: <b>{{Total_Entries}}</b></label>
+                <label class="entry-num">Total Amount: <b style="color: #6366f1;">{{(+Total_Amount) | number:'1.2-2'}}</b></label>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- Preview Side Drawer -->
+<!-- ── Preview Side Drawer ── -->
 <div class="preview-drawer" [class.open]="showPreview" *ngIf="selectedQuotation">
     <div class="drawer-header">
-        <h4 class="m-0">Quotation Details</h4>
-        <button mat-icon-button (click)="Close_Preview()"><mat-icon>close</mat-icon></button>
+        <h4>Quotation Details</h4>
+        <button mat-icon-button (click)="Close_Preview()" style="color: #fff; background: transparent; border: none; cursor: pointer;">
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
-    <div class="drawer-body p-4">  
+    <div class="drawer-body">
+
         <!-- Customer Info -->
         <div class="section mb-4">
             <h5 class="section-title">Customer Information</h5>
             <div class="info-grid">
-                <div class="info-item"><label>Name:</label> <span>{{selectedQuotation.Customer || selectedQuotation.Customer_Name}}</span></div>
-                <div class="info-item"><label>Quotation No:</label> <span>{{selectedQuotation.QuotationNo}}</span></div>
-                <div class="info-item"><label>Date:</label> <span>{{selectedQuotation.FormattedEntryDate || (selectedQuotation.EntryDate | date:'dd/MM/yyyy')}}</span></div>
-                <div class="info-item"><label>Phone:</label> <span>{{selectedQuotation.Mobile || selectedQuotation.Phone || '--'}}</span></div>
+                <div class="info-item">
+                    <label>Name</label>
+                    <span>{{selectedQuotation.Customer || selectedQuotation.Customer_Name}}</span>
+                </div>
+                <div class="info-item">
+                    <label>Quotation No</label>
+                    <span>{{selectedQuotation.QuotationNo}}</span>
+                </div>
+                <div class="info-item">
+                    <label>Date</label>
+                    <span>{{selectedQuotation.FormattedEntryDate || (selectedQuotation.EntryDate | date:'dd/MM/yyyy')}}</span>
+                </div>
+                <div class="info-item">
+                    <label>Phone</label>
+                    <span>{{selectedQuotation.Mobile || selectedQuotation.Phone || '--'}}</span>
+                </div>
             </div>
         </div>
 
         <!-- Items Table -->
         <div class="section mb-4">
             <h5 class="section-title">Item Details</h5>
-            <table class="table table-sm preview-table">
+            <table class="table table-hover preview-table">
                 <thead>
                     <tr>
-                        <th style="width: 50%;">Item</th>
+                        <th style="width: 48%;">Item</th>
                         <th class="text-center" style="width: 15%;">Qty</th>
-                        <th class="text-right" style="width: 15%;">Rate</th>
+                        <th class="text-right" style="width: 17%;">Rate</th>
                         <th class="text-right" style="width: 20%;">Total</th>
                     </tr>
                 </thead>
@@ -202,7 +274,7 @@
                         </td>
                         <td class="text-center">{{row.Quantity}} {{row.UnitName}}</td>
                         <td class="text-right">{{(+row.UnitPrice) | number:'1.2-2'}}</td>
-                        <td class="text-right font-weight-bold">{{(+row.NetValue || (+row.Quantity * +row.UnitPrice)) | number:'1.2-2'}}</td>
+                        <td class="text-right" style="font-weight: 600;">{{(+row.NetValue || (+row.Quantity * +row.UnitPrice)) | number:'1.2-2'}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -218,17 +290,17 @@
                 <span>VAT ({{selectedQuotation.VAT_Percentage || 0}}%)</span>
                 <span>{{selectedQuotation.CurrecnyName}} {{(+(selectedQuotation.VAT_Amount || selectedQuotation.VatAmount || 0)) | number:'1.2-2'}}</span>
             </div>
-            <hr>
-            <div class="total-row grand-total d-flex justify-content-between font-weight-bold h5">
+            <hr style="margin: 8px 0; border-color: #e5e7eb;">
+            <div class="total-row grand-total d-flex justify-content-between">
                 <span>Grand Total</span>
-                <span class="text-primary">{{selectedQuotation.CurrecnyName}} {{(+selectedQuotation.NetTotal) | number:'1.2-2'}}</span>
+                <span style="color: #6366f1;">{{selectedQuotation.CurrecnyName}} {{(+selectedQuotation.NetTotal) | number:'1.2-2'}}</span>
             </div>
         </div>
 
         <!-- Terms -->
         <div class="section">
-            <h5 class="section-title">Terms & Conditions</h5>
-            <ul style="margin: 5px 0; padding-left: 15px; font-size: 13px;" class="text-muted">
+            <h5 class="section-title">Terms &amp; Conditions</h5>
+            <ul style="margin: 5px 0; padding-left: 15px; font-size: 13px; color: #6b7280;">
                 <li><strong>Validity:</strong> {{selectedQuotation.Validity || '15 Days'}}</li>
                 <li><strong>Delivery:</strong> {{selectedQuotation.Delivery || 'Ex-Stock'}}</li>
                 <li><strong>Price Basis:</strong> {{selectedQuotation.PriceBasis || 'DDP'}}</li>
@@ -236,9 +308,18 @@
             </ul>
         </div>
     </div>
-    <div class="drawer-footer p-3 bg-light text-right">
-        <button mat-button class="mr-2" (click)="Close_Preview()">Close</button>
-        <button mat-raised-button color="accent" *ngIf="selectedQuotation.Status == 3" (click)="Confirm_Quotation(selectedQuotation)">Confirm Now</button>
+    <div class="drawer-footer">
+        <button mat-raised-button type="button" (click)="Close_Preview()"
+            class="btn btn-danger div-rspnsv-pstn-crct-sls-mstr"
+            style="background: #f3f4f6; color: #374151; border: 1px solid #d1d5db;">
+            Close
+        </button>
+        <button mat-raised-button type="button" *ngIf="selectedQuotation.Status == 3"
+            (click)="Confirm_Quotation(selectedQuotation)"
+            class="btn btn-primary div-rspnsv-pstn-crct-sls-mstr"
+            style="background: #6366f1; color: #fff;">
+            Confirm Now
+        </button>
     </div>
 </div>
 <div class="drawer-overlay" [class.show]="showPreview" (click)="Close_Preview()"></div>

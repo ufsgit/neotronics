@@ -1,158 +1,207 @@
-<div *ngIf="issLoading" class="overlay">
-    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
-    </mat-progress-spinner>
+<!-- Loading Overlay -->
+<div *ngIf="issLoading" class="ig-overlay">
+  <mat-progress-spinner [color]="color" [mode]="mode" [value]="value" diameter="36"></mat-progress-spinner>
 </div>
 
-<div class="company-page-wrapper">
+<div class="ig-page">
 
-    <h1 class="page-main-heading">Company Settings</h1>
+  <!-- ══════════════════════════════
+       ENTRY / EDIT FORM
+  ══════════════════════════════ -->
+  <div *ngIf="Entry_View">
 
-    <!-- ===================== FORM VIEW ===================== -->
-    <div *ngIf="Entry_View">
-        <div class="company-card">
-            <div class="company-card-body">
-                <form>
-                    <!-- Basic Information Section -->
-                    <div class="form-section">
-                        <div class="section-header">
-                            <h3 class="section-title">Basic Information</h3>
-                        </div>
-                        
-                        <div class="form-row three-cols">
-                            <div class="form-field-group">
-                                <label class="field-label">Company Name <span class="req">*</span></label>
-                                <input type="text" class="modern-input" placeholder="Enter company name" [(ngModel)]="Company_.Company_Name" name="Company_Name" [ngModelOptions]="{standalone: true}">
-                            </div>
-                            <div class="form-field-group">
-                                <label class="field-label">Address Line 1 <span class="req">*</span></label>
-                                <input type="text" class="modern-input" placeholder="Enter address line 1" [(ngModel)]="Company_.Address1" name="Address1" [ngModelOptions]="{standalone: true}">
-                            </div>
-                            <div class="form-field-group">
-                                <label class="field-label">Address Line 2</label>
-                                <input type="text" class="modern-input" placeholder="Enter address line 2" [(ngModel)]="Company_.Address2" name="Address2">
-                            </div>
-                        </div>
-
-                        <div class="form-row two-cols">
-                            <div class="form-field-group">
-                                <label class="field-label">Address Line 3</label>
-                                <input type="text" class="modern-input" placeholder="Enter address line 3" [(ngModel)]="Company_.Address3" name="Address3">
-                            </div>
-                            <div class="form-field-group">
-                                <label class="field-label">Phone Number</label>
-                                <input type="text" class="modern-input" placeholder="Enter phone number" [(ngModel)]="Company_.Phone_Number" name="Phone_Number">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Contact & Legal Information Section -->
-                    <div class="form-section">
-                        <div class="section-header">
-                            <h3 class="section-title">Contact & Legal Information</h3>
-                        </div>
-
-                        <div class="form-row three-cols">
-                            <div class="form-field-group">
-                                <label class="field-label">Email</label>
-                                <input type="email" class="modern-input" placeholder="Enter email address" [(ngModel)]="Company_.EMail" name="EMail">
-                            </div>
-                            <div class="form-field-group">
-                                <label class="field-label">GSM</label>
-                                <input type="text" class="modern-input" placeholder="Enter GSM number" [(ngModel)]="Company_.GSTNO" name="GSTNO">
-                            </div>
-                            <div class="form-field-group">
-                                <label class="field-label">CR No</label>
-                                <input type="text" class="modern-input" placeholder="Enter CR number" [(ngModel)]="Company_.CINO" name="CINO">
-                            </div>
-                        </div>
-
-                        <div class="form-row vat-logo-row">
-                            <div class="form-field-group">
-                                <label class="field-label">VAT No</label>
-                                <input type="text" class="modern-input" placeholder="Enter VAT number" [(ngModel)]="Company_.PANNO" name="PANNO">
-                            </div>
-                            <div class="form-field-group">
-                                <label class="field-label">Company Logo / File</label>
-                                <div class="file-upload-container">
-                                    <div class="file-name-display">
-                                        {{ Doc_Photo || 'No file chosen' }}
-                                    </div>
-                                    <button type="button" class="btn-upload" (click)="fileInput1.click()">
-                                        <i class="material-icons">upload</i>
-                                        Choose File
-                                        <input #fileInput1 type="file" name="ImageFile_Doc" [(ngModel)]="ImageFile_Doc" (change)="File_Change_Vat($event)" style="display:none">
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Note - Full Width -->
-                    <div class="form-section" style="margin-bottom: 0;">
-                        <div class="form-field-group">
-                            <label class="field-label">Note</label>
-                            <textarea class="modern-textarea" rows="4" placeholder="Enter any additional notes here..." [(ngModel)]="Company_.Note" name="Note"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Save Button -->
-                    <div class="form-footer">
-                        <button type="button" class="btn-save-modern" [hidden]="Company_Save==false" id="Save_Button" (click)="Save_Company()">
-                            <i class="material-icons">save</i>
-                            Save Settings
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <div class="ig-header">
+      <div>
+        <h1 class="ig-title">{{ Company_.Company_Id > 0 ? 'Edit Company' : 'Company Settings' }}</h1>
+        <p class="ig-subtitle">{{ Company_.Company_Id > 0 ? 'Update company details' : 'Configure your company information' }}</p>
+      </div>
+      <button class="ig-btn-cancel" type="button" (click)="Close_Click()">
+        <i class="material-icons" style="font-size:15px;">close</i> Cancel
+      </button>
     </div>
 
-    <!-- ===================== LIST VIEW ===================== -->
-    <div *ngIf="!Entry_View">
-        <div class="company-card">
-            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: none; margin-bottom: 2rem;">
-                <h3 class="section-title">Company List</h3>
-                <div style="display: flex; gap: 12px;">
-                    <button class="btn-upload" type="button" (click)="Search_Company()" style="background: #f1f5f9; color: #475569;">
-                        <i class="material-icons">search</i> Search
-                    </button>
-                    <button class="btn-upload" type="button" (click)="Create_New()">
-                        <i class="material-icons">add</i> Add New
-                    </button>
+    <div class="ig-form-card">
+
+      <!-- ── Basic Information ── -->
+      <p class="ig-section-title">Basic Information</p>
+      <div class="ig-grid-3">
+
+        <div class="ig-field">
+          <label class="ig-label">Company Name <span class="ig-req">*</span></label>
+          <input type="text" class="ig-input" placeholder="Enter company name"
+            [(ngModel)]="Company_.Company_Name" name="Company_Name" [ngModelOptions]="{standalone: true}" />
+        </div>
+
+        <div class="ig-field">
+          <label class="ig-label">Address Line 1 <span class="ig-req">*</span></label>
+          <input type="text" class="ig-input" placeholder="Street / Building"
+            [(ngModel)]="Company_.Address1" name="Address1" [ngModelOptions]="{standalone: true}" />
+        </div>
+
+        <div class="ig-field">
+          <label class="ig-label">Address Line 2</label>
+          <input type="text" class="ig-input" placeholder="Area / Locality"
+            [(ngModel)]="Company_.Address2" name="Address2" />
+        </div>
+
+        <div class="ig-field">
+          <label class="ig-label">Address Line 3</label>
+          <input type="text" class="ig-input" placeholder="City"
+            [(ngModel)]="Company_.Address3" name="Address3" />
+        </div>
+
+        <div class="ig-field">
+          <label class="ig-label">Phone Number</label>
+          <input type="text" class="ig-input" placeholder="Enter phone number"
+            [(ngModel)]="Company_.Phone_Number" name="Phone_Number" />
+        </div>
+
+      </div>
+
+      <div class="ig-divider"></div>
+
+      <!-- ── Contact & Legal ── -->
+      <p class="ig-section-title">Contact &amp; Legal Information</p>
+      <div class="ig-grid-3">
+
+        <div class="ig-field">
+          <label class="ig-label">Email</label>
+          <input type="email" class="ig-input" placeholder="Enter email address"
+            [(ngModel)]="Company_.EMail" name="EMail" />
+        </div>
+
+        <div class="ig-field">
+          <label class="ig-label">GSM No</label>
+          <input type="text" class="ig-input" placeholder="Enter GSM number"
+            [(ngModel)]="Company_.GSTNO" name="GSTNO" />
+        </div>
+
+        <div class="ig-field">
+          <label class="ig-label">CR No</label>
+          <input type="text" class="ig-input" placeholder="Enter CR number"
+            [(ngModel)]="Company_.CINO" name="CINO" />
+        </div>
+
+        <div class="ig-field">
+          <label class="ig-label">VAT No</label>
+          <input type="text" class="ig-input" placeholder="Enter VAT number"
+            [(ngModel)]="Company_.PANNO" name="PANNO" />
+        </div>
+
+        <div class="ig-field">
+          <label class="ig-label">Company Logo / File</label>
+          <div class="ig-file-row">
+            <span class="ig-file-name">{{ Doc_Photo || 'No file chosen' }}</span>
+            <button type="button" class="ig-btn-upload" (click)="fileInput1.click()">
+              <i class="material-icons">upload</i> Choose File
+              <input #fileInput1 type="file" (change)="File_Change_Vat($event)" style="display:none" />
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ig-divider"></div>
+
+      <!-- ── Note ── -->
+      <p class="ig-section-title">Notes</p>
+      <div class="ig-field">
+        <label class="ig-label">Additional Notes</label>
+        <textarea class="ig-textarea" rows="4" placeholder="Enter any additional notes…"
+          [(ngModel)]="Company_.Note" name="Note"></textarea>
+      </div>
+
+      <!-- Footer -->
+      <div class="ig-form-footer">
+        <button class="ig-btn-cancel" type="button" (click)="Close_Click()">Cancel</button>
+        <button class="ig-btn-save" type="button" id="Save_Button"
+          [hidden]="Company_Save == false" (click)="Save_Company()">
+          Save Settings
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       LIST VIEW
+  ══════════════════════════════ -->
+  <div *ngIf="!Entry_View">
+
+    <div class="ig-header">
+      <div>
+        <h1 class="ig-title">Companies</h1>
+        <p class="ig-subtitle">Manage registered company profiles</p>
+      </div>
+      <div class="ig-header-actions">
+        <div class="ig-search-box">
+          <i class="material-icons">search</i>
+          <input type="text" class="ig-search-input" placeholder="Search companies..."
+            [(ngModel)]="Company_Name_Search" (ngModelChange)="Search_Company()" />
+        </div>
+        <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
+          <i class="material-icons">add</i> Add Company
+        </button>
+      </div>
+    </div>
+
+    <!-- Meta -->
+    <div class="ig-meta-bar">
+      <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
+    </div>
+
+    <!-- Table -->
+    <div class="ig-table-card">
+      <div class="ig-table-wrap" [style.max-height.px]="myInnerHeight">
+        <table class="ig-table">
+          <thead>
+            <tr>
+              <th class="ig-th ig-th-no">#</th>
+              <th class="ig-th">Company</th>
+              <th class="ig-th">Contact Info</th>
+              <th class="ig-th">Address</th>
+              <th class="ig-th ig-th-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let comp of Company_Data; let i = index" class="ig-tr">
+              <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+              <td class="ig-td">
+                <div class="ig-company-info">
+                  <span class="ig-primary-text">{{ comp['Company_Name'] }}</span>
+                  <span class="ig-secondary-text" *ngIf="comp['EMail']">{{ comp['EMail'] }}</span>
                 </div>
-            </div>
-
-            <div class="modern-table-container">
-                <table class="modern-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 80px; text-align: center;">Sl No</th>
-                            <th>Company Name</th>
-                            <th style="width: 150px; text-align: center;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <ng-container *cdkVirtualFor="let Company_1 of Company_Data; let i = index">
-                            <tr>
-                                <td style="text-align: center;">{{ i + 1 }}</td>
-                                <td style="font-weight: 600;">{{ Company_1["Company_Name"] }}</td>
-                                <td style="text-align: center;">
-                                    <button class="action-btn btn-edit-modern" [hidden]="Company_Edit==false" (click)="Edit_Company(Company_1, i)">
-                                        <i class="material-icons" style="font-size: 18px;">edit</i>
-                                    </button>
-                                    <button class="action-btn btn-delete-modern" [hidden]="Company_Delete==false" (click)="Delete_Company(Company_1.Company_Id, i)">
-                                        <i class="material-icons" style="font-size: 18px;">delete_outline</i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </ng-container>
-                    </tbody>
-                </table>
-            </div>
-            <div style="padding: 1.5rem; font-size: 14px; color: #64748b; font-weight: 500;">
-                Total Entries: {{ Total_Entries }}
-            </div>
-        </div>
+              </td>
+              <td class="ig-td">
+                <div class="ig-contact-info">
+                  <span class="ig-item" *ngIf="comp['Phone_Number']"><i class="material-icons">phone</i> {{ comp['Phone_Number'] }}</span>
+                  <span class="ig-item" *ngIf="comp['GSTNO']"><i class="material-icons">badge</i> {{ comp['GSTNO'] }}</span>
+                </div>
+              </td>
+              <td class="ig-td">
+                <span class="ig-address" *ngIf="comp['Address1'] || comp['Address2']">
+                  {{ comp['Address1'] }}<span *ngIf="comp['Address2']">, {{ comp['Address2'] }}</span>
+                </span>
+                <span class="ig-empty-field" *ngIf="!comp['Address1'] && !comp['Address2']">-</span>
+              </td>
+              <td class="ig-td ig-td-actions">
+                <button class="ig-icon-btn ig-edit" [hidden]="Company_Edit == false"
+                  (click)="Edit_Company(comp, i)" title="Edit">
+                  <i class="material-icons">edit</i>
+                </button>
+                <button class="ig-icon-btn ig-delete" [hidden]="Company_Delete == false"
+                  (click)="Delete_Company(comp.Company_Id, i)" title="Delete">
+                  <i class="material-icons">delete_outline</i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="Company_Data?.length === 0">
+              <td colspan="5" class="ig-empty">No companies found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
+  </div>
 </div>

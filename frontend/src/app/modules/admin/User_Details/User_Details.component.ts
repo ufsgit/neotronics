@@ -9,6 +9,7 @@ import { Client_Accounts } from '../../../models/Client_Accounts';
 import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { Receipt_Voucher_Service } from '../../../services/Receipt_Voucher.Service';
 import { Working_Status } from '../../../models/Working_Status';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 @Component({
 selector: 'app-User_Details',
 templateUrl: './User_Details.component.html',
@@ -67,6 +68,7 @@ constructor(
     private router: Router,
     public dialogBox: MatDialog,
     public Receipt_Voucher_Service_: Receipt_Voucher_Service,
+    private Master_Refresh_Service_: Master_Refresh_Service
     ){}
 ngOnInit() 
 {
@@ -81,7 +83,13 @@ else
 this.User_Details_Edit=this.Permissions.Edit;
 this.User_Details_Save=this.Permissions.Save;
 this.User_Details_Delete=this.Permissions.Delete;
-this.Page_Load()
+this.Page_Load();
+
+this.Master_Refresh_Service_.masterUpdated$.subscribe(masterName => {
+    if (masterName === 'User_Role') {
+        this.Load_Dropdowns();
+    }
+});
 }
 }
 Page_Load()
@@ -313,6 +321,7 @@ if(Delete_status[0][0].User_Details_Id_>0){
 //this.User_Details_Data.splice(index, 1);
 this.Page_Load();
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
+this.Master_Refresh_Service_.refreshMaster('Users');
 }
 else
 {
@@ -430,25 +439,34 @@ Save_User_Details()
 // document.getElementById('Save_Button').hidden=true;
 this.issLoading=true;
 this.User_Details_Service_.Save_User_Details(this.User_Details_).subscribe((Save_status: any) => {
+    console.log('Save_User_Details Response:', Save_status);
      
 if(Save_status && Save_status.success !== undefined && Save_status.data) {
     Save_status = Save_status.data;
 }
 
-if(Number(Save_status[0].User_Details_Id_)>0)
+if (
+    Save_status &&
+    Save_status.length > 0 &&
+    Number(Save_status[0].User_Details_Id_) > 0
+)
+
+
+
 {
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
 this.Search_User_Details();
 this.Clr_User_Details();
+this.Master_Refresh_Service_.refreshMaster('Users');
 }
 else{
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
+    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error: ' + JSON.stringify(Save_status),Type:"2"}});
 }
 this.issLoading=false;
  },
  Rows => { 
     this.issLoading=false;
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
+    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'API Error: ' + JSON.stringify(Rows),Type:"2"}});
  });
 }
 }

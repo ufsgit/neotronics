@@ -104,7 +104,7 @@
                 <div class="table-responsive card ">
                     <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90"> -->
                     <div class="table-responsive" [style.height.px]="myInnerHeight"
-                        style="overflow-y: scroll;background-color: #f1f1f1;">
+                        style="background-color: #f1f1f1;">
                         <table class="table table-hover">
                             <thead class="thead">
                                 <th>Sl No</th>
@@ -263,8 +263,9 @@
                 </div>
                 <div class="col-md-6 croct-float-purchase-master-section">
                     <div class="col-md-12 mb-1">
-                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Branch/Company <span style="color:#ef071e; ">*</span></label>
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Branch/Company</label>
                         <select class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn form-control-standard" [(ngModel)]="Price_Request_Master_.Company_Id" (ngModelChange)="Company_Dropdown_Change()" name="Company_Id">
+                            <option [ngValue]="null">Select Branch</option>
                             <option *ngFor="let c of Company_Data" [ngValue]="c.Company_Id">{{c.Company_Name}}</option>
                         </select>
                     </div>
@@ -273,7 +274,7 @@
                             <span style="color:#ef071e; ">*</span></label>
                         <div
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            style="height: 47px !important display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                            style="height: 47px !important; display: flex; align-items: center; padding: 0 5px; background: #fff;">
                             <input [matDatepicker]="dpdate" placeholder="" name="EntryDate"
                                 [(ngModel)]="Price_Request_Master_.EntryDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                             <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>

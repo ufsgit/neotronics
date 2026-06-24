@@ -5,7 +5,11 @@ import { finalize } from 'rxjs/operators';
 import { HSN_Service } from '../../../services/HSN.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { HSN } from '../../../models/HSN';
-import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';
+import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
+
+@Component({
 selector: 'app-HSN',
 templateUrl: './HSN.component.html',
 styleUrls: ['./HSN.component.css']
@@ -25,11 +29,18 @@ issLoading: boolean;
 Permissions: any;
 HSN_Edit:boolean;
 HSN_Save:boolean; 
-//HSN_GST:number;
 Search_Name:string="";
 HSN_Delete:boolean;
 Check_Hide:boolean=true;
-constructor(public HSN_Service_:HSN_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
+
+constructor(
+    public HSN_Service_:HSN_Service, 
+    private route: ActivatedRoute, 
+    private router: Router,
+    public dialogBox: MatDialog,
+    private Master_Refresh_Service_: Master_Refresh_Service
+) { }
+
 ngOnInit() 
 {
     this.Permissions = Get_Page_Permission(3);
@@ -46,10 +57,12 @@ ngOnInit()
     this.Page_Load()
 }
 }
+
 trackByFn(index, item) 
 {
 return index;
 }
+
 Page_Load()
 {
     this.myInnerHeight = (window.innerHeight);
@@ -60,17 +73,20 @@ Page_Load()
     this.Entry_View=false;
     this.Check_Hide=true;
 }
+
 Create_New()
 {
     this.Entry_View = true;
     this.Check_Hide = true;
     this.Clr_HSN();
 }
+
 Close_Click()
 {
     this.Entry_View = false;
     this.Check_Hide = true;
 }
+
 Clr_HSN()
 {
     this.HSN_.HSN_Id=0;
@@ -78,9 +94,11 @@ Clr_HSN()
     this.HSN_.SaleTax=0;
     this.HSN_.Checkbox=false;
 }
+
 GST_Change()
 {
 }
+
 Search_HSN()
 { 
     this.issLoading=true;
@@ -98,6 +116,7 @@ Search_HSN()
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });
 }
+
 Delete_HSN(HSN_Id,index)
 {
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Do you want to delete ?',Type:"true",Heading:'Confirm'}});
@@ -112,10 +131,10 @@ Delete_HSN(HSN_Id,index)
         if(Delete_status==1){ 
             this.Page_Load()
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
+        this.Master_Refresh_Service_.refreshMaster('HSN');
     }
     else
     {
-    //this.HSN_Data.splice(index, 1);
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Cannot be Deleted',Type:"2"}});
     }
     this.issLoading=false;
@@ -127,6 +146,7 @@ Delete_HSN(HSN_Id,index)
     }
     });
 }
+
 Save_HSN()
 {   
     if(this.HSN_.HSN_CODE===undefined || this.HSN_.HSN_CODE==null || this.HSN_.HSN_CODE=="")
@@ -134,13 +154,10 @@ Save_HSN()
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Enter HSN Code',Type: "3" }});   
     }
  else{
-    console.log("Before HSN Save API call");
     this.issLoading = true;
-
     this.HSN_Service_.Save_HSN(this.HSN_)
     .pipe(
       finalize(() => {
-        console.log("HSN Save Finalize executed");
         this.issLoading = false;
         const saveButton = document.getElementById("Save_Button");
         if (saveButton) saveButton.hidden = false;
@@ -148,8 +165,6 @@ Save_HSN()
     )
     .subscribe({
       next: (Save_status: any) => {
-        console.log("HSN Save API Response:", Save_status);
-
         let resultId: number = NaN;
         try {
           if (Save_status && Save_status.data && Save_status.data[0]) {
@@ -184,6 +199,7 @@ Save_HSN()
             data: { Message: 'Saved Successfully', Type: "false" }
           });
           this.Page_Load();
+          this.Master_Refresh_Service_.refreshMaster('HSN');
         } else if (resultId == -1) {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',
@@ -197,7 +213,6 @@ Save_HSN()
         }
       },
       error: (error) => {
-        console.error("HSN Save API ERROR:", error);
         this.dialogBox.open(DialogBox_Component, {
           panelClass: 'Dialogbox-Class',
           data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" }
@@ -206,12 +221,11 @@ Save_HSN()
     });
     }
 }
+
 Edit_HSN(HSN_e:HSN,index)
 {
 this.Entry_View=true;
 this.Check_Hide=false;
-this.HSN_=HSN_e;
 this.HSN_=Object.assign({},HSN_e);
 }
 }
-

@@ -1995,10 +1995,19 @@ Search_Quotation()
     .pipe(finalize(() => this.issLoading = false))
     .subscribe({
         next: (response) => {
-            if (response.success) {
-                this.Quotation_Master_Data = response.data;
+            if (response.success && response.data) {
+                // MySQL CALL procedures often return [[rows], metadata]
+                if (Array.isArray(response.data) && Array.isArray(response.data[0])) {
+                    this.Quotation_Master_Data = response.data[0];
+                } else if (Array.isArray(response.data)) {
+                    this.Quotation_Master_Data = response.data;
+                } else {
+                    this.Quotation_Master_Data = [response.data];
+                }
                 this.Total_Entries = this.Quotation_Master_Data.length;
             } else {
+                this.Quotation_Master_Data = [];
+                this.Total_Entries = 0;
                 const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'No Data Found', Type: "2" } });
             }
         },
@@ -2332,6 +2341,8 @@ debugger
                         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
                     }
                     this.Sales_Print = false;
+                    this.Entry_View = false;
+                    this.Search_Quotation();
                 } else {
                     const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'Error Occured', Type: "2" } });
                     document.getElementById("Save_Button").hidden = false;

@@ -305,7 +305,7 @@ this.Sales_Master_Service_.Get_Location().subscribe(Save_location => {
 Page_Load()
 {
   this.myInnerHeight = (window.innerHeight);
-  this.myInnerHeight = this.myInnerHeight - 200;
+  this.myInnerHeight = this.myInnerHeight - 350;
   //this.Sales_Master_.EntryDate=new Date("dd-MMM-yyyy").toString();
   this.Search_FromDate=this.formatDate(this.Search_FromDate);
   this.Search_ToDate=this.formatDate(this.Search_ToDate);
@@ -1182,8 +1182,6 @@ Clr_Sales_Master()
 {
   this.Sales_Master_.Sales_Master_Id=0;
   this.Sales_Master_.Account_Party_Id=0;
-  //this.Sales_Master_.Employee_Id=0;
-  //this.Sales_Master_.Employee_Name=this.Employee_Name;
   this.Sales_Master_.User_Id=0;
   this.Sales_Master_.EntryDate=new Date().toString();
   this.Sales_Master_.EntryDate=this.formatDate(this.Sales_Master_.EntryDate);
@@ -1255,7 +1253,6 @@ Clr_Sales_Master()
   this.Address2 = null;
   this.Address3 = null;
   this.Address4 = null;
-  // this.Sales_Master_.POnumber = null;
   this.Attention = null;
   this.Employee = null;
   this.Tot_Amount = null;
@@ -1287,7 +1284,6 @@ Clr_Sales_Details()
   this.Sales_Details_.Sales_Details_Id=0;
   this.Sales_Details_.Sales_Master_Id=0;
   this.Sales_Details_.Stock_Id=0;
-  //this.Sales_Details_.Stock_Details_Id=0;
   this.Sales_Details_.ItemId=0;
   this.Sales_Details_.ItemName="";
   this.Sales_Details_.ItemCode="";
@@ -1316,7 +1312,6 @@ Clr_Sales_Details()
   this.Sales_Details_.Unit_Discount = null;
   this.TotalAmount = null;
   this.availablity = null;
-  //this.Sales_Details_Data=[];
 }
 Clr_Sales_Edit_Data()
 {
@@ -1353,7 +1348,6 @@ Change_Bill_Status(Sales_Master_Id,BillType,index)
  }
  else
  {
- //this.Sales_Master_Data.splice(index, 1);
  const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"false"}});
  }
  this.Search_Sales();
@@ -1377,9 +1371,7 @@ Delete_Sales_Master(SalesSalesMaster_Id,index)
   if(result=='Yes')
   {
   this.issLoading=true;
-  debugger
   this.Sales_Master_Service_.Delete_Sales_Master(SalesSalesMaster_Id).subscribe(Delete_status => {    
-      debugger   
       Delete_status=Delete_status[0];
   if(Delete_status[0].Sales_Master_Id_>0){
   this.Sales_Master_Data.splice(index, 1);
@@ -1389,7 +1381,6 @@ Delete_Sales_Master(SalesSalesMaster_Id,index)
   }
   else
   {
-  //this.Sales_Master_Data.splice(index, 1);
   const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
   }
   this.issLoading=false;
@@ -1447,8 +1438,7 @@ Load_Cess()
   this.Sales_Master_Service_.Load_Cess().subscribe(Rows => {      
     
       if (Rows != null) {
-       //   Rows=0;//Rows[0];
-          this.Cess = 0;//Rows[0].Cess;
+          this.Cess = 0;
       }
       this.issLoading = false;
   },
@@ -1459,10 +1449,8 @@ Load_Cess()
 }
 Load_Company_bank()
 {
-  debugger;
   this.Sales_Master_Service_.Load_Company_Bank().subscribe(Rows => {   
     if (Rows != null) {
-          debugger;
           this.Bank_Data=Rows[0];
       this.Bank_ = this.Bank_Data[0]
       this.Company_ = Rows[1][0]
@@ -1484,9 +1472,7 @@ Search_Customer_Typeahead(event: any)
     {
    this.issLoading = true;
   this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39',Value).subscribe(Rows => {     
-  if (Rows != null) {
-      this.Customer_Data = Rows[0];
-  }
+  this.Customer_Data = this.normalizeDropdownRows(Rows);
   this.issLoading = false;
   },
   Rows => {
@@ -1505,9 +1491,7 @@ Search_PurchaseOrderNumber_Typeahead(event: any)
     
    this.issLoading = true;
   this.purchaseordermaster_Service_.Search_PurchaseOrderNumber_Typeahead(Value).subscribe(Rows => {     
-  if (Rows != null) {
-      this.PurchaseOrder_Data = Rows[0];
-  }
+  this.PurchaseOrder_Data = this.normalizeDropdownRows(Rows);
   this.issLoading = false;
   },
   Rows => {
@@ -1526,9 +1510,7 @@ Search_User_Details(event: any)
      
     this.issLoading = true;
    this.User_Details_Service_.Search_User_Details(Value,this.User_Type,this.Login_User_Id).subscribe(Rows => {     
-   if (Rows != null) {
-       this.EmployeeData = Rows[0];
-   }
+   this.EmployeeData = this.normalizeDropdownRows(Rows);
    this.issLoading = false;
    },
    Rows => {
@@ -1547,9 +1529,7 @@ Get_Stock_Item_Code_Typeahead(event: any)
      
     this.issLoading = true;
    this.Sales_Master_Service_.Get_Stock_Item_Code_Typeahead(Value).subscribe(Rows => {     
-   if (Rows != null) {
-       this.ItemCodeData = Rows[0];
-   }
+   this.ItemCodeData = this.normalizeDropdownRows(Rows);
    this.issLoading = false;
    },
    Rows => {
@@ -1580,29 +1560,14 @@ Search_Item_Typeahead(event: any)
 
 
           this.issLoading = true;
-          debugger;
   this.Sales_Master_Service_.Search_Item_Typeahead(Value).subscribe(Rows => {
-debugger;
-      if (Rows != null) {
-          this.Stock_Data = Rows[0];
-          console.log('this.Stock_Data: ', this.Stock_Data);
-        //   this.Stock_Data_Filter = [];
-
-        //   for (var i = 0; i < this.Stock_Data.length; i++) {
-        //       if (
-        //           this.Stock_Data[i].ItemName.toLowerCase().includes(Value)
-        //       )
-        //           this.Stock_Data_Filter.push(this.Stock_Data[i]);
-        //   }
-      }
-      
-
+      this.Stock_Data = this.normalizeDropdownRows(Rows);
       this.issLoading = false;
   },
-      Rows => {             
-          this.issLoading = false;
-  const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-      });
+  Rows => {             
+      this.issLoading = false;
+      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
+  });
   
 
 
@@ -1628,15 +1593,12 @@ Search_Barcode_Typeahead(event: any)
       {
       this.issLoading = true;
       this.Sales_Master_Service_.Search_Barcode_Typeahead(Value).subscribe(Rows => {
-          if (Rows != null) 
-          {
-              this.Barcode_Data = Rows[0];
-          }
+          this.Barcode_Data = this.normalizeDropdownRows(Rows);
           this.issLoading = false;
       },
       Rows => {     
           this.issLoading = false;
-  const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
+          const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
       });
   }
 }
@@ -1916,7 +1878,7 @@ Search_Sales()
     User_Details_Id_,
 this.User_Type_Id,
 this.Login_User_Id).subscribe(Rows => {
-  this.Sales_Master_Data=Rows[0];
+  this.Sales_Master_Data = this.normalizeDropdownRows(Rows);
   if(this.Sales_Master_Data.length>0)
   {
       for(var i=0;i<this.Sales_Master_Data.length;i++)
@@ -2134,191 +2096,16 @@ if(this.PaymentTerm == undefined || this.PaymentTerm == null){
           this.Sales_Master_Id_Edit=this.Sales_Master_.Sales_Master_Id;
           this.Edit_Sales=1;
 
-          
-          if (Printstatus==1)
-          {
+          if (Printstatus == 1) {
               this.Print_Click();
           }
-          else
-          {
+          else {
               this.issLoading = false;
-              const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
-              //this.Sales_Print = false;  
-            //   this.Entry_View = false;
-              // this.Close_Click();
-              //this.Search_Sales();
-            //   this.Clr_Sales_Master(); 
-              
-                       
+              const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved', Type: "false" } });
           }
-          //document.getElementById("Save_Button").hidden=true;
-          // this.Disable_Tab_Permission();
-          // document.getElementById("Tab_Edit").hidden=false;
-      this.Sales_Print = false;
-      }
-      else{
-      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-      setTimeout(() => {
-        if (this.topDiv) {
-            this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
-      document.getElementById("Save_Button").hidden=false;   
-      }
-      this.issLoading=false;
-      },
-      Rows => { 
-          this.issLoading=false;
-          document.getElementById('Save_Button').hidden=false;
-      const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
-      setTimeout(() => {
-        if (this.topDiv) {
-            this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
-      });
-
-}
-Edit_Button_Click()
-{
-  if (this.User_Type_Id == 1 || this.Sales_Master_Data[this.Sale_EditIndex].User_Id.toString() == this.Login_User_Id)
-  {
-      this.Tabs_Edit_Permission();
-  }
-   else
-  {
-      const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'No permission', Type: "3" } });
-  }
-}
-Tabs_Edit_Permission()
-{
-//  if (this.Sale_EditIndex == -1)
-  {
-  this.Sale_Permission_Edit= this.Sale_Permission_Edit_Temp;
-  this.Enable_Disable_Permission();
-  //document.getElementById("Tab_Edit").hidden=true;
-  document.getElementById("Save_Button").hidden=false;
-  }
-}
-Enable_Disable_Permission()
-{
-  if( this.Sale_Permission_Edit==false)
-  {
-  $('#SALE :input').attr('disabled', 'true');
-  }
-  else if( this.Sale_Permission_Edit==true){
-  $('#SALE :input').removeAttr('disabled');
-  }
-}
-Disable_Tab_Permission()
-{
-  this.Sale_Permission_Edit= false;
-  this.Enable_Disable_Permission();
-}
-Edit_Sales_Master(Sales_Master_e:Sales_Master,index)
-{ 
-  debugger;
-  this.Entry_View=true;
-  this.Edit_Sales=1;
-  this.Sales_Print = false;
-  this.Sales_Master_=Object.assign({},Sales_Master_e); 
-
-    this.Customer_Temp.Client_Accounts_Id=Sales_Master_e.Account_Party_Id;
-    this.Customer_Temp.Client_Accounts_Name=Sales_Master_e.Customer;
-    this.Customer_=this.Customer_Temp;
-
-    this.Customer_.Client_Accounts_Id=Sales_Master_e.Account_Party_Id;
-    this.Customer_.Client_Accounts_Name=Sales_Master_e.Customer;
-
-    this.Customer_Name = this.Customer_.Client_Accounts_Name
-    this.Sales_Master_.Customer_Name=this.Customer_.Client_Accounts_Name;
-    this.Sales_Master_.Customer=this.Sales_Master_.Customer_Name; 
-
-    this.SalesQuotationMaster_Id = Sales_Master_e.SalesQuotationMaster_Id
-    this.Sales_Master_Id_Edit = Sales_Master_e.Sales_Master_Id;
-
-    if(this.Sales_Master_.Additional_Discount) this.addDiscCheck = 1;
-    else this.addDiscCheck = 0;
-
-    // this.Client_Accounts_Service_.Get_Client_Accounts(Sales_Master_e.Account_Party_Id).subscribe((result)=>{
-    //     this.Address1 = result[0][0].Address1;
-    //     this.Address2 = result[0][0].Address2;
-    //     this.Address3 = result[0][0].Address3;
-    //     this.Address4 = result[0][0].Address4;
-    //     this.Vatin = result[0][0].GSTNo;
-    // });
-    this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39',"").subscribe(Rows => {   
-        if (Rows != null) {
-            this.Customer_Data = Rows[0];
-            for(let i=0;i<Rows[0].length;i++){
-                if(Rows[0][i].Client_Accounts_Id == Sales_Master_e.Account_Party_Id){
-
-                    this.Customer_Temp.Client_Accounts_Id=Rows[0][i].Client_Accounts_Id;
-                    this.Customer_Temp.Client_Accounts_Name=Rows[0][i].Client_Accounts_Name;
-                     this.Customer_= this.Customer_Temp;
-
-                    this.Customer_  =Rows[0][i];
-                    this.Customer_.Client_Accounts_Id=Rows[0][i].Client_Accounts_Id;
-                    this.Customer_.Client_Accounts_Name=Rows[0][i].Client_Accounts_Name;
-                    this.Customer_Name = Rows[0][i].Client_Accounts_Name;
-
-                    this.Sales_Master_.Account_Party_Id=Rows[0][i].Client_Accounts_Id;
-                    this.Sales_Master_.Customer=Rows[0][i].Client_Accounts_Name;
-                    this.Sales_Master_.Customer_Name=Rows[0][i].Client_Accounts_Name;
-
-                    this.Sales_Master_.Address1 = Rows[0][i].Address1;
-                    this.Sales_Master_.Address2 = Rows[0][i].Address2;
-                    this.Sales_Master_.Address3 = Rows[0][i].Address3;
-                    this.Sales_Master_.Address4 = Rows[0][i].Address4;
-                    this.Sales_Master_.Vatin = Rows[0][i].GSTNo;     
-
-                    this.Address1 = Rows[0][i].Address1;
-                    this.Address2 = Rows[0][i].Address2;
-                    this.Address3 = Rows[0][i].Address3;
-                    this.Address4 = Rows[0][i].Address4;
-                    this.Vatin = Rows[0][i].GSTNo;            
-                }
-            }
-        }
-    },
-);
-   
-  for(let i=0;i<this.Currency_Data.length;i++)
-  {
-    if(this.Currency_Data[i].CurrencyDetails_Id == this.Sales_Master_.CurrencyId)
-    {
-        this.Currency = this.Currency_Data[i];
-        this.currencyName = this.Currency_Data[i].CurrecnyName
-
-    }
-
-  }
-
-  for(let i=0;i<this.AccounttypeData.length;i++)
-    {
-      if(this.AccounttypeData[i].AccountType_Id == this.Sales_Master_.TypeId)
-      {
-          this.Accounttype = this.AccounttypeData[i];
-          this.invoiceTypeName = this.AccounttypeData[i].AccountType_Name
-
-      }
-  
-    }
-  
-  for(let i=0;i<this.PaymentTerm_Data.length;i++){
-      if(this.PaymentTerm_Data[i].payment_Term_ID == this.Sales_Master_.Payment_Term_Description){
-          this.PaymentTerm = this.PaymentTerm_Data[i]
-      }
-  }
-this.issLoading = true;
-this.Sales_Master_Service_.Get_Sales_Details(Sales_Master_e.Sales_Master_Id).subscribe(Rows => { 
-  
-  if (Rows != null) {
-      this.Sales_Details_Data = Rows[0];
-    // if( this.Sales_Details_Data.length>21){
-      this.addBlankRows();//}
-      this.Final_Amounts();
-      
+          this.Entry_View = false;
+          this.Search_Sales();
+          this.Sales_Print = false;
       }
          this.issLoading = false;
      },
@@ -2427,7 +2214,11 @@ Get_Stock_Item(){
 }
 
 private normalizeDropdownRows(response: any): any[] {
-    const rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+    let rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+    // If data contains a .rows property (Common in some backend wrappers)
+    if (rows && typeof rows === 'object' && !Array.isArray(rows) && rows.rows) {
+        rows = rows.rows;
+    }
     return (Array.isArray(rows) && Array.isArray(rows[0])) ? rows[0] : (Array.isArray(rows) ? rows : []);
 }
 

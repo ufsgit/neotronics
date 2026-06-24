@@ -17,6 +17,7 @@ router.post('/Save_Price_Response/', function (req, res, next) {
 
 router.get('/Search_Price_Response', function (req, res, next) {
     try {
+        console.log("Search_Price_Response called with params:", req.query);
         Price_Response.Search_Price_Response(req.query.Look_In_Date, req.query.From_Date, req.query.To_Date, req.query.Supplier_Id, req.query.Price_RequestNo, function (err, rows) {
             if (err) {
                 res.json(err);

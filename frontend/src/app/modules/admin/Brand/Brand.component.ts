@@ -11,7 +11,10 @@ import { Brand } from '../../../models/Brand';
 import { HSN } from '../../../models/HSN';
 import { Under_Brand } from '../../../models/Under_Brand';
 // import { Brand_Group } from '../../../models/Brand_Group';
-import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';
+import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
+@Component({
 selector: 'app-Brand',
 templateUrl: './Brand.component.html',
 styleUrls: ['./Brand.component.css']
@@ -43,13 +46,13 @@ Brand_Delete:boolean;
 Check_Hide:boolean=true;
 Item_Data: any[] = [];
 Item_: any;
-constructor(public Brand_Service_:Brand_Service, public Item_Service_:Item_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
+constructor(public Brand_Service_:Brand_Service, public Item_Service_:Item_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog, private Master_Refresh_Service_: Master_Refresh_Service) { }
 ngOnInit() 
 {
 this.Permissions = Get_Page_Permission(91);
 if(this.Permissions==undefined || this.Permissions==null)
     {
-    localStorage.removeBrand('token');
+    localStorage.removeItem('token');
     this.router.navigateByUrl('/auth/login');
     }
     else
@@ -238,6 +241,7 @@ Delete_Brand(Brand_Id,index)
     this.Brand_Data.splice(index, 1);
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
     this.Search_Brand();
+    this.Master_Refresh_Service_.refreshMaster('Brand');
     }
     else
     {
@@ -325,6 +329,7 @@ else
           });
           this.Clr_Brand();
           this.Search_Brand(); // Refresh the list
+          this.Master_Refresh_Service_.refreshMaster('Brand');
         } else if (resultId == -1) {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',

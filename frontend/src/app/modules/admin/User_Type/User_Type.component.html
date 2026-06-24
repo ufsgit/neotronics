@@ -1,84 +1,120 @@
-<div class="wrapper">
-    <div class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header card-header-primary">
-                            <h4 class="card-title">User Type</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row" *ngIf="Entry_View == true">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="User Type Name" [(ngModel)]="User_Type_.User_Type_Name" maxlength="100">
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <button mat-raised-button color="primary" (click)="Save_User_Type()" style="margin-right: 10px;">Save</button>
-                                            <button mat-raised-button color="accent" (click)="New_User_Type()">New</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row" style="margin-top: 20px;">
-                                <div class="col-md-6">
-                                    <mat-form-field class="example-full-width">
-                                        <input matInput placeholder="Search User Type" [(ngModel)]="Search_Name" (keyup.enter)="Search_User_Type()">
-                                    </mat-form-field>
-                                </div>
-                                <div class="col-md-6">
-                                    <button mat-raised-button color="primary" (click)="Search_User_Type()">Search</button>
-                                    <button mat-raised-button color="accent" (click)="New_User_Type()" style="margin-left: 10px;">Add New</button>
-                                </div>
-                            </div>
+<!-- Loading Overlay -->
+<div *ngIf="issLoading" class="ig-overlay">
+  <mat-progress-spinner [color]="color" [mode]="mode" [value]="value" diameter="36"></mat-progress-spinner>
+</div>
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead class="text-primary">
-                                                <tr>
-                                                    <th>Sl.No</th>
-                                                    <th>User Type Name</th>
-                                                    <th>Edit</th>
-                                                    <th>Delete</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr *ngFor="let User_Type_e of User_Type_Data; let i = index">
-                                                    <td>{{i + 1}}</td>
-                                                    <td>{{User_Type_e.User_Type_Name}}</td>
-                                                    <td>
-                                                        <button mat-icon-button color="primary" (click)="Edit_User_Type(User_Type_e, i)">
-                                                            <mat-icon>edit</mat-icon>
-                                                        </button>
-                                                    </td>
-                                                    <td>
-                                                        <button mat-icon-button color="warn" (click)="Delete_User_Type(User_Type_e.User_Type_Id, i)">
-                                                            <mat-icon>delete</mat-icon>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <p>Total Entries: {{Total_Entries}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="ig-page">
+
+  <!-- ══════════════════════════════
+       LIST VIEW
+  ══════════════════════════════ -->
+  <div *ngIf="!Entry_View">
+
+    <div class="ig-header">
+      <div>
+        <h1 class="ig-title">User Groups</h1>
+        <p class="ig-subtitle">Manage system user categories and groups</p>
+      </div>
+      <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
+        <i class="material-icons">add</i> Add User Group
+      </button>
     </div>
+
+    <!-- Search / Filter -->
+    <div class="ig-search-bar">
+      <div class="ig-search-wrap">
+        <i class="material-icons">search</i>
+        <input
+          type="text"
+          class="ig-search-input"
+          [(ngModel)]="Search_Name"
+          name="Search_Name"
+          placeholder="Search user groups…"
+          (keyup.enter)="Search_User_Type()"
+        />
+      </div>
+      <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
+    </div>
+
+    <!-- Table -->
+    <div class="ig-table-card">
+      <div class="ig-table-wrap" [style.max-height.px]="myInnerHeight">
+        <table class="ig-table">
+          <thead>
+            <tr>
+              <th class="ig-th ig-th-no">#</th>
+              <th class="ig-th">User Group Name</th>
+              <th class="ig-th ig-th-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ut of User_Type_Data; let i = index; trackBy: trackByFn" class="ig-tr">
+              <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+              <td class="ig-td ig-td-name">{{ ut.User_Type_Name }}</td>
+              <td class="ig-td ig-td-actions">
+                <button class="ig-icon-btn ig-edit" [hidden]="User_Type_Edit == false"
+                  (click)="Edit_User_Type(ut, i)" title="Edit">
+                  <i class="material-icons">edit</i>
+                </button>
+                <button class="ig-icon-btn ig-delete" [hidden]="User_Type_Delete == false"
+                  (click)="Delete_User_Type(ut.User_Type_Id, i)" title="Delete">
+                  <i class="material-icons">delete_outline</i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="User_Type_Data?.length === 0">
+              <td colspan="3" class="ig-empty">No user groups found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════
+       ENTRY / EDIT FORM
+  ══════════════════════════════ -->
+  <div *ngIf="Entry_View">
+
+    <div class="ig-header">
+      <div>
+        <h1 class="ig-title">{{ User_Type_.User_Type_Id > 0 ? 'Edit User Group' : 'New User Group' }}</h1>
+        <p class="ig-subtitle">{{ User_Type_.User_Type_Id > 0 ? 'Update user group details' : 'Fill in the details to create a new user group' }}</p>
+      </div>
+      <button class="ig-btn-cancel" type="button" (click)="Close_Click()">
+        <i class="material-icons" style="font-size:15px;">close</i> Cancel
+      </button>
+    </div>
+
+    <div class="ig-form-card">
+      <p class="ig-form-label">Group Information</p>
+      <div class="ig-form-row">
+        
+        <div class="ig-field">
+          <label class="ig-label">User Group Name <span class="ig-req">*</span></label>
+          <input
+            type="text"
+            class="ig-input"
+            [(ngModel)]="User_Type_.User_Type_Name"
+            name="User_Type_Name"
+            maxlength="100"
+            placeholder="Enter user group name"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="ig-form-actions">
+          <button class="ig-btn-cancel" type="button" (click)="Close_Click()">Cancel</button>
+          <button class="ig-btn-save" type="button" [hidden]="User_Type_Save == false"
+            (click)="Save_User_Type()">
+            {{ User_Type_.User_Type_Id > 0 ? 'Update Group' : 'Save Group' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
 </div>

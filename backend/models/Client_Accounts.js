@@ -355,52 +355,52 @@ var Client_Accounts = {
 	},
 	Save_Company: function (Company_, callback) {
 		console.log('Company_:',Company_);
-		return db.query(
-			"CALL Save_Company(" +
-				"@Company_Id_ :=?," +
-				"@Company_Name_ :=?," +
-				"@Address1_ :=?," +
-				"@Address2_ :=?," +
-				"@Address3_ :=?," +
-				"@Address4_ :=?," +
-				"@Mobile_Number_ :=?," +
-				"@Phone_Number_ :=?," +
-				"@FAX_ :=?," +
-				"@EMail_ :=?," +
-				"@Website_ :=?," +
-				"@Logo_ :=?," +
-				"@Code_ :=?," +
-				"@GSTNO_ :=?," +
-				"@CINO_ :=?," +
-				"@PANNO_ :=?," +
-				"@Note_ :=?,"+
-				"@Doc_Photo_ :=?,"+
-				"@File_Path_ :=?,"+
-				"@file_url_ :=?)",
-			[
-				Company_.Company_Id,
-				Company_.Company_Name,
-				Company_.Address1,
-				Company_.Address2,
-				Company_.Address3,
-				Company_.Address4,
-				Company_.Mobile_Number,
-				Company_.Phone_Number,
-				Company_.FAX,
-				Company_.EMail,
-				Company_.Website,
-				Company_.Logo,
-				Company_.Code,
-				Company_.GSTNO,
-				Company_.CINO,
-				Company_.PANNO || '',
-				Company_.Note || '',
-				Company_.Doc_Photo || '',
-				Company_.File_Path || '',
-				Company_.file_url || ''
-			],
-			callback
-		);
+		const companyId = Number(Company_.Company_Id || 0);
+		const values = {
+			Company_Name: Company_.Company_Name || '',
+			Address1: Company_.Address1 || '',
+			Address2: Company_.Address2 || '',
+			Address3: Company_.Address3 || '',
+			Address4: Company_.Address4 || '',
+			Phone: Company_.Phone_Number || '',
+			Gsm: Company_.GSTNO || '',
+			Email: Company_.EMail || '',
+			CR_No: Company_.CINO || '',
+			File_Upload: Company_.Logo || '',
+			Note: Company_.Note || '',
+			Vat_No: Company_.PANNO || '',
+			File_Path: Company_.File_Path || '',
+			file_url: Company_.file_url || ''
+		};
+
+		const finishInsert = function () {
+			db.query("SELECT COALESCE(MAX(Company_Id), 0) + 1 AS Company_Id_ FROM company_info", function (maxErr, maxRows) {
+				if (maxErr) return callback(maxErr);
+				const newCompanyId = Number(maxRows[0].Company_Id_);
+				db.query(
+					"INSERT INTO company_info SET ?, Company_Id = ?, DeleteStatus = false",
+					[values, newCompanyId],
+					function (insertErr) {
+						if (insertErr) return callback(insertErr);
+						callback(null, [[{ Company_Id_: newCompanyId }]]);
+					}
+				);
+			});
+		};
+
+		if (companyId > 0) {
+			return db.query(
+				"UPDATE company_info SET ? WHERE Company_Id = ?",
+				[values, companyId],
+				function (updateErr, result) {
+					if (updateErr) return callback(updateErr);
+					if (result.affectedRows > 0) return callback(null, [[{ Company_Id_: companyId }]]);
+					finishInsert();
+				}
+			);
+		}
+
+		return finishInsert();
 	},
 	Delete_Company: function (Company_Id_, callback) {
 		return db.query(

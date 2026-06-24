@@ -6,6 +6,7 @@ import { Vertical_Service } from '../../../services/Vertical.Service';
 import { Vertical } from '../../../models/Vertical';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 
 @Component({
   selector: 'app-Vertical',
@@ -32,7 +33,8 @@ export class VerticalComponent implements OnInit {
     public Vertical_Service_: Vertical_Service,
     private route: ActivatedRoute,
     private router: Router,
-    public dialogBox: MatDialog
+    public dialogBox: MatDialog,
+    private Master_Refresh_Service_: Master_Refresh_Service
   ) { }
 
   ngOnInit() {
@@ -114,6 +116,7 @@ export class VerticalComponent implements OnInit {
         this.Clr_Vertical();
         this.Search_Vertical();
         this.Entry_View = false;
+        this.Master_Refresh_Service_.refreshMaster('Vertical');
       },
       error: (error) => {
         this.dialogBox.open(DialogBox_Component, {
@@ -138,6 +141,7 @@ export class VerticalComponent implements OnInit {
           this.issLoading = false;
           this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted Successfully', Type: "false" } });
           this.Search_Vertical();
+          this.Master_Refresh_Service_.refreshMaster('Vertical');
         }, err => {
           this.issLoading = false;
           this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });

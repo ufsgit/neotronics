@@ -35,6 +35,7 @@ import { payment_term } from '../../../models/payment_term';
 import { Sales_Master_Service } from '../../../services/Sales_Master.Service';
 import { Requirement_Master_Service } from '../../../services/Requirement_Master.Service';
 import { RequirementWorkflowService } from '../../../services/RequirementWorkflow.Service';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 import { CommonModule } from '@angular/common';
 import { DecimalPipe } from '@angular/common';
 import { WorkDocs } from 'aws-sdk';
@@ -291,8 +292,8 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
         private Brand_Service_: Brand_Service,
         private Model_Service_: Model_Service,
         private RequirementWorkflowService_: RequirementWorkflowService,
-        private cdr: ChangeDetectorRef
-        // public decimalPipe: DecimalPipe
+        private cdr: ChangeDetectorRef,
+        private Master_Refresh_Service_: Master_Refresh_Service
     ) { 
         this.Load_Bill_Type();       
         this.Load_Currency();
@@ -314,7 +315,7 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
     }
     ngOnInit() 
 {
-    debugger;
+    // debugger;
     this.User_Type=(localStorage.getItem('User_Type'));
     this.User_Type_Id=Number(localStorage.getItem('User_Type_Id'));
     this.Login_User_Id=localStorage.getItem('Login_User');
@@ -333,7 +334,17 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
     this.Sales_Master_Edit=this.Permissions.Edit;
     this.Sales_Master_Save=this.Permissions.Save;
     this.Sales_Master_Delete=this.Permissions.Delete;
-    this.Page_Load()
+    this.Page_Load();
+
+    this.Master_Refresh_Service_.masterUpdated$.subscribe(masterName => {
+        if (masterName === 'Brand') this.Load_Brand_Dropdown();
+        if (masterName === 'Model') this.Load_Model_Dropdown();
+        if (masterName === 'Item_Group') this.Load_Item_Group();
+        if (masterName === 'Item') { /* Typeahead */ }
+        if (masterName === 'Accounts') { /* Typeahead */ }
+        if (masterName === 'Payment_Term') this.Load_Payment_Term();
+        if (masterName === 'TermsAndCondition') { /* If load exists */ }
+    });
     }
 }
 call_api()
@@ -483,7 +494,7 @@ Page_Load()
         this.Entry_View=true;
         this.Edit_Sales=1;
         this.Sales_Print = false;
-        debugger;
+        // debugger;
         this.Load_SalesQuotationMaster();
     }
     //this.myDate=new Date();
@@ -492,7 +503,7 @@ Load_Company()
     {   
     this.Sales_Master_Service_.Load_Company().subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;    
     if (Rows != null && Rows[0] != null && Array.isArray(Rows[0]) && Rows[0].length > 0) {
-        debugger;
+        // debugger;
     this.Print_Company_ = Rows[0][0];
     this.Company_ = Rows[0][0];
     this.Bank_ = Rows[1] || [];
@@ -791,36 +802,63 @@ Download_PDF() {
     this.Generate_Professional_PDF('download');
 }
 
-Generate_Professional_PDF(mode: string) {
-    const id = this.Quotation_Master_.SalesQuotationMaster_Id;
-    if (!id || id === 0) {
-        alert("Please save the quotation before generating PDF.");
-        return;
-    }
-
-    this.issLoading = true;
-    this.Sales_Master_Service_.Print_Quotation(id).subscribe(blob => {
-        this.issLoading = false;
-        console.log("Received PDF blob size:", blob.size);
-        const url = window.URL.createObjectURL(blob);
-        
-        if (mode === 'download') {
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Quotation_${this.Quotation_Master_.QuotationNo || id}.pdf`;
-            a.click();
-        } else {
-            // Open in new tab for print or preview
-            window.open(url, '_blank');
+    Generate_Professional_PDF(mode: string) {
+        const id = this.Quotation_Master_.SalesQuotationMaster_Id;
+        if (!id || id === 0) {
+            alert("Please save the quotation before generating PDF.");
+            return;
         }
-        
-        setTimeout(() => window.URL.revokeObjectURL(url), 10000);
-    }, err => {
-        this.issLoading = false;
-        console.error('Print error:', err);
-        alert("Error generating professional PDF.");
-    });
-}
+
+        this.issLoading = true;
+        this.Sales_Master_Service_.Print_Quotation(id).subscribe({
+            next: (blob: Blob) => {
+                this.issLoading = false;
+                if (blob.size === 0) {
+                    alert("Error: Received an empty PDF file.");
+                    return;
+                }
+
+                // Check if the blob is actually a JSON error (often case when backend fails)
+                if (blob.type === 'application/json') {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        try {
+                            const errorData = JSON.parse(reader.result as string);
+                            alert("Backend Error: " + (errorData.message || 'Unknown error'));
+                        } catch (e) {
+                            alert("Backend returned an invalid response.");
+                        }
+                    };
+                    reader.readAsText(blob);
+                    return;
+                }
+
+                const url = window.URL.createObjectURL(blob);
+                if (mode === 'download') {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    // Sanitize filename: replace / and other chars that might break the download
+                    const safeNo = (this.Quotation_Master_.QuotationNo || id.toString()).replace(/[/\\?%*:|"<>]/g, '-');
+                    a.download = `Quotation_${safeNo}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                } else {
+                    // For print/preview, open in new tab
+                    const newWindow = window.open(url, '_blank');
+                    if (!newWindow) {
+                        alert("Pop-up blocked! Please allow pop-ups for this site to view the PDF.");
+                    }
+                }
+                setTimeout(() => window.URL.revokeObjectURL(url), 15000);
+            },
+            error: (err) => {
+                this.issLoading = false;
+                console.error('Print error:', err);
+                alert("Could not connect to the PDF generation service.");
+            }
+        });
+    }
 
 
 _Old_Print_Click()
@@ -1449,7 +1487,7 @@ Clr_Sales_Master()
 }
 Clr_Sales_Details()
 {
-    debugger
+    // debugger
     this.Quotation_Details_Index=-1;
     this.Quotation_Details_.Quotation_Details_Id=0;
     this.Quotation_Details_.Quotation_Master_Id=0;
@@ -1491,7 +1529,7 @@ Clr_Sales_Details()
     this.Barcode_ =null;
     // this.Item_.ItemName="";
     // this.Barcode_.Item_Code=""; 
-    debugger;
+    // debugger;
         // if (this.ItemCodeData != null && this.ItemCodeData != undefined)    
         //     this.Item_ = new [];
 
@@ -1618,7 +1656,7 @@ Delete_Quotation_Master(SalesQuotationMaster_Id,index)
 
 Load_Bill_Type()
 {
-    debugger;
+    // debugger;
     var value=1;
         this.Sales_Master_Service_.Load_Bill_Type(value).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;    
         if (Rows != null) {
@@ -1626,7 +1664,7 @@ Load_Bill_Type()
         this.Bill_Type_Temp.Bill_Type_Id = 0;
         this.Bill_Type_Temp.Bill_Type_Name = "Select";
         this.Bill_Type_Data.unshift(this.Bill_Type_Temp);
-        debugger;
+        // debugger;
         this.Bill_Type_Search=this.Bill_Type_Data[0];
         this.Bill_Type_=this.Bill_Type_Data[1];
         }
@@ -1670,10 +1708,10 @@ Load_Cess()
 }
 Load_Company_bank()
 {
-    debugger;
+    // debugger;
     this.Sales_Master_Service_.Load_Company_Bank().subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;   
       if (Rows != null) {
-            debugger;
+            // debugger;
             this.Bank_Data=Rows[0];
         this.Bank_ = this.Bank_Data[0]
         this.Company_ = Rows[1][0]
@@ -1695,11 +1733,11 @@ Search_Customer_Typeahead(event: any)
         Value = event.target.value;
       {
      this.issLoading = true;
-     debugger
+     // debugger
     this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39',Value).subscribe((response: any) => { const Rows = (response && typeof response === "object" && "success" in response) ? response.data : response;   
-        debugger;  
+        // debugger;  
     if (Rows != null) {
-        debugger;  
+        // debugger;  
         this.Customer_Data = Rows[0];
     }
     this.issLoading = false;
@@ -2512,6 +2550,7 @@ Save_Quotation(Printstatus:number)
                         this.Edit_Sales = 1;
                     }
                     this.Sales_Print = false;
+                    this.Master_Refresh_Service_.refreshMaster('Quotation');
                 } else {
                     const msg = (result && result.Message) || (res && res.message) || 'Save failed';
                     this.dialogBox.open(DialogBox_Component, {

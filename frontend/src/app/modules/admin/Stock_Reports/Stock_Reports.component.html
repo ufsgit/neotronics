@@ -1,10 +1,10 @@
-<div *ngIf="issLoading" class="overlay">
+﻿<div *ngIf="issLoading" class="overlay">
     <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
     </mat-progress-spinner>
 </div>
 
 <div class="main-content">
-    <div class="container-fluid px-0">
+    <div class="container-fluid">
 
         <!-- LIST VIEW -->
         <div *ngIf="!Entry_View">
@@ -12,7 +12,7 @@
             <!-- PAGE HEADER -->
             <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h4 class="page-title-main">Stock Report</h4>
+                    <h1 class="page-title-main" style="font-size: 24px; font-weight: 700; color: #111827; margin: 0;">Stock Report</h1>
                 </div>
                 <div class="d-flex align-items-center" style="gap: 10px;">
                     <!-- Any top-right buttons can go here -->

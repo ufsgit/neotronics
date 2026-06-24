@@ -5,7 +5,11 @@ import { finalize } from 'rxjs/operators';
 import { Sale_Unit_Service } from '../../../services/Sale_Unit.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Sale_Unit } from '../../../models/Sale_Unit';
-import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';
+import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
+
+@Component({
 selector: 'app-Sale_Unit',
 templateUrl: './Sale_Unit.component.html',
 styleUrls: ['./Sale_Unit.component.css']
@@ -27,7 +31,15 @@ Permissions: any;
 Sale_Unit_Edit:boolean;
 Sale_Unit_Save:boolean;
 Sale_Unit_Delete:boolean;
-constructor(public Sale_Unit_Service_:Sale_Unit_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
+
+constructor(
+    public Sale_Unit_Service_:Sale_Unit_Service, 
+    private route: ActivatedRoute, 
+    private router: Router,
+    public dialogBox: MatDialog,
+    private Master_Refresh_Service_: Master_Refresh_Service
+) { }
+
 ngOnInit() 
 {
 this.Permissions = Get_Page_Permission(2);
@@ -44,6 +56,7 @@ this.Sale_Unit_Delete=this.Permissions.Delete;
 this.Page_Load()
 }
 }
+
 Page_Load()
 {
     this.myInnerHeight = (window.innerHeight);
@@ -52,15 +65,18 @@ this.Clr_Sale_Unit();
 this.Search_Sale_Unit();
 this.Entry_View=false;
 }
+
 Create_New()
 {
 this.Entry_View = true;
 this.Clr_Sale_Unit();
 }
+
 Close_Click()
 {
 this.Entry_View = false;
 }
+
 trackByFn(index, item) 
 {
 return index;
@@ -71,14 +87,12 @@ return index;
 this.Sale_Unit_.Sale_Unit_Id=0;
 this.Sale_Unit_.Sale_Unit_Code="";
 this.Sale_Unit_.Sale_Unit_Name="";
-
 }
+
 Search_Sale_Unit()
 {
-     
 this.issLoading=true;
 this.Sale_Unit_Service_.Search_Sale_Unit(this.Search_Name).subscribe(Rows => {
-     
  this.Sale_Unit_Data=Rows[0];
 this.Total_Entries=this.Sale_Unit_Data.length;
 if(this.Sale_Unit_Data.length==0)
@@ -92,9 +106,9 @@ this.issLoading=false;
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
  });
 }
+
 Delete_Sale_Unit(Sale_Unit_Id,index)
 {
-     
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Do you want to delete ?',Type:"true",Heading:'Confirm'}});
 dialogRef.afterClosed().subscribe(result =>
 {
@@ -102,17 +116,15 @@ if(result=='Yes')
 {
 this.issLoading=true;
 this.Sale_Unit_Service_.Delete_Sale_Unit(Sale_Unit_Id).subscribe(Delete_status => {
-     
     Delete_status=Delete_status[0];
     Delete_status=Delete_status[0].DeleteStatus_.data[0];
     if(Delete_status==1){
-        //this.Sale_Unit_Data.splice(index, 1);
         this.Page_Load();
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
+        this.Master_Refresh_Service_.refreshMaster('Sale_Unit');
     }
     else
     {
-     //   this.Sale_Unit_Data.splice(index, 1);
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Cannot be Deleted',Type:"2"}});
     }
 this.issLoading=false;
@@ -124,6 +136,7 @@ const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogb
 }
  });
 }
+
 Save_Sale_Unit()
 {
     if(this.Sale_Unit_.Sale_Unit_Name===undefined || this.Sale_Unit_.Sale_Unit_Name==null || this.Sale_Unit_.Sale_Unit_Name=="")
@@ -131,13 +144,10 @@ Save_Sale_Unit()
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Enter Sale Unit Name',Type: "3" }});   
     }
     else{
-    console.log("Before Sale Unit Save API call");
     this.issLoading = true;
-
     this.Sale_Unit_Service_.Save_Sale_Unit(this.Sale_Unit_)
     .pipe(
       finalize(() => {
-        console.log("Sale Unit Save Finalize executed");
         this.issLoading = false;
         const saveButton = document.getElementById("Save_Button");
         if (saveButton) saveButton.hidden = false;
@@ -145,8 +155,6 @@ Save_Sale_Unit()
     )
     .subscribe({
       next: (Save_status: any) => {
-        console.log("Sale Unit Save API Response:", Save_status);
-
         let resultId: number = NaN;
         try {
           if (Save_status && Save_status.data && Save_status.data[0]) {
@@ -181,6 +189,7 @@ Save_Sale_Unit()
             data: { Message: 'Saved Successfully', Type: "false" }
           });
           this.Page_Load();
+          this.Master_Refresh_Service_.refreshMaster('Sale_Unit');
         } else if (resultId == -1) {
           this.dialogBox.open(DialogBox_Component, {
             panelClass: 'Dialogbox-Class',
@@ -194,20 +203,18 @@ Save_Sale_Unit()
         }
       },
       error: (error) => {
-        console.error("Sale Unit Save API ERROR:", error);
         this.dialogBox.open(DialogBox_Component, {
           panelClass: 'Dialogbox-Class',
           data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" }
         });
       }
     });
+    }
 }
-}
+
 Edit_Sale_Unit(Sale_Unit_e:Sale_Unit,index)
 {
 this.Entry_View=true;
-this.Sale_Unit_=Sale_Unit_e;
 this.Sale_Unit_=Object.assign({},Sale_Unit_e);
 }
 }
-

@@ -104,7 +104,7 @@
                 <div class="table-responsive card ">
                     <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90"> -->
                     <div class="table-responsive" [style.height.px]="myInnerHeight"
-                        style="overflow-y: scroll;background-color: #f1f1f1;">
+                        style="background-color: #f1f1f1;">
                         <table class="table table-hover">
                             <thead class="thead">
                                 <th>Sl No</th>
@@ -194,268 +194,277 @@
             <!-- </div> -->
         </div>
 
-        <div class="row mt-0" *ngIf="Entry_View" style="background-color: #f1f1f1;">
-            <div class="container-fluid p-0">
-                <!-- Dashboard Header -->
-                <div class="dashboard-header">
-                    <h2>Price Response Dashboard</h2>
-                    <p>Create and manage your price responses efficiently</p>
-                </div>
-
-                <div class="main-container">
-                    <div class="row g-4">
-                        <!-- Left Side: Supplier Information -->
-                        <div class="col-lg-6">
-                            <div class="info-card">
-                                <h5>Supplier Information</h5>
-                                
-                                <div class="mb-3">
-                                    <label class="standard-label">Supplier Name <span class="required-star">*</span></label>
-                                    <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer"
-                                        (ngModelChange)="selectCustomer()" (click)="Search_Customer_Typeahead($event)"
-                                        (input)="Search_Customer_Typeahead($event)"
-                                        class="form-control-standard" placeholder="Search and select supplier..." />
-                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Customer">
-                                        <mat-option *ngIf="isLoading"><mat-spinner diameter="30"></mat-spinner></mat-option>
-                                        <ng-container *ngIf="!isLoading">
-                                            <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
-                                                <span (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
-                                            </mat-option>
-                                        </ng-container>
-                                    </mat-autocomplete>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="standard-label">Address</label>
-                                    <textarea class="form-control-standard" rows="3" [(ngModel)]="Address1" readonly placeholder="Address will be auto-filled..." style="height: auto;"></textarea>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="standard-label">Phone Number</label>
-                                        <input type="text" [(ngModel)]="Price_Response_Master_.PhoneNo" class="form-control-standard" placeholder="Phone number" />
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="standard-label">WhatsApp Number</label>
-                                        <input type="text" [(ngModel)]="Price_Response_Master_.Mobile_No" class="form-control-standard" placeholder="WhatsApp number" />
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="standard-label">Email</label>
-                                    <input type="email" [(ngModel)]="Price_Response_Master_.Email" class="form-control-standard" placeholder="Supplier email address" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Side: Response Information -->
-                        <div class="col-lg-6">
-                            <div class="info-card">
-                                <h5>Response Information</h5>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="standard-label">Date <span class="required-star">*</span></label>
-                                        <div class="input-group">
-                                            <input class="form-control-standard" [matDatepicker]="dpdate" [(ngModel)]="Price_Response_Master_.EntryDate" placeholder="MM/DD/YYYY">
-                                            <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
-                                            <mat-datepicker #dpdate></mat-datepicker>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="standard-label">Response No</label>
-                                        <input type="text" [(ngModel)]="Price_Response_Master_.Price_RequestNo" readonly class="form-control-standard bg-light fw-bold" placeholder="Auto-generated" />
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="standard-label">Reference No</label>
-                                    <input type="text" [(ngModel)]="Price_Response_Master_.Description2" class="form-control-standard" placeholder="Enter reference number if any" />
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="standard-label">Default Profit (%)</label>
-                                    <select class="form-control-standard" [(ngModel)]="Profit" (ngModelChange)="OnHeaderProfitChange()">
-                                        <option *ngFor="let p of ProfitOptions" [ngValue]="p.value">{{p.label}}</option>
-                                    </select>
-                                    <small class="text-muted">Changes profit for all items below</small>
-                                </div>
-
-                                <!-- moved to footer -->
-                            </div>
-                        </div>
+                <div class="row mt-2" *ngIf="Entry_View" style="background-color: #f1f1f1;">
+            <div class="container-fluid" #topDiv>
+                <div class="col-md-6 croct-float-purchase-master-section ">
+                    <div class="col-md-12 mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Supplier <span style="color:#ef071e; ">*</span></label>
+                        <input type="text" [matAutocomplete]="auto" [(ngModel)]="Customer_" name="Customer"
+                            (ngModelChange)="selectCustomer()" (click)="Search_Customer_Typeahead($event)"
+                            (input)="Search_Customer_Typeahead($event)"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Customer">
+                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                            <ng-container *ngIf="!isLoading">
+                                <mat-option *ngFor="let Customer_T of Customer_Data" [value]="Customer_T">
+                                    <span (click)="Customer_Change(Customer_T)">{{Customer_T.Client_Accounts_Name}}</span>
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
                     </div>
-
-                    <!-- Item Entry Section -->
-                    <div class="item-entry-container">
-                        <h5 class="mb-3" style="color: #0061f2; font-weight: 600;">Item Entry Section</h5>
-                        <div class="flex-entry-row">
-                            <div class="flex-item" style="flex: 2; min-width: 250px;">
-                                <label class="standard-label">Item Name</label>
-                                <input type="text" [matAutocomplete]="autoItem" [(ngModel)]="Item_" name="Item"
-                                    (input)="Search_Item_Typeahead($event)"
-                                    (click)="Search_Item_Typeahead($event)" (ngModelChange)="Get_Stock_Item()"
-                                    (keyup.enter)="Plus_Price_Response_Details($event)"
-                                    class="form-control-standard" placeholder="Search item..." />
-                                <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item">
-                                    <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
-                                    <ng-container *ngIf="!isLoading">
-                                        <mat-option *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
-                                            <span (click)="Item_Name_Change(Itemstock)">
-                                                {{Itemstock.Item_Code || '---'}} - {{Itemstock.ItemName || Itemstock.Item_Name || '---'}} 
-                                            </span>
-                                        </mat-option>
-                                    </ng-container>
-                                </mat-autocomplete>
-                            </div>
-                            <div class="flex-item" style="flex: 1.5; min-width: 180px;">
-                                <label class="standard-label">Description</label>
-                                <input type="text" [(ngModel)]="Price_Response_Details_.Description" class="form-control-standard" />
-                            </div>
-                            <div class="flex-item" style="flex: 1; min-width: 120px;">
-                                <label class="standard-label">Model</label>
-                                <select [(ngModel)]="Price_Response_Details_.Model" class="form-control-standard">
-                                    <option value="" disabled selected>-- Select Model --</option>
-                                    <option *ngFor="let model of ModelData" [ngValue]="model.Model_Name">{{model.Model_Name}}</option>
-                                </select>
-                            </div>
-                            <div class="flex-item" style="flex: 1; min-width: 120px;">
-                                <label class="standard-label">Brand</label>
-                                <select [(ngModel)]="Price_Response_Details_.Brand" class="form-control-standard">
-                                    <option value="" disabled selected>-- Select Brand --</option>
-                                    <option *ngFor="let brand of BrandData" [ngValue]="brand.Brand_Name">{{brand.Brand_Name}}</option>
-                                </select>
-                            </div>
-                            <div class="flex-item" style="flex: 0.8; min-width: 100px;">
-                                <label class="standard-label">Price</label>
-                                <input type="number" [(ngModel)]="Price_Response_Details_.UnitPrice" (ngModelChange)="Calculate_Price_Response_Details_Amount()" class="form-control-standard" />
-                            </div>
-                            <div class="flex-item" style="flex: 0.6; min-width: 80px;">
-                                <label class="standard-label">Qty</label>
-                                <input type="number" [(ngModel)]="Price_Response_Details_.Quantity" (ngModelChange)="Calculate_Price_Response_Details_Amount()" class="form-control-standard" />
-                            </div>
-                            <div class="flex-item" style="flex: 1; min-width: 110px;">
-                                <label class="standard-label">Profit %</label>
-                                <select [(ngModel)]="Price_Response_Details_.Profit" (ngModelChange)="Calculate_Price_Response_Details_Amount()" class="form-control-standard">
-                                    <option *ngFor="let p of ProfitOptions" [ngValue]="p.value">{{p.label}}</option>
-                                </select>
-                            </div>
-                            <div class="flex-item" style="flex: 1; min-width: 110px;">
-                                <label class="standard-label">Sales Rate</label>
-                                <input type="number" [(ngModel)]="Price_Response_Details_.SaleRate" readonly class="form-control-standard bg-light" />
-                            </div>
-                            <div class="flex-item">
-                                <button mat-raised-button class="btn btn-primary" (click)="Plus_Price_Response_Details($event)" style="height: 38px; background-color: #0061f2;">
-                                    <i class="fa fa-plus"></i> Add
-                                </button>
-                            </div>
-                        </div>
+                    <div class="col-md-12 mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Address</label>
+                        <input type="text" [(ngModel)]="Address1" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-
-                    <!-- Item Grid -->
-                    <div class="table-container">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 50px;" class="text-center">No</th>
-                                        <th>Item Details</th>
-                                        <th class="text-end" style="width: 120px;">Price</th>
-                                        <th class="text-center" style="width: 100px;">Profit %</th>
-                                        <th class="text-end" style="width: 120px;">Sales Rate</th>
-                                        <th class="text-center" style="width: 100px;">Quantity</th>
-                                        <th class="text-end" style="width: 120px;">Total</th>
-                                        <th class="text-center" style="width: 100px;">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let item of Price_Response_Details_Data; let i = index">
-                                        <td class="text-center">{{i + 1}}</td>
-                                        <td>
-                                            <div class="fw-bold text-primary">{{item.ItemName}}</div>
-                                            <div class="small text-muted">{{item.Description}}</div>
-                                            <div class="mt-1">
-                                                <span class="badge bg-light text-dark border me-1" *ngIf="item.Model">Model: {{item.Model}}</span>
-                                                <span class="badge bg-light text-dark border" *ngIf="item.Brand">Brand: {{item.Brand}}</span>
-                                            </div>
-                                        </td>
-                                        <td class="text-end">{{item.UnitPrice | number:'1.3-3'}}</td>
-                                        <td class="text-center">
-                                            <span class="badge bg-success" *ngIf="item.Profit > 0">+{{item.Profit}}%</span>
-                                            <span class="text-muted" *ngIf="!item.Profit || item.Profit === 0">0%</span>
-                                        </td>
-                                        <td class="text-end fw-bold text-success">{{item.SaleRate | number:'1.3-3'}}</td>
-                                        <td class="text-center">{{item.Quantity}}</td>
-                                        <td class="text-end fw-bold">{{item.Amount | number:'1.3-3'}}</td>
-                                        <td class="text-center">
-                                            <div class="btn-group">
-                                                <button class="btn btn-outline-primary btn-sm me-1" (click)="Edit_Price_Response_Detail(item, i)">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                                <button class="btn btn-outline-danger btn-sm" (click)="Delete_Price_Response_Detail(i)">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr *ngIf="Price_Response_Details_Data.length === 0">
-                                        <td colspan="8" class="text-center py-4 text-muted">
-                                            No items added yet. Search and add items to get started.
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot *ngIf="Price_Response_Details_Data.length > 0">
-                                    <tr class="table-light">
-                                        <td colspan="6" class="text-end fw-bold">Grand Total:</td>
-                                        <td class="text-end fw-bold text-primary" style="font-size: 1.1rem;">
-                                            {{Price_Response_Master_.TotalAmount | number:'1.3-3'}}
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Phone Number</label>
+                        <input type="text" [(ngModel)]="Price_Response_Master_.PhoneNo" name="PhoneNo"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">WhatsApp Number</label>
+                        <input type="text" name="Mobile_No_WA" [(ngModel)]="Price_Response_Master_.Mobile_No"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Email</label>
+                        <input type="email" name="Email_Field" [(ngModel)]="Price_Response_Master_.Email"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
                 </div>
-
-                <!-- Footer Fields (Payment / Terms) -->
-                <div class="row mt-3">
-                    <div class="col-md-6 ms-auto">
-                        <div class="mb-3">
-                            <label class="standard-label">Payment Term</label>
-                            <select class="form-control-standard" [(ngModel)]="Payment_Term" [compareWith]="comparePaymentTerm">
-                                <option *ngFor="let pt of PaymentTermData" [ngValue]="pt">{{pt.Payment_Term_Description}}</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="standard-label">Terms &amp; Conditions</label>
-                            <textarea class="form-control-standard" rows="3" [(ngModel)]="Price_Response_Master_.Description1" placeholder="Enter terms and conditions" style="height: auto; resize: vertical;"></textarea>
+                <div class="col-md-6 croct-float-purchase-master-section">
+                    <div class="col-md-12 mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date <span style="color:#ef071e; ">*</span></label>
+                        <div class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 47px !important; display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                            <input [matDatepicker]="dpdate" placeholder="" name="EntryDate" [(ngModel)]="Price_Response_Master_.EntryDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
+                            <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
+                            <mat-datepicker #dpdate></mat-datepicker>
                         </div>
                     </div>
-                </div>
-
-                <!-- Sticky Footer -->
-                <div class="sticky-footer">
-                    <button class="btn btn-outline-secondary px-4" (click)="Print_Click()" [hidden]="Sales_Print">
-                        <i class="fa fa-print"></i> Print
-                    </button>
-                    <div class="dropdown" *ngIf="Edit_Sales > 0">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="moreActions" data-bs-toggle="dropdown">
-                            More Actions
-                        </button>
-                        <ul class="dropdown-menu shadow">
-                            <li><a class="dropdown-item" (click)="duplicate()"><i class="fa fa-copy me-2"></i> Duplicate</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" (click)="Create_New()"><i class="fa fa-plus me-2"></i> New Response</a></li>
-                        </ul>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Response No</label>
+                        <input type="text" name="Price_RequestNo" [(ngModel)]="Price_Response_Master_.Price_RequestNo" readonly
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                     </div>
-                    <button class="btn btn-cancel-resp" (click)="Close_Click()">Cancel</button>
-                    <button class="btn btn-save-resp" *ngIf="Edit_Sales === 0" (click)="Save_Price_Response(0)">Save Response</button>
-                    <button class="btn btn-save-resp" *ngIf="Edit_Sales === 1" (click)="Save_Price_Response(1)">Update Response</button>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Reference No</label>
+                        <input type="text" name="Description2" [(ngModel)]="Price_Response_Master_.Description2"
+                            class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                    </div>
+                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                        <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Default Profit (%)</label>
+                        <select class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn form-control-standard"
+                            [(ngModel)]="Profit" (ngModelChange)="OnHeaderProfitChange()">
+                            <option *ngFor="let p of ProfitOptions" [ngValue]="p.value">{{p.label}}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-
-            <div class="container-fluid mt-1" *ngIf="proformaListView" #bottomDiv>
+            <div class="row" style="background-color: #f1f1f1;">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body" style="background-color: #f1f1f1;">
+                            <div class="row">
+                                <div class="col-md-12" style="display: flex; gap: 10px; align-items: flex-end; margin-bottom: 20px;">
+                                    <div style="flex: 0 0 calc(25% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item</label>
+                                        <input type="text" [matAutocomplete]="autoItem" [(ngModel)]="Item_" name="Item"
+                                            (input)="Search_Item_Typeahead($event)"
+                                            (click)="Search_Item_Typeahead($event)" (ngModelChange)="Get_Stock_Item()"
+                                            (keyup.enter)="Plus_Price_Response_Details($event)"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                        <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item">
+                                            <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
+                                            <ng-container *ngIf="!isLoading">
+                                                <mat-option *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
+                                                    <span (click)="Item_Name_Change(Itemstock)">
+                                                        {{Itemstock.Item_Code || '---'}} - {{Itemstock.ItemName || Itemstock.Item_Name || '---'}}
+                                                    </span>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-autocomplete>
+                                    </div>
+                                    <div style="flex: 0 0 calc(14% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Description</label>
+                                        <input type="text" [(ngModel)]="Price_Response_Details_.Description"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
+                                            name="Description"
+                                            (keyup.enter)="Plus_Price_Response_Details($event)"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                    </div>
+                                    <div style="flex: 0 0 calc(8% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Model</label>
+                                        <select [(ngModel)]="Price_Response_Details_.Model"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box; height: 36px; border: 1px solid #b1b1b1; border-radius: 4px;"
+                                            name="Model"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                            <option value="">-- Model --</option>
+                                            <option *ngFor="let model of ModelData" [ngValue]="model.Model_Name">{{model.Model_Name}}</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 0 0 calc(8% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Brand</label>
+                                        <select [(ngModel)]="Price_Response_Details_.Brand"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box; height: 36px; border: 1px solid #b1b1b1; border-radius: 4px;"
+                                            name="Brand"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                            <option value="">-- Brand --</option>
+                                            <option *ngFor="let brand of BrandData" [ngValue]="brand.Brand_Name">{{brand.Brand_Name}}</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 0 0 calc(8% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Price</label>
+                                        <input type="number" [(ngModel)]="Price_Response_Details_.UnitPrice"
+                                            (ngModelChange)="Calculate_Price_Response_Details_Amount()"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
+                                            name="UnitPrice"
+                                            (keyup.enter)="Plus_Price_Response_Details($event)"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                    </div>
+                                    <div style="flex: 0 0 calc(7% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty</label>
+                                        <input type="number" [(ngModel)]="Price_Response_Details_.Quantity"
+                                            (ngModelChange)="Calculate_Price_Response_Details_Amount()"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
+                                            name="Quantity"
+                                            (keyup.enter)="Plus_Price_Response_Details($event)"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                    </div>
+                                    <div style="flex: 0 0 calc(9% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Profit %</label>
+                                        <select [(ngModel)]="Price_Response_Details_.Profit"
+                                            (ngModelChange)="Calculate_Price_Response_Details_Amount()"
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box; height: 36px; border: 1px solid #b1b1b1; border-radius: 4px;"
+                                            name="Profit"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
+                                            <option *ngFor="let p of ProfitOptions" [ngValue]="p.value">{{p.label}}</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 0 0 calc(9% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Sales Rate</label>
+                                        <input type="number" [(ngModel)]="Price_Response_Details_.SaleRate" readonly
+                                            style="padding-left: 5px !important; width: 100%; box-sizing: border-box;"
+                                            name="SaleRate"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
+                                    </div>
+                                    <div style="flex: 0 0 auto; padding-bottom: 5px;">
+                                        <button mat-raised-button type="button"
+                                            (click)="Plus_Price_Response_Details($event)"
+                                            class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes"
+                                            style="border-radius: 5px !important; padding: 8px 20px; font-size: 14px; min-width: auto;">
+                                            Add</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-for-sale-search-section-diary">
+                                                <thead class="bg-col-stock-add-diary">
+                                                    <th>No</th>
+                                                    <th>Item</th>
+                                                    <th>Description</th>
+                                                    <th>Model</th>
+                                                    <th>Brand</th>
+                                                    <th>Price</th>
+                                                    <th>Profit %</th>
+                                                    <th>Sales Rate</th>
+                                                    <th>Qty</th>
+                                                    <th>Total</th>
+                                                    <th></th>
+                                                </thead>
+                                                <tbody class="bk_tb_bg"
+                                                    *ngFor="let item of Price_Response_Details_Data; let i = index">
+                                                    <td>{{i+1}}</td>
+                                                    <td [id]="'cell' + (i + 1)">{{ item["ItemName"] }}</td>
+                                                    <td>{{item["Description"]}}</td>
+                                                    <td>{{item["Model"]}}</td>
+                                                    <td>{{item["Brand"]}}</td>
+                                                    <td>{{item["UnitPrice"] | number:'1.3-3'}}</td>
+                                                    <td>
+                                                        <span class="badge bg-success" *ngIf="item.Profit > 0">+{{item.Profit}}%</span>
+                                                        <span class="text-muted" *ngIf="!item.Profit || item.Profit === 0">0%</span>
+                                                    </td>
+                                                    <td>{{item["SaleRate"] | number:'1.3-3'}}</td>
+                                                    <td>{{item["Quantity"]}}</td>
+                                                    <td>{{item["Amount"] | number:'1.3-3'}}</td>
+                                                    <td style="width:75px;">
+                                                        <button [hidden]="Sales_Master_Edit==false"
+                                                            class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
+                                                            mat-raised-button="" mattooltip="Edit" type="button">
+                                                            <span class="mat-button-wrapper">
+                                                                <i class="material-icons" (click)="Edit_Price_Response_Detail(item,i)">edit</i>
+                                                            </span>
+                                                        </button>
+                                                        <button [hidden]="Sales_Master_Delete==false"
+                                                            class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
+                                                            mat-raised-button="" mattooltip="Remove" type="button">
+                                                            <span class="mat-button-wrapper">
+                                                                <i class="material-icons" (click)="Delete_Price_Response_Detail(i)">close</i>
+                                                            </span>
+                                                        </button>
+                                                    </td>
+                                                </tbody>
+                                                <tfoot *ngIf="Price_Response_Details_Data.length > 0">
+                                                    <tr class="table-light">
+                                                        <td colspan="9" class="text-end fw-bold" style="padding: 10px 14px; font-size: 13px; text-align: right !important;">Grand Total:</td>
+                                                        <td class="text-end fw-bold text-primary" style="padding: 10px 14px; font-size: 13px;">
+                                                            {{Price_Response_Master_.TotalAmount | number:'1.3-3'}}
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-5">
+                                    <h4 style="font-weight: bold;">Terms &amp; Conditions</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Payment Term</label>
+                                        <select class="for-input-selct-tblelst mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe"
+                                            style="width: 55%; border: 1px solid lightgrey; border-radius: 5px; padding-left: 5px !important; height: 36px;"
+                                            [(ngModel)]="Payment_Term" [compareWith]="comparePaymentTerm">
+                                            <option *ngFor="let pt of PaymentTermData" [ngValue]="pt">{{pt.Payment_Term_Description}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
+                                        <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Terms &amp; Conditions</label>
+                                        <textarea class="col-md-7 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            style="height: 80px; border: 1px solid lightgrey; border-radius: 5px; padding: 5px; resize: vertical;"
+                                            [(ngModel)]="Price_Response_Master_.Description1"
+                                            placeholder="Enter terms and conditions"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <button mat-raised-button type="button" [hidden]="Sales_Print"
+                                        class="btn btn-danger pull-right no-print" (click)="Print_Click()" title="Print">
+                                        <i class="fa fa-print" aria-hidden="true"></i> Print</button>
+                                    <button mat-raised-button type="button"
+                                        class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                        (click)="Close_Click();">Cancel</button>
+                                    <button mat-raised-button type="button"
+                                        class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                        [hidden]="Sales_Master_Save==false" *ngIf="Edit_Sales === 0"
+                                        (click)="Save_Price_Response(0)">Save Response</button>
+                                    <button mat-raised-button type="button"
+                                        class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                        [hidden]="Sales_Master_Save==false" *ngIf="Edit_Sales === 1"
+                                        (click)="Save_Price_Response(1)">Update Response</button>
+                                    <button mat-raised-button type="button"
+                                        class="btn pull-right btn-primary div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales > 0"
+                                        (click)="duplicate()">Duplicate</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<div class="container-fluid mt-1" *ngIf="proformaListView" #bottomDiv>
                 <div class="col-md-12">
                     <div class="card" style="background-color: #f1f1f1;">
                         <div class="card-body" style="overflow: scroll; height: 40em;">

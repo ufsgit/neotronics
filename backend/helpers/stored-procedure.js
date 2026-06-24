@@ -37,20 +37,20 @@ class StoredProcedure {
   }
 
   /**
-   * Excute and get the results
+   * Execute and get the results
    */
   result() {
     let params = this.params;
-    for (const key in params) {
-      if (params[key] === undefined) {
-        params[key] = null;
+    for (let i = 0; i < params.length; i++) {
+      if (params[i] === undefined) {
+        params[i] = null;
       }
-      if (isPlainObject(params[key])) {
-        params[key] = JSON.stringify(params[key]);
+      if (isPlainObject(params[i])) {
+        params[i] = JSON.stringify(params[i]);
       }
-      if (Array.isArray(params[key])) {
-        if (params[key][0] && isPlainObject(params[key][0])) {
-          params[key] = JSON.stringify(params[key]);
+      if (Array.isArray(params[i])) {
+        if (params[i][0] && isPlainObject(params[i][0])) {
+          params[i] = JSON.stringify(params[i]);
         }
       }
     }
@@ -66,6 +66,8 @@ class StoredProcedure {
           if (er) {
             rej(er);
           } else {
+            // For standard callback, s is already the results (array of result sets)
+            // For CALL, s[0] is usually the first result set (array of rows)
             res(s && s[0]);
           }
         });
@@ -73,9 +75,15 @@ class StoredProcedure {
         // If it returns a Promise (mysql2 promise-based), handle it
         if (queryObj && typeof queryObj.then === 'function') {
           queryObj.then((result) => {
-            // mysql2 promise returns [rows, fields]
-            const rows = Array.isArray(result) ? result[0] : result;
-            res(rows && rows[0]);
+            // mysql2 promise returns [result, fields]
+            // For CALL, result is [ [rows], {metadata} ]
+            let finalResult = Array.isArray(result) ? result[0] : result;
+            if (Array.isArray(finalResult) && Array.isArray(finalResult[0])) {
+               // This is a CALL result, return the first result set (array of rows)
+               res(finalResult[0]);
+            } else {
+               res(finalResult);
+            }
           }).catch((err) => {
             rej(err);
           });

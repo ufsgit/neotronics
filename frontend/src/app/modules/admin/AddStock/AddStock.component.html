@@ -1,8 +1,8 @@
-<div *ngIf="issLoading" class="overlay">
+﻿<div *ngIf="issLoading" class="overlay">
     <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
     </mat-progress-spinner>
 </div>
-<div class="main-content" style="padding: 0px 0px !important;background-color: #f1f1f1;">
+<div class="main-content">
     <div class="container-fluid" #topDiv1>
         <div class="row col-md-12  mb-0" *ngIf="!Entry_View">
             <div class="row mb-1 card-body"     
@@ -12,7 +12,7 @@
              margin-left: 2px;
              color: #333333;
              background: #fff;
-             width: 100%;padding: 3px;background-color: #f1f1f1;
+             width: 100%;padding: 3px;
              box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
          ">
              <div class="col-md-2 row  mb-1" style="align-items: center;">
@@ -30,38 +30,32 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 row" style="align-items: center;">
+                                <div class="col-md-3 mb-2">
                                     <label
-                                        class="col-md-4  mb-0 " style="text-align: end;">From</label>
+                                        class="col-md-4  mb-0 " >From</label>
                                     <div
                                         class="col-md-8 "
-                                        style="height: 40px;     border: 1px solid #d3c4c4;
-                                        border-radius: 8px;
-                                    
-                                     display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                        >
                                         <input [matDatepicker]="dp1" placeholder="" name="Search_FromDate"
-                                            [(ngModel)]="Search_FromDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
+                                            [(ngModel)]="Search_FromDate" >
                                         <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
                                         <mat-datepicker #dp1></mat-datepicker>
                                     </div>
                                 </div>
-                                <div class="col-md-3 row mb-1" style="align-items: center;">
+                                <div class="col-md-3 mb-2">
                                     <label
-                                        class="col-md-4  mb-0 " style="text-align: end;" >TO</label>
+                                        class="col-md-4  mb-0 "  >TO</label>
                                     <div
                                         class="col-md-8 "
-                                        style="height: 40px;     border: 1px solid #d3c4c4;
-                                        border-radius: 8px;
-                                    
-                                     display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                                        >
                                         <input [matDatepicker]="dp2" name="Search_ToDate" placeholder=""
-                                            [(ngModel)]="Search_ToDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
+                                            [(ngModel)]="Search_ToDate" >
                                         <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
                                         <mat-datepicker #dp2></mat-datepicker>
                                     </div>
                                 </div>                               
                                 
-                                <div class="col-md-3 row mb-1" style="align-items: center; justify-content: center;">
+                                <div class="col-md-3 mb-2 d-flex justify-content-center gap-2">
                                     <button mat-raised-button type="button" class=" mt-0  mb-0  btn btn-danger pull-right"
                                         (click)="Print_Search_Click()">
                                         <i class="fa fa-print" aria-hidden="true"></i></button>
@@ -82,7 +76,7 @@
                                <div
                                 class="table-responsive"
                                 [style.height.px]="myInnerHeight"
-                                style="overflow-y: scroll;background-color: #f1f1f1;"
+                                style="overflow-y: scroll;"
                               >
                             <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90"> -->
                                 <table class="table table-hover">
@@ -154,7 +148,7 @@
                 <!-- </div> -->
             </div>
         </div>
-        <div class="row" *ngIf="Entry_View" style="background-color: #f1f1f1;">
+        <div class="row" *ngIf="Entry_View" style="">
             <div class="container-fluid" #topDiv>
                 <div class="col-md-6 croct-float-purchase-master-section ">                    
                     <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
@@ -173,37 +167,35 @@
                             style="color:#ef071e; ">*</span></label>
                         <div
                             class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
-                            style="height: 47px !important display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                            >
                             <input [matDatepicker]="dpdate" placeholder="" name="EntryDate"
-                                [(ngModel)]="Stock_Add_Master_.EntryDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
+                                [(ngModel)]="Stock_Add_Master_.EntryDate" >
                             <mat-datepicker-toggle matSuffix [for]="dpdate" ></mat-datepicker-toggle>
                             <mat-datepicker #dpdate></mat-datepicker>
                         </div>
                     </div> 
                 </div>
             </div>
-            <div class="row" style="background-color: #f1f1f1;">
+            <div class="row" style="">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">                            
                                 <div class="row">
-                                    <div class="col-md-12" style="background-color: #f1f1f1;">
-                                        <div
-                                            class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                            <label
-                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Part Number
+                                    <div class="col-md-12" style="">
+                                        <div class="col-md-2 mb-2">
+                                            <label class="mb-1" style="font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase;">Part Number
                                                 <span
                                                 style="color:#ff0019; ">*</span>
                                             </label>
                                             <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto42"
-                                                style="padding-left: 5px !important;" [(ngModel)]="Barcode_"
+                                                 [(ngModel)]="Barcode_"
                                                 (click)="Get_Stock_Item_Code_Typeahead($event)"
                                                 (input)="Get_Stock_Item_Code_Typeahead($event)" 
                                                 (keyup.enter)="Plus_Stock_Add_Details($event)"
                                                 class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid ng-touched" />
                                             <mat-autocomplete #auto42="matAutocomplete" [displayWith]="display_ItemCode" >
                                                 <mat-option *ngIf="isLoading"><mat-spinner
-                                                        diameter="500"></mat-spinner></mat-option>
+                                                        diameter="20"></mat-spinner></mat-option>
                                                 <ng-container *ngIf="!isLoading">
                                                     <mat-option *ngFor="let Item of ItemCodeData; let i = index"
                                                         [value]="Item">
@@ -212,20 +204,18 @@
                                                 </ng-container>
                                             </mat-autocomplete>
                                         </div>
-                                        <div
-                                            class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                            <label
-                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Description  
+                                        <div class="col-md-2 mb-2">
+                                            <label class="mb-1" style="font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase;">Description  
                                                 </label>
                                             <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_"
                                             (keyup.enter)="Plus_Stock_Add_Details($event)"
                                                 name="Item" (click)="Search_PurchaseItem_Typeahead($event)"
                                                 (input)="Search_PurchaseItem_Typeahead($event)" 
-                                                style="padding-left: 5px !important;"
+                                                
                                                 class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
                                             <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
                                                 <mat-option *ngIf="isLoading"><mat-spinner
-                                                        diameter="500"></mat-spinner></mat-option>
+                                                        diameter="20"></mat-spinner></mat-option>
                                                 <ng-container *ngIf="!isLoading">
                                                     <mat-option 
                                                         *ngFor="let Itemstock of Stock_Data" [value]="Itemstock">
@@ -235,57 +225,49 @@
                                                 </ng-container>
                                             </mat-autocomplete>
                                         </div>
-                                        <div
-                                            class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                            <label
-                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Uom</label>
+                                        <div class="col-md-2 mb-2">
+                                            <label class="mb-1" style="font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase;">Uom</label>
                                             <input type="text" [(ngModel)]="Stock_Add_Details_.UnitName"
                                             (keyup.enter)="Plus_Stock_Add_Details($event)"
-                                                style="padding-left: 5px !important;" id="Stock_Add_Details_.UnitName"
+                                                 id="Stock_Add_Details_.UnitName"
                                                 name="Stock_Add_Details_.UnitName"
                                                 
                                                 class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
                                         </div>
-                                        <div
-                                            class="col-md-1 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                            <label
-                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty
+                                        <div class="col-md-1 mb-2">
+                                            <label class="mb-1" style="font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase;">Qty
                                                 <span
                                                 style="color:#ef071e; ">*</span></label>
                                             <input type="number" [(ngModel)]="Stock_Add_Details_.Quantity" (ngModelChange)="Calculate_Total_Amount()"
                                             (keyup.enter)="Plus_Stock_Add_Details($event)"
-                                                style="padding-left: 5px !important;" id="Stock_Add_Details_.Quantity"  name="Stock_Add_Details_.Quantity"
+                                                 id="Stock_Add_Details_.Quantity"  name="Stock_Add_Details_.Quantity"
                                                 class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
                                         </div>
 
-                                        <div
-                                        class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                        <label
-                                            class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt"> Purchase
+                                        <div class="col-md-2 mb-2">
+                                        <label class="mb-1" style="font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase;"> Purchase
                                             Rate</label>
                                         <input type="number" [(ngModel)]="Stock_Add_Details_.Purchase_Rate" (ngModelChange)="Calculate_Total_Amount()"
                                         (keyup.enter)="Plus_Stock_Add_Details($event)"
-                                            style="padding-left: 5px !important;" id="Stock_Add_Details_.Purchase_Rate" name="Stock_Add_Details_.Purchase_Rate"
+                                             id="Stock_Add_Details_.Purchase_Rate" name="Stock_Add_Details_.Purchase_Rate"
                                             class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
                                     </div>
 
-                                        <div
-                                            class="col-md-2 tab-wole-div-alyn alighn-right-inputs-sales-grid d-flex flex-column">
-                                            <label
-                                                class=" label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Sales Rate
+                                        <div class="col-md-2 mb-2">
+                                            <label class="mb-1" style="font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase;">Sales Rate
                                                
                                                 <span
                                                 style="color:#ef071e; ">*</span></label>
                                             <input type="number" [(ngModel)]="Stock_Add_Details_.SaleRate"
                                             (keyup.enter)="Plus_Stock_Add_Details($event)"
-                                                style="padding-left: 5px !important;" id="Stock_Add_Details_.SaleRate"  name="Stock_Add_Details_.SaleRate"
+                                                 id="Stock_Add_Details_.SaleRate"  name="Stock_Add_Details_.SaleRate"
                                                 class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn ng-pristine ng-valid" />
                                         </div>                                       
                                         
                                         <div
-                                        class="col-md-1" style="display: flex; justify-content: end; align-items: end;margin-top:15px;">
+                                        class="col-md-1" class="col-md-1 mb-2 mt-4">
                                         <button mat-raised-button type="button" (click)="Plus_Stock_Add_Details($event)"
-                                            class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes" style="border-radius: 5px; margin-top: 16px !important;">
+                                            class="btn btn-danger" >
                                             Add</button>
                                     </div>                                       
                                         
@@ -296,11 +278,11 @@
                                                  <div
                                 class="table-responsive"
                                 [style.height.px]="myInnerHeight"
-                                style="overflow-y: scroll;background-color: #f1f1f1;"
+                                style="overflow-y: scroll;"
                               >
                                                 <table class="table table-hover table-for-sale-search-section-diary">
                                                     <thead class="bg-col-stock-add-diary">
-                                                        <th>No </th>
+                                                        <th>No</th>
                                                         <th>Part Number</th>
                                                         <th>Item & Description </th>
                                                         <th>Uom</th>
@@ -368,10 +350,10 @@
                                 </div>
                                 <div class="col-md-12">                                   
                                     <button mat-raised-button type="button" id="Save_Button" [hidden]="StockAdd_Save==false"
-                                        class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                        class="btn btn-danger div-rspnsv-pstn-crct-sls-mstr"
                                         (click)="Save_AddStock(0)">Save</button>
                                     <button mat-raised-button type="button"
-                                        class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
+                                        class="btn btn-danger div-rspnsv-pstn-crct-sls-mstr"
                                         (click)="Close_Click();">Close</button>
                                    </div>                                
                                 <div class="clearfix"></div>                            

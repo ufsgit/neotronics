@@ -7,7 +7,10 @@ import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Company } from '../../../models/Company';
 import {Account_Group } from '../../../models/Account_Group';
 
-import { MatDialog } from '@angular/material/dialog';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({
+import { MatDialog } from '@angular/material/dialog';
+import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
+@Component({
 selector: 'app-Company',
 templateUrl: './Company.component.html',
 styleUrls: ['./Company.component.css']
@@ -17,7 +20,6 @@ Company_Data:Company[]
 Employee_Details_Data:Company[]
 Employee_:Company=new Company();
 Company_:Company= new Company();
-
 Company_Name_Search:string;
 Entry_View:boolean=true;
 myInnerHeight: number;
@@ -46,7 +48,7 @@ If_file_changed:boolean=false
 Save_Call_Status: boolean = false;
 
 
-    constructor(public Client_Accounts_Service_: Client_Accounts_Service,public Journal_Entry_Service_:Journal_Entry_Service, public Account_Group_Service_:Account_Group_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
+    constructor(public Client_Accounts_Service_: Client_Accounts_Service,public Journal_Entry_Service_:Journal_Entry_Service, public Account_Group_Service_:Account_Group_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog, private Master_Refresh_Service_: Master_Refresh_Service) { }
 ngOnInit() 
 {
 this.Permissions = Get_Page_Permission(35);
@@ -158,6 +160,7 @@ this.Client_Accounts_Service_.Delete_Company(Company_Id).subscribe(Delete_status
     this.Company_Data.splice(index, 1);
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
     this.Search_Company();
+    this.Master_Refresh_Service_.refreshMaster('Company');
 }
 else
 {
@@ -261,19 +264,21 @@ upload()
     debugger;
     this.issLoading=true;
 this.Client_Accounts_Service_.Save_Company(this.Company_).subscribe((res: any) => {
-    let Save_status = res;
-    if (res && res.success !== undefined) {
-        Save_status = res.data;
-    }
-    
-    let resultRow = Save_status;
-    if (Array.isArray(resultRow)) resultRow = resultRow[0];
-    if (Array.isArray(resultRow)) resultRow = resultRow[0];
+    console.log('Save_Company Response:', res);
+    const isErrorResponse = res && (res.code || res.errno || res.sqlMessage || res.sqlState);
+    let resultRow = res && res.success !== undefined ? res.data : res;
+    while (Array.isArray(resultRow)) resultRow = resultRow[0];
 
-    if(resultRow && Number(resultRow.Company_Id_) > 0)
+    const savedCompanyId = Number(
+        resultRow && (resultRow.Company_Id_ || resultRow.Company_Id || resultRow.insertId)
+    );
+    const isOkPacket = resultRow && (resultRow.affectedRows !== undefined || resultRow.changedRows !== undefined);
+
+    if(!isErrorResponse && (savedCompanyId > 0 || isOkPacket || (res && res.success === true)))
     {
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
         this.Close_Click();
+        this.Master_Refresh_Service_.refreshMaster('Company');
     }
     else{
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});

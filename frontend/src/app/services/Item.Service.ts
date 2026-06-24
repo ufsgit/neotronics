@@ -40,7 +40,9 @@ Search_Item(Item_Name,Group_Id_,Item_Code_):Observable<any>
         'Group_Id_': Group_Id_,
         'Item_Code_': Item_Code_
     }
-    return this.http.get(environment.BasePath + 'Item/Search_Item/',  { params: Search_Data });
+    return this.http.get(environment.BasePath + 'Item/Search_Item/',  { params: Search_Data }).pipe(
+        map((res: any) => (res && res.success) ? res.data : res)
+    );
 }
 
 Item_Typeahead(Item_Name):Observable<any>
@@ -51,7 +53,9 @@ Item_Typeahead(Item_Name):Observable<any>
     var Search_Data = {
         'Item_Name': Item_Name
     }
-    return this.http.get(environment.BasePath + 'Item/Item_Typeahead/',  { params: Search_Data });
+    return this.http.get(environment.BasePath + 'Item/Item_Typeahead/',  { params: Search_Data }).pipe(
+        map((res: any) => (res && res.success) ? res.data : res)
+    );
 }
 
 Delete_Item(Item_Id)
@@ -59,7 +63,9 @@ Delete_Item(Item_Id)
  return this.http.get(environment.BasePath +'Item/Delete_Item/'+Item_Id);}
 Get_Item(Item_Id)
 {
- return this.http.get(environment.BasePath +'Item/Get_Item/'+Item_Id);
+ return this.http.get(environment.BasePath +'Item/Get_Item/'+Item_Id).pipe(
+    map((res: any) => (res && res.success) ? res.data : res)
+);
 }
 
 Get_HSN(HSN_Id)

@@ -1,604 +1,401 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <!-- Entry View -->
-        <div class="row" *ngIf="Entry_View">
-            <div class="col-md-12">
-                <div class="lead-entry-header d-flex justify-content-between align-items-center">
-                    <h4 class="page-title-main">{{Lead_.Lead_Id > 0 ? 'Edit Lead' : 'Add New Lead'}}</h4>
-                    <button type="button" class="btn-close-custom" (click)="Close_Click()">
-                        <i class="material-icons">close</i> Close
-                    </button>
-                </div>
+<!-- Loading Overlay -->
+<div *ngIf="issLoading" class="ig-overlay">
+  <mat-progress-spinner [color]="color" [mode]="mode" [value]="value" diameter="36"></mat-progress-spinner>
+</div>
 
-                <div class="lead-entry-body">
-                    <form>
-                        <!-- Company Information -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h6 class="text-info" style="cursor: default;">Company Information</h6>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Company Name <span class="required-star">*</span></label>
-                                    <input type="text" class="trackbox-native-input" placeholder="Enter Company Name" name="Lead_Name" [(ngModel)]="Lead_.Lead_Name">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Company Size</label>
-                                    <select class="trackbox-native-select" name="Company_Size_Id" [(ngModel)]="Lead_.Company_Size_Id">
-                                        <option [value]="0">Select Company Size</option>
-                                        <option *ngFor="let cs of Company_Size_Data" [value]="cs.Company_Size_Id">{{cs.Company_Size_Name}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Project Name</label>
-                                    <input type="text" class="trackbox-native-input" placeholder="Enter Project Name" name="Project_Name" [(ngModel)]="Lead_.Project_Name">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Company Address</label>
-                                    <input type="text" class="trackbox-native-input" placeholder="Enter Company Address" name="Address" [(ngModel)]="Lead_.Address">
-                                </div>
-                            </div>
-                        </div>
+<div class="ig-page">
 
-                        <!-- Contact Person Information -->
-                        <div class="row mt-4">
-                            <div class="col-md-12">
-                                <h6 class="text-info" style="cursor: default;">Contact Person Information</h6>
-                            </div>
-                        </div>
-                        <div [formGroup]="contactForm">
-                            <div formArrayName="contactPersons" class="contact-persons-wrapper">
-                                <div *ngFor="let contact of contactPersons.controls; let i=index" [formGroupName]="i" class="contact-person-entry mb-4 p-4">
-                                    <div class="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom">
-                                        <span class="text-secondary" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Contact #{{i + 1}}</span>
-                                        <button *ngIf="contactPersons.length > 1" mat-icon-button color="warn" type="button" (click)="removeContact(i)" style="width: 24px; height: 24px; line-height: 24px;" title="Remove">
-                                            <i class="material-icons" style="font-size: 16px;">delete_outline</i>
-                                        </button>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="trackbox-input-group">
-                                                <label class="input-label">Contact Person Name <span class="required-star">*</span></label>
-                                                <input type="text" class="trackbox-native-input" placeholder="Enter Name" formControlName="Contact_Person">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="trackbox-input-group">
-                                                <label class="input-label">Designation</label>
-                                                <select class="trackbox-native-select" formControlName="Designation">
-                                                    <option [value]="0">Select Designation</option>
-                                                    <option *ngFor="let d of Designation_Data" [value]="d.Designation_Id">{{d.Designation_Name}}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="trackbox-input-group">
-                                                <label class="input-label">Mobile Number <span class="required-star">*</span></label>
-                                                <input type="text" class="trackbox-native-input" placeholder="Enter Mobile" formControlName="Contact_Number">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-md-4">
-                                            <div class="trackbox-input-group">
-                                                <label class="input-label">Phone Number</label>
-                                                <input type="text" class="trackbox-native-input" placeholder="Enter Phone" formControlName="Phone">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="trackbox-input-group">
-                                                <label class="input-label">Email ID</label>
-                                                <input type="text" class="trackbox-native-input" placeholder="Enter Email" formControlName="Email">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 d-flex align-items-center">
-                                            <mat-checkbox class="example-margin" formControlName="Next_Call_Action" (change)="Set_Next_Call_Contact(i)">
-                                                Next Call Action
-                                            </mat-checkbox>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-end mb-2">
-                                <button mat-button type="button" class="btn-add-contact-person" (click)="addContact()">
-                                    <i class="material-icons" style="font-size: 16px; margin-right: 4px;">add</i> Add Contact Person
-                                </button>
-                            </div>
-                        </div>
+  <!-- ══════════════════════════════════════════
+       ENTRY VIEW
+  ══════════════════════════════════════════ -->
+  <div *ngIf="Entry_View">
 
-                        <!-- Business Information -->
-                        <div class="row mt-4">
-                            <div class="col-md-12">
-                                <h6 class="text-info" style="cursor: default;">Business Information</h6>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Industry</label>
-                                    <select class="trackbox-native-select" name="Vertical2" [(ngModel)]="Selected_Vertical" (ngModelChange)="onVerticalChange()">
-                                        <option value="0">Select Industry</option>
-                                        <option *ngFor="let v of Vertical_Data" [value]="v.Vertical_Id">{{v.Vertical_Name}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">District</label>
-                                    <select class="trackbox-native-select" name="District" [(ngModel)]="Lead_.District">
-                                        <option value="0">Select District</option>
-                                        <option *ngFor="let d of District_Data" [value]="d.District_Id">{{d.District_Name}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">State</label>
-                                    <select class="trackbox-native-select" name="State" [(ngModel)]="Lead_.State">
-                                        <option value="0">Select State</option>
-                                        <option *ngFor="let s of State_Data" [value]="s.State_Id">{{s.State_Name}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Website</label>
-                                    <input type="text" class="trackbox-native-input" placeholder="Enter Website" name="Website" [(ngModel)]="Lead_.Website">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Address2/Remark</label>
-                                    <input type="text" class="trackbox-native-input" placeholder="Enter Remark" name="Address2" [(ngModel)]="Lead_.Remark">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Rating</label>
-                                    <input type="text" class="trackbox-native-input" placeholder="Enter Rating" name="Rate" [(ngModel)]="Lead_.Rate">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Review</label>
-                                    <input type="text" class="trackbox-native-input" placeholder="Enter Review" name="Review" [(ngModel)]="Lead_.Review">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Requirement Information -->
-                        <div class="row mt-4">
-                            <div class="col-md-12">
-                                <h6 class="text-info" style="cursor: default;">Requirement Information</h6>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Requirement For (Checklist)</label>
-                                    <mat-form-field floatLabel="never" class="trackbox-field vertical-multiselect">
-                                        <mat-select placeholder="Select Requirements" name="Enquiry_For" [(ngModel)]="Selected_Enquiry_For" multiple (ngModelChange)="onEnquiryForChange()">
-                                            <mat-select-trigger>
-                                                <span *ngIf="Selected_Enquiry_For.length === 0" class="placeholder-text">Select Requirements</span>
-                                                <span class="vertical-chip" *ngFor="let eId of Selected_Enquiry_For">
-                                                    {{getVerticalName(eId)}}
-                                                </span>
-                                            </mat-select-trigger>
-                                            <mat-option *ngFor="let opt of Vertical_Data" [value]="opt.Vertical_Id">{{opt.Vertical_Name}}</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="trackbox-input-group">
-                                     <label class="input-label">Enquiry Source</label>
-                                     <select class="trackbox-native-select" name="Enquiry_Source" [(ngModel)]="Lead_.Source">
-                                         <option value="0">Select Source</option>
-                                         <option *ngFor="let source of Source_Data" [value]="source.Source_Id">{{source.Source_Name}}</option>
-                                     </select>
-                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Lead Priority -->
-                        <div class="row mt-4">
-                            <div class="col-md-12">
-                                <h6 class="text-info" style="cursor: default;">Lead Priority</h6>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="trackbox-input-group">
-                                    <label class="input-label">Lead Priority</label>
-                                    <select class="trackbox-native-select" name="Lead_Priority" [(ngModel)]="Lead_.Lead_Priority">
-                                        <option value="">Select Priority</option>
-                                        <option value="Low">Low</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="High">High</option>
-                                        <option value="Critical">Critical</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="followup-checkbox mt-4">
-                            <label class="followup-checkbox-label">
-                                <input type="checkbox" name="Is_FollowUp" [(ngModel)]="Lead_.Is_FollowUp" />
-                                <span class="custom-checkbox"></span>
-                                <span class="checkbox-text">Show Follow-up</span>
-                            </label>
-                        </div>
-                        
-                        <!-- Follow-up Details section -->
-                        <div *ngIf="Lead_.Is_FollowUp" class="follow-up-section-open mt-4 p-4">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h6 class="text-info" style="cursor: default;">Follow-up Details</h6>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-4">
-                                    <div class="trackbox-input-group">
-                                        <label class="input-label">Department <span class="required-star">*</span></label>
-                                        <select class="trackbox-native-select" name="FollowUp_Department_Id" [(ngModel)]="Lead_.FollowUp_Department_Id">
-                                            <option value="0">Select Department</option>
-                                            <option *ngFor="let dept of Department_Data" [value]="dept.Department_Id">{{dept.Department_Name}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="trackbox-input-group">
-                                        <label class="input-label">Assigned Staff <span class="required-star">*</span></label>
-                                        <select class="trackbox-native-select" name="FollowUp_Staff_Id" [(ngModel)]="Lead_.FollowUp_Staff_Id">
-                                            <option value="0">Select Staff</option>
-                                            <option *ngFor="let staff of Staff_Data" [value]="staff.User_Details_Id">{{staff.User_Details_Name}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="trackbox-input-group">
-                                        <label class="input-label">Lead Stage <span class="required-star">*</span></label>
-                                        <select class="trackbox-native-select" name="FollowUp_Status_Id" [(ngModel)]="Lead_.FollowUp_Status_Id">
-                                            <option value="0">Select Stage</option>
-                                            <option *ngFor="let status of Status_Data" [value]="status.Status_Id">{{status.Status_Name}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mt-2">
-                                <div class="col-md-4">
-                                    <div class="trackbox-input-group">
-                                        <label class="input-label">Next Follow-up Date <span class="required-star">*</span></label>
-                                        <div class="custom-input-wrap">
-                                            <input class="trackbox-native-input" [matDatepicker]="fp" placeholder="Choose Date" name="FollowUp_Next_Date" [(ngModel)]="Lead_.FollowUp_Next_Date">
-                                            <mat-datepicker-toggle matSuffix [for]="fp"></mat-datepicker-toggle>
-                                            <mat-datepicker #fp></mat-datepicker>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="trackbox-input-group">
-                                        <label class="input-label">Follow-up Time</label>
-                                        <input type="datetime-local" class="trackbox-native-input" name="FollowUp_Date" [(ngModel)]="Lead_.FollowUp_Date">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="trackbox-input-group">
-                                        <label class="input-label">Remarks</label>
-                                        <input type="text" class="trackbox-native-input" placeholder="Enter Remarks" name="FollowUp_Remark" [(ngModel)]="Lead_.FollowUp_Remark">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Follow-up History Section -->
-                        <div class="row mt-4" *ngIf="FollowUp_History && FollowUp_History.length > 0">
-                            <div class="col-md-12">
-                                <h6 class="text-info" style="cursor: default;">Follow-up History</h6>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-sm">
-                                        <thead class="text-secondary" style="font-size: 12px; font-weight: bold;">
-                                            <tr>
-                                                <th>Follow-up Date & Time</th>
-                                                <th>Next Follow-up Date</th>
-                                                <th>Status</th>
-                                                <th>Department</th>
-                                                <th>Staff</th>
-                                                <th>Created By</th>
-                                                <th>Remarks</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr *ngFor="let h of FollowUp_History">
-                                                <td>{{h.FollowUp_Date | date:'medium'}}</td>
-                                                <td>{{h.Next_FollowUp_Date | date:'mediumDate'}}</td>
-                                                <td>{{h.Status_Name}}</td>
-                                                <td>{{h.Department_Name}}</td>
-                                                <td>{{h.Staff_Name}}</td>
-                                                <td>{{h.Login_User_Name}}</td>
-                                                <td>{{h.Remark}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-5">
-                            <div class="col-md-12 text-right">
-                                <button mat-button type="button" class="btn-cancel" (click)="Close_Click()">Cancel</button>
-                                <button mat-raised-button type="button" class="btn-save" (click)="Save_Lead()">Save</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- List View -->
-        <div class="row" *ngIf="!Entry_View">
-            <div class="col-md-12">
-                <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h4 class="page-title-main">Lead Management</h4>
-                        <p class="page-subtitle">Overview of your business leads</p>
-                    </div>
-                    <div class="d-flex align-items-center" style="gap: 10px;">
-                        <button mat-button type="button" class="btn-column-settings" (click)="Column_Customizer_Open = !Column_Customizer_Open">
-                            <i class="material-icons">view_column</i> Columns
-                        </button>
-                        <div class="header-divider"></div>
-                        <button mat-raised-button (click)="Create_New()" class="btn-new-lead">
-                            <i class="material-icons">add</i> New Lead
-                        </button>
-                    </div>
-                </div>
-
-                <div class="column-customizer" *ngIf="Column_Customizer_Open">
-                    <div class="column-customizer-header">
-                        <strong>Customize Lead Columns</strong>
-                        <span>Show or hide columns and save your preference.</span>
-                    </div>
-                    <div class="column-toggle-grid">
-                        <mat-checkbox *ngFor="let column of Lead_List_Columns" [(ngModel)]="column.visible" [name]="'col_' + column.key">
-                            {{column.label}}
-                        </mat-checkbox>
-                    </div>
-                    <div class="text-right mt-2">
-                        <button mat-button type="button" class="btn-cancel" (click)="Reset_Column_Preferences()">Reset</button>
-                        <button mat-raised-button type="button" class="btn-save" (click)="Save_Column_Preferences()">Save Preferences</button>
-                    </div>
-                </div>
-                <div class="lead-filter-panel">
-                    <div class="filter-grid">
-                        <select class="trackbox-native-select" name="Filter_Industry" [(ngModel)]="Lead_Filter.Industry" (ngModelChange)="Apply_Lead_Filters()">
-                            <option [value]="0">All Industries</option>
-                            <option *ngFor="let v of Vertical_Data" [value]="v.Vertical_Id">{{v.Vertical_Name}}</option>
-                        </select>
-                        <select class="trackbox-native-select" name="Filter_Stage" [(ngModel)]="Lead_Filter.Stage" (ngModelChange)="Apply_Lead_Filters()">
-                            <option [value]="0">All Stages</option>
-                            <option *ngFor="let status of Status_Data" [value]="status.Status_Id">{{status.Status_Name}}</option>
-                        </select>
-                        <select class="trackbox-native-select" name="Filter_Priority" [(ngModel)]="Lead_Filter.Priority" (ngModelChange)="Apply_Lead_Filters()">
-                            <option value="">All Priorities</option>
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                            <option value="Critical">Critical</option>
-                        </select>
-                        <div class="custom-input-wrap" style="max-width: 200px;">
-                            <input class="trackbox-native-input" [matDatepicker]="df" placeholder="Date" name="Filter_Date" [(ngModel)]="Lead_Filter.Date" (ngModelChange)="Apply_Lead_Filters()">
-                            <mat-datepicker-toggle matSuffix [for]="df"></mat-datepicker-toggle>
-                            <mat-datepicker #df></mat-datepicker>
-                        </div>
-                        <select class="trackbox-native-select" name="Filter_Assigned_Staff" [(ngModel)]="Lead_Filter.Assigned_Staff" (ngModelChange)="Apply_Lead_Filters()">
-                            <option [value]="0">All Staff</option>
-                            <option *ngFor="let staff of Staff_Data" [value]="staff.User_Details_Id">{{staff.User_Details_Name}}</option>
-                        </select>
-                        <select class="trackbox-native-select" name="Filter_District" [(ngModel)]="Lead_Filter.District" (ngModelChange)="Apply_Lead_Filters()">
-                            <option [value]="0">All Districts</option>
-                            <option *ngFor="let d of District_Data" [value]="d.District_Id">{{d.District_Name}}</option>
-                        </select>
-                        <select class="trackbox-native-select" name="Filter_State" [(ngModel)]="Lead_Filter.State" (ngModelChange)="Apply_Lead_Filters()">
-                            <option [value]="0">All States</option>
-                            <option *ngFor="let s of State_Data" [value]="s.State_Id">{{s.State_Name}}</option>
-                        </select>
-                        <button mat-button type="button" class="btn-cancel filter-clear" (click)="Clear_Lead_Filters()">Clear</button>
-                    </div>
-                </div>
-                <div class="lead-table-container">
-                    <table class="lead-data-table">
-                        <thead>
-                            <tr>
-                                <th *ngIf="Is_Column_Visible('Company_Name')" class="col-width-company">Company Name</th>
-                                <th *ngIf="Is_Column_Visible('Contact_Person')" class="col-width-fixed">Contact Person</th>
-                                <th *ngIf="Is_Column_Visible('Number')" class="col-width-fixed">Number</th>
-                                <th *ngIf="Is_Column_Visible('Industry')" class="col-width-fixed">Industry</th>
-                                <th *ngIf="Is_Column_Visible('Lead_Stage')" class="col-width-scroll">Lead Stage</th>
-                                <th *ngIf="Is_Column_Visible('Priority')" class="col-width-scroll-small">Priority</th>
-                                <th *ngIf="Is_Column_Visible('Last_FollowUp')" class="col-width-scroll">Last Follow-up</th>
-                                <th *ngIf="Is_Column_Visible('Next_FollowUp')" class="col-width-scroll">Next Follow-up</th>
-                                <th *ngIf="Is_Column_Visible('Created_Date')" class="col-width-scroll">Created Date</th>
-                                <th *ngIf="Is_Column_Visible('Assigned_Staff')" class="col-width-scroll">Assigned Staff</th>
-                                <th *ngIf="Is_Column_Visible('Remarks')" class="col-width-scroll">Remarks</th>
-                                <th *ngIf="Is_Column_Visible('Action')" class="col-width-scroll text-right">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let lead of Paged_Lead_Data; let i = index">
-                                <td *ngIf="Is_Column_Visible('Company_Name')">
-                                    <span class="lead-name-clickable" (click)="Edit_Lead(lead)"
-                                        matTooltip="Click to Edit Lead">
-                                        {{lead.Lead_Name}}
-                                    </span>
-                                </td>
-                                <td *ngIf="Is_Column_Visible('Contact_Person')">{{lead.Contact_Person}}</td>
-                                <td *ngIf="Is_Column_Visible('Number')">{{lead.Contact_Number || lead.Phone}}</td>
-                                <td *ngIf="Is_Column_Visible('Industry')">{{lead.Vertical_Name}}</td>
-                                <td *ngIf="Is_Column_Visible('Lead_Stage')">
-                                    <span class="badge badge-info status-clickable"
-                                        (click)="Open_FollowUp_Drawer(lead)"
-                                        matTooltip="Click to update follow-up">
-                                        {{lead.Status_Name || 'RAW Lead'}}
-                                    </span>
-                                </td>
-                                <td *ngIf="Is_Column_Visible('Priority')">{{lead.Lead_Priority || 'Medium'}}</td>
-                                <td *ngIf="Is_Column_Visible('Last_FollowUp')">{{lead.Last_FollowUp_Date | date:'mediumDate'}}</td>
-                                <td *ngIf="Is_Column_Visible('Next_FollowUp')">{{lead.Next_FollowUp_Date | date:'mediumDate'}}</td>
-                                <td *ngIf="Is_Column_Visible('Created_Date')">{{lead.Entry_Date | date:'mediumDate'}}</td>
-                                <td *ngIf="Is_Column_Visible('Assigned_Staff')">{{lead.Staff_Name}}</td>
-                                <td *ngIf="Is_Column_Visible('Remarks')">
-                                    <span class="text-truncate-custom"
-                                        [matTooltip]="lead.Remark">{{lead.Remark}}</span>
-                                </td>
-                                <td *ngIf="Is_Column_Visible('Action')" class="text-right">
-                                    <div class="action-buttons">
-                                        <button mat-icon-button (click)="Open_Requirement(lead)"
-                                            color="primary" matTooltip="Requirement">
-                                            <i class="material-icons">assignment</i>
-                                        </button>
-                                        <button mat-icon-button (click)="Edit_Lead(lead)"
-                                            color="primary" matTooltip="Edit Lead">
-                                            <i class="material-icons">edit</i>
-                                        </button>
-                                        <button mat-icon-button (click)="Delete_Lead(lead.Lead_Id, i)"
-                                            color="warn" matTooltip="Delete Lead">
-                                            <i class="material-icons">delete</i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr *ngIf="Paged_Lead_Data.length == 0">
-                                <td [attr.colspan]="Lead_List_Columns.length" class="text-center text-muted">No leads found.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="pagination-container d-flex justify-content-between align-items-center p-2">
-                    <div class="page-info">
-                        Showing {{Paged_Lead_Data.length}} of {{Filtered_Lead_Data.length}} leads
-                    </div>
-                    <div class="d-flex align-items-center" style="gap: 8px;">
-                        <select class="trackbox-native-select" style="width: 90px;" name="Page_Size" [(ngModel)]="Page_Size" (ngModelChange)="Change_Page_Size()">
-                            <option *ngFor="let size of Page_Size_Options" [value]="size">{{size}}</option>
-                        </select>
-                        <button mat-button type="button" (click)="Change_Page(-1)" [disabled]="Page_Index <= 1">
-                            <i class="material-icons">chevron_left</i> Previous
-                        </button>
-                        <span class="page-info">Page {{Page_Index}} / {{Total_Pages}}</span>
-                        <button mat-button type="button" (click)="Change_Page(1)" [disabled]="Page_Index >= Total_Pages">
-                            Next <i class="material-icons">chevron_right</i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="drawer-backdrop" [class.active]="FollowUp_Drawer_Visible" (click)="Close_Drawer()"></div>
-        <div class="followup-drawer" [class.active]="FollowUp_Drawer_Visible">
-            <div class="drawer-header">
-                <h5>Add follow-up</h5>
-                <button type="button" class="close" (click)="Close_Drawer()">&times;</button>
-            </div>
-            <div class="drawer-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label class="drawer-input-label">Department</label>
-                        <select class="trackbox-native-select" name="FollowUp_Department_Id"
-                            [(ngModel)]="Lead_.FollowUp_Department_Id">
-                            <option value="0">Select Department</option>
-                            <option *ngFor="let dept of Department_Data"
-                                [value]="dept.Department_Id">{{dept.Department_Name}}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="drawer-input-label">Assigned Staff</label>
-                        <select class="trackbox-native-select" name="FollowUp_Staff_Id"
-                            [(ngModel)]="Lead_.FollowUp_Staff_Id">
-                            <option value="0">Select Staff</option>
-                            <option *ngFor="let staff of Staff_Data"
-                                [value]="staff.User_Details_Id">{{staff.User_Details_Name}}</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row mt-2">
-                    <div class="col-md-6">
-                        <label class="drawer-input-label">Lead Stage</label>
-                        <select class="trackbox-native-select" name="FollowUp_Status_Id"
-                            [(ngModel)]="Lead_.FollowUp_Status_Id">
-                            <option value="0">Select Lead Stage</option>
-                            <option *ngFor="let status of Status_Data"
-                                [value]="status.Status_Id">{{status.Status_Name}}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="drawer-input-label">Next Follow-up Date</label>
-                        <div class="custom-input-wrap">
-                            <input class="trackbox-native-input" [matDatepicker]="dp_drawer" placeholder="Choose Date"
-                                name="FollowUp_Next_Date" [(ngModel)]="Lead_.FollowUp_Next_Date">
-                            <mat-datepicker-toggle matSuffix [for]="dp_drawer"></mat-datepicker-toggle>
-                            <mat-datepicker #dp_drawer></mat-datepicker>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mt-2">
-                    <div class="col-md-6">
-                        <label class="drawer-input-label">Last Followed On</label>
-                        <input class="trackbox-native-input" [value]="Lead_.Last_FollowUp_Date ? (Lead_.Last_FollowUp_Date | date:'medium') : '-'" disabled>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="drawer-input-label">Follow-up Time</label>
-                        <input type="datetime-local" class="trackbox-native-input" placeholder="Follow-up Date & Time"
-                            name="FollowUp_Date" [(ngModel)]="Lead_.FollowUp_Date">
-                    </div>
-                </div>
-
-                <div class="row mt-2">
-                    <div class="col-md-12">
-                        <label class="drawer-input-label">Follow-up Notes</label>
-                        <textarea class="trackbox-native-input" style="height: auto;" placeholder="Enter follow-up notes..." name="FollowUp_Remark" rows="4"
-                            [(ngModel)]="Lead_.FollowUp_Remark"></textarea>
-                    </div>
-                </div>
-
-                <div class="lost-lead-section" *ngIf="Is_Lost_Stage()">
-                    <h6 class="text-info mb-3">Lost Lead Management</h6>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="drawer-input-label">Lost Reason</label>
-                                <select class="trackbox-native-select" name="Lost_Reason" [(ngModel)]="Lead_.Lost_Reason">
-                                    <option value="">Select Reason</option>
-                                    <option *ngFor="let reason of Lost_Reason_Data" [value]="reason">{{reason}}</option>
-                                </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="drawer-input-label">Primary Issue</label>
-                                <select class="trackbox-native-select" name="Lost_Primary_Issue" [(ngModel)]="Lead_.Lost_Primary_Issue">
-                                    <option value="">Select Issue</option>
-                                    <option *ngFor="let issue of Primary_Issue_Data" [value]="issue">{{issue}}</option>
-                                </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="drawer-footer">
-                <button mat-button type="button" class="btn-cancel" (click)="Close_Drawer()">Cancel</button>
-                <button mat-raised-button type="button" class="btn-save" (click)="Save_FollowUp()">Save Follow-up</button>
-            </div>
-        </div>
+    <!-- Entry Header -->
+    <div class="ig-header">
+      <div>
+        <h1 class="ig-title">{{ Lead_.Lead_Id > 0 ? 'Update Lead Profile' : 'Register New Lead' }}</h1>
+        <p class="ig-subtitle">{{ Lead_.Lead_Id > 0 ? 'Modify information for ' + Lead_.Lead_Name : 'Expand your pipeline by adding a new business opportunity' }}</p>
+      </div>
+      <div class="ig-header-actions">
+        <button mat-button type="button" class="ig-btn-cancel" (click)="Close_Click()">
+          <i class="material-icons">close</i> Cancel
+        </button>
+        <button mat-button type="button" class="ig-btn-save" (click)="Save_Lead()">
+          <i class="material-icons">save</i> Save Profile
+        </button>
+      </div>
     </div>
+
+    <form>
+      <!-- ── Company Details ── -->
+      <div class="ig-section-card">
+        <p class="ig-section-title"><i class="material-icons">business</i> Company Details</p>
+        <div class="ig-grid ig-grid-4">
+          <div class="ig-field">
+            <label class="ig-label">Company Name <span class="ig-req">*</span></label>
+            <input type="text" class="ig-input" placeholder="e.g. Acme Corp" name="Lead_Name" [(ngModel)]="Lead_.Lead_Name">
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Operational Size</label>
+            <select class="ig-select" name="Company_Size_Id" [(ngModel)]="Lead_.Company_Size_Id">
+              <option [value]="0">Select Size</option>
+              <option *ngFor="let cs of Company_Size_Data" [value]="cs.Company_Size_Id">{{cs.Company_Size_Name}}</option>
+            </select>
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Project / Department</label>
+            <input type="text" class="ig-input" placeholder="Project name" name="Project_Name" [(ngModel)]="Lead_.Project_Name">
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">HQ Address</label>
+            <input type="text" class="ig-input" placeholder="City or Full Address" name="Address" [(ngModel)]="Lead_.Address">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Decision Makers & Contacts ── -->
+      <div class="ig-section-card">
+        <div class="ig-section-header">
+          <p class="ig-section-title"><i class="material-icons">people</i> Decision Makers &amp; Contacts</p>
+          <button mat-button type="button" class="ig-btn-outline" (click)="addContact()">
+            <i class="material-icons">person_add</i> Add Another
+          </button>
+        </div>
+        <div [formGroup]="contactForm">
+          <div formArrayName="contactPersons">
+            <div *ngFor="let contact of contactPersons.controls; let i=index"
+                 [formGroupName]="i" class="ig-contact-card">
+              <div class="ig-contact-header">
+                <span class="ig-contact-index">Contact Person #{{i + 1}}</span>
+                <button *ngIf="contactPersons.length > 1" mat-icon-button color="warn" type="button"
+                        (click)="removeContact(i)" class="ig-icon-btn ig-delete">
+                  <i class="material-icons">delete_outline</i>
+                </button>
+              </div>
+              <div class="ig-grid ig-grid-3">
+                <div class="ig-field">
+                  <label class="ig-label">Full Name <span class="ig-req">*</span></label>
+                  <input type="text" class="ig-input" placeholder="e.g. John Doe" formControlName="Contact_Person">
+                </div>
+                <div class="ig-field">
+                  <label class="ig-label">Designation</label>
+                  <select class="ig-select" formControlName="Designation">
+                    <option [value]="0">Select Role</option>
+                    <option *ngFor="let d of Designation_Data" [value]="d.Designation_Id">{{d.Designation_Name}}</option>
+                  </select>
+                </div>
+                <div class="ig-field">
+                  <label class="ig-label">Direct Mobile <span class="ig-req">*</span></label>
+                  <input type="text" class="ig-input" placeholder="+1 (555) 000-0000" formControlName="Contact_Number">
+                </div>
+              </div>
+              <div class="ig-grid ig-grid-3">
+                <div class="ig-field">
+                  <label class="ig-label">Work Phone</label>
+                  <input type="text" class="ig-input" placeholder="Office extension" formControlName="Phone">
+                </div>
+                <div class="ig-field">
+                  <label class="ig-label">Email Address</label>
+                  <input type="text" class="ig-input" placeholder="name@company.com" formControlName="Email">
+                </div>
+                <div class="ig-field ig-field-checkbox">
+                  <mat-checkbox class="ig-checkbox" formControlName="Next_Call_Action" (change)="Set_Next_Call_Contact(i)">
+                    Mark for next follow-up
+                  </mat-checkbox>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Business & Geography ── -->
+      <div class="ig-section-card">
+        <p class="ig-section-title"><i class="material-icons">app_registration</i> Business &amp; Geography</p>
+        <div class="ig-grid ig-grid-3">
+          <div class="ig-field">
+            <label class="ig-label">Industry Sector</label>
+            <select class="ig-select" name="Vertical2" [(ngModel)]="Selected_Vertical" (ngModelChange)="onVerticalChange()">
+              <option value="0">Select Sector</option>
+              <option *ngFor="let v of Vertical_Data" [value]="v.Vertical_Id">{{v.Vertical_Name}}</option>
+            </select>
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Operating State</label>
+            <select class="ig-select" name="State" [(ngModel)]="Lead_.State">
+              <option value="0">Select State</option>
+              <option *ngFor="let s of State_Data" [value]="s.State_Id">{{s.State_Name}}</option>
+            </select>
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Region / District</label>
+            <select class="ig-select" name="District" [(ngModel)]="Lead_.District">
+              <option value="0">Select District</option>
+              <option *ngFor="let d of District_Data" [value]="d.District_Id">{{d.District_Name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="ig-grid ig-grid-3">
+          <div class="ig-field ig-field-span2">
+            <label class="ig-label">Company Website</label>
+            <input type="text" class="ig-input" placeholder="https://www.company.com" name="Website" [(ngModel)]="Lead_.Website">
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Performance Rating</label>
+            <input type="text" class="ig-input" placeholder="e.g. 4.5" name="Rate" [(ngModel)]="Lead_.Rate">
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Internal Review</label>
+            <input type="text" class="ig-input" placeholder="Quick verdict" name="Review" [(ngModel)]="Lead_.Review">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Requirement Profile ── -->
+      <div class="ig-section-card">
+        <p class="ig-section-title"><i class="material-icons">fact_check</i> Requirement Profile</p>
+        <div class="ig-grid ig-grid-2">
+          <div class="ig-field">
+            <label class="ig-label">Service / Product Interests</label>
+            <mat-form-field floatLabel="never" class="ig-mat-field">
+              <mat-select placeholder="Choose requirements" name="Enquiry_For" [(ngModel)]="Selected_Enquiry_For" multiple (ngModelChange)="onEnquiryForChange()">
+                <mat-select-trigger>
+                  <span *ngIf="Selected_Enquiry_For.length === 0" class="ig-placeholder">Click to select</span>
+                  <span class="ig-chip" *ngFor="let eId of Selected_Enquiry_For">{{getVerticalName(eId)}}</span>
+                </mat-select-trigger>
+                <mat-option *ngFor="let opt of Vertical_Data" [value]="opt.Vertical_Id">{{opt.Vertical_Name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Acquisition Source</label>
+            <select class="ig-select" name="Enquiry_Source" [(ngModel)]="Lead_.Source">
+              <option value="0">Select Source</option>
+              <option *ngFor="let source of Source_Data" [value]="source.Source_Id">{{source.Source_Name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Strategic Alignment ── -->
+      <div class="ig-section-card">
+        <p class="ig-section-title"><i class="material-icons">priority_high</i> Strategic Alignment</p>
+        <div class="ig-grid ig-grid-2">
+          <div class="ig-field">
+            <label class="ig-label">Lead Priority Level</label>
+            <select class="ig-select" name="Lead_Priority" [(ngModel)]="Lead_.Lead_Priority">
+              <option value="">Select Priority</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Critical">Critical</option>
+            </select>
+          </div>
+        </div>
+        <div class="ig-followup-check">
+          <label class="ig-check-label">
+            <input type="checkbox" name="Is_FollowUp" [(ngModel)]="Lead_.Is_FollowUp" />
+            <span class="ig-check-box"></span>
+            <span class="ig-check-text">Initialize Next Action / Follow-up</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ── Schedule Next Action (conditional) ── -->
+      <div *ngIf="Lead_.Is_FollowUp" class="ig-section-card">
+        <p class="ig-section-title"><i class="material-icons">event_available</i> Schedule Next Action</p>
+        <div class="ig-grid ig-grid-3">
+          <div class="ig-field">
+            <label class="ig-label">Department Responsibility <span class="ig-req">*</span></label>
+            <select class="ig-select" name="FollowUp_Department_Id" [(ngModel)]="Lead_.FollowUp_Department_Id">
+              <option value="0">Select Department</option>
+              <option *ngFor="let dept of Department_Data" [value]="dept.Department_Id">{{dept.Department_Name}}</option>
+            </select>
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Assigned Owner <span class="ig-req">*</span></label>
+            <select class="ig-select" name="FollowUp_Staff_Id" [(ngModel)]="Lead_.FollowUp_Staff_Id">
+              <option value="0">Select Staff</option>
+              <option *ngFor="let staff of Staff_Data" [value]="staff.User_Details_Id">{{staff.User_Details_Name}}</option>
+            </select>
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Target Stage <span class="ig-req">*</span></label>
+            <select class="ig-select" name="FollowUp_Status_Id" [(ngModel)]="Lead_.FollowUp_Status_Id">
+              <option value="0">Select Stage</option>
+              <option *ngFor="let status of Status_Data" [value]="status.Status_Id">{{status.Status_Name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="ig-grid ig-grid-3">
+          <div class="ig-field">
+            <label class="ig-label">Calendar Date <span class="ig-req">*</span></label>
+            <div class="ig-datepicker-wrap">
+              <input class="ig-input" [matDatepicker]="fp" placeholder="MM/DD/YYYY" name="FollowUp_Next_Date" [(ngModel)]="Lead_.FollowUp_Next_Date">
+              <mat-datepicker-toggle matSuffix [for]="fp"></mat-datepicker-toggle>
+              <mat-datepicker #fp></mat-datepicker>
+            </div>
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Preferred Time</label>
+            <input type="datetime-local" class="ig-input" name="FollowUp_Date" [(ngModel)]="Lead_.FollowUp_Date">
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Action Item / Brief</label>
+            <input type="text" class="ig-input" placeholder="What needs to be done?" name="FollowUp_Remark" [(ngModel)]="Lead_.FollowUp_Remark">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Interaction History ── -->
+      <div class="ig-section-card" *ngIf="FollowUp_History && FollowUp_History.length > 0">
+        <p class="ig-section-title"><i class="material-icons">history</i> Interaction History</p>
+        <div class="ig-table-wrap">
+          <table class="ig-table">
+            <thead>
+              <tr>
+                <th class="ig-th">Timestamp</th>
+                <th class="ig-th">Next Target</th>
+                <th class="ig-th">Stage</th>
+                <th class="ig-th">Owner</th>
+                <th class="ig-th">Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let h of FollowUp_History" class="ig-tr">
+                <td class="ig-td ig-td-name">{{h.FollowUp_Date | date:'medium'}}</td>
+                <td class="ig-td">{{h.Next_FollowUp_Date | date:'mediumDate'}}</td>
+                <td class="ig-td"><span class="ig-badge">{{h.Status_Name}}</span></td>
+                <td class="ig-td">{{h.Staff_Name}}</td>
+                <td class="ig-td ig-td-muted">{{h.Remark}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Form Footer -->
+      <div class="ig-form-footer">
+        <button mat-button type="button" class="ig-btn-cancel" (click)="Close_Click()">Discard Changes</button>
+        <button mat-button type="button" class="ig-btn-save" (click)="Save_Lead()">
+          <i class="material-icons">check_circle</i> Finalize &amp; Save
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       LIST VIEW
+  ══════════════════════════════════════════ -->
+  <div *ngIf="!Entry_View">
+
+    <!-- List Header -->
+    <div class="ig-header">
+      <div>
+        <h1 class="ig-title">Leads</h1>
+      </div>
+      
+      <div class="ig-search-container">
+        <div class="ig-search-input-wrap">
+          <input type="text" placeholder="Search here..." [(ngModel)]="Search_Text" (keyup.enter)="Apply_Lead_Filters()">
+          <i class="material-icons">search</i>
+        </div>
+
+        <div class="ig-top-icon-btn" (click)="Column_Customizer_Open = !Column_Customizer_Open" title="Customize Columns">
+          <i class="material-icons">filter_list</i>
+        </div>
+        
+        <div class="ig-top-icon-btn" (click)="Export_Excel()" title="Download Excel">
+          <i class="material-icons">file_download</i>
+        </div>
+
+
+        <button mat-button type="button" class="ig-btn-new-lead" (click)="Create_New()">
+          <i class="material-icons">add</i> New Lead
+        </button>
+      </div>
+    </div>
+
+    <!-- Column Customizer -->
+    <div class="ig-section-card ig-customizer" *ngIf="Column_Customizer_Open">
+      <p class="ig-form-label">Manage Visible Columns</p>
+      <div class="ig-customizer-grid">
+        <mat-checkbox *ngFor="let column of Lead_List_Columns" [(ngModel)]="column.visible"
+                      [name]="'col_' + column.key" class="ig-checkbox">
+          {{column.label}}
+        </mat-checkbox>
+      </div>
+      <div class="ig-customizer-footer">
+        <button mat-button type="button" class="ig-btn-cancel" (click)="Reset_Column_Preferences()">Reset</button>
+        <button mat-button type="button" class="ig-btn-save" (click)="Save_Column_Preferences()">Apply</button>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="ig-table-card">
+      <div class="ig-table-scroll">
+        <table class="ig-table">
+          <thead>
+            <tr>
+              <th class="ig-th" width="50" *ngIf="Is_Column_Visible('SL')">SL</th>
+              <th class="ig-th" *ngIf="Is_Column_Visible('Name')">Name</th>
+              <th class="ig-th" *ngIf="Is_Column_Visible('Address')">Address</th>
+              <th class="ig-th" *ngIf="Is_Column_Visible('Contact')">Contact</th>
+              <th class="ig-th" *ngIf="Is_Column_Visible('Enquiry_for')">Enquiry for</th>
+              <th class="ig-th" *ngIf="Is_Column_Visible('Status')">Status</th>
+              <th class="ig-th" *ngIf="Is_Column_Visible('Remark')">Remark</th>
+              <th class="ig-th ig-th-actions" *ngIf="Is_Column_Visible('Action')">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let lead of Paged_Lead_Data; let i = index" class="ig-tr">
+              <td class="ig-td" *ngIf="Is_Column_Visible('SL')">{{ (Page_Index - 1) * Page_Size + i + 1 }}</td>
+              <td class="ig-td" *ngIf="Is_Column_Visible('Name')">
+                <div class="ig-td-name" (click)="Edit_Lead(lead)">{{lead.Lead_Name}}</div>
+              </td>
+              <td class="ig-td" *ngIf="Is_Column_Visible('Address')">
+                <div class="ig-td-muted" title="{{lead.Address}}">{{lead.Address | slice:0:30}}{{lead.Address?.length > 30 ? '...' : ''}}</div>
+              </td>
+              <td class="ig-td" *ngIf="Is_Column_Visible('Contact')">{{lead.Contact_Number || lead.Phone}}</td>
+              <td class="ig-td" *ngIf="Is_Column_Visible('Enquiry_for')">{{lead.Vertical_Name}}</td>
+              <td class="ig-td" *ngIf="Is_Column_Visible('Status')">
+                <span class="ig-status-pill text-test">{{lead.Status_Name || 'test'}}</span>
+              </td>
+              <td class="ig-td" *ngIf="Is_Column_Visible('Remark')">
+                <div class="ig-td-muted" title="{{lead.Remark}}">{{lead.Remark | slice:0:20}}{{lead.Remark?.length > 20 ? '...' : ''}}</div>
+              </td>
+              <td class="ig-td ig-td-actions" *ngIf="Is_Column_Visible('Action')">
+                <button class="ig-icon-btn ig-action-blue" (click)="Open_Requirement(lead)" title="Details">
+                  <i class="material-icons">description</i>
+                </button>
+                <button class="ig-icon-btn ig-edit" (click)="Edit_Lead(lead)" title="Edit Profile">
+                  <i class="material-icons">edit_note</i>
+                </button>
+                <button class="ig-icon-btn ig-delete" (click)="Delete_Lead(lead.Lead_Id, i)" title="Archive Lead">
+                  <i class="material-icons">delete_outline</i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="Paged_Lead_Data?.length === 0">
+              <td colspan="9" class="ig-empty">No leads found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Footer -->
+      <div class="ig-pagination">
+        <div class="ig-page-nav" style="margin: 0 auto; display: flex; align-items: center; gap: 10px;">
+          <button mat-icon-button (click)="Change_Page(-1)" [disabled]="Page_Index <= 1" class="ig-nav-btn">
+            <i class="material-icons">west</i>
+          </button>
+          <span class="ig-page-label">Showing {{ (Page_Index - 1) * Page_Size + 1 }} / {{ (Page_Index - 1) * Page_Size + Paged_Lead_Data.length }} of {{Filtered_Lead_Data.length}}</span>
+          <button mat-icon-button (click)="Change_Page(1)" [disabled]="Page_Index >= Total_Pages" class="ig-nav-btn">
+            <i class="material-icons">east</i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>

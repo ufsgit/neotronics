@@ -671,6 +671,13 @@ router.get('/Get_Proforma_Requirement_Details/:Requirement_Master_Id?', function
     });
 });
 
+router.get('/Check_Requirement_By_Lead/:Lead_Id?', function (req, res, next) {
+    requirementmaster.Check_Requirement_By_Lead(req.params.Lead_Id, function (err, rows) {
+        if (err) res.json(err);
+        else res.json(rows);
+    });
+});
+
 router.get('/Print_Requirement/:Requirement_Master_Id', asyncHandler(async function (req, res, next) {
     try {
         const requirement_Master_Id = req.params.Requirement_Master_Id;

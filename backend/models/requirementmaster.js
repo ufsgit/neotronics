@@ -71,7 +71,11 @@ var requirementmaster = {
                 }
             }
             if (result && result[0] && result[0].RequirementMaster_Id_ && requirementmaster_.Company_Id) {
-                await connection.query("UPDATE requirementmaster SET Company_Id=? WHERE RequirementMaster_Id=?", [requirementmaster_.Company_Id, result[0].RequirementMaster_Id_]);
+                try {
+                    await connection.query("UPDATE requirementmaster SET Company_Id=? WHERE RequirementMaster_Id=?", [requirementmaster_.Company_Id, result[0].RequirementMaster_Id_]);
+                } catch (e) {
+                    if (log) log.error("Failed to update Company_Id in requirementmaster. Column might be missing.", e);
+                }
             }
             if (requirementmaster_.Lead_Id) {
                 Lead.Add_Lead_Activity({
@@ -234,6 +238,24 @@ var requirementmaster = {
         });
     },
 
+    Get_Requirement_By_No: function (RequirementNo, callback) {
+        return db.query("SELECT * FROM requirementmaster WHERE RequirementNo = ? AND IFNULL(DeleteStatus,0) = 0 LIMIT 1", [RequirementNo], callback);
+    },
+
+    Check_Requirement_By_Lead: function (Lead_Id, callback) {
+        const sql = `
+            SELECT lal.*, rm.RequirementMaster_Id 
+            FROM lead_activity_log lal
+            JOIN requirementmaster rm ON lal.New_Value = rm.RequirementNo
+            WHERE lal.Lead_Id = ? 
+              AND lal.Activity_Type = 'REQUIREMENT_ADDED' 
+              AND IFNULL(lal.DeleteStatus,0) = 0
+              AND IFNULL(rm.DeleteStatus,0) = 0
+            ORDER BY lal.Activity_Date DESC LIMIT 1
+        `;
+        return db.query(sql, [Lead_Id], callback);
+    },
+
     Get_requirementmaster_Promise: function (id) {
         return new Promise((resolve, reject) => {
             this.Get_requirementmaster(id, (err, rows) => {
@@ -263,5 +285,3 @@ var requirementmaster = {
 };
 
 module.exports = requirementmaster;
-
-

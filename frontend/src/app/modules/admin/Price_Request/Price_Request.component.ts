@@ -35,6 +35,7 @@ import { payment_term } from '../../../models/payment_term';
 import { Sales_Master_Service } from '../../../services/Sales_Master.Service';
 import { Requirement_Master_Service } from '../../../services/Requirement_Master.Service';
 import { RequirementWorkflowService } from '../../../services/RequirementWorkflow.Service';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 import { Item_Service } from '../../../services/Item.Service';
 import { CommonModule } from '@angular/common';
 import { DecimalPipe } from '@angular/common';
@@ -259,7 +260,8 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
         public RequirementWorkflowService_: RequirementWorkflowService,
         public Item_Service_: Item_Service,
         public Brand_Service_: Brand_Service,
-        public Model_Service_: Model_Service
+        public Model_Service_: Model_Service,
+        private Master_Refresh_Service_: Master_Refresh_Service
         // public decimalPipe: DecimalPipe
     ) { 
         this.Load_Bill_Type();       
@@ -298,7 +300,17 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
     this.Sales_Master_Edit=this.Permissions.Edit;
     this.Sales_Master_Save=this.Permissions.Save;
     this.Sales_Master_Delete=this.Permissions.Delete;
-    this.Page_Load()
+    this.Page_Load();
+
+    this.Master_Refresh_Service_.masterUpdated$.subscribe(masterName => {
+        if (masterName === 'Brand') this.Load_Brand_Dropdown();
+        if (masterName === 'Model') this.Load_Model_Dropdown();
+        if (masterName === 'Item_Group') this.Load_Item_Group();
+        if (masterName === 'Item') { /* Typeahead */ }
+        if (masterName === 'Accounts') { /* Typeahead */ }
+        if (masterName === 'Payment_Term') this.Load_Payment_Term();
+        if (masterName === 'TermsAndCondition') { /* If load exists */ }
+    });
     }
 }
 call_api()
@@ -488,7 +500,7 @@ Load_Company()
     this.Print_Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
     this.Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
     this.Company_Data = companyRows;
-    this.Bank_ = bankRows;
+    this.Bank_Data = bankRows;
  }
  this.issLoading = false;
  },
@@ -971,8 +983,12 @@ Clr_Sales_Master()
     this.Price_Request_Master_.Address3="";
     this.Price_Request_Master_.Address4="";
     this.Price_Request_Master_.Mobile="";
+    this.Price_Request_Master_.Company_Id = null;
     if (this.Company_Data && this.Company_Data.length > 0) {
-        this.Price_Request_Master_.Company_Id = this.Company_Data[0].Company_Id;
+        // We still load the data, but we don't force a default selection anymore 
+        // to comply with "remove the validation" request.
+        // If the user wants a default, they can select it.
+        // this.Price_Request_Master_.Company_Id = this.Company_Data[0].Company_Id;
         this.Company_ = this.Company_Data[0];
         this.Print_Company_ = this.Company_Data[0];
     }
@@ -1727,8 +1743,9 @@ Search_Price_Request()
                                                         this.User_Type_Id,
                                                     this.Login_User_Id).subscribe({
         next: (response: any) => {
-            if (response.success) {
-                this.Price_Request_Master_Data = (response.data[0] || []).map(row => {
+            const Rows = (response && response.success !== undefined) ? response.data : response;
+            if (Rows != null) {
+                this.Price_Request_Master_Data = (Rows[0] || []).map(row => {
                     const normalized = Object.assign({}, row);
                     normalized.Price_Request_Master_Id = this.Get_Price_Request_Master_Id(normalized);
                     normalized.Price_RequestNo = normalized.Price_RequestNo || normalized.RequestNumber || normalized.RequestNo || '';
@@ -1742,7 +1759,7 @@ Search_Price_Request()
                 }
                 this.Total_Entries = (this.Price_Request_Master_Data || []).length;
             } else {
-                this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'No Details Found', Type: "3" } });
+                this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: (response && response.message) || 'No Details Found', Type: "3" } });
             }
             this.issLoading = false;
         },
@@ -1947,12 +1964,7 @@ Save_Price_Request(Printstatus:number)
                 });
                 this.Edit_Sales = 1;
                 this.Sales_Print = true;
-                this.Search_Price_Request();
-            } else {
-                this.dialogBox.open(DialogBox_Component, {
-                    panelClass: 'Dialogbox-Class',
-                    data: { Message: (result && result.Message_) || 'Save failed', Type: "2" }
-                });
+                console.log("Price Request Saved Successfully - triggering list refresh");
             }
             if (this.topDiv) {
                 this.topDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });

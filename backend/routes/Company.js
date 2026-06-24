@@ -111,9 +111,9 @@ try
    "Website": req.body.Website, 
    "Logo": Logo,
    "Code": req.body.Code,
-   "RegNo": req.body.RegNo,
-   "Sponser_Name": req.body.Sponser_Name,
-   "VAT_No":req.body.VAT_No,
+   "GSTNO": req.body.GSTNO,
+   "CINO": req.body.CINO,
+   "PANNO":req.body.PANNO,
  };
  console.log(Company_)
  Company.Save_Company(Company_, function(err, rows)

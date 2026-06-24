@@ -1,15 +1,15 @@
-<div *ngIf="issLoading" class="overlay">
+﻿<div *ngIf="issLoading" class="overlay">
         <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value">
         </mat-progress-spinner>
         </div>
  
           <div class="container-fluid">
             <div class="row" *ngIf="Entry_View">
-       <div class="col-md-4 tab-wole-div-alyn div-mve-dwn-crct-algyn-stk-rprt">
-              <label class="col-md-4 label-down-alighn-rcpt-vuchr">Item Group</label>
-              <input type="text" [matAutocomplete]="auto2" [(ngModel)]="Item_Group_" name="Item_group_" (click)="Search_Item_Group_Typeahead($event)" (keyup)="Search_Item_Group_Typeahead($event)" class="col-md-8 for-input-selct-tblelst" /><!-- for-input-selct-tblelst nput-laed-tabs-for-wole nput-laed-tabs-for-cuntry-wole-->
+       <div class="col-md-4 mb-2">
+              <label class="col-md-4 mb-1" style="font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Item Group</label>
+              <input type="text" [matAutocomplete]="auto2" [(ngModel)]="Item_Group_" name="Item_group_" (click)="Search_Item_Group_Typeahead($event)" (keyup)="Search_Item_Group_Typeahead($event)" class="col-md-8 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" /><!-- for-input-selct-tblelst nput-laed-tabs-for-wole nput-laed-tabs-for-cuntry-wole-->
               <mat-autocomplete #auto2="matAutocomplete" [displayWith]="display_Item_Group">
-                  <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                  <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
                   <ng-container *ngIf="!isLoading">
                       <mat-option *ngFor="let Item_Group of Item_Group_Data" [value]="Item_Group">
                           <span>{{Item_Group.Item_Group_Name}}</span>
@@ -18,11 +18,11 @@
               </mat-autocomplete>
               </div> 
 
-              <div class="col-md-4 tab-wole-div-alyn div-mve-dwn-crct-algyn-stk-rprt">
-                <label class="col-md-3 label-down-alighn-rcpt-vuchr">Item </label>
-                <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_" name="item" (click)="Search_Item_Typeahead($event)" (keyup)="Search_Item_Typeahead($event)" class="col-md-9 for-input-selct-tblelst" /><!-- for-input-selct-tblelst nput-laed-tabs-for-wole nput-laed-tabs-for-cuntry-wole-->
+              <div class="col-md-4 mb-2">
+                <label class="col-md-3 mb-1" style="font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Item </label>
+                <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_" name="item" (click)="Search_Item_Typeahead($event)" (keyup)="Search_Item_Typeahead($event)" class="col-md-9 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" /><!-- for-input-selct-tblelst nput-laed-tabs-for-wole nput-laed-tabs-for-cuntry-wole-->
                 <mat-autocomplete #auto1="matAutocomplete" [displayWith]="display_Item">
-                    <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                    <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
                     <ng-container *ngIf="!isLoading">
                         <mat-option *ngFor="let Item of Item_Data" [value]="Item">
                             <span>{{Item.Item_Name}}</span>
@@ -31,9 +31,9 @@
                 </mat-autocomplete>
                 </div> 
 
-    <div class="col-md-4 alighn-one-by-by-wle-div div-mve-dwn-crct-algyn-stk-rprt">
-      <label class="col-md-3 label-down-alighn-rcpt-vuchr">BarCode</label>
-      <mat-form-field class="col-md-9 led-srch-sctn-nput-tb">
+    <div class="col-md-4 mb-2">
+      <label class="col-md-3 mb-1" style="font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">BarCode</label>
+      <mat-form-field class="col-md-9">
                   <input matInput type="text" [(ngModel)]="Barcode_Search" name="Barcode_Search">
                 </mat-form-field>
     </div>
@@ -42,7 +42,7 @@
       <label class="col-md-4 label-down-alighn-supler-prhse-mstr-down">Employee </label>
       <input type="text" [matAutocomplete]="auto" [(ngModel)]="Employee_" name="Employee" (click)="Employee_Typeahead($event)" (keyup)="Employee_Typeahead($event)" class="col-md-8 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
       <mat-autocomplete #auto="matAutocomplete" [displayWith]="display_Employee">
-          <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+          <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
           <ng-container *ngIf="!isLoading">
               <mat-option *ngFor="let Employee of Employee_Data" [value]="Employee">
                   <span>{{Employee.Client_Accounts_Name}}</span>
@@ -50,7 +50,7 @@
           </ng-container>
       </mat-autocomplete>
       </div>    -->
-      <div class="col-md-1 chck-bx-up-alighn-prhse-mstr-srch-sctn"> 
+      <div class="col-md-1 mb-2 mt-4"> 
           <!-- <label class="date-label-crect-search-sales-section label-to-crect-all-names-to-div-tre-prt-sles">Date</label> -->
               <div _ngcontent-xmy-c9="" class="checkbox-to-crect-sales-search-section dv-crct-up-wrd-prchse-mstr-chck-bx-srch-sctn">
                   <div _ngcontent-xmy-c9="" class="form-check">
@@ -62,14 +62,14 @@
                   </div>
               </div>   
           </div>     
-        <div class="col-md-1 wdth-crct-chck-bxes-sles-smry-rprt">     
+        <div class="col-md-1 mb-2 mt-4">     
             <button mat-raised-button type="button" (click)="Get_Stock_Report()" class="btn btn-danger pull-right change-colour-button button-to-crect-margin"><i class="fa fa-search" aria-hidden="true"></i></button>
         </div>
 
     <div class="col-md-12">
     <div class="card card-plain">
     <div class="card-body text-title-to-correct-item-group-diary">
-    <div class="table-responsive">
+    <div class="table-responsive card mt-2">
  <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90" >
     <table class="table table-hover">
     <thead class="thead">
@@ -156,11 +156,11 @@
                   <div class="row">
                   <div class="col-md-12 mrgn-dwn-crct-div-stck-rprt">
                         
-                  <div class="col-md-4 tab-wole-div-alyn croct-float-purchase-master-section">
+                  <div class="col-md-4 mb-2 croct-float-purchase-master-section">
                     <label class="col-md-4">Item Group <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
                     <input type="text"  disabled [matAutocomplete]="auto4" [(ngModel)]="Edit_Item_Group" name="Edit_Item_Group"  (click)="Edit_ItemGroup_Group_Typehead($event)" (keyup)="Edit_ItemGroup_Group_Typehead($event)" class="col-md-8 for-input-selct-tblelst ng-pristine ng-valid ng-touched" />
                     <mat-autocomplete #auto4="matAutocomplete" [displayWith]="Edit_display_Item_Group">
-                        <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                        <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
                         <ng-container *ngIf="!isLoading">
                             <mat-option *ngFor="let Edit_Item_Group_ of Edit_Item_Group_Data" [value]="Edit_Item_Group_">
                                 <span>{{Edit_Item_Group_.Item_Group_Name}}</span>
@@ -169,11 +169,11 @@
                     </mat-autocomplete>
                     </div> 
     
-                    <div class="col-md-4 tab-wole-div-alyn croct-float-purchase-master-section">
+                    <div class="col-md-4 mb-2 croct-float-purchase-master-section">
                       <label class="col-md-3">Item  <span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;;">*</span> </label>
-                      <input type="text" disabled [matAutocomplete]="auto3" [(ngModel)]="Edit_Item" name="Edit_Item" (click)="Edit_Item_Name_Typehead($event)" (keyup)="Edit_Item_Name_Typehead($event)" class="col-md-9 for-input-selct-tblelst" />
+                      <input type="text" disabled [matAutocomplete]="auto3" [(ngModel)]="Edit_Item" name="Edit_Item" (click)="Edit_Item_Name_Typehead($event)" (keyup)="Edit_Item_Name_Typehead($event)" class="col-md-9 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
                       <mat-autocomplete #auto3="matAutocomplete" [displayWith]="Edit_display_Item">
-                          <mat-option *ngIf="isLoading"><mat-spinner diameter="500"></mat-spinner></mat-option>
+                          <mat-option *ngIf="isLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
                           <ng-container *ngIf="!isLoading">
                               <mat-option *ngFor="let Item_Load of Edit_Item_Name_Data" [value]="Item_Load">
                                   <span>{{Item_Load.Item_Name}}</span>
@@ -182,7 +182,7 @@
                       </mat-autocomplete>
                       </div> 
       
-                      <div class="col-md-4 alighn-one-by-by-wle-div alighn-to-right-crect-input croct-float-purchase-master-section">
+                      <div class="col-md-4 mb-2 croct-float-purchase-master-section">
                         <label class="col-md-4">BarCode</label>
                         <mat-form-field class="col-md-8 led-srch-sctn-nput-tb alighn-Edit_Item_Name_Datato-right-crect-input">
                                     <input disabled matInput type="text" [(ngModel)]="Stock_.Barcode" name="Stock_.Barcode">

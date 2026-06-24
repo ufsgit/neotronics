@@ -1,20 +1,261 @@
+/* ══════════════════════════════════════════
+   PURCHASE RETURN PAGE — ig-* Design System
+   ══════════════════════════════════════════ */
 
+/* ── PAGE SHELL ── */
+.main-content {
+  background-color: #f9fafb !important;
+  padding: 28px 32px !important;
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
 
+/* ── LOADING OVERLAY ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.spinner { position: absolute; }
 
-::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
-    display: none;
+/* ══════════════════════════════════════════
+   LIST VIEW — FILTER PANEL
+   ══════════════════════════════════════════ */
+.card-body {
+  background: #fff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  padding: 20px 22px !important;
+  margin-bottom: 16px !important;
+  box-shadow: none !important;
 }
-::ng-deep .mat-input-element{
-    padding-left: 15px !important;
+
+/* Labels inside filter area */
+.card-body label {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #6b7280 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  margin-bottom: 5px !important;
 }
-::ng-deep .mat-form-field-infix {
-    border-bottom: 0.84375em solid transparent;
+
+/* Filter inputs */
+.card-body input[type="text"],
+.card-body input[type="number"],
+.card-body select {
+  height: 40px !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 7px !important;
+  font-size: 14px !important;
+  color: #111827 !important;
+  background: #fff !important;
+  outline: none !important;
+  padding: 0 12px !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+  width: 100% !important;
 }
-input{
-    padding-left: 15px  !important;
+.card-body input:focus, .card-body select:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.1) !important;
 }
+
+/* Date picker wrapper */
+.card-body div[style*="border: 1px solid #b1b1b1"],
+.card-body div[style*="border-radius: 8px"] {
+  border: 1px solid #d1d5db !important;
+  border-radius: 7px !important;
+  height: 40px !important;
+  background: #fff !important;
+}
+
+/* Search / Add / Export buttons */
+.card-body .btn {
+  height: 40px !important;
+  border-radius: 7px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  padding: 0 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  transition: background 0.15s !important;
+}
+.card-body .btn-danger {
+  background: #111827 !important;
+  color: #fff !important;
+}
+.card-body .btn-danger:hover { background: #1f2937 !important; }
+
+/* ══════════════════════════════════════════
+   LIST VIEW — MAIN TABLE
+   ══════════════════════════════════════════ */
+.table-responsive.card {
+  background: #fff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+}
+
+.table.table-hover {
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+.thead th, .table thead th {
+  padding: 11px 16px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #6b7280 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  background: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  text-align: left !important;
+}
+
+.table tbody td {
+  padding: 11px 16px !important;
+  font-size: 14px !important;
+  color: #374151 !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+  vertical-align: middle !important;
+}
+
+.table-hover tbody tr:hover td {
+  background: #fafafa !important;
+}
+
+/* ══════════════════════════════════════════
+   ENTRY VIEW — MASTER SECTION
+   ══════════════════════════════════════════ */
+.croct-float-purchase-master-section {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+.col-md-12.mb-1 {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 10px !important;
+  gap: 10px !important;
+}
+
+.label-to-crect-all-names-to-divs {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #6b7280 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  flex: 0 0 170px !important;
+}
+
+.mrgn-crct-input-text-div-tre-prt-sles1,
+.mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn {
+  height: 40px !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 7px !important;
+  font-size: 14px !important;
+  color: #111827 !important;
+  background: #fff !important;
+  padding: 0 12px !important;
+  flex: 1 !important;
+  outline: none !important;
+}
+
+.mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn[style*="height: 47px"] {
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* ══════════════════════════════════════════
+   ENTRY VIEW — LINE ITEMS
+   ══════════════════════════════════════════ */
+.card {
+  background: #fff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  margin-bottom: 16px !important;
+}
+
 .for-input-selct-tblelst {
-    margin: 10px 0px 25px 0px;
-    padding: 5px 0px !important;
-    border: #d3d3d3 solid 1px !important;
+  height: 38px !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  background: #fff !important;
+  width: 100% !important;
+  outline: none !important;
 }
+
+.label-to-crect-all-names-to-divs.mrgin-alghn-label-text-otrs-nxt {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #6b7280 !important;
+  text-transform: uppercase !important;
+  margin-bottom: 4px !important;
+  display: block !important;
+}
+
+.btn.btn-danger.change-colour-button {
+  background: #111827 !important;
+  color: #fff !important;
+  border-radius: 7px !important;
+  height: 38px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  padding: 0 20px !important;
+}
+
+/* Table in entry view */
+.bg-col-stock-add-diary th {
+  background: #f9fafb !important;
+  color: #6b7280 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.bk_tb_bg td {
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+/* ── ACTION BUTTONS ── */
+.div-rspnsv-pstn-crct-sls-mstr, .no-print.btn-danger {
+  height: 38px !important;
+  border-radius: 7px !important;
+  padding: 0 16px !important;
+  font-weight: 600 !important;
+  background: #111827 !important;
+  color: #fff !important;
+  border: none !important;
+  cursor: pointer !important;
+}
+
+.pull-right {
+  display: flex !important;
+  gap: 8px !important;
+  justify-content: flex-end !important;
+}
+
+/* Fix for mat-datepicker alignment */
+::ng-deep .mat-form-field-underline { display: none !important; }
+::ng-deep .mat-form-field-infix { border-top: 0 !important; }

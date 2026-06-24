@@ -146,6 +146,9 @@ Get_Payment_Mode()
         //  const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
         });
 }
+ 
+ Export() {
+ }
  Get_Client_Accounts_Typeahead(event: any)
     {
              

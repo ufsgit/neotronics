@@ -99,14 +99,17 @@
                 <div class="table-responsive card ">
                     <!-- <cdk-virtual-scroll-viewport [style.height.px]="myInnerHeight" itemSize="90"> -->
                     <div class="table-responsive" [style.height.px]="myInnerHeight"
-                        style="overflow-y: scroll;background-color: #f1f1f1;">
+                        style="background-color: #f1f1f1;">
                         <table class="table table-hover" *ngIf="Workflow_Tab==='Requirement'">
                             <thead class="thead">
-                                <th>Sl No</th>
+                                <th>Sl No </th>
                                 <th>Customer Name</th>
                                 <th>Requirement No</th>
                                 <th>Date</th>
                                 <th>Amount</th>
+                                <th>Quotation</th>
+                                <th>Price Request</th>
+                                <th>Price Response</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </thead>
@@ -129,6 +132,19 @@
                                 <td style="    padding: 0px;
                                             padding-left: 5px;
                                             vertical-align: middle;">{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</td>
+                                <td>
+                                    <button mat-raised-button type="button" class="btn btn-primary btn-sm"
+                                        (click)="Requirement_Quotation_Click(Sales_Master)">QUOTATION</button>
+                                </td>
+                                <td>
+                                    <button mat-raised-button type="button" class="btn btn-primary btn-sm"
+                                        (click)="Requirement_PriceRequest_Click(Sales_Master)">PRICE REQUEST</button>
+                                </td>
+                                <td>
+                                    <button mat-raised-button type="button" class="btn btn-info btn-sm"
+                                        (click)="Price_Response_Click(Sales_Master)">PRICE RESPONSE</button>
+                                </td>
+
                                 <td>
                                     <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                         [hidden]="Sales_Master_Edit==false" aria-describedby="cdk-describedby-message-0"
@@ -307,7 +323,7 @@
                     </div>
 <div class="col-md-12 mb-1" *ngIf="showDate">
                         <label class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Date <span style="color:#ef071e; ">*</span></label>
-                        <div class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 47px !important display: flex; align-items: center; padding: 0 5px; background: #fff;">
+                        <div class="col-md-8 mrgn-crct-input-text-div-tre-prt-sles1 mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" style="height: 47px !important; display: flex; align-items: center; padding: 0 5px; background: #fff;">
                             <input [matDatepicker]="dpdate" placeholder="" name="EntryDate" [(ngModel)]="Requirement_Master_.EntryDate" style="border: none; outline: none; width: 100%; height: 100%; background: transparent; padding-left: 10px;">
                             <mat-datepicker-toggle matSuffix [for]="dpdate"></mat-datepicker-toggle>
                             <mat-datepicker #dpdate></mat-datepicker>

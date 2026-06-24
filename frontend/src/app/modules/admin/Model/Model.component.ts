@@ -7,6 +7,7 @@ import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Model } from '../../../models/Model';
 import { MatDialog } from '@angular/material/dialog';
 import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 
 @Component({
     selector: 'app-Model',
@@ -35,7 +36,8 @@ export class ModelComponent implements OnInit {
     constructor(
         public Model_Service_: Model_Service,
         public Item_Service_: Item_Service,
-        public dialogBox: MatDialog
+        public dialogBox: MatDialog,
+        private Master_Refresh_Service_: Master_Refresh_Service
     ) {}
 
     ngOnInit() {
@@ -204,6 +206,7 @@ export class ModelComponent implements OnInit {
                         this.Clr_Model();
                         this.Entry_View = false;
                         this.Search_Model();
+                        this.Master_Refresh_Service_.refreshMaster('Model');
                     } else {
                         this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: '2' } });
                     }
