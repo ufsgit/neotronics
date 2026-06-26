@@ -112,6 +112,9 @@ myDate:Date=new Date();
 Search_ToDate:Date=new Date();
 Sales_Master_Name_Search:string;
 Entry_View:boolean=false;
+Show_Filter:boolean=false;
+Page_Index:number=0;
+Page_Size:number=10;
 myInnerHeight: number;
 EditIndex: number;
 Total_Entries: number=0;
@@ -328,11 +331,27 @@ Company_Dropdown_Change() {
         }
     }
 }
+
+private normalizeResponseRows(response: any): any {
+    return response && response.success !== undefined ? response.data : response;
+}
+
+private getResultSet(response: any, index: number = 0): any[] {
+    const rows = this.normalizeResponseRows(response);
+    if (Array.isArray(rows) && Array.isArray(rows[index])) return rows[index];
+    if (index === 0 && Array.isArray(rows)) return rows;
+    return [];
+}
+
+private getFirstResult(response: any): any {
+    const firstSet = this.getResultSet(response, 0);
+    return firstSet[0] || {};
+}
+
 Load_Company() 
     {   
     this.Sales_Master_Service_.Load_Company().subscribe((response) => {
-    // API wraps with sendSuccess: { success: true, data: [[companyRows],[bankRows]] }
-    const Rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
+    const Rows = this.normalizeResponseRows(response);
     if (Rows != null && Array.isArray(Rows[0]) && Rows[0].length > 0) {
     this.Company_Data = Rows[0];
     this.Print_Company_ = Rows[0][0];
@@ -348,7 +367,7 @@ Load_Company()
 
 Load_Currency() {
     this.currencydetails_Service_.Search_currencydetails('').subscribe(Rows => {
-        this.currencyData = Rows[0];        
+        this.currencyData = this.getResultSet(Rows, 0) || [];        
         this.Currency_Temp.CurrencyDetails_Id = 0;
         this.Currency_Temp.CurrecnyName = "Select";
         this.currencyData.unshift(this.Currency_Temp);
@@ -365,7 +384,7 @@ Load_Currency() {
 Load_Item_Group() {
     this.Item_Group_Service_.Load_Item_Group().subscribe(Rows => {
         if (Rows != null) {
-            this.itemGroupData = Rows[0];
+            this.itemGroupData = this.getResultSet(Rows, 0) || [];
             this.itemGroup_Temp.Item_Group_Id = 0;
             this.itemGroup_Temp.Item_Group_Name = "Select";
             this.itemGroupData.unshift(this.itemGroup_Temp);
@@ -383,7 +402,7 @@ Load_Item_Group() {
 Load_Employees() {
     this.User_Details_Service_.Search_User_Details('',this.User_Type, this.Login_User_Id).subscribe(Rows => {
 
-        this.EmployeeData = Rows[0];
+        this.EmployeeData = this.getResultSet(Rows, 0) || [];
         this.Employee_Temp.User_Details_Id = 0;
         this.Employee_Temp.User_Details_Name = "Select";
         this.EmployeeData.unshift(this.Employee_Temp);
@@ -414,7 +433,7 @@ Load_InvoiceType() {
         debugger;
     this.User_Details_Service_.Load_InvoiceType2().subscribe(Rows => {
         debugger;
-        this.AccounttypeData = Rows[0];        
+        this.AccounttypeData = this.getResultSet(Rows, 0) || [];        
         this.Accounttype_Temp.AccountType_Id = 0;
         this.Accounttype_Temp.AccountType_Name = "Select";
         this.AccounttypeData.unshift(this.Accounttype_Temp);
@@ -430,7 +449,7 @@ Load_InvoiceType() {
 
 Load_Payment_Term() {
     this.payment_term_Service_.Load_Payment_Term().subscribe(Rows => {
-            this.PaymentTermData = Rows[0];
+            this.PaymentTermData = this.getResultSet(Rows, 0) || [];
             this.PaymentTerm_Temp.payment_Term_ID = 0;
             this.PaymentTerm_Temp.Payment_Term_Description = "Select";
             this.PaymentTermData.unshift(this.PaymentTerm_Temp);
@@ -956,7 +975,7 @@ Load_Bill_Type()
   var value=1;
       this.Sales_Master_Service_.Load_Bill_Type(value).subscribe(Rows => {    
       if (Rows != null) {
-      this.Bill_Type_Data = Rows[0];        
+      this.Bill_Type_Data = this.getResultSet(Rows, 0) || [];        
       this.Bill_Type_Temp.Bill_Type_Id = 0;
       this.Bill_Type_Temp.Bill_Type_Name = "Select";
       this.Bill_Type_Data.unshift(this.Bill_Type_Temp);
@@ -976,7 +995,7 @@ Load_Bill_Mode()
 {
       this.Sales_Master_Service_.Load_Bill_Mode().subscribe(Rows => {    
       if (Rows != null) {
-      this.Bill_Mode_Data = Rows[0];        
+      this.Bill_Mode_Data = this.getResultSet(Rows, 0) || [];        
       this.Bill_Mode_Temp.Bill_Mode_Id = 0;
       this.Bill_Mode_Temp.Bill_Mode_Name = "Select";
       this.Bill_Mode_Data.unshift(this.Bill_Mode_Temp);
@@ -1448,10 +1467,11 @@ if(this.currencyData==undefined || this.currencyData==null)
   {
     debugger;
       this.currencydetails_Service_.Load_currencydetails().subscribe(Rows => {
-          if(Rows[0]!=null)
+          const currencyRows = this.getResultSet(Rows, 0) || [];
+          if(currencyRows.length > 0)
           {
             debugger;
-              this.currencyData = Rows[0];        
+              this.currencyData = currencyRows;        
               this.Currency_Temp.CurrencyDetails_Id = 0;
               this.Currency_Temp.CurrecnyName = "Select";
               this.currencyData.unshift(this.Currency_Temp);
@@ -1478,8 +1498,9 @@ if(this.currencyData==undefined || this.currencyData==null)
   if(this.AccounttypeData==undefined || this.AccounttypeData==null)
   {
       this.User_Details_Service_.Load_InvoiceType2().subscribe(Rows => {
-          if( Rows[0]!=null){
-          this.AccounttypeData = Rows[0];  
+          const accountTypeRows = this.getResultSet(Rows, 0) || [];
+          if(accountTypeRows.length > 0){
+          this.AccounttypeData = accountTypeRows;  
           this.Accounttype_Temp.AccountType_Id = 0;
           this.Accounttype_Temp.AccountType_Name = "Select";
           this.AccounttypeData.unshift(this.Accounttype_Temp);
@@ -1504,8 +1525,9 @@ if(this.currencyData==undefined || this.currencyData==null)
 if(this.PaymentTermData==undefined || this.PaymentTermData==null)
 {
   this.payment_term_Service_.Load_Payment_Term().subscribe(Rows => {
-      if (Rows != null) {
-          this.PaymentTermData = Rows[0];
+      const paymentTermRows = this.getResultSet(Rows, 0) || [];
+      if (paymentTermRows.length > 0) {
+          this.PaymentTermData = paymentTermRows;
           this.PaymentTerm_Temp.payment_Term_ID = 0;
           this.PaymentTerm_Temp.Payment_Term_Description = "Select";
           this.PaymentTermData.unshift(this.PaymentTerm_Temp);
@@ -2301,6 +2323,7 @@ Search_Purtchase_Return()
   var look_In_Date_Value=0,CustomerId_=0,Item_Group_Id_=0,CurrencyDetails_Id_=0,AccountType_Id_ = 0,User_Details_Id_=0;
   var invoiceno=''
   this.Sales_Master_Total_Amount=0; 
+  this.Page_Index=0;
 
   if (this.Date_Check == true )
       look_In_Date_Value = 1;
@@ -2350,7 +2373,7 @@ Search_Purtchase_Return()
                         this.Login_User_Id
                     ).subscribe(Rows => {
       debugger
-  this.purchase_return_master_Data=Rows[0];
+  this.purchase_return_master_Data=this.getResultSet(Rows, 0);
   if(this.purchase_return_master_Data.length>0)
   {
       for(var i=0;i<this.purchase_return_master_Data.length;i++)
@@ -2370,6 +2393,34 @@ Search_Purtchase_Return()
       this.issLoading=false;
       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
   });
+}
+
+get Paginated_Purchase_Return_Data(): purchase_return_master[] {
+    const source = this.purchase_return_master_Data || [];
+    const start = this.Page_Index * this.Page_Size;
+    return source.slice(start, start + this.Page_Size);
+}
+
+get Purchase_Return_Total_Pages(): number {
+    const total = this.Total_Entries || (this.purchase_return_master_Data || []).length;
+    return Math.max(1, Math.ceil(total / this.Page_Size));
+}
+
+get Purchase_Return_Page_Start(): number {
+    if (!this.Total_Entries) return 0;
+    return this.Page_Index * this.Page_Size + 1;
+}
+
+get Purchase_Return_Page_End(): number {
+    return Math.min((this.Page_Index + 1) * this.Page_Size, this.Total_Entries || 0);
+}
+
+Previous_Purchase_Return_Page() {
+    if (this.Page_Index > 0) this.Page_Index--;
+}
+
+Next_Purchase_Return_Page() {
+    if (this.Page_Index < this.Purchase_Return_Total_Pages - 1) this.Page_Index++;
 }
 
 Delete_Quotation_Detail(itemIndex){
@@ -2412,7 +2463,7 @@ Load_Vat_Percentage()
   this.Sales_Master_Service_.Load_Vat_Percentage().subscribe(Rows => {    
   if (Rows != null) {
       debugger;
-  this.Default_Vat_Percentage = Rows[0][0].vat_percentage;
+  this.Default_Vat_Percentage = this.getFirstResult(Rows).vat_percentage || 0;
 }
 this.issLoading = false;
 },

@@ -5,10 +5,24 @@
 <div class="main-content">
   <div class="container-fluid" #topDiv1>
       <div class="row" *ngIf="!Entry_View">
+      <div class="grn-toolbar">
+        <button mat-raised-button type="button" (click)="Search_PerformaInvoice()" class="grn-search-btn">
+          <i class="fa fa-search" aria-hidden="true"></i> Search
+        </button>
+        <button mat-raised-button type="button" (click)="Show_Filter = !Show_Filter" class="grn-filter-btn">
+          <i class="fa fa-filter" aria-hidden="true"></i> {{Show_Filter ? 'Hide Filter' : 'Filter'}}
+        </button>
+        <button mat-raised-button type="button" (click)="Create_New()" class="grn-add-btn" aria-label="Create GRN">
+          <i class="fa fa-plus" aria-hidden="true"></i> Add New
+        </button>
+        <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true" class="grn-export-btn">
+          <i class="material-icons">file_download</i> Export
+        </button>
+      </div>
       <div class="col-md-12">
         <div class="card-body">
           <div class="row align-items-end">
-        <div class="row mb-1 card-body" 
+        <div class="row mb-1 card-body grn-filter-panel" *ngIf="Show_Filter"
          style="align-items: center;
              border: 0;
              border-radius: 6px;
@@ -111,19 +125,6 @@
                 <button mat-raised-button type="button" (click)="Search_PerformaInvoice()"  class="btn mb-0 btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
                     <i class="fa fa-search" aria-hidden="true"></i>
                 </button>
-                <button mat-raised-button type="button" (click)="Create_New()"  class="btn mb-0 btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
-                <button
-                
-                (click)="Export()"
-                [hidden]="Export_View == true"
-                mat-raised-button
-                type="button"
-                class="mt-0  mb-0  btn btn-danger pull-right"
-              >
-                Export
-              </button>               
             </div>        
             <div class="clearfix"></div>        
         </div>
@@ -149,22 +150,12 @@
                                       <th>Delete</th>
                                   </thead>
                                   <!-- <ng-container  *cdkVirtualFor="let Sales_Master of performainvoice_Data; let i =index"> -->
-                                      <tr *ngFor="let Sales_Master of Purchase_Master_Data; let i =index">
-                                          <td style="    padding: 0px;
-                                            padding-left: 5px;
-                                            vertical-align: middle;">{{ i+1 }}</td>
-                                          <td style="    padding: 0px;
-                                            padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["Customer"]}}</td>
-                                          <td style="    padding: 0px;
-                                            padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["InvoiceNo"]}}</td>
-                                          <td style="    padding: 0px;
-                                            padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["FormattedPurchaseDate"]}}</td>
-                                          <td style="    padding: 0px;
-                                            padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</td>
+                                      <tr class="grn-row" *ngFor="let Sales_Master of Paginated_Purchase_Master_Data; let i =index">
+                                          <td>{{ (Page_Index * Page_Size) + i + 1 }}</td>
+                                          <td><span class="grn-hover-text" [title]="Sales_Master['Customer']">{{Sales_Master["Customer"]}}</span></td>
+                                          <td><span class="grn-hover-text grn-hover-text-sm" [title]="Sales_Master['InvoiceNo']">{{Sales_Master["InvoiceNo"]}}</span></td>
+                                          <td><span class="grn-hover-text grn-hover-text-sm" [title]="Sales_Master['FormattedPurchaseDate']">{{Sales_Master["FormattedPurchaseDate"]}}</span></td>
+                                          <td><span class="grn-hover-text grn-hover-text-sm" [title]="Sales_Master['NetTotal'] || Sales_Master['TotalAmount'] || Sales_Master['Total_Amount'] || Sales_Master['GrandTotal']">{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</span></td>
                                           <td>
                                               <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                   [hidden]="Sales_Master_Edit==false"
@@ -176,7 +167,7 @@
                                                           _ngcontent-jry-c5="" class="mat-button-wrapper">
                                                           <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                               class="material-icons"
-                                                              (click)="Edit_Purchase_Master(Sales_Master,i)">edit</i></span>
+                                                              (click)="Edit_Purchase_Master(Sales_Master,(Page_Index * Page_Size) + i)">edit</i></span>
                                                       <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
                                                           matripple="" ng-reflect-centered="false"
                                                           ng-reflect-disabled="false"
@@ -198,7 +189,7 @@
                                                   ng-reflect-position="above" ng-reflect-message="Remove"><span
                                                       class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
                                                           class="material-icons"
-                                                          (click)="Delete_Purchase_Master(Sales_Master.Purchase_Master_Id,i)">close</i></span>
+                                                          (click)="Delete_Purchase_Master(Sales_Master.Purchase_Master_Id,(Page_Index * Page_Size) + i)">close</i></span>
                                                   <div class="mat-button-ripple mat-ripple" matripple=""
                                                       ng-reflect-centered="false" ng-reflect-disabled="false"
                                                       ng-reflect-trigger="[object HTMLButtonElement]"></div>
@@ -219,6 +210,15 @@
                               </table>
                           <!-- </cdk-virtual-scroll-viewport> -->
                       </div>
+                    </div>
+                    <div class="listing-pagination">
+                      <button mat-button type="button" class="listing-page-btn" (click)="Previous_GRN_Page()" [disabled]="Page_Index === 0">
+                        <i class="material-icons">chevron_left</i>
+                      </button>
+                      <span class="listing-page-status">Showing {{GRN_Page_Start}} - {{GRN_Page_End}} of {{Total_Entries}}</span>
+                      <button mat-button type="button" class="listing-page-btn" (click)="Next_GRN_Page()" [disabled]="Page_Index >= GRN_Total_Pages - 1">
+                        <i class="material-icons">chevron_right</i>
+                      </button>
                     </div>
                   <!-- </div> -->
                   <div class="col-md-4">

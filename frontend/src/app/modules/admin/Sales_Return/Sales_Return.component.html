@@ -5,7 +5,21 @@
 <div class="main-content">
   <div class="container-fluid" #topDiv1>
       <div class="row col-md-12  mb-0"  *ngIf="!Entry_View">
-          <div class="row mb-0 card-body"
+          <div class="sales-return-toolbar">
+              <button mat-raised-button type="button" (click)="Search_SalesReturn_Master()" class="sales-return-search-btn">
+                  <i class="fa fa-search" aria-hidden="true"></i> Search
+              </button>
+              <button mat-raised-button type="button" (click)="Show_Filter = !Show_Filter" class="sales-return-filter-btn">
+                  <i class="fa fa-filter" aria-hidden="true"></i> {{Show_Filter ? 'Hide Filter' : 'Filter'}}
+              </button>
+              <button mat-raised-button type="button" (click)="Create_New()" class="sales-return-add-btn">
+                  <i class="fa fa-plus" aria-hidden="true"></i> Add New
+              </button>
+              <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true" class="sales-return-export-btn">
+                  <i class="material-icons">file_download</i> Export
+              </button>
+          </div>
+          <div *ngIf="Show_Filter" class="row mb-0 card-body sales-return-filter-panel"
           style="align-items: center;
              border: 0;
              border-radius: 6px;
@@ -127,24 +141,9 @@
                                       (click)="Print_Search_Click()">
                                       <i class="fa fa-print" aria-hidden="true"></i></button> -->
 
-                                      <button
-                                      style="background-color: #3e6bdd; color: white"
-                                      (click)="Export()"
-                                      [hidden]="Export_View == true"
-                                      mat-raised-button
-                                      type="button"
-                                      class="mt-0  mb-0  btn btn-danger pull-right"
-                                    >
-                                      Export
-                                    </button>
-
-
-                                  <button mat-raised-button type="button" (click)="Create_New()" style="margin-top: -1px !important;"
-                                      class="btn mb-0 btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
-                                      <i class="fa fa-plus" aria-hidden="true"></i></button>
                                   <button mat-raised-button type="button" (click)="Search_SalesReturn_Master()" style="margin-top: -1px !important;"
                                       class="btn mb-0  btn-danger pull-right change-colour-button button-to-crect-margin mrgn-alyn-srch-buton-crect">
-                                      <i class="fa fa-search" aria-hidden="true"></i></button>
+                                      <i class="fa fa-search" aria-hidden="true"></i> Search</button>
                               </div>
               
                           <div class="clearfix"></div>
@@ -173,12 +172,12 @@
                                       <th>Delete</th>
                                   </thead>
                                   <!-- <ng-container  *cdkVirtualFor="let Sales_Master of Sales_Return_Master_Data; let i =index"> -->
-                                      <tr *ngFor="let Sales_Master of Sales_Return_Master_Data; let i =index">
-                                          <td style="padding-left:5px;">{{ i+1 }}</td>
-                                          <td>{{Sales_Master["Customer"]}}</td>
-                                          <td>{{Sales_Master["Sales_Return_InvNo"]}}</td>
-                                          <td>{{Sales_Master["FormattedEntryDate"]}}</td>
-                                          <td>{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</td>
+                                      <tr class="sales-return-row" *ngFor="let Sales_Master of Paginated_Sales_Return_Data; let i =index">
+                                          <td>{{ (Page_Index * Page_Size) + i + 1 }}</td>
+                                          <td><span class="sales-return-hover-text" [title]="Sales_Master['Customer']">{{Sales_Master["Customer"]}}</span></td>
+                                          <td><span class="sales-return-hover-text sales-return-hover-text-sm" [title]="Sales_Master['Sales_Return_InvNo']">{{Sales_Master["Sales_Return_InvNo"]}}</span></td>
+                                          <td><span class="sales-return-hover-text sales-return-hover-text-sm" [title]="Sales_Master['FormattedEntryDate']">{{Sales_Master["FormattedEntryDate"]}}</span></td>
+                                          <td><span class="sales-return-hover-text sales-return-hover-text-sm" [title]="Sales_Master['NetTotal'] || Sales_Master['TotalAmount'] || Sales_Master['Total_Amount'] || Sales_Master['GrandTotal']">{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</span></td>
                                           <td>
                                               <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                   [hidden]="Sales_Master_Edit==false"
@@ -190,7 +189,7 @@
                                                           _ngcontent-jry-c5="" class="mat-button-wrapper">
                                                           <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                               class="material-icons"
-                                                              (click)="Edit_SalesReturn_Master(Sales_Master,i)">edit</i></span>
+                                                              (click)="Edit_SalesReturn_Master(Sales_Master,(Page_Index * Page_Size) + i)">edit</i></span>
                                                       <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
                                                           matripple="" ng-reflect-centered="false"
                                                           ng-reflect-disabled="false"
@@ -212,7 +211,7 @@
                                                   ng-reflect-position="above" ng-reflect-message="Remove"><span
                                                       class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
                                                           class="material-icons"
-                                                          (click)="Delete_SalesReturn_Master(Sales_Master.Sales_Return_Master_Id,i)">close</i></span>
+                                                          (click)="Delete_SalesReturn_Master(Sales_Master.Sales_Return_Master_Id,(Page_Index * Page_Size) + i)">close</i></span>
                                                   <div class="mat-button-ripple mat-ripple" matripple=""
                                                       ng-reflect-centered="false" ng-reflect-disabled="false"
                                                       ng-reflect-trigger="[object HTMLButtonElement]"></div>
@@ -226,6 +225,15 @@
                               </div>
                           <!-- </cdk-virtual-scroll-viewport> -->
                       </div>
+                      <div class="listing-pagination">
+                          <button mat-button type="button" class="listing-page-btn" (click)="Previous_Sales_Return_Page()" [disabled]="Page_Index === 0">
+                              <i class="material-icons">chevron_left</i>
+                          </button>
+                          <span class="listing-page-status">Showing {{Sales_Return_Page_Start}} - {{Sales_Return_Page_End}} of {{Total_Entries}}</span>
+                          <button mat-button type="button" class="listing-page-btn" (click)="Next_Sales_Return_Page()" [disabled]="Page_Index >= Sales_Return_Total_Pages - 1">
+                              <i class="material-icons">chevron_right</i>
+                          </button>
+                      </div>
                   <!-- </div> -->
                   <div class="col-md-4">
                       <label class="entry-num">Entries : {{Total_Entries}}</label>
@@ -235,9 +243,9 @@
               <!-- </div> -->
           </div>
       </div>
-      <div class="row" *ngIf="Entry_View" style="">
-          <div class="container-fluid" #topDiv>
-              <div class="col-md-6 croct-float-purchase-master-section ">
+      <div class="row sales-return-entry-page" *ngIf="Entry_View">
+          <div class="container-fluid sales-return-master-grid" #topDiv>
+              <div class="col-md-6 croct-float-purchase-master-section sales-return-master-card">
                   <div class="col-md-12 mb-1">
                       <label
                           class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Customer
@@ -326,7 +334,7 @@
                           
                 </div>
               </div>
-              <div class="col-md-6 croct-float-purchase-master-section">
+              <div class="col-md-6 croct-float-purchase-master-section sales-return-master-card">
                   <div class="col-md-12 mb-1">
                       <label
                           class="col-md-4 label-to-crect-all-names-to-divs down-label-name-to-all-sections">Invoice Date
@@ -434,11 +442,11 @@
           </div>
           <div class="row">
               <div class="col-md-12">
-                  <div class="card">
+                  <div class="card sales-return-line-card">
                       <div class="card-body">
                           
                               <div class="row">
-                                  <div class="col-md-12">
+                                  <div class="col-md-12 row sales-return-line-entry-row">
                                       <div class="col-md-2 mb-2">
                                           <label class="mb-1" style="font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase;">Part Number
                                               <span
@@ -551,15 +559,15 @@
                                               class=" for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" />
                                       </div>
                                       <div
-                                          class="col-md-2 alighn-right-inputs-sales-grid div-to-down-margin-crect-allighn-wole-scton">
+                                          class="col-md-2 sales-return-add-field alighn-right-inputs-sales-grid div-to-down-margin-crect-allighn-wole-scton">
                                           <button mat-raised-button type="button" (click)="Plus_Quotation_Details($event)"
                                               class="btn btn-danger" >
                                               Add</button>
                                       </div>
                                   </div>
-                                  <div class="col-md-12">
+                                  <div class="col-md-12 sales-return-entry-table-wrap">
                                       <div class="card-body">
-                                          <div class="table-responsive">
+                                          <div class="table-responsive sales-return-details-table-scroll">
                                               <table class="table table-hover table-for-sale-search-section-diary">
                                                   <thead class="bg-col-stock-add-diary">
                                                       <th>No </th>
@@ -631,10 +639,10 @@
                                   </div>
                                   
 
-                                  <div class="col-md-4">
+                                  <div class="col-md-4 sales-return-spacer-col">
                                       
                                   </div>
-                                  <div class="col-md-4" >
+                                  <div class="col-md-4 sales-return-totals-col" >
                                       <div class="col-md-12 wole-div-margin-to-down-proper mb-1" style="visibility: hidden;">
                                           <label
                                               class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles"></label>
@@ -694,7 +702,7 @@
                                             >
                                     </div>
                                   </div>
-                                  <div class="col-md-4">
+                                  <div class="col-md-4 sales-return-totals-col">
                                       <div class="col-md-12 wole-div-margin-to-down-proper mb-1">
                                           <label class="col-md-5 label-to-crect-all-names-to-div-tre-prt-sles">Sub
                                               Total</label>
@@ -761,7 +769,7 @@
 
                                   </div>
                               </div>
-                              <div class="col-md-12 d-flex justify-content-end gap-2 mt-3">
+                              <div class="col-md-12 d-flex justify-content-end gap-2 mt-3 sales-return-words-row">
                                   <div class="col-md-4">
 
                                   </div>
@@ -774,7 +782,7 @@
                                       
                               </div>
 
-                              <div class="col-md-12">
+                              <div class="col-md-12 sales-return-entry-actions">
                                   <!-- <button mat-raised-button type="button" id="Tab_Edit" (click)="Edit_Button_Click()" class="btn btn-danger pull-right">Edit</button> -->
                                   <button mat-raised-button type="button" id="Save_Button"
                                       class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"

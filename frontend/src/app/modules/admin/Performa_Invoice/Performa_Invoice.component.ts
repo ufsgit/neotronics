@@ -112,9 +112,12 @@ myDate:Date=new Date();
 Search_ToDate:Date=new Date();
 Sales_Master_Name_Search:string;
 Entry_View:boolean=false;
+Show_Filter:boolean=false;
 myInnerHeight: number;
 EditIndex: number;
 Total_Entries: number=0;
+Page_Index: number = 0;
+Page_Size: number = 10;
 color = 'primary';
 mode = 'indeterminate';
 value = 50;
@@ -334,14 +337,10 @@ Page_Load()
       this.Load_PerformaInvoiceMaster()  
     }
 
-    // debugger;
-    // if(this.quotationId <= 0 )
-    // {
-    //     if(this.PerformaInvoiceMaster_Id <= 0)
-    // {
-    //     this.Search_PerformaInvoice();
-    // }
-    // }
+    if(this.quotationId <= 0 && this.PerformaInvoiceMaster_Id <= 0)
+    {
+        this.Search_PerformaInvoice(false);
+    }
 }
 Load_Company() 
     {   
@@ -1230,7 +1229,7 @@ Delete_Performa_Invoice_Master(PerformaInvoiceMaster_Id,index)
                     this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Cannot Delete', Type: "3" } });
                 } else {
                     this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted', Type: "false" } });
-                    this.Search_PerformaInvoice();
+                    this.Search_PerformaInvoice(false);
                 }
             } else {
                 this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error: ' + (res && res.message ? res.message : 'Delete failed'), Type: "2" } });
@@ -2695,10 +2694,11 @@ Save_PerformaInvoice(Printstatus:number)
 }
 
 
-Search_PerformaInvoice()
+Search_PerformaInvoice(showNoDetails: boolean = true)
 {
     var look_In_Date_Value=0,CustomerId_=0,Item_Group_Id_=0,CurrencyDetails_Id_=0,AccountType_Id_ = 0;
     this.Sales_Master_Total_Amount=0;    
+    this.Page_Index = 0;
     if (this.Date_Check == true )
         look_In_Date_Value = 1;
     if(this.Search_Customer.Client_Accounts_Id==null || this.Search_Customer.Client_Accounts_Id==undefined)
@@ -2738,7 +2738,7 @@ Search_PerformaInvoice()
                     }
                 }
                 this.Total_Entries = this.performainvoice_Data.length;
-                if (this.performainvoice_Data.length == 0) {
+                if (showNoDetails && this.performainvoice_Data.length == 0) {
                     this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'No Details Found', Type: "3" } });
                 }
             } else {
@@ -2751,6 +2751,38 @@ Search_PerformaInvoice()
             this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" } });
         }
     });
+}
+
+get Paginated_Performa_Invoice_Data(): performainvoicemaster[] {
+    const source = this.performainvoice_Data || [];
+    const start = this.Page_Index * this.Page_Size;
+    return source.slice(start, start + this.Page_Size);
+}
+
+get Performa_Invoice_Total_Pages(): number {
+    const total = this.Total_Entries || (this.performainvoice_Data || []).length;
+    return Math.max(1, Math.ceil(total / this.Page_Size));
+}
+
+get Performa_Invoice_Page_Start(): number {
+    if (!this.Total_Entries) return 0;
+    return this.Page_Index * this.Page_Size + 1;
+}
+
+get Performa_Invoice_Page_End(): number {
+    return Math.min((this.Page_Index + 1) * this.Page_Size, this.Total_Entries || 0);
+}
+
+Previous_Performa_Invoice_Page() {
+    if (this.Page_Index > 0) {
+        this.Page_Index--;
+    }
+}
+
+Next_Performa_Invoice_Page() {
+    if (this.Page_Index < this.Performa_Invoice_Total_Pages - 1) {
+        this.Page_Index++;
+    }
 }
 
 

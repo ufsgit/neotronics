@@ -10,6 +10,98 @@
   max-width: 100% !important;
 }
 
+.ig-list-view {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: calc(100vh - 235px);
+}
+
+.ig-entry-view .ig-header {
+  margin-bottom: 8px;
+}
+
+.ig-entry-view .ig-section-card {
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+
+.ig-entry-view .ig-section-header {
+  margin-bottom: 6px;
+}
+
+.ig-entry-view .ig-section-title {
+  margin-bottom: 7px;
+}
+
+.ig-entry-view .ig-grid {
+  gap: 6px 14px;
+  margin-bottom: 6px;
+}
+
+.ig-entry-view .ig-field {
+  gap: 3px;
+}
+
+.ig-entry-view .ig-field-checkbox {
+  padding-bottom: 0;
+}
+
+.ig-entry-view .ig-label {
+  font-size: 11px;
+}
+
+.ig-entry-view .ig-input,
+.ig-entry-view .ig-select {
+  width: 100%;
+  max-width: 360px;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+}
+
+.ig-entry-view .ig-input::placeholder {
+  font-size: 12px;
+}
+
+.ig-entry-view ::ng-deep .ig-mat-field .mat-form-field-flex {
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 10px !important;
+}
+
+.ig-entry-view .ig-mat-field {
+  max-width: 360px;
+}
+
+.ig-entry-view .ig-field-span2 .ig-input,
+.ig-entry-view .ig-field-span2 .ig-select,
+.ig-entry-view .ig-field-span2 .ig-mat-field {
+  max-width: 520px;
+}
+
+.ig-entry-view ::ng-deep .ig-mat-field .mat-select-trigger {
+  font-size: 13px;
+}
+
+.ig-entry-view .ig-contact-card {
+  padding: 8px 12px;
+  margin-bottom: 6px;
+}
+
+.ig-entry-view .ig-contact-header {
+  margin-bottom: 6px;
+}
+
+.ig-entry-view .ig-followup-check {
+  margin-top: 6px;
+}
+
+.ig-entry-view .ig-form-footer {
+  padding-top: 8px;
+}
+
 /* ── HEADER ── */
 .ig-header {
   display: flex;
@@ -345,19 +437,18 @@
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  display: flex !important;
-  flex-direction: column !important;
-  flex: 1 !important; /* Expansion factor */
-  min-height: 500px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   margin-bottom: 20px;
+  min-height: 0;
 }
 
 .ig-table-scroll {
-  overflow-x: auto;
-  overflow-y: auto;
-  flex: 1 !important;
+  flex: 1;
+  overflow: visible;
   position: relative;
 }
 
@@ -368,8 +459,9 @@
   table-layout: fixed;
 }
 
+
 .ig-th {
-  padding: 10px 18px;
+  padding: 14px 18px;
   font-size: 13px;
   font-weight: 600;
   color: #ffffff;
@@ -382,6 +474,12 @@
   z-index: 2;
   white-space: nowrap;
 }
+.ig-table thead tr th:first-child {
+  border-top-left-radius: 11px;
+}
+.ig-table thead tr th:last-child {
+  border-top-right-radius: 11px;
+}
 .ig-th-actions { text-align: center !important; width: 140px; }
 
 .ig-tr:hover .ig-td { background: #f8fafc; }
@@ -392,17 +490,53 @@
   color: #334155;
   border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
-  height: 48px;
+  height: 52px;
+  position: relative;
 }
 
 .ig-td-actions { 
   text-align: center; 
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  height: 48px;
-  border-bottom: 1px solid #f1f5f9;
+  padding-left: 10px;
+  padding-right: 10px;
+  white-space: nowrap;
+}
+
+.ig-action-buttons {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 118px;
+}
+
+.ig-hover-text {
+  display: inline-block;
+  max-width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.ig-hover-cell:hover::after {
+  content: attr(data-full);
+  position: absolute;
+  left: 18px;
+  top: calc(100% + 8px);
+  z-index: 20;
+  min-width: 240px;
+  max-width: 340px;
+  padding: 10px 12px;
+  color: #1f2937;
+  background: #ffffff;
+  border: 1px solid #dbe4f0;
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  white-space: normal;
 }
 
 /* ── PILL STYLES FROM IMAGE ── */

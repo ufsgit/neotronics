@@ -112,9 +112,12 @@ export class Packing_ListComponent implements OnInit, AfterViewInit {
     Search_ToDate = new Date().toString();
     Sales_Master_Name_Search: string;
     Entry_View: boolean = false;
+    Show_Filter: boolean = false;
     myInnerHeight: number;
     EditIndex: number;
     Total_Entries: number = 0;
+    Page_Index: number = 0;
+    Page_Size: number = 10;
     color = 'primary';
     mode = 'indeterminate';
     value = 50;
@@ -1877,6 +1880,7 @@ export class Packing_ListComponent implements OnInit, AfterViewInit {
     Search_PackingDEtails() {
         var look_In_Date_Value = 0, CustomerId_ = 0, Item_Group_Id_ = 0, CurrencyDetails_Id_ = 0, User_Details_Id_ = 0;
         this.Sales_Master_Total_Amount = 0;
+        this.Page_Index = 0;
         if (this.Date_Check == true)
             look_In_Date_Value = 1;
         if (this.Search_Customer.Client_Accounts_Id == null || this.Search_Customer.Client_Accounts_Id == undefined)
@@ -1933,6 +1937,38 @@ export class Packing_ListComponent implements OnInit, AfterViewInit {
                     this.issLoading = false;
                     const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
                 });
+    }
+
+    get Paginated_Packing_List_Master_Data(): packinglist_master[] {
+        const source = this.packinglist_master_Data || [];
+        const start = this.Page_Index * this.Page_Size;
+        return source.slice(start, start + this.Page_Size);
+    }
+
+    get Packing_List_Total_Pages(): number {
+        const total = this.Total_Entries || (this.packinglist_master_Data || []).length;
+        return Math.max(1, Math.ceil(total / this.Page_Size));
+    }
+
+    get Packing_List_Page_Start(): number {
+        if (!this.Total_Entries) return 0;
+        return this.Page_Index * this.Page_Size + 1;
+    }
+
+    get Packing_List_Page_End(): number {
+        return Math.min((this.Page_Index + 1) * this.Page_Size, this.Total_Entries || 0);
+    }
+
+    Previous_Packing_List_Page() {
+        if (this.Page_Index > 0) {
+            this.Page_Index--;
+        }
+    }
+
+    Next_Packing_List_Page() {
+        if (this.Page_Index < this.Packing_List_Total_Pages - 1) {
+            this.Page_Index++;
+        }
     }
 
 

@@ -112,6 +112,7 @@ var Company_Size = require('./routes/Company_Size');
 var Department = require('./routes/Department');
 var DepartmentStatus = require('./routes/DepartmentStatus');
 var Price_Response = require('./routes/Price_Response');
+var Notifications = require('./routes/Notifications');
 
 
 var app = express();
@@ -222,6 +223,8 @@ app.use('/Company_Size', Company_Size);
 app.use('/Department', Department);
 app.use('/DepartmentStatus', DepartmentStatus);
 app.use('/Price_Response', Price_Response);
+app.use('/Notification', Notifications);
+app.use('/api/notifications', Notifications);
 
 app.use(errorHandler);
 

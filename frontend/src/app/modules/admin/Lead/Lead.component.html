@@ -8,13 +8,13 @@
   <!-- ══════════════════════════════════════════
        ENTRY VIEW
   ══════════════════════════════════════════ -->
-  <div *ngIf="Entry_View">
+  <div *ngIf="Entry_View" class="ig-entry-view">
 
     <!-- Entry Header -->
     <div class="ig-header">
       <div>
         <h1 class="ig-title">{{ Lead_.Lead_Id > 0 ? 'Update Lead Profile' : 'Register New Lead' }}</h1>
-        <p class="ig-subtitle">{{ Lead_.Lead_Id > 0 ? 'Modify information for ' + Lead_.Lead_Name : 'Expand your pipeline by adding a new business opportunity' }}</p>
+        <p class="ig-subtitle">{{ Lead_.Lead_Id > 0 ? 'Modify information for ' + Lead_.Lead_Name : ' ' }}</p>
       </div>
       <div class="ig-header-actions">
         <button mat-button type="button" class="ig-btn-cancel" (click)="Close_Click()">
@@ -287,7 +287,7 @@
   <!-- ══════════════════════════════════════════
        LIST VIEW
   ══════════════════════════════════════════ -->
-  <div *ngIf="!Entry_View">
+  <div *ngIf="!Entry_View" class="ig-list-view">
 
     <!-- List Header -->
     <div class="ig-header">
@@ -357,7 +357,9 @@
                 <div class="ig-td-muted" title="{{lead.Address}}">{{lead.Address | slice:0:30}}{{lead.Address?.length > 30 ? '...' : ''}}</div>
               </td>
               <td class="ig-td" *ngIf="Is_Column_Visible('Contact')">{{lead.Contact_Number || lead.Phone}}</td>
-              <td class="ig-td" *ngIf="Is_Column_Visible('Enquiry_for')">{{lead.Vertical_Name}}</td>
+              <td class="ig-td ig-hover-cell" *ngIf="Is_Column_Visible('Enquiry_for')" [attr.data-full]="lead.Vertical_Name">
+                <span class="ig-hover-text">{{lead.Vertical_Name}}</span>
+              </td>
               <td class="ig-td" *ngIf="Is_Column_Visible('Status')">
                 <span class="ig-status-pill text-test">{{lead.Status_Name || 'test'}}</span>
               </td>
@@ -365,15 +367,17 @@
                 <div class="ig-td-muted" title="{{lead.Remark}}">{{lead.Remark | slice:0:20}}{{lead.Remark?.length > 20 ? '...' : ''}}</div>
               </td>
               <td class="ig-td ig-td-actions" *ngIf="Is_Column_Visible('Action')">
-                <button class="ig-icon-btn ig-action-blue" (click)="Open_Requirement(lead)" title="Details">
-                  <i class="material-icons">description</i>
-                </button>
-                <button class="ig-icon-btn ig-edit" (click)="Edit_Lead(lead)" title="Edit Profile">
-                  <i class="material-icons">edit_note</i>
-                </button>
-                <button class="ig-icon-btn ig-delete" (click)="Delete_Lead(lead.Lead_Id, i)" title="Archive Lead">
-                  <i class="material-icons">delete_outline</i>
-                </button>
+                <div class="ig-action-buttons">
+                  <button class="ig-icon-btn ig-action-blue" (click)="Open_Requirement(lead)" title="Details">
+                    <i class="material-icons">description</i>
+                  </button>
+                  <button class="ig-icon-btn ig-edit" (click)="Edit_Lead(lead)" title="Edit Profile">
+                    <i class="material-icons">edit_note</i>
+                  </button>
+                  <button class="ig-icon-btn ig-delete" (click)="Delete_Lead(lead.Lead_Id, i)" title="Archive Lead">
+                    <i class="material-icons">delete_outline</i>
+                  </button>
+                </div>
               </td>
             </tr>
             <tr *ngIf="Paged_Lead_Data?.length === 0">
@@ -389,7 +393,7 @@
           <button mat-icon-button (click)="Change_Page(-1)" [disabled]="Page_Index <= 1" class="ig-nav-btn">
             <i class="material-icons">west</i>
           </button>
-          <span class="ig-page-label">Showing {{ (Page_Index - 1) * Page_Size + 1 }} / {{ (Page_Index - 1) * Page_Size + Paged_Lead_Data.length }} of {{Filtered_Lead_Data.length}}</span>
+          <span class="ig-page-label">Showing {{ Filtered_Lead_Data.length ? ((Page_Index - 1) * Page_Size + 1) : 0 }} - {{ (Page_Index - 1) * Page_Size + Paged_Lead_Data.length }} of {{Filtered_Lead_Data.length}}</span>
           <button mat-icon-button (click)="Change_Page(1)" [disabled]="Page_Index >= Total_Pages" class="ig-nav-btn">
             <i class="material-icons">east</i>
           </button>

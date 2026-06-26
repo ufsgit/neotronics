@@ -21,6 +21,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from "../shared-module/shared-module";
 import { AdminRoutes } from "./admin.routing";
 import { AdminComponent } from "./admin.component";
@@ -144,6 +145,7 @@ import { RouterModule } from "@angular/router";
 		MatCheckboxModule,
 		CommonModule,
 		MatNativeDateModule,
+		MatSnackBarModule,
 	],
 
 	declarations: [

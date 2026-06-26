@@ -136,9 +136,12 @@ myDate:Date=new Date();
 Search_ToDate:Date=new Date();
 Sales_Master_Name_Search:string;
 Entry_View:boolean=false;
+Show_Filter:boolean=false;
 myInnerHeight: number;
 EditIndex: number;
 Total_Entries: number=0;
+Page_Index: number = 0;
+Page_Size: number = 10;
 color = 'primary';
 mode = 'indeterminate';
 value = 50;
@@ -357,11 +360,10 @@ Page_Load()
         this.Load_PurchaseOrder();
     }
     
-    //;
-    // if(this.quotationId <= 0 && this.PurchaseOrderMaster_Id <= 0)
-    // {
-    //     this.Search_PerformaInvoice();
-    // }    
+    if(this.quotationId <= 0 && this.PurchaseOrderMaster_Id <= 0)
+    {
+        this.Search_PerformaInvoice(false);
+    }    
     //this.myDate=new Date();
 }
 Company_Dropdown_Change() {
@@ -2743,12 +2745,13 @@ Save_purchase_order(Printstatus:number)
 }
 
 
-Search_PerformaInvoice()
+Search_PerformaInvoice(showNoDetails: boolean = true)
 {
 
     
     var look_In_Date_Value=0,CustomerId_=0,Item_Group_Id_=0,CurrencyDetails_Id_=0,AccountType_Id_ = 0;
     this.Sales_Master_Total_Amount=0;    
+    this.Page_Index = 0;
     if (this.Date_Check == true )
         look_In_Date_Value = 1;
     if(this.Search_Customer.Client_Accounts_Id==null || this.Search_Customer.Client_Accounts_Id==undefined)
@@ -2787,7 +2790,7 @@ this.User_Type_Id, this.Login_User_Id).subscribe({
                     }
                 }
                 this.Total_Entries = this.Purchase_Ordermaster_Data.length;
-                if (this.Purchase_Ordermaster_Data.length == 0) {
+                if (showNoDetails && this.Purchase_Ordermaster_Data.length == 0) {
                     this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'No Details Found', Type: "3" } });
                 }
             } else {
@@ -2800,6 +2803,38 @@ this.User_Type_Id, this.Login_User_Id).subscribe({
             this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Server Error: ' + (error.message || 'Connection failed'), Type: "2" } });
         }
     });
+}
+
+get Paginated_Purchase_Ordermaster_Data(): Purchase_Ordermaster[] {
+    const source = this.Purchase_Ordermaster_Data || [];
+    const start = this.Page_Index * this.Page_Size;
+    return source.slice(start, start + this.Page_Size);
+}
+
+get Purchase_Order_Total_Pages(): number {
+    const total = this.Total_Entries || (this.Purchase_Ordermaster_Data || []).length;
+    return Math.max(1, Math.ceil(total / this.Page_Size));
+}
+
+get Purchase_Order_Page_Start(): number {
+    if (!this.Total_Entries) return 0;
+    return this.Page_Index * this.Page_Size + 1;
+}
+
+get Purchase_Order_Page_End(): number {
+    return Math.min((this.Page_Index + 1) * this.Page_Size, this.Total_Entries || 0);
+}
+
+Previous_Purchase_Order_Page() {
+    if (this.Page_Index > 0) {
+        this.Page_Index--;
+    }
+}
+
+Next_Purchase_Order_Page() {
+    if (this.Page_Index < this.Purchase_Order_Total_Pages - 1) {
+        this.Page_Index++;
+    }
 }
 
 Edit_PurchaseOrder_Master(Sales_Master_e:Purchase_Ordermaster,index)

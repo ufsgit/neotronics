@@ -1572,7 +1572,7 @@ debugger
 								JSON.stringify(Pointer_Table)
 							);
 							this.ngZone.run(() => {
-								this.router.navigateByUrl("Lead");
+								this.router.navigateByUrl("/Lead");
 							});
 						}
 					},

@@ -1,13 +1,12 @@
 <nav [hidden]="getView()" class="navbar navbar-expand-lg topnav" >
 	<div class="container-fluid d-flex align-items-center justify-content-between" >
-		<div class="d-flex align-items-center">
-			<img
-				src="/assets/img/ADAT.png"
-				width="150px"
-				height="40px"
-				class="logo-img"
-				*ngIf="isDesktopMenu()"
-			/>
+		<div class="d-flex align-items-center h-100">
+			<div class="logo-container d-flex align-items-center" *ngIf="isDesktopMenu()">
+				<img
+					src="/assets/img/ADAT.png"
+					class="logo-img"
+				/>
+			</div>
 			<div
 				class="navbar-wrapper ml-2 pl-2"
 				
@@ -912,6 +911,33 @@ href="javascript:void(0)"
 			</li> -->
 			</ul>
 			<div class="right-section ml-auto">
+				<button
+					mat-icon-button
+					class="notification-btn"
+					[matMenuTriggerFor]="notificationMenu"
+					title="Notifications"
+				>
+					<mat-icon
+						[matBadge]="unreadCount$ | async"
+						[matBadgeHidden]="(unreadCount$ | async) === 0"
+						matBadgeColor="warn"
+						matBadgeSize="small"
+					>notifications</mat-icon>
+				</button>
+				<mat-menu #notificationMenu="matMenu" class="notification-menu-panel">
+					<div class="notification-panel" (click)="$event.stopPropagation()">
+						<div class="notification-title">Notifications</div>
+						<div class="notification-empty" *ngIf="(unreadCount$ | async) === 0">No unread notifications</div>
+						<div class="notification-item" *ngFor="let notification of notifications$ | async" (click)="markNotificationRead(notification, $event)">
+							<div class="notification-lead">{{ notification.Lead_Name || 'Lead' }}</div>
+							<div class="notification-message">{{ notification.message }}</div>
+							<div class="notification-meta">{{ notification.created_at | date:'short' }}</div>
+							<button mat-button type="button" class="notification-read-btn" (click)="markNotificationRead(notification, $event)">
+								Mark as read
+							</button>
+						</div>
+					</div>
+				</mat-menu>
 				<div class="user-profile">
 					<i class="fa fa-user-circle-o" aria-hidden="true"></i>
 					<span>{{ uname }}</span>

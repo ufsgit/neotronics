@@ -6,8 +6,29 @@
     <div class="container-fluid">
         <div class="row col-md-12 mb-0">
 
+            <div class="quotation-confirmation-list-toolbar">
+                <div class="quotation-confirmation-status-control">
+                    <label>Status</label>
+                    <select [(ngModel)]="Status_Filter">
+                        <option *ngFor="let s of Status_Data" [value]="s.id">{{s.name}}</option>
+                    </select>
+                </div>
+                <button mat-raised-button type="button" (click)="Search_Quotation_Confirmation()" class="quotation-confirmation-search-btn">
+                    <i class="fa fa-search" aria-hidden="true"></i> Search
+                </button>
+                <button mat-raised-button type="button" (click)="Show_Filter = !Show_Filter" class="quotation-confirmation-filter-btn">
+                    <i class="fa fa-filter" aria-hidden="true"></i> {{Show_Filter ? 'Hide Filter' : 'Filter'}}
+                </button>
+                <button mat-raised-button type="button" (click)="Refresh_Click()" class="quotation-confirmation-icon-btn" aria-label="Refresh">
+                    <i class="material-icons">refresh</i>
+                </button>
+                <button mat-raised-button type="button" (click)="Export_To_Excel()" class="quotation-confirmation-export-btn">
+                    <i class="material-icons">file_download</i> Export Excel
+                </button>
+            </div>
+
             <!-- ── Filter Panel ── -->
-            <div class="row mb-3 card-body"
+            <div *ngIf="Show_Filter" class="row mb-3 card-body quotation-confirmation-filter-panel"
                 style="align-items: flex-end; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%; padding: 15px; background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);">
 
                 <div class="row w-100 mb-3" style="margin-left: 0;">
@@ -51,19 +72,11 @@
                             style="width: 100%; height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; padding: 0 10px; background: #fff;">
                     </div>
 
-                    <!-- Status -->
-                    <div class="col-md-2">
-                        <label class="mb-1" style="display: block; font-weight: 500; font-size: 13px;">Status</label>
-                        <select [(ngModel)]="Status_Filter"
-                            style="width: 100%; height: 40px; border: 1px solid #b1b1b1; border-radius: 8px; padding: 0 10px; background: #fff;">
-                            <option *ngFor="let s of Status_Data" [value]="s.id">{{s.name}}</option>
-                        </select>
-                    </div>
                 </div>
 
                 <!-- Buttons row -->
                 <div class="row w-100" style="margin-left: 0; align-items: flex-end;">
-                    <div class="col-md-12" style="display: flex; gap: 10px; justify-content: flex-end; align-items: flex-end; height: 50px;">
+                    <div class="col-md-12 quotation-confirmation-filter-actions">
                         <button mat-raised-button type="button" (click)="Search_Quotation_Confirmation()"
                             class="btn btn-danger m-0" style="height: 40px; border-radius: 8px; padding: 0 20px;">
                             <i class="fa fa-search" aria-hidden="true" style="margin-right: 5px;"></i> Search
@@ -72,16 +85,6 @@
                             class="btn btn-secondary m-0"
                             style="height: 40px; border-radius: 8px; padding: 0 18px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db;">
                             <i class="fa fa-undo" aria-hidden="true" style="margin-right: 5px;"></i> Reset
-                        </button>
-                        <button mat-raised-button type="button" (click)="Refresh_Click()"
-                            class="btn m-0"
-                            style="height: 40px; border-radius: 8px; padding: 0 18px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db;">
-                            <i class="material-icons" style="font-size: 16px; vertical-align: middle;">refresh</i>
-                        </button>
-                        <button mat-raised-button type="button" (click)="Export_To_Excel()"
-                            class="btn btn-primary m-0" style="background-color: #3e6bdd; color: white; height: 40px; border-radius: 8px; padding: 0 20px;">
-                            <i class="material-icons" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">file_download</i>
-                            Export Excel
                         </button>
                     </div>
                 </div>
@@ -105,23 +108,22 @@
                                 <th>Actions</th>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let item of Quotation_Master_Data; let i = index">
+                                <tr class="quotation-confirmation-list-row" *ngFor="let item of Quotation_Master_Data; let i = index">
                                     <td style="padding: 0px; padding-left: 5px; vertical-align: middle;">{{i + 1}}</td>
                                     <td style="padding: 0px; padding-left: 5px; vertical-align: middle;">
-                                        {{item.FormattedEntryDate || (item.EntryDate | date:'dd/MM/yyyy')}}
+                                        <span class="quotation-confirmation-hover-text quotation-confirmation-hover-text-sm" [title]="item.FormattedEntryDate || (item.EntryDate | date:'dd/MM/yyyy')">{{item.FormattedEntryDate || (item.EntryDate | date:'dd/MM/yyyy')}}</span>
                                     </td>
                                     <td style="padding: 0px; padding-left: 5px; vertical-align: middle; font-weight: 600;">
-                                        {{item.QuotationNo}}
+                                        <span class="quotation-confirmation-hover-text quotation-confirmation-hover-text-sm" [title]="item.QuotationNo">{{item.QuotationNo}}</span>
                                     </td>
                                     <td style="padding: 0px; padding-left: 5px; vertical-align: middle;">
-                                        <div>{{item.Customer || item.Customer_Name}}</div>
-                                        <small class="text-muted">{{item.Mobile || item.Phone || ''}}</small>
+                                        <span class="quotation-confirmation-hover-text" [title]="(item.Customer || item.Customer_Name) + ((item.Mobile || item.Phone) ? ' - ' + (item.Mobile || item.Phone) : '')">{{item.Customer || item.Customer_Name}}</span>
                                     </td>
                                     <td style="padding: 0px; padding-left: 5px; vertical-align: middle;">
-                                        {{item.Reference || item.POnumber || '--'}}
+                                        <span class="quotation-confirmation-hover-text quotation-confirmation-hover-text-sm" [title]="item.Reference || item.POnumber || '--'">{{item.Reference || item.POnumber || '--'}}</span>
                                     </td>
                                     <td style="padding: 0px; padding-left: 5px; vertical-align: middle; font-weight: 600;">
-                                        {{(+item.NetTotal) | number:'1.2-2'}}
+                                        <span class="quotation-confirmation-hover-text quotation-confirmation-hover-text-sm" [title]="(+item.NetTotal) | number:'1.2-2'">{{(+item.NetTotal) | number:'1.2-2'}}</span>
                                     </td>
                                     <td style="padding: 0px; padding-left: 5px; vertical-align: middle;">
                                         <span class="badge-pill" [ngClass]="Get_Status_Class(item.Status)">

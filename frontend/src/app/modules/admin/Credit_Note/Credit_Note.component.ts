@@ -108,6 +108,9 @@ Search_ToDate=new Date().toString();
 Sales_Master_Name_Search:string;
 
 Entry_View:boolean=false;
+Show_Filter:boolean=false;
+Page_Index:number=0;
+Page_Size:number=10;
 myInnerHeight: number;
 EditIndex: number;
 Total_Entries: number=0;
@@ -351,7 +354,7 @@ Load_InvoiceType() {
 
   Load_Item_Group() {
     this.Item_Group_Service_.Load_Item_Group().subscribe(Rows => {
-        this.itemGroupData = Rows[0];        
+        this.itemGroupData = this.getResultSet(Rows, 0) || [];        
         this.Item_Group_Temp.Item_Group_Id = 0;
         this.Item_Group_Temp.Item_Group_Name = "Select";
         this.itemGroupData.unshift(this.Item_Group_Temp);
@@ -377,6 +380,18 @@ Create_New()
   this.Tot_Net=0;
   this.Tot_Gross=0;
 }
+
+private normalizeResponseRows(response: any): any {
+  return response && response.success !== undefined ? response.data : response;
+}
+
+private getResultSet(response: any, index: number = 0): any[] {
+  const rows = this.normalizeResponseRows(response);
+  if (Array.isArray(rows) && Array.isArray(rows[index])) return rows[index];
+  if (index === 0 && Array.isArray(rows)) return rows;
+  return [];
+}
+
 Close_Click()
 {
   this.Entry_View = false;
@@ -1294,6 +1309,7 @@ Search_Sales()
       debugger;
   var look_In_Date_Value=0,CustomerId_=0,Search_Item_Group_Id_=0,CurrencyDetails_Id_=0,User_Details_Id_ = 0, AccountType_Id_ = 0;
   this.Sales_Master_Total_Amount=0;    
+  this.Page_Index=0;
   if (this.Date_Check == true )
       look_In_Date_Value = 1;
 
@@ -1361,7 +1377,7 @@ else{
 this.User_Type_Id,
 this.Login_User_Id).subscribe(Rows => {
     debugger;
-  this.creditnote_master_Data=Rows[0];
+  this.creditnote_master_Data=this.getResultSet(Rows, 0);
   if(this.creditnote_master_Data.length>0)
   {
       for(var i=0;i<this.creditnote_master_Data.length;i++)
@@ -1382,6 +1398,35 @@ this.Login_User_Id).subscribe(Rows => {
       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
   });
 }
+
+get Paginated_Credit_Note_Data(): creditnote_master[] {
+  const source = this.creditnote_master_Data || [];
+  const start = this.Page_Index * this.Page_Size;
+  return source.slice(start, start + this.Page_Size);
+}
+
+get Credit_Note_Total_Pages(): number {
+  const total = this.Total_Entries || (this.creditnote_master_Data || []).length;
+  return Math.max(1, Math.ceil(total / this.Page_Size));
+}
+
+get Credit_Note_Page_Start(): number {
+  if (!this.Total_Entries) return 0;
+  return this.Page_Index * this.Page_Size + 1;
+}
+
+get Credit_Note_Page_End(): number {
+  return Math.min((this.Page_Index + 1) * this.Page_Size, this.Total_Entries || 0);
+}
+
+Previous_Credit_Note_Page() {
+  if (this.Page_Index > 0) this.Page_Index--;
+}
+
+Next_Credit_Note_Page() {
+  if (this.Page_Index < this.Credit_Note_Total_Pages - 1) this.Page_Index++;
+}
+
 Add_Sales_Details()
 {     
   if (this.Sales_Details_Index >= 0) {

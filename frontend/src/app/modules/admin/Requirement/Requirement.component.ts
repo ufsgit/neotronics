@@ -87,6 +87,7 @@ export class RequirementComponent implements OnInit, AfterViewInit  {
     this.Save_Requirement(1);
   }
 Requirement_Master_Data:Requirement_Master[] = [];
+Requirement_Master_Data_All:Requirement_Master[] = [];
 Price_Request_Pending_Data:any[] = [];
 Quotation_Pending_Data:any[] = [];
 Workflow_Tab: 'Requirement' | 'PriceRequestPending' | 'QuotationPending' = 'Requirement';
@@ -141,9 +142,13 @@ myDate:Date=new Date();
 Search_ToDate=new Date().toString();
 Sales_Master_Name_Search:string;
 Entry_View:boolean=false;
+Show_Filter:boolean=false;
+Common_Search_Text:string='';
 myInnerHeight: number;
 EditIndex: number;
 Total_Entries: number=0;
+Page_Index: number = 0;
+Page_Size: number = 10;
 color = 'primary';
 mode = 'indeterminate';
 value = 50;
@@ -457,8 +462,8 @@ Page_Load()
 
         this.Requirement_Master_Service_.Check_Requirement_By_Lead(filterLeadId).subscribe({
             next: (res: any) => {
-                this.Requirement_Master_Data = (res && res[0]) ? res[0] : [];
-                this.Total_Entries = this.Requirement_Master_Data.length;
+                this.Requirement_Master_Data_All = (res && res[0]) ? res[0] : [];
+                this.Apply_Common_Search();
                 this.isLoading = false;
                 
                 if (this.Requirement_Master_Data.length === 0) {
@@ -2243,6 +2248,7 @@ Search_Requirement()
 {
     var look_In_Date_Value=0,CustomerId_=0,Item_Group_Id_=0,CurrencyDetails_Id_=0,User_Details_Id_ = 0;
     this.Sales_Master_Total_Amount=0;    
+    this.Page_Index = 0;
     if (this.Date_Check == true )
         look_In_Date_Value = 1;
     if(this.Search_Customer.Client_Accounts_Id==null || this.Search_Customer.Client_Accounts_Id==undefined)
@@ -2271,14 +2277,15 @@ Search_Requirement()
                                                         this.User_Type_Id,
                                                     this.Login_User_Id).subscribe(Rows => {
                                                                 debugger
-    this.Requirement_Master_Data = (Rows && Rows[0]) ? Rows[0] : [];
-    if (this.Requirement_Master_Data.length > 0) {
-        for (var i = 0; i < this.Requirement_Master_Data.length; i++) {
-            this.Requirement_Master_Data[i].FormattedEntryDate = this.formatPrintDate(this.Requirement_Master_Data[i].EntryDate);
-            this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Requirement_Master_Data[i].NetTotal);
+    this.Requirement_Master_Data_All = (Rows && Rows[0]) ? Rows[0] : [];
+    if (this.Requirement_Master_Data_All.length > 0) {
+        for (var i = 0; i < this.Requirement_Master_Data_All.length; i++) {
+            this.Requirement_Master_Data_All[i].FormattedEntryDate = this.formatPrintDate(this.Requirement_Master_Data_All[i].EntryDate);
+            this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Requirement_Master_Data_All[i].NetTotal);
             this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount.toFixed(3));
         }
     }
+    this.Apply_Common_Search();
     this.Total_Entries = this.Requirement_Master_Data.length;
     if (this.Requirement_Master_Data.length == 0) {
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
@@ -2290,6 +2297,60 @@ Search_Requirement()
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });
 }
+
+Apply_Common_Search()
+{
+    this.Page_Index = 0;
+    const searchText = (this.Common_Search_Text || '').toString().trim().toLowerCase();
+    const sourceData: any[] = this.Requirement_Master_Data_All || [];
+    this.Requirement_Master_Data = searchText
+        ? sourceData.filter((row: any) => {
+            return [
+                row.Customer_Name,
+                row.Customer,
+                row.RequirementNo,
+                row.FormattedEntryDate,
+                row.EntryDate,
+                row.NetTotal,
+                row.TotalAmount,
+                row.Total_Amount,
+                row.GrandTotal
+            ].some(value => (value === undefined || value === null ? '' : value.toString()).toLowerCase().indexOf(searchText) > -1);
+        })
+        : sourceData.slice();
+
+    this.Total_Entries = this.Requirement_Master_Data.length;
+    this.Sales_Master_Total_Amount = 0;
+    for (let i = 0; i < this.Requirement_Master_Data.length; i++) {
+        const row: any = this.Requirement_Master_Data[i];
+        const amount = Number(row.NetTotal || row.TotalAmount || row.Total_Amount || row.GrandTotal || 0);
+        this.Sales_Master_Total_Amount = Number((this.Sales_Master_Total_Amount + amount).toFixed(3));
+    }
+}
+
+get Paginated_Requirement_Master_Data(): Requirement_Master[] {
+    const source = this.Requirement_Master_Data || [];
+    const start = this.Page_Index * this.Page_Size;
+    return source.slice(start, start + this.Page_Size);
+}
+get Requirement_Total_Pages(): number {
+    const total = this.Total_Entries || (this.Requirement_Master_Data || []).length;
+    return Math.max(1, Math.ceil(total / this.Page_Size));
+}
+get Requirement_Page_Start(): number {
+    if (!this.Total_Entries) return 0;
+    return this.Page_Index * this.Page_Size + 1;
+}
+get Requirement_Page_End(): number {
+    return Math.min((this.Page_Index + 1) * this.Page_Size, this.Total_Entries || 0);
+}
+Previous_Requirement_Page() {
+    if (this.Page_Index > 0) this.Page_Index--;
+}
+Next_Requirement_Page() {
+    if (this.Page_Index < this.Requirement_Total_Pages - 1) this.Page_Index++;
+}
+
 Add_Sales_Details()
 { 
     if (this.Requirement_Details_Index >= 0) {

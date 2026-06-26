@@ -208,6 +208,147 @@
 .btn-just-icon .material-icons,
 .aligyn-crect-deprtnment .material-icons { font-size: 16px !important; }
 
+.invoice-toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px 14px 0;
+}
+
+.invoice-search-btn,
+.invoice-filter-btn,
+.invoice-add-btn,
+.invoice-export-btn {
+  height: 36px !important;
+  min-width: unset !important;
+  border-radius: 8px !important;
+  border: none !important;
+  color: #fff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 0 16px !important;
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.12) !important;
+  text-transform: none !important;
+}
+
+.invoice-search-btn,
+.invoice-filter-btn,
+.invoice-add-btn {
+  background: #111827 !important;
+}
+
+.invoice-add-btn {
+  width: 46px !important;
+  min-width: 46px !important;
+  padding: 0 !important;
+}
+
+.invoice-export-btn {
+  background: #6366f1 !important;
+}
+
+.invoice-export-btn .material-icons {
+  font-size: 16px !important;
+}
+
+.invoice-filter-panel {
+  margin-bottom: 10px !important;
+}
+
+.invoice-filter-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: flex-end;
+  height: 50px;
+}
+
+.thead th,
+.table thead th,
+.table > thead > tr > th,
+.bg-col-stock-add-diary th {
+  padding: 13px 16px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  background: #2c3b52 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+  text-align: left !important;
+}
+
+.table tbody td,
+.table > tbody > tr > td {
+  padding: 5px 12px !important;
+  font-size: 13px !important;
+  height: 42px !important;
+  line-height: 1.25 !important;
+  color: #374151 !important;
+}
+
+.invoice-row {
+  height: 42px !important;
+}
+
+.invoice-hover-text {
+  display: inline-block;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.invoice-hover-text-sm {
+  max-width: 145px;
+}
+
+.listing-pagination {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  border-top: 1px solid #edf0f4;
+  background: #fff;
+}
+
+.listing-page-btn {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  border-radius: 50% !important;
+  color: #9ca3af !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.listing-page-btn:not(:disabled):hover {
+  background: #f3f4f6 !important;
+  color: #2c3b52 !important;
+}
+
+.listing-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.listing-page-status {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
 /* ══════════════════════════════════════════
    ENTRY VIEW — MASTER SECTION
    ══════════════════════════════════════════ */

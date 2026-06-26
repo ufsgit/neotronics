@@ -195,3 +195,347 @@
   gap: 8px !important;
   justify-content: flex-end !important;
 }
+
+.credit-note-toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px 14px 0;
+}
+
+.credit-note-search-btn,
+.credit-note-filter-btn,
+.credit-note-add-btn,
+.credit-note-export-btn {
+  height: 36px !important;
+  min-width: unset !important;
+  border-radius: 8px !important;
+  border: none !important;
+  color: #fff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 0 16px !important;
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.12) !important;
+  text-transform: none !important;
+}
+
+.credit-note-search-btn,
+.credit-note-filter-btn,
+.credit-note-add-btn {
+  background: #111827 !important;
+}
+
+.credit-note-add-btn {
+  min-width: 110px !important;
+}
+
+.credit-note-export-btn {
+  background: #6366f1 !important;
+}
+
+.credit-note-export-btn .material-icons {
+  font-size: 16px !important;
+}
+
+.credit-note-filter-panel {
+  margin-bottom: 10px !important;
+}
+
+.thead th,
+.table thead th,
+.table > thead > tr > th,
+.bg-col-stock-add-diary th {
+  padding: 13px 16px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  background: #2c3b52 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  text-align: left !important;
+}
+
+.table tbody td,
+.table > tbody > tr > td {
+  padding: 5px 12px !important;
+  font-size: 13px !important;
+  height: 42px !important;
+  line-height: 1.25 !important;
+  color: #374151 !important;
+  border-bottom: 1px solid #edf0f4 !important;
+  vertical-align: middle !important;
+}
+
+.credit-note-row {
+  height: 42px !important;
+}
+
+.credit-note-hover-text {
+  display: inline-block;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.credit-note-hover-text-sm {
+  max-width: 145px;
+}
+
+.listing-pagination {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  border-top: 1px solid #edf0f4;
+  background: #fff;
+}
+
+.listing-page-btn {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  border-radius: 50% !important;
+  color: #9ca3af !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.listing-page-btn:not(:disabled):hover {
+  background: #f3f4f6 !important;
+  color: #2c3b52 !important;
+}
+
+.listing-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.listing-page-status {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.credit-note-entry-page {
+  margin: 0 !important;
+}
+
+.credit-note-entry-page .container-fluid,
+.credit-note-entry-page .row,
+.credit-note-entry-page .col-md-12 {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.credit-note-master-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  padding: 8px 10px 6px !important;
+}
+
+.credit-note-master-card {
+  width: auto !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  padding: 10px 16px !important;
+  margin: 0 !important;
+}
+
+.credit-note-master-card .col-md-12 {
+  min-height: 34px !important;
+  margin-bottom: 4px !important;
+}
+
+.credit-note-master-card .label-to-crect-all-names-to-divs,
+.credit-note-master-card .label-to-crect-all-names-to-div-tre-prt-sles {
+  flex: 0 0 150px !important;
+  margin-bottom: 0 !important;
+  line-height: 1.15 !important;
+}
+
+.credit-note-master-card .mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn,
+.credit-note-master-card select {
+  height: 34px !important;
+  min-height: 34px !important;
+}
+
+.credit-note-master-card .mat-datepicker-toggle {
+  height: 32px !important;
+  line-height: 32px !important;
+}
+
+.credit-note-master-card .form-check-input {
+  margin-top: 0 !important;
+}
+
+.credit-note-line-card {
+  width: calc(100vw - 92px) !important;
+  max-width: 1828px !important;
+  min-height: 0 !important;
+  margin: 8px 0 0 10px !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04) !important;
+}
+
+.credit-note-line-card > .card-body {
+  padding: 12px 16px 14px !important;
+}
+
+.credit-note-line-entry-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+  padding: 0 !important;
+}
+
+.credit-note-line-entry-row > [class*="col-md-"] {
+  float: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-bottom: 6px !important;
+}
+
+.credit-note-line-entry-row > .col-md-4 {
+  flex: 1 1 250px !important;
+  max-width: none !important;
+}
+
+.credit-note-line-entry-row > .col-md-5 {
+  flex: 1.3 1 310px !important;
+  max-width: none !important;
+}
+
+.credit-note-line-entry-row > .col-md-2 {
+  flex: 1 1 145px !important;
+  max-width: none !important;
+}
+
+.credit-note-line-entry-row > .col-md-1 {
+  flex: 0 0 92px !important;
+  max-width: 92px !important;
+}
+
+.credit-note-line-entry-row label {
+  display: block !important;
+  min-height: 15px !important;
+  margin-bottom: 4px !important;
+  line-height: 1.2 !important;
+}
+
+.credit-note-line-entry-row .for-input-selct-tblelst,
+.credit-note-line-entry-row .mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn {
+  height: 34px !important;
+  min-height: 34px !important;
+}
+
+.credit-note-add-field .btn {
+  width: 78px !important;
+  height: 34px !important;
+  min-width: 78px !important;
+  padding: 0 14px !important;
+  justify-content: center !important;
+}
+
+.credit-note-entry-table-wrap {
+  padding: 0 !important;
+}
+
+.credit-note-entry-table-wrap > .card-body {
+  padding: 4px 0 0 !important;
+}
+
+.credit-note-details-table-scroll {
+  max-height: 210px !important;
+  min-height: 96px !important;
+  overflow-y: auto !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+}
+
+.credit-note-details-table-scroll table {
+  margin-bottom: 0 !important;
+}
+
+.credit-note-details-table-scroll th {
+  padding: 10px 12px !important;
+}
+
+.credit-note-details-table-scroll td {
+  height: 36px !important;
+  padding: 4px 12px !important;
+}
+
+.credit-note-spacer-col {
+  display: none !important;
+}
+
+.credit-note-totals-col {
+  flex: 0 0 50% !important;
+  max-width: 50% !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}
+
+.credit-note-entry-page .label-to-crect-all-names-to-div-tre-prt-sles {
+  font-size: 12px !important;
+  margin-bottom: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.credit-note-entry-page .wole-div-margin-to-down-proper {
+  margin-bottom: 6px !important;
+}
+
+.credit-note-entry-page .mrgn-crct-input-text-div-tre-prt-sles,
+.credit-note-entry-page .mrgn-up-crect-alghn-rspnsv-sls-mstr-bl-tpe {
+  height: 34px !important;
+  min-height: 34px !important;
+}
+
+.credit-note-words-row {
+  padding: 2px 0 0 !important;
+}
+
+.credit-note-words-row input {
+  height: 34px !important;
+}
+
+.credit-note-entry-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  padding: 10px 0 0 !important;
+}
+
+.credit-note-entry-actions .btn {
+  height: 34px !important;
+  min-width: 78px !important;
+  padding: 0 14px !important;
+}
+
+@media (max-width: 1200px) {
+  .credit-note-master-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .credit-note-totals-col {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}

@@ -1,7 +1,7 @@
 <html>
   <body class="mat-dialog-form">
     <div class="mat-dialog-container">
-      <h1 mat-dialog-title>{{ Heading }}</h1>
+      <h1 *ngIf="Heading" mat-dialog-title>{{ Heading }}</h1>
       <div mat-dialog-content>
         <p>{{ message }}</p>
       </div>

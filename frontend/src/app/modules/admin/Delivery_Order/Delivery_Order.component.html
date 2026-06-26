@@ -5,7 +5,21 @@
 <div class="main-content" style="padding: 0px 0px !important;background-color: #f1f1f1;">
     <div class="container-fluid" #topDiv1>
         <div class=" row col-md-12  mb-2" *ngIf="!Entry_View">
-            <div class="row mb-3 card-body"
+            <div class="delivery-order-list-toolbar">
+                <button mat-raised-button type="button" (click)="Search_Quotation()" class="delivery-order-search-btn">
+                    <i class="fa fa-search" aria-hidden="true"></i> Search
+                </button>
+                <button mat-raised-button type="button" (click)="Show_Filter = !Show_Filter" class="delivery-order-filter-btn">
+                    <i class="fa fa-filter" aria-hidden="true"></i> {{Show_Filter ? 'Hide Filter' : 'Filter'}}
+                </button>
+                <button mat-raised-button type="button" (click)="Create_New()" class="delivery-order-add-btn" aria-label="Create delivery order">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true" class="delivery-order-export-btn">
+                    Export
+                </button>
+            </div>
+            <div *ngIf="Show_Filter" class="row mb-3 card-body delivery-order-filter-panel"
                 style="align-items: flex-end; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%; padding: 15px; background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.2),0 1px 5px 0 rgba(0,0,0,0.12);">
 
                 <div class="row w-100 mb-3" style="margin-left:0;">
@@ -92,19 +106,10 @@
                         </select>
                     </div>
                     <!-- Buttons -->
-                    <div class="col-md-6" style="display:flex; gap:10px; justify-content:flex-end; align-items:flex-end; height:50px;">
+                    <div class="col-md-6 delivery-order-filter-actions">
                         <button mat-raised-button type="button" (click)="Search_Quotation()"
                             class="btn btn-danger m-0" style="height:40px; border-radius:8px; padding:0 20px;">
                             <i class="fa fa-search" aria-hidden="true" style="margin-right:5px;"></i> Search
-                        </button>
-                        <button mat-raised-button type="button" (click)="Create_New()"
-                            class="btn btn-danger m-0" style="height:40px; border-radius:8px; padding:0 18px;">
-                            <i class="fa fa-plus" aria-hidden="true" style="margin-right:5px;"></i> Add New
-                        </button>
-                        <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true"
-                            class="btn btn-primary m-0" style="background-color:#3e6bdd; color:white; height:40px; border-radius:8px; padding:0 20px;">
-                            <i class="material-icons" style="font-size:16px; vertical-align:middle; margin-right:4px;">file_download</i>
-                            Export
                         </button>
                     </div>
                 </div>
@@ -131,19 +136,19 @@
                                         <th>Delete</th>
                                     </thead>
                                     <!-- <ng-container  *cdkVirtualFor="let Sales_Master of Quotation_Master_Data; let i =index"> -->
-                                        <tr *ngFor="let Sales_Master of Quotation_Master_Data; let i =index">
+                                        <tr class="delivery-order-list-row" *ngFor="let Sales_Master of Paginated_Delivery_Order_Master_Data; let i =index">
                                             <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{ i+1 }}</td>
+                                            vertical-align: middle;">{{ (Page_Index * Page_Size) + i + 1 }}</td>
                                             <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["Customer"]}}</td>
+                                            vertical-align: middle;"><span class="delivery-order-hover-text" [title]="Sales_Master['Customer']">{{Sales_Master["Customer"]}}</span></td>
                                             <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["QuotationNo"]}}</td>
+                                            vertical-align: middle;"><span class="delivery-order-hover-text delivery-order-hover-text-sm" [title]="Sales_Master['QuotationNo']">{{Sales_Master["QuotationNo"]}}</span></td>
                                             <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["FormattedEntryDate"]}}</td>
+                                            vertical-align: middle;"><span class="delivery-order-hover-text delivery-order-hover-text-sm" [title]="Sales_Master['FormattedEntryDate']">{{Sales_Master["FormattedEntryDate"]}}</span></td>
                                             <!-- <td>{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</td> -->
                                             <td>
                                                 <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
@@ -156,7 +161,7 @@
                                                             _ngcontent-jry-c5="" class="mat-button-wrapper">
                                                             <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                                 class="material-icons"
-                                                                (click)="Edit_Quotation_Master(Sales_Master,i)">edit</i></span>
+                                                                (click)="Edit_Quotation_Master(Sales_Master,(Page_Index * Page_Size) + i)">edit</i></span>
                                                         <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
                                                             matripple="" ng-reflect-centered="false"
                                                             ng-reflect-disabled="false"
@@ -178,7 +183,7 @@
                                                     ng-reflect-position="above" ng-reflect-message="Remove"><span
                                                         class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
                                                             class="material-icons"
-                                                            (click)="Delete_Quotation_Master(Sales_Master.DeliveryOrderMaster_Id,i)">close</i></span>
+                                                            (click)="Delete_Quotation_Master(Sales_Master.DeliveryOrderMaster_Id,(Page_Index * Page_Size) + i)">close</i></span>
                                                     <div class="mat-button-ripple mat-ripple" matripple=""
                                                         ng-reflect-centered="false" ng-reflect-disabled="false"
                                                         ng-reflect-trigger="[object HTMLButtonElement]"></div>
@@ -238,6 +243,15 @@
                                     <!-- </ng-container> -->
                                 </table>
                             <!-- </cdk-virtual-scroll-viewport> -->
+                        </div>
+                        <div class="listing-pagination">
+                            <button mat-button type="button" class="listing-page-btn" (click)="Previous_Delivery_Order_Page()" [disabled]="Page_Index === 0">
+                                <i class="material-icons">chevron_left</i>
+                            </button>
+                            <span class="listing-page-status">Showing {{Delivery_Order_Page_Start}} - {{Delivery_Order_Page_End}} of {{Total_Entries}}</span>
+                            <button mat-button type="button" class="listing-page-btn" (click)="Next_Delivery_Order_Page()" [disabled]="Page_Index >= Delivery_Order_Total_Pages - 1">
+                                <i class="material-icons">chevron_right</i>
+                            </button>
                         </div>
                         </div>
                     <!-- </div> -->

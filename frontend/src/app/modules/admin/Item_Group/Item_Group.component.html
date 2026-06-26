@@ -47,14 +47,14 @@
   <!-- ── SEARCH ── -->
   <div class="ig-search-bar" *ngIf="!Entry_View">
     <div class="ig-search-wrap">
-      <i class="material-icons">search</i>
+      <i class="material-icons" (click)="Search_Item_Group()" style="cursor: pointer;">search</i>
       <input
         type="text"
         class="ig-search-input"
         [(ngModel)]="search_Item_Group_"
         name="search_input"
         placeholder="Search item groups…"
-        (keyup.enter)="Search_Item_Group()"
+        (ngModelChange)="Search_Item_Group()"
       />
     </div>
     <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>

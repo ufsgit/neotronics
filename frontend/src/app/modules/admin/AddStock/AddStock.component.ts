@@ -67,6 +67,9 @@ myDate:Date=new Date();
 Search_ToDate=new Date().toString();
 Sales_Master_Name_Search:string;
 Entry_View:boolean=false;
+Show_Filter:boolean=false;
+Page_Index:number=0;
+Page_Size:number=10;
 myInnerHeight: number;
 EditIndex: number;
 Total_Entries: number=0;
@@ -457,6 +460,7 @@ Delete_AddStock_Detail(itemIndex){
   Search_Stock_Add()
   {
       var look_In_Date_Value=0;   
+      this.Page_Index=0;
       if (this.Date_Check == true )
           look_In_Date_Value = 1;     
       this.issLoading=true;    
@@ -464,7 +468,7 @@ Delete_AddStock_Detail(itemIndex){
       this.Sales_Master_Service_.Search_Stock(look_In_Date_Value,moment(this.Search_FromDate).format('YYYY-MM-DD'), 
       moment(this.Search_ToDate).format('YYYY-MM-DD'),this.User_Type_Id, this.Login_User_Id).subscribe(Rows => {
         debugger
-      this.Stock_Add_Master_Data=Rows[0];
+      this.Stock_Add_Master_Data=this.getResultSet(Rows, 0);
       this.Total_Entries=this.Stock_Add_Master_Data.length;
       if(this.Stock_Add_Master_Data.length==0)
       {
@@ -478,6 +482,34 @@ Delete_AddStock_Detail(itemIndex){
       });
   }
 
+get Paginated_Add_Stock_Data(): Stock_Add_Master[] {
+    const source = this.Stock_Add_Master_Data || [];
+    const start = this.Page_Index * this.Page_Size;
+    return source.slice(start, start + this.Page_Size);
+}
+
+get Add_Stock_Total_Pages(): number {
+    const total = this.Total_Entries || (this.Stock_Add_Master_Data || []).length;
+    return Math.max(1, Math.ceil(total / this.Page_Size));
+}
+
+get Add_Stock_Page_Start(): number {
+    if (!this.Total_Entries) return 0;
+    return this.Page_Index * this.Page_Size + 1;
+}
+
+get Add_Stock_Page_End(): number {
+    return Math.min((this.Page_Index + 1) * this.Page_Size, this.Total_Entries || 0);
+}
+
+Previous_Add_Stock_Page() {
+    if (this.Page_Index > 0) this.Page_Index--;
+}
+
+Next_Add_Stock_Page() {
+    if (this.Page_Index < this.Add_Stock_Total_Pages - 1) this.Page_Index++;
+}
+
 Delete_AddStock_Master(Stock_Add_Master_Id,index)
  {
     const dialogRef = this.dialogBox.open
@@ -489,9 +521,8 @@ Delete_AddStock_Master(Stock_Add_Master_Id,index)
     this.issLoading=true;
     debugger
     this.Sales_Master_Service_.Delete_AddStock_Master(Stock_Add_Master_Id).subscribe(Delete_status => {    
-        debugger   
-        Delete_status=Delete_status[0];
-    if(Delete_status[0].Stock_Add_Master_Id_>0){
+        const deleteRow = this.getFirstResultRow(Delete_status);
+    if(Number(deleteRow.Stock_Add_Master_Id_)>0){
     this.Stock_Add_Master_Data.splice(index, 1);
       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Deleted',Type:"false"}});
       
@@ -630,6 +661,34 @@ safeNumber(value) {
     return isNaN(value) ? 0 : value;
 }
 
+private getFirstResultRow(response: any): any {
+    const data = response && response.success !== undefined ? response.data : response;
+    if (Array.isArray(data)) {
+        if (Array.isArray(data[0])) {
+            return data[0][0] || {};
+        }
+        return data[0] || {};
+    }
+    if (data && Array.isArray(data.rows)) {
+        return data.rows[0] || {};
+    }
+    return data || {};
+}
+
+private getResultSet(response: any, index: number = 0): any[] {
+    const data = response && response.success !== undefined ? response.data : response;
+    if (Array.isArray(data) && Array.isArray(data[index])) {
+        return data[index];
+    }
+    if (index === 0 && Array.isArray(data)) {
+        return data;
+    }
+    if (data && Array.isArray(data.rows)) {
+        return data.rows;
+    }
+    return [];
+}
+
 
 Clr_Stock_Add_Details()
 {
@@ -674,10 +733,10 @@ Save_AddStock(Printstatus:number)
     this.issLoading=true;   
     debugger
     this.Sales_Master_Service_.Save_AddStock(this.Stock_Add_Master_).subscribe(Save_status => {   
-        
-        if(Number(Save_status[0].Stock_Add_Master_Id_)>0)
+        const saveRow = this.getFirstResultRow(Save_status);
+        if(Number(saveRow.Stock_Add_Master_Id_)>0)
         {
-            this.Stock_Add_Master_.Stock_Add_Master_Id = Save_status[0].Stock_Add_Master_Id_;
+            this.Stock_Add_Master_.Stock_Add_Master_Id = saveRow.Stock_Add_Master_Id_;
             
             
                 this.issLoading = false;

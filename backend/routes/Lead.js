@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Lead = require('../models/Lead');
+var Notifications = require('../models/Notifications');
 
 router.post('/Save_Lead/', function (req, res, next) {
     try {
@@ -24,12 +25,21 @@ router.post('/Save_Lead/', function (req, res, next) {
                 ? req.body.FollowUp_Staff_Id 
                 : req.body.Staff_Id;
 
-            const finalizeResponse = () => {
+            const finalizeResponse = (notified) => {
                 return res.status(200).json({
                     success: true,
                     message: "Saved Successfully",
-                    data: { Key_Id: leadId }
+                    data: { Key_Id: leadId, notified: !!notified }
                 });
+            };
+
+            const notifyAssignedStaff = () => {
+                Notifications.CreateStaffAssignmentNotification(staffIdToSave, leadId)
+                    .then(() => finalizeResponse(true))
+                    .catch((notificationErr) => {
+                        console.error("Error creating staff assignment notification:", notificationErr);
+                        finalizeResponse(false);
+                    });
             };
 
             if (leadId > 0 && staffIdToSave > 0) {
@@ -39,14 +49,14 @@ router.post('/Save_Lead/', function (req, res, next) {
                     if (req.body.Is_FollowUp == 1 || req.body.Is_FollowUp == true || req.body.Is_FollowUp == "1") {
                         Lead.Update_Latest_FollowUp(leadId, staffIdToSave, (err3) => {
                             if (err3) console.error("Error updating Follow_up Staff:", err3);
-                            finalizeResponse();
+                            notifyAssignedStaff();
                         });
                     } else {
-                        finalizeResponse();
+                        notifyAssignedStaff();
                     }
                 });
             } else {
-                finalizeResponse();
+                finalizeResponse(false);
             }
         });
     } catch (e) {

@@ -5,7 +5,21 @@
 <div class="main-content">
     <div class="container-fluid" #topDiv1>
         <div  class="row col-md-12  mb-2" *ngIf="!Entry_View" >
-            <div class="row mb-3 card-body"
+            <div class="purchase-order-toolbar">
+                <button mat-raised-button type="button" (click)="Search_PerformaInvoice()" class="purchase-order-search-btn">
+                    <i class="fa fa-search" aria-hidden="true"></i> Search
+                </button>
+                <button mat-raised-button type="button" (click)="Show_Filter = !Show_Filter" class="purchase-order-filter-btn">
+                    <i class="fa fa-filter" aria-hidden="true"></i> {{Show_Filter ? 'Hide Filter' : 'Filter'}}
+                </button>
+                <button mat-raised-button type="button" (click)="Create_New()" class="purchase-order-add-btn" aria-label="Create purchase order">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true" class="purchase-order-export-btn">
+                    <i class="material-icons">file_download</i> Export
+                </button>
+            </div>
+            <div class="row mb-3 card-body purchase-order-filter-panel" *ngIf="Show_Filter"
                 style="align-items: flex-end; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%; padding: 15px; background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.2),0 1px 5px 0 rgba(0,0,0,0.12);">
 
                 <div class="row w-100 mb-3" style="margin-left:0;">
@@ -92,19 +106,10 @@
                         </select>
                     </div>
                     <!-- Buttons -->
-                    <div class="col-md-6" style="display:flex; gap:10px; justify-content:flex-end; align-items:flex-end; height:50px;">
+                    <div class="col-md-6 purchase-order-filter-actions">
                         <button mat-raised-button type="button" (click)="Search_PerformaInvoice()"
                             class="btn btn-danger m-0" style="height:40px; border-radius:8px; padding:0 20px;">
                             <i class="fa fa-search" aria-hidden="true" style="margin-right:5px;"></i> Search
-                        </button>
-                        <button mat-raised-button type="button" (click)="Create_New()"
-                            class="btn btn-danger m-0" style="height:40px; border-radius:8px; padding:0 18px;">
-                            <i class="fa fa-plus" aria-hidden="true" style="margin-right:5px;"></i> Add New
-                        </button>
-                        <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true"
-                            class="btn btn-primary m-0" style="background-color:#3e6bdd; color:white; height:40px; border-radius:8px; padding:0 20px;">
-                            <i class="material-icons" style="font-size:16px; vertical-align:middle; margin-right:4px;">file_download</i>
-                            Export
                         </button>
                     </div>
                 </div>
@@ -132,13 +137,13 @@
                                     </thead>
                                     <!-- <ng-container
                                         *cdkVirtualFor="let Sales_Master of Purchase_Orderdetails_Data; let i =index"> -->
-                                        <tr  *ngFor="let Sales_Master of Purchase_Ordermaster_Data; let i =index">
+                                        <tr class="purchase-order-row" *ngFor="let Sales_Master of Paginated_Purchase_Ordermaster_Data; let i =index">
                                             
-                                            <td >{{ i+1 }}</td>
-                                            <td>{{Sales_Master["Customer"]}}</td>
-                                            <td>{{Sales_Master["InvoiceNo"]}}</td>
-                                            <td>{{Sales_Master["FormattedEntryDate"]}}</td>
-                                            <td>{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</td>
+                                            <td>{{ (Page_Index * Page_Size) + i + 1 }}</td>
+                                            <td><span class="purchase-order-hover-text" [title]="Sales_Master['Customer']">{{Sales_Master["Customer"]}}</span></td>
+                                            <td><span class="purchase-order-hover-text purchase-order-hover-text-sm" [title]="Sales_Master['InvoiceNo']">{{Sales_Master["InvoiceNo"]}}</span></td>
+                                            <td><span class="purchase-order-hover-text purchase-order-hover-text-sm" [title]="Sales_Master['FormattedEntryDate']">{{Sales_Master["FormattedEntryDate"]}}</span></td>
+                                            <td><span class="purchase-order-hover-text purchase-order-hover-text-sm" [title]="Sales_Master['NetTotal'] || Sales_Master['TotalAmount'] || Sales_Master['Total_Amount'] || Sales_Master['GrandTotal']">{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</span></td>
                                             <td>
                                                 <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                     [hidden]="Sales_Master_Edit==false"
@@ -150,7 +155,7 @@
                                                             _ngcontent-jry-c5="" class="mat-button-wrapper">
                                                             <i _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                                                 class="material-icons"
-                                                                (click)="Edit_PurchaseOrder_Master(Sales_Master,i)">edit</i></span>
+                                                                (click)="Edit_PurchaseOrder_Master(Sales_Master,(Page_Index * Page_Size) + i)">edit</i></span>
                                                         <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple"
                                                             matripple="" ng-reflect-centered="false"
                                                             ng-reflect-disabled="false"
@@ -172,7 +177,7 @@
                                                     ng-reflect-position="above" ng-reflect-message="Remove"><span
                                                         class="mat-button-wrapper"><i _ngcontent-gdi-c11=""
                                                             class="material-icons"
-                                                            (click)="Delete_Purchase_Order(Sales_Master.Purchase_OrderMaster_Id,i)">close</i></span>
+                                                            (click)="Delete_Purchase_Order(Sales_Master.Purchase_OrderMaster_Id,(Page_Index * Page_Size) + i)">close</i></span>
                                                     <div class="mat-button-ripple mat-ripple" matripple=""
                                                         ng-reflect-centered="false" ng-reflect-disabled="false"
                                                         ng-reflect-trigger="[object HTMLButtonElement]"></div>
@@ -194,6 +199,15 @@
                                 </div>
                             <!-- </cdk-virtual-scroll-viewport> -->
                         </div>
+                        <div class="listing-pagination">
+                            <button mat-button type="button" class="listing-page-btn" (click)="Previous_Purchase_Order_Page()" [disabled]="Page_Index === 0">
+                                <i class="material-icons">chevron_left</i>
+                            </button>
+                            <span class="listing-page-status">Showing {{Purchase_Order_Page_Start}} - {{Purchase_Order_Page_End}} of {{Total_Entries}}</span>
+                            <button mat-button type="button" class="listing-page-btn" (click)="Next_Purchase_Order_Page()" [disabled]="Page_Index >= Purchase_Order_Total_Pages - 1">
+                                <i class="material-icons">chevron_right</i>
+                            </button>
+                        </div>
                     <!-- </div> -->
                     <div class="col-md-4">
                         <label class="entry-num">Entries : {{Total_Entries}}</label>
@@ -203,11 +217,11 @@
                 <!-- </div> -->
             </div>
         </div>
-        <div class="row" *ngIf="Entry_View" >
-          <div class="container-fluid" #topDiv>
+        <div class="row purchase-order-entry-page" *ngIf="Entry_View" >
+          <div class="container-fluid purchase-order-entry-container" #topDiv>
 
               <!-- HEADER: Customer Info (Left) + Invoice Info (Right) -->
-              <div class="card mb-2 mt-2" style="border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1);">
+              <div class="card mb-2 mt-2 purchase-order-master-card" style="border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1);">
                   <div class="card-body py-2">
                       <div class="row">
                           <!-- LEFT: Customer Details -->
@@ -305,11 +319,11 @@
               </div>
 
               <!-- MIDDLE: Item Entry & Table -->
-              <div class="card mb-2" style="border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1);">
+              <div class="card mb-2 purchase-order-line-card" style="border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1);">
                   <div class="card-body py-2">
                       <!-- Item Input Row -->
-                      <div class="row g-1 mb-2 align-items-end" style="flex-wrap:wrap;">
-                          <div class="col d-flex flex-column" style="min-width:130px;">
+                      <div class="row g-1 mb-2 align-items-end purchase-order-line-entry-row" style="flex-wrap:wrap;">
+                          <div class="col d-flex flex-column purchase-order-item-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item <span style="color:#ef071e;">*</span></label>
                               <input type="text" id="Barcode_n" name="Barcode_n" [matAutocomplete]="auto42"
                                   style="padding-left:5px !important;" [(ngModel)]="Barcode_"
@@ -326,7 +340,7 @@
                                   </ng-container>
                               </mat-autocomplete>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:130px;">
+                          <div class="col d-flex flex-column purchase-order-description-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Description <span style="color:#ef071e;">*</span></label>
                               <input type="text" [matAutocomplete]="auto1" [(ngModel)]="Item_" name="Item_"
                                   (click)="Search_PurchaseItem_Typeahead($event)" (input)="Search_PurchaseItem_Typeahead($event)"
@@ -342,60 +356,60 @@
                                   </ng-container>
                               </mat-autocomplete>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:90px;">
+                          <div class="col d-flex flex-column purchase-order-compact-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Model</label>
-                              <input type="text" [(ngModel)]="Purchase_Orderdetails_.Model" id="Purchase_Orderdetails_.Model" name="Purchase_Orderdetails_.Model" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly/>
+                              <input type="text" [(ngModel)]="Purchase_Orderdetails_.Model" id="Purchase_Orderdetails_.Model" name="Purchase_Orderdetails_.Model" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"/>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:90px;">
+                          <div class="col d-flex flex-column purchase-order-compact-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Brand</label>
-                              <input type="text" [(ngModel)]="Purchase_Orderdetails_.Brand" id="Purchase_Orderdetails_.Brand" name="Purchase_Orderdetails_.Brand" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly/>
+                              <input type="text" [(ngModel)]="Purchase_Orderdetails_.Brand" id="Purchase_Orderdetails_.Brand" name="Purchase_Orderdetails_.Brand" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"/>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:70px;">
+                          <div class="col d-flex flex-column purchase-order-small-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">UOM</label>
                               <input type="text" [(ngModel)]="Purchase_Orderdetails_.UnitName" id="Purchase_Orderdetails_.UnitName" name="Purchase_Orderdetails_.UnitName" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"/>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:70px;">
+                          <div class="col d-flex flex-column purchase-order-small-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Qty <span style="color:#ef071e;">*</span></label>
                               <input type="number" [(ngModel)]="Purchase_Orderdetails_.Quantity" id="Purchase_Orderdetails_.Quantity" name="Purchase_Orderdetails_.Quantity" (ngModelChange)="Calculate_Purchase_Orderdetails_Amount()" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"/>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:90px;">
+                          <div class="col d-flex flex-column purchase-order-small-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Sales Rate <span style="color:#ef071e;">*</span></label>
                               <input type="number" [(ngModel)]="Purchase_Orderdetails_.UnitPrice" id="Purchase_Orderdetails_.SaleRate" name="Purchase_Orderdetails_.SaleRate" (ngModelChange)="Calculate_Purchase_Orderdetails_Amount()" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"/>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:90px;">
+                          <div class="col d-flex flex-column purchase-order-small-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Amount</label>
                               <input type="number" [value]="Purchase_Orderdetails_.TaxableAmount || Purchase_Orderdetails_.Amount" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly/>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:70px;">
+                          <div class="col d-flex flex-column purchase-order-small-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">CGST %</label>
                               <input type="number" [value]="(Purchase_Orderdetails_.SaleTax || 0) / 2" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly/>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:70px;">
+                          <div class="col d-flex flex-column purchase-order-small-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">SGST %</label>
                               <input type="number" [value]="(Purchase_Orderdetails_.SaleTax || 0) / 2" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly/>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:80px;">
+                          <div class="col d-flex flex-column purchase-order-small-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">CGST Amt</label>
                               <input type="number" [value]="(Purchase_Orderdetails_.TaxAmount || 0) / 2" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly/>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:80px;">
+                          <div class="col d-flex flex-column purchase-order-small-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">SGST Amt</label>
                               <input type="number" [value]="(Purchase_Orderdetails_.TaxAmount || 0) / 2" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly/>
                           </div>
-                          <div class="col d-flex flex-column" style="min-width:90px;">
+                          <div class="col d-flex flex-column purchase-order-small-field">
                               <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Total</label>
                               <input type="number" [(ngModel)]="Purchase_Orderdetails_.NetValue" name="Purchase_Orderdetails_.NetValue" style="padding-left:5px !important;" class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn" readonly/>
                           </div>
                           <!-- hidden preserved -->
                           <input type="hidden" [(ngModel)]="Purchase_Orderdetails_.Discount" id="Purchase_Orderdetails_.discount" name="Purchase_Orderdetails_.discount"/>
                           <input type="hidden" [(ngModel)]="Purchase_Orderdetails_.Unit_Discount" id="Purchase_Orderdetails_.unitDiscount" name="Purchase_Orderdetails_.unitDiscount"/>
-                          <div class="col d-flex align-items-end" style="min-width:60px;">
+                          <div class="col d-flex align-items-end purchase-order-add-field">
                               <button mat-raised-button type="button" (click)="Plus_Sales_Details($event)" style="border-radius:5px;" class="btn btn-danger change-colour-button buton-to-upward-crect-alighn-boxes">Add</button>
                           </div>
                       </div>
 
                       <!-- Item Table -->
-                      <div class="table-responsive">
+                      <div class="table-responsive purchase-order-details-table-scroll">
                           <table class="table table-hover table-sm table-for-sale-search-section-diary" style="font-size:12px;">
                               <thead class="bg-col-stock-add-diary">
                                   <th>No</th>
@@ -444,7 +458,7 @@
               </div>
 
               <!-- FOOTER: Terms + Totals -->
-              <div class="card mb-2" style="border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1);">
+              <div class="card mb-2 purchase-order-footer-card" style="border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1);">
                   <div class="card-body py-2">
                       <div class="row">
                           <!-- Left: Terms & Payment -->
@@ -508,7 +522,7 @@
               </div>
 
               <!-- ACTION BUTTONS -->
-              <div class="col-md-12 mb-2">
+              <div class="col-md-12 mb-2 purchase-order-entry-actions">
                   <button mat-raised-button type="button" class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" (click)="Close_Click()">Close</button>
                   <button mat-raised-button type="button" id="Save_Button" class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" [hidden]="Purchase_Ordermaster_Save==false" (click)="Save_purchase_order(0)">Save</button>
                   <button mat-raised-button type="button" class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0" (click)="duplicate()">Duplicate</button>

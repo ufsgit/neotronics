@@ -142,13 +142,15 @@
 
 
 
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ElementRef } from '@angular/core';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { UserData } from '../../services/user-data';
 import { Router } from '@angular/router';
 // import { ROUTES } from '../sidebar/sidebar.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { NotificationService } from '../../services/notification.service';
+import { Observable } from 'rxjs';
 declare const $: any;
 declare interface RouteInfo {
   path: string;
@@ -175,7 +177,7 @@ export var Pointer_Table: number[] = []
     templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
     private listTitles: any[];
     location: Location;
     mobile_menu_visible: any = 0;
@@ -186,9 +188,13 @@ export class NavbarComponent implements OnInit {
     User_Type_Id:number;
     menuItems: any[];
     menuArray: any[];
-    constructor(location: Location, public userData: UserData, private element: ElementRef, private router: Router) {
+    notifications$: Observable<any[]>;
+    unreadCount$: Observable<number>;
+    constructor(location: Location, public userData: UserData, private element: ElementRef, private router: Router, public notificationService: NotificationService) {
         this.location = location;
         this.sidebarVisible = false;
+        this.notifications$ = this.notificationService.notifications$;
+        this.unreadCount$ = this.notificationService.unreadCount$;
         var retrievedObject=localStorage.getItem('Routes_Temp');
         ROUTES=JSON.parse(retrievedObject);
         this.menuItems = ROUTES.filter(menuItem => menuItem);
@@ -204,6 +210,7 @@ export class NavbarComponent implements OnInit {
         this.User_Type=(localStorage.getItem('User_Type'));
         this.User_Type_Id=Number(localStorage.getItem('User_Type_Id'));
         this.uname=localStorage.getItem('uname');
+        this.notificationService.startPolling(Number(localStorage.getItem('Login_User') || 0));
         this.menuItems = ROUTES.filter(menuItem => menuItem);
         this.listTitles = ROUTES.filter(listTitle => listTitle);
     debugger
@@ -219,6 +226,10 @@ const navbar: HTMLElement = this.element.nativeElement;
                 this.mobile_menu_visible = 0;
             }
         });
+    }
+
+    ngOnDestroy() {
+        this.notificationService.stopPolling();
     }
 
     sidebarOpen() {
@@ -319,8 +330,15 @@ const navbar: HTMLElement = this.element.nativeElement;
         localStorage.setItem("Routes_Temp",JSON.stringify(ROUTES));
         localStorage.setItem("Pointer_Temp",JSON.stringify(Pointer_Table));
          localStorage.removeItem("Login_User");        
+        this.notificationService.stopPolling();
         this.router.navigateByUrl('/auth/login');
       }
+
+    markNotificationRead(notification: any, event?: Event) {
+        if (event) event.stopPropagation();
+        if (!notification || !notification.id) return;
+        this.notificationService.markReadAndRefresh(notification.id);
+    }
     getView() {
 
         return ("hai");

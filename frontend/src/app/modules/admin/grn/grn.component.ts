@@ -115,9 +115,12 @@ myDate:Date=new Date();
 Search_ToDate:Date=new Date();
 Sales_Master_Name_Search:string;
 Entry_View:boolean=false;
+Show_Filter:boolean=false;
 myInnerHeight: number;
 EditIndex: number;
 Total_Entries: number=0;
+Page_Index: number = 0;
+Page_Size: number = 10;
 color = 'primary';
 mode = 'indeterminate';
 value = 50;
@@ -336,22 +339,46 @@ Page_Load()
         
         this.loadGRN()
         }
-//   if(this.GRNId <= 0 && this.GRNId1 <=0)
-//   {
-//     this.Search_PerformaInvoice();
-
-//   }
+  if(this.GRNId <= 0 && this.GRNId1 <=0)
+  {
+    this.Search_PerformaInvoice(false);
+  }
 
   //this.myDate=new Date();
 }
+
+private normalizeResponseRows(response: any): any {
+  return response && response.success !== undefined ? response.data : response;
+}
+
+private getResultSet(response: any, index: number = 0): any[] {
+  const rows = this.normalizeResponseRows(response);
+  if (Array.isArray(rows) && Array.isArray(rows[index])) {
+    return rows[index];
+  }
+  if (index === 0 && Array.isArray(rows)) {
+    return rows;
+  }
+  return [];
+}
+
+private getFirstResult(response: any): any {
+  const firstSet = this.getResultSet(response, 0);
+  return firstSet[0] || {};
+}
+
 Load_Company() 
   {   
   this.Sales_Master_Service_.Load_Company().subscribe(Rows => {    
-  if (Rows != null) {
-  this.Print_Company_ = Rows[0][0];   
-  this.Company_ = Rows[0];
+  const companyRows = this.getResultSet(Rows, 0);
+  const bankRows = this.getResultSet(Rows, 1);
+  if (companyRows.length > 0) {
+  this.Print_Company_ = companyRows[0];   
+  this.Company_Data = companyRows;
+  this.Company_ = companyRows[0];
   //this.Bank_Data=Rows[1];
-  this.Bank_ = Rows[1];
+  this.Bank_Data = bankRows;
+  this.Bank_ = bankRows[0] || new Client_Accounts();
   //this.Bank_Data=this.Bank_;
 }
 this.issLoading = false;
@@ -364,7 +391,7 @@ const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogb
 
 Load_Currency() {
     this.currencydetails_Service_.Load_currencydetails().subscribe(Rows => {
-        this.Currency_Data = Rows[0];        
+        this.Currency_Data = this.getResultSet(Rows, 0);        
         this.Currency_Temp.CurrencyDetails_Id = 0;
         this.Currency_Temp.CurrecnyName = "Select";
         this.Currency_Data.unshift(this.Currency_Temp);
@@ -396,8 +423,8 @@ Load_Currency() {
 
 Load_Item_Group() {
     this.Item_Group_Service_.Load_Item_Group().subscribe(Rows => {
-        if (Rows != null) {
-            this.itemGroupData = Rows[0];
+        this.itemGroupData = this.getResultSet(Rows, 0);
+        if (this.itemGroupData.length >= 0) {
             this.itemGroup_Temp.Item_Group_Id = 0;
             this.itemGroup_Temp.Item_Group_Name = "Select";
             this.itemGroupData.unshift(this.itemGroup_Temp);
@@ -441,7 +468,7 @@ Load_Item_Group() {
 
 Load_InvoiceType() {        
     this.User_Details_Service_.Load_InvoiceType2().subscribe(Rows => {
-        this.AccounttypeData = Rows[0];        
+        this.AccounttypeData = this.getResultSet(Rows, 0);        
         this.Accounttype_Temp.AccountType_Id = 0;
         this.Accounttype_Temp.AccountType_Name = "Select";
         this.AccounttypeData.unshift(this.Accounttype_Temp);
@@ -455,8 +482,8 @@ Load_InvoiceType() {
 
 Load_Payment_Term() {
     this.payment_term_Service_.Load_Payment_Term().subscribe(Rows => {
-        if (Rows != null) {
-            this.PaymentTerm_Data = Rows[0];
+        this.PaymentTerm_Data = this.getResultSet(Rows, 0);
+        if (this.PaymentTerm_Data.length >= 0) {
             this.PaymentTerm_Temp.payment_Term_ID = 0;
             this.PaymentTerm_Temp.Payment_Term_Description = "Select";
             this.PaymentTerm_Data.unshift(this.PaymentTerm_Temp);
@@ -1025,13 +1052,13 @@ Load_Bill_Type()
 {
   var value=1;
       this.Sales_Master_Service_.Load_Bill_Type(value).subscribe(Rows => {    
-      if (Rows != null) {
-      this.Bill_Type_Data = Rows[0];        
+      this.Bill_Type_Data = this.getResultSet(Rows, 0);        
+      if (this.Bill_Type_Data.length >= 0) {
       this.Bill_Type_Temp.Bill_Type_Id = 0;
       this.Bill_Type_Temp.Bill_Type_Name = "Select";
       this.Bill_Type_Data.unshift(this.Bill_Type_Temp);
       this.Bill_Type_Search=this.Bill_Type_Data[0];
-      this.Bill_Type_=this.Bill_Type_Data[1];
+      this.Bill_Type_=this.Bill_Type_Data[1] || this.Bill_Type_Data[0];
       }
       this.issLoading = false;
       },
@@ -1043,8 +1070,8 @@ Load_Bill_Type()
 Load_Bill_Mode()
 {
       this.Sales_Master_Service_.Load_Bill_Mode().subscribe(Rows => {    
-      if (Rows != null) {
-      this.Bill_Mode_Data = Rows[0];        
+      this.Bill_Mode_Data = this.getResultSet(Rows, 0);        
+      if (this.Bill_Mode_Data.length >= 0) {
       this.Bill_Mode_Temp.Bill_Mode_Id = 0;
       this.Bill_Mode_Temp.Bill_Mode_Name = "Select";
       this.Bill_Mode_Data.unshift(this.Bill_Mode_Temp);
@@ -1076,11 +1103,12 @@ Load_Company_bank()
 {
   ;
   this.Sales_Master_Service_.Load_Company_Bank().subscribe(Rows => {   
-    if (Rows != null) {
-
-          this.Bank_Data=Rows[0];
+    const bankRows = this.getResultSet(Rows, 0);
+    const companyRows = this.getResultSet(Rows, 1);
+    if (bankRows.length > 0 || companyRows.length > 0) {
+          this.Bank_Data=bankRows;
       this.Bank_ = this.Bank_Data[0]
-      this.Company_ = Rows[1][0]
+      this.Company_ = companyRows[0]
       }
       this.issLoading = false;
   },
@@ -1099,9 +1127,7 @@ Search_Customer_Typeahead(event: any)
     {
    this.issLoading = true;
   this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39',Value).subscribe(Rows => {     
-  if (Rows != null) {
-      this.Customer_Data = Rows[0];
-  }
+  this.Customer_Data = this.getResultSet(Rows, 0);
   this.issLoading = false;
   },
   Rows => {
@@ -1120,9 +1146,7 @@ Search_PurchaseOrderNumber_Typeahead(event: any)
     
    this.issLoading = true;
   this.purchaseordermaster_Service_.Search_PurchaseOrderNumber_Typeahead(Value).subscribe(Rows => {     
-  if (Rows != null) {
-      this.PurchaseOrder_Data = Rows[0];
-  }
+  this.PurchaseOrder_Data = this.getResultSet(Rows, 0);
   this.issLoading = false;
   },
   Rows => {
@@ -1141,9 +1165,7 @@ Search_User_Details(event: any)
      
     this.issLoading = true;
    this.User_Details_Service_.Search_User_Details(Value,this.User_Type,this.Login_User_Id).subscribe(Rows => {     
-   if (Rows != null) {
-       this.EmployeeData = Rows[0];
-   }
+   this.EmployeeData = this.getResultSet(Rows, 0);
    this.issLoading = false;
    },
    Rows => {
@@ -1164,9 +1186,7 @@ Get_Stock_Item_Code_Typeahead(event: any)
     
    this.Sales_Master_Service_.Get_Purchase_Item_Code_Typeahead(Value).subscribe(Rows => {     
       
-   if (Rows != null) {
-       this.ItemCodeData = Rows[0];
-   }
+   this.ItemCodeData = this.getResultSet(Rows, 0);
    this.issLoading = false;
    },
    Rows => {
@@ -1224,9 +1244,7 @@ Search_PurchaseItem_Typeahead(event: any)
           this.issLoading = true;
   this.Sales_Master_Service_.Search_PurchaseItem_Typeahead(Value).subscribe(Rows => {
 
-      if (Rows != null) {
-          this.Stock_Data = Rows[0];
-      }
+      this.Stock_Data = this.getResultSet(Rows, 0);
   
 
       this.issLoading = false;
@@ -1260,10 +1278,7 @@ Search_Barcode_Typeahead(event: any)
       {
       this.issLoading = true;
       this.Sales_Master_Service_.Search_Barcode_Typeahead(Value).subscribe(Rows => {
-          if (Rows != null) 
-          {
-              this.Barcode_Data = Rows[0];
-          }
+          this.Barcode_Data = this.getResultSet(Rows, 0);
           this.issLoading = false;
       },
       Rows => {     
@@ -2341,10 +2356,11 @@ if(this.Accounttype == undefined || this.Accounttype == null){
 }
 
 
-Search_PerformaInvoice()
+Search_PerformaInvoice(showNoDetails: boolean = true)
 {
   var look_In_Date_Value=0,CustomerId_=0,Item_Group_Id_=0,CurrencyDetails_Id_=0,AccountType_Id_ = 0,User_Details_Id_=0;
   this.Sales_Master_Total_Amount=0;    
+  this.Page_Index = 0;
   if (this.Date_Check == true )
       look_In_Date_Value = 1;
   if(this.Search_Customer.Client_Accounts_Id==null || this.Search_Customer.Client_Accounts_Id==undefined)
@@ -2385,8 +2401,7 @@ Search_PerformaInvoice()
   Item_Group_Id_,
 this.User_Type_Id,
 this.Login_User_Id).subscribe(Rows => {
-      
-  this.Purchase_Master_Data=Rows[0];
+  this.Purchase_Master_Data=this.getResultSet(Rows, 0);
   if(this.Purchase_Master_Data.length>0)
   {
       for(var i=0;i<this.Purchase_Master_Data.length;i++)
@@ -2396,7 +2411,7 @@ this.Login_User_Id).subscribe(Rows => {
       }
   }
   this.Total_Entries=this.Purchase_Master_Data.length;
-  if(this.Purchase_Master_Data.length==0)
+  if(showNoDetails && this.Purchase_Master_Data.length==0)
   {
   const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
   }
@@ -2406,6 +2421,38 @@ this.Login_User_Id).subscribe(Rows => {
       this.issLoading=false;
       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
   });
+}
+
+get Paginated_Purchase_Master_Data(): Purchase_Master[] {
+  const source = this.Purchase_Master_Data || [];
+  const start = this.Page_Index * this.Page_Size;
+  return source.slice(start, start + this.Page_Size);
+}
+
+get GRN_Total_Pages(): number {
+  const total = this.Total_Entries || (this.Purchase_Master_Data || []).length;
+  return Math.max(1, Math.ceil(total / this.Page_Size));
+}
+
+get GRN_Page_Start(): number {
+  if (!this.Total_Entries) return 0;
+  return this.Page_Index * this.Page_Size + 1;
+}
+
+get GRN_Page_End(): number {
+  return Math.min((this.Page_Index + 1) * this.Page_Size, this.Total_Entries || 0);
+}
+
+Previous_GRN_Page() {
+  if (this.Page_Index > 0) {
+      this.Page_Index--;
+  }
+}
+
+Next_GRN_Page() {
+  if (this.Page_Index < this.GRN_Total_Pages - 1) {
+      this.Page_Index++;
+  }
 }
 
 Delete_Quotation_Detail(itemIndex){
@@ -2859,9 +2906,9 @@ debugger;
       Load_Vat_Percentage() 
       {   
       this.Sales_Master_Service_.Load_Vat_Percentage().subscribe(Rows => {    
-      if (Rows != null) {
-
-      this.Default_Vat_Percentage = Rows[0][0].vat_percentage;
+      const vatRow = this.getFirstResult(Rows);
+      if (vatRow && vatRow.vat_percentage !== undefined) {
+      this.Default_Vat_Percentage = vatRow.vat_percentage;
    }
    this.issLoading = false;
    },

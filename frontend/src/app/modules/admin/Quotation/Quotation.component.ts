@@ -83,7 +83,7 @@ export class QuotationComponent implements OnInit, AfterViewInit  {
   }
   Quotation_Master_Data:Quotation_Master[]
   pageIndex: number = 0;
-  pageSize: number = 50;
+  pageSize: number = 10;
 Quotation_Master_:Quotation_Master= new Quotation_Master();
 Quotation_Details_Data:Quotation_Details[];
 Quotation_Details_Data1:Quotation_Details[];
@@ -131,6 +131,7 @@ myDate:Date=new Date();
 Search_ToDate=new Date().toString();
 Sales_Master_Name_Search:string;
 Entry_View:boolean=false;
+Show_Filter:boolean=false;
 myInnerHeight: number;
 EditIndex: number;
 Total_Entries: number=0;
@@ -2353,6 +2354,32 @@ Search_Quotation()
 pageChanged(event: any) {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
+}
+get Paginated_Quotation_Master_Data(): Quotation_Master[] {
+    const source = this.Quotation_Master_Data || [];
+    const start = this.pageIndex * this.pageSize;
+    return source.slice(start, start + this.pageSize);
+}
+get Quotation_Total_Pages(): number {
+    const total = this.Total_Entries || (this.Quotation_Master_Data || []).length;
+    return Math.max(1, Math.ceil(total / this.pageSize));
+}
+get Quotation_Page_Start(): number {
+    if (!this.Total_Entries) return 0;
+    return this.pageIndex * this.pageSize + 1;
+}
+get Quotation_Page_End(): number {
+    return Math.min((this.pageIndex + 1) * this.pageSize, this.Total_Entries || 0);
+}
+Previous_Quotation_Page() {
+    if (this.pageIndex > 0) {
+        this.pageIndex--;
+    }
+}
+Next_Quotation_Page() {
+    if (this.pageIndex < this.Quotation_Total_Pages - 1) {
+        this.pageIndex++;
+    }
 }
 Add_Sales_Details()
 { 

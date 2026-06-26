@@ -87,7 +87,7 @@ export const AdminRoutes: Routes = [
 		path: "",
 		component: AdminComponent,
 		children: [
-			{ path: "", redirectTo: "/Requirement", pathMatch: "full" },
+			{ path: "", redirectTo: "/Lead", pathMatch: "full" },
 			{ path: "Account_Group", component: Account_GroupComponent },
 			{ path: "Account_Years", component: Account_YearsComponent },
 			{ path: "Customer", component: CustomerComponent },

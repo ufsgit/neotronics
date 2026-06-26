@@ -5,7 +5,21 @@
 <div class="main-content" style="padding: 0px 0px !important;background-color: #f1f1f1;">
     <div class="container-fluid" #topDiv1>
         <div class="row col-md-12  mb-0" *ngIf="!Entry_View">
-            <div class="row mb-3 card-body"
+            <div class="quotation-list-toolbar">
+                <button mat-raised-button type="button" (click)="Search_Quotation()" class="quotation-search-btn">
+                    <i class="fa fa-search" aria-hidden="true"></i> Search
+                </button>
+                <button mat-raised-button type="button" (click)="Show_Filter = !Show_Filter" class="quotation-filter-btn">
+                    <i class="fa fa-filter" aria-hidden="true"></i> {{Show_Filter ? 'Hide Filter' : 'Filter'}}
+                </button>
+                <button mat-raised-button type="button" (click)="Create_New()" class="quotation-add-btn" aria-label="Create quotation">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true" class="quotation-export-btn">
+                    Export
+                </button>
+            </div>
+            <div *ngIf="Show_Filter" class="row mb-3 card-body quotation-filter-panel"
                 style="align-items: flex-end; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%; padding: 15px; background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.2),0 1px 5px 0 rgba(0,0,0,0.12);">
 
                 <div class="row w-100 mb-3" style="margin-left:0;">
@@ -74,19 +88,10 @@
                         </select>
                     </div>
                     <!-- Buttons -->
-                    <div class="col-md-9" style="display:flex; gap:10px; justify-content:flex-end; align-items:flex-end; height:50px;">
+                    <div class="col-md-9 quotation-filter-actions">
                         <button mat-raised-button type="button" (click)="Search_Quotation()"
                             class="btn btn-danger m-0" style="height:40px; border-radius:8px; padding:0 20px;">
                             <i class="fa fa-search" aria-hidden="true" style="margin-right:5px;"></i> Search
-                        </button>
-                        <button mat-raised-button type="button" (click)="Create_New()"
-                            class="btn btn-danger m-0" style="height:40px; border-radius:8px; padding:0 18px;">
-                            <i class="fa fa-plus" aria-hidden="true" style="margin-right:5px;"></i> Add New
-                        </button>
-                        <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true"
-                            class="btn btn-primary m-0" style="background-color:#3e6bdd; color:white; height:40px; border-radius:8px; padding:0 20px;">
-                            <i class="material-icons" style="font-size:16px; vertical-align:middle; margin-right:4px;">file_download</i>
-                            Export
                         </button>
                     </div>
                 </div>
@@ -106,18 +111,18 @@
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </thead>
-                            <tr *ngFor="let Sales_Master of Quotation_Master_Data; let i = index">
-                                <td style="padding:0px; padding-left:5px; vertical-align:middle;">{{ i+1 }}</td>
-                                <td style="padding:0px; padding-left:5px; vertical-align:middle;">{{Sales_Master["Customer"]}}</td>
-                                <td style="padding:0px; padding-left:5px; vertical-align:middle;">{{Sales_Master["QuotationNo"]}}</td>
-                                <td style="padding:0px; padding-left:5px; vertical-align:middle;">{{Sales_Master["FormattedEntryDate"]}}</td>
-                                <td style="padding:0px; padding-left:5px; vertical-align:middle;">{{Sales_Master["NetTotal"]}}</td>
+                            <tr class="quotation-list-row" *ngFor="let Sales_Master of Paginated_Quotation_Master_Data; let i = index">
+                                <td style="padding:0px; padding-left:5px; vertical-align:middle;">{{ (pageIndex * pageSize) + i + 1 }}</td>
+                                <td style="padding:0px; padding-left:5px; vertical-align:middle;"><span class="quotation-hover-text" [title]="Sales_Master['Customer']">{{Sales_Master["Customer"]}}</span></td>
+                                <td style="padding:0px; padding-left:5px; vertical-align:middle;"><span class="quotation-hover-text quotation-hover-text-sm" [title]="Sales_Master['QuotationNo']">{{Sales_Master["QuotationNo"]}}</span></td>
+                                <td style="padding:0px; padding-left:5px; vertical-align:middle;"><span class="quotation-hover-text quotation-hover-text-sm" [title]="Sales_Master['FormattedEntryDate']">{{Sales_Master["FormattedEntryDate"]}}</span></td>
+                                <td style="padding:0px; padding-left:5px; vertical-align:middle;"><span class="quotation-hover-text quotation-hover-text-sm" [title]="Sales_Master['NetTotal']">{{Sales_Master["NetTotal"]}}</span></td>
                                 <td>
                                     <button [hidden]="Sales_Master_Edit==false"
                                         class="aligyn-crect-deprtnment btn btn-primary btn-link btn-sm btn-just-icon mat-raised-button"
                                         mat-raised-button="" mattooltip="Edit" type="button">
                                         <span class="mat-button-wrapper">
-                                            <i class="material-icons" (click)="Edit_Quotation_Master(Sales_Master,i)">edit</i>
+                                            <i class="material-icons" (click)="Edit_Quotation_Master(Sales_Master,(pageIndex * pageSize) + i)">edit</i>
                                         </span>
                                     </button>
                                 </td>
@@ -126,13 +131,22 @@
                                         class="btn btn-danger btn-link btn-sm btn-just-icon mat-raised-button"
                                         mat-raised-button="" mattooltip="Delete" type="button">
                                         <span class="mat-button-wrapper">
-                                            <i class="material-icons" (click)="Delete_Quotation_Master(Sales_Master.SalesQuotationMaster_Id,i)">close</i>
+                                            <i class="material-icons" (click)="Delete_Quotation_Master(Sales_Master.SalesQuotationMaster_Id,(pageIndex * pageSize) + i)">close</i>
                                         </span>
                                     </button>
                                 </td>
                             </tr>
                         </table>
                     </div>
+                </div>
+                <div class="quotation-pagination">
+                    <button mat-button type="button" class="quotation-page-btn" (click)="Previous_Quotation_Page()" [disabled]="pageIndex === 0">
+                        <i class="material-icons">chevron_left</i>
+                    </button>
+                    <span class="quotation-page-status">Showing {{Quotation_Page_Start}} - {{Quotation_Page_End}} of {{Total_Entries}}</span>
+                    <button mat-button type="button" class="quotation-page-btn" (click)="Next_Quotation_Page()" [disabled]="pageIndex >= Quotation_Total_Pages - 1">
+                        <i class="material-icons">chevron_right</i>
+                    </button>
                 </div>
             </div>
             <div class="col-md-12 no-print" style="padding: 6px 4px;">
@@ -236,7 +250,7 @@
                                 <!-- Item entry row -->
                                 <div class="col-md-12" style="display:flex; gap:10px; align-items:flex-end; margin-bottom:20px; flex-wrap:wrap;">
                                     <!-- Item Name -->
-                                    <div style="flex:0 0 calc(22% - 8px);">
+                                    <div style="flex:0 0 calc(20% - 8px);">
                                         <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Item Name</label>
                                         <input type="text" [matAutocomplete]="autoItem" [(ngModel)]="Item_"
                                             (input)="Search_Item_Typeahead($event)" (click)="Search_Item_Typeahead($event)"
@@ -255,8 +269,16 @@
                                             </ng-container>
                                         </mat-autocomplete>
                                     </div>
+                                    <!-- Description -->
+                                    <div style="flex:0 0 calc(15% - 8px);">
+                                        <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Description</label>
+                                        <input type="text" [(ngModel)]="Quotation_Details_.Description"
+                                            style="width:100%; box-sizing:border-box;"
+                                            class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
+                                            placeholder="Description..." />
+                                    </div>
                                     <!-- Model -->
-                                    <div style="flex:0 0 calc(10% - 8px);">
+                                    <div style="flex:0 0 calc(9% - 8px);">
                                         <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Model</label>
                                         <select [(ngModel)]="Quotation_Details_.Model" style="width:100%;"
                                             class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
@@ -265,7 +287,7 @@
                                         </select>
                                     </div>
                                     <!-- Brand -->
-                                    <div style="flex:0 0 calc(10% - 8px);">
+                                    <div style="flex:0 0 calc(9% - 8px);">
                                         <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Brand</label>
                                         <select [(ngModel)]="Quotation_Details_.Brand" style="width:100%;"
                                             class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
@@ -287,7 +309,7 @@
                                             class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn">
                                     </div>
                                     <!-- Sales Rate -->
-                                    <div style="flex:0 0 calc(14% - 8px);">
+                                    <div style="flex:0 0 calc(12% - 8px);">
                                         <label class="label-to-crect-all-names-to-divs mrgin-alghn-label-text-otrs-nxt">Sales Rate</label>
                                         <select class="for-input-selct-tblelst mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn"
                                             style="width:100%;" [(ngModel)]="Selected_Rate" (ngModelChange)="OnRateChange()">

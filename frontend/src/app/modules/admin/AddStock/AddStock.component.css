@@ -168,3 +168,283 @@
   font-weight: 600 !important;
   border-radius: 7px !important;
 }
+
+.add-stock-toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px 14px 0;
+}
+
+.add-stock-print-btn,
+.add-stock-filter-btn,
+.add-stock-add-btn,
+.add-stock-search-btn {
+  height: 36px !important;
+  min-width: unset !important;
+  border-radius: 8px !important;
+  border: none !important;
+  color: #fff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 0 16px !important;
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.12) !important;
+  text-transform: none !important;
+  background: #111827 !important;
+}
+
+.add-stock-add-btn {
+  min-width: 110px !important;
+}
+
+.add-stock-filter-panel {
+  margin-bottom: 10px !important;
+}
+
+.thead th,
+.table thead th,
+.table > thead > tr > th,
+.bg-col-stock-add-diary th {
+  padding: 13px 16px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  background: #2c3b52 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  text-align: left !important;
+}
+
+.table tbody td,
+.table > tbody > tr > td {
+  padding: 5px 12px !important;
+  font-size: 13px !important;
+  height: 42px !important;
+  line-height: 1.25 !important;
+  color: #374151 !important;
+  border-bottom: 1px solid #edf0f4 !important;
+  vertical-align: middle !important;
+}
+
+.add-stock-row {
+  height: 42px !important;
+}
+
+.add-stock-hover-text {
+  display: inline-block;
+  max-width: 360px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.add-stock-hover-text-sm {
+  max-width: 145px;
+}
+
+.listing-pagination {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  border-top: 1px solid #edf0f4;
+  background: #fff;
+}
+
+.listing-page-btn {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  border-radius: 50% !important;
+  color: #9ca3af !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.listing-page-btn:not(:disabled):hover {
+  background: #f3f4f6 !important;
+  color: #2c3b52 !important;
+}
+
+.listing-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.listing-page-status {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.add-stock-entry-page {
+  margin: 0 !important;
+}
+
+.add-stock-entry-page .container-fluid,
+.add-stock-entry-page .row,
+.add-stock-entry-page .col-md-12 {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.add-stock-master-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  padding: 8px 10px 6px !important;
+}
+
+.add-stock-master-card {
+  width: auto !important;
+  max-width: none !important;
+  min-height: 70px !important;
+  padding: 12px 16px !important;
+  margin: 0 !important;
+}
+
+.add-stock-master-card .col-md-12 {
+  min-height: 42px;
+  margin-bottom: 0 !important;
+}
+
+.add-stock-master-card .label-to-crect-all-names-to-divs {
+  flex: 0 0 150px !important;
+  margin-bottom: 0 !important;
+}
+
+.add-stock-master-card .mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn {
+  height: 36px !important;
+}
+
+.add-stock-master-card .mat-datepicker-toggle {
+  height: 34px !important;
+  line-height: 34px !important;
+}
+
+.add-stock-line-card {
+  width: calc(100vw - 92px) !important;
+  max-width: 1420px !important;
+  min-height: 0 !important;
+  margin: 8px 0 0 10px !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04) !important;
+}
+
+.add-stock-line-card > .card-body {
+  padding: 12px 16px 14px !important;
+}
+
+.add-stock-line-entry-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+  padding: 0 !important;
+}
+
+.add-stock-line-entry-row > [class*="col-md-"] {
+  float: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-bottom: 6px !important;
+}
+
+.add-stock-line-entry-row > .col-md-2 {
+  flex: 1 1 150px !important;
+  max-width: none !important;
+}
+
+.add-stock-line-entry-row > .col-md-1 {
+  flex: 0 0 92px !important;
+  max-width: 92px !important;
+}
+
+.add-stock-line-entry-row label {
+  display: block !important;
+  min-height: 15px !important;
+  margin-bottom: 4px !important;
+  line-height: 1.2 !important;
+}
+
+.add-stock-line-entry-row .for-input-selct-tblelst,
+.add-stock-line-entry-row .mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn {
+  height: 36px !important;
+  min-height: 36px !important;
+}
+
+.add-stock-add-field .btn {
+  width: 78px !important;
+  height: 36px !important;
+  min-width: 78px !important;
+  padding: 0 14px !important;
+  justify-content: center !important;
+}
+
+.add-stock-entry-table-wrap {
+  padding: 0 !important;
+}
+
+.add-stock-entry-table-wrap > .card-body {
+  padding: 4px 0 0 !important;
+}
+
+.add-stock-details-table-scroll {
+  max-height: 245px !important;
+  min-height: 120px !important;
+  overflow-y: auto !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+}
+
+.add-stock-details-table-scroll table {
+  margin-bottom: 0 !important;
+}
+
+.add-stock-details-table-scroll th {
+  padding: 10px 12px !important;
+}
+
+.add-stock-details-table-scroll td {
+  height: 36px !important;
+  padding: 4px 12px !important;
+}
+
+.add-stock-entry-actions {
+  display: flex !important;
+  gap: 4px !important;
+  padding: 10px 0 0 !important;
+}
+
+.add-stock-entry-actions .btn {
+  height: 36px !important;
+  min-width: 84px !important;
+  padding: 0 16px !important;
+}
+
+@media (max-width: 1200px) {
+  .add-stock-master-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .add-stock-line-entry-row {
+    flex-wrap: wrap !important;
+  }
+
+  .add-stock-line-entry-row > .col-md-2 {
+    flex: 1 1 30% !important;
+  }
+}

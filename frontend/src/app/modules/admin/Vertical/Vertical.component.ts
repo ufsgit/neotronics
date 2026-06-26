@@ -79,14 +79,25 @@ export class VerticalComponent implements OnInit {
     this.Vertical_.DeleteStatus = 0;
   }
 
+  private normalizeRows(response: any): any[] {
+    const rows = response && response.success !== undefined ? response.data : response;
+    if (Array.isArray(rows) && rows.length > 0 && Array.isArray(rows[0])) return rows[0];
+    if (Array.isArray(rows)) return rows;
+    return [];
+  }
+
+  private getSavedId(response: any): number {
+    const rows = this.normalizeRows(response);
+    const first = rows && rows.length > 0 ? rows[0] : null;
+    if (first && first.Vertical_Id_ !== undefined) return Number(first.Vertical_Id_);
+    if (first && first.Vertical_Id !== undefined) return Number(first.Vertical_Id);
+    return NaN;
+  }
+
   Search_Vertical() {
     this.issLoading = true;
     this.Vertical_Service_.Search_Vertical(this.Search_Vertical_).subscribe(Rows => {
-      if (Rows && Array.isArray(Rows)) {
-        this.Vertical_Data = Rows;
-      } else {
-        this.Vertical_Data = [];
-      }
+      this.Vertical_Data = this.normalizeRows(Rows);
       this.Total_Entries = this.Vertical_Data.length;
       this.issLoading = false;
     },
@@ -109,14 +120,28 @@ export class VerticalComponent implements OnInit {
       })
     ).subscribe({
       next: (Save_status: any) => {
-        this.dialogBox.open(DialogBox_Component, {
-          panelClass: 'Dialogbox-Class',
-          data: { Message: 'Saved Successfully', Type: "false" }
-        });
-        this.Clr_Vertical();
-        this.Search_Vertical();
-        this.Entry_View = false;
-        this.Master_Refresh_Service_.refreshMaster('Vertical');
+        const savedId = this.getSavedId(Save_status);
+        if (savedId > 0) {
+          this.dialogBox.open(DialogBox_Component, {
+            panelClass: 'Dialogbox-Class',
+            data: { Message: 'Saved Successfully', Type: "false" }
+          });
+          this.Clr_Vertical();
+          this.Search_Vertical();
+          this.Entry_View = false;
+          this.Master_Refresh_Service_.refreshMaster('Vertical');
+          this.Master_Refresh_Service_.refreshMaster('Industry');
+        } else if (savedId === -1) {
+          this.dialogBox.open(DialogBox_Component, {
+            panelClass: 'Dialogbox-Class',
+            data: { Message: 'Industry Name Already Exists', Type: "2" }
+          });
+        } else {
+          this.dialogBox.open(DialogBox_Component, {
+            panelClass: 'Dialogbox-Class',
+            data: { Message: 'Invalid server response', Type: "2" }
+          });
+        }
       },
       error: (error) => {
         this.dialogBox.open(DialogBox_Component, {

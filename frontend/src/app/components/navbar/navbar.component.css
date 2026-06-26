@@ -44,8 +44,29 @@
     align-items: center !important;
 }
 
+.navbar .navbar-wrapper {
+    border-left: none !important;
+}
+
+
+.navbar .logo-container {
+    background-color: #ffffff !important;
+    height: 70px !important;
+    margin-left: -40px !important;
+    padding-left: 40px !important;
+    padding-right: 20px !important;
+    display: flex;
+    align-items: center;
+    border-radius: 0 35px 35px 0 !important;
+}
+
 .navbar .logo-img {
-    margin-right: 20px;
+    height: 45px !important;
+    width: auto !important;
+    max-width: 250px !important;
+    object-fit: contain !important;
+    display: block !important;
+    flex-shrink: 0 !important;
     transition: transform 0.3s ease;
 }
 

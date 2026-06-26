@@ -10,7 +10,10 @@ import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { User_Details_Service } from '../../../services/User_Details.Service';
 import { Requirement_Master_Service } from '../../../services/Requirement_Master.Service';
 import { Company_Size_Service } from '../../../services/Company_Size.Service';
+import { Vertical_Service } from '../../../services/Vertical.Service';
 import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-Lead',
@@ -123,10 +126,13 @@ export class LeadComponent implements OnInit {
     public User_Details_Service_: User_Details_Service,
     public Requirement_Master_Service_: Requirement_Master_Service,
     public Company_Size_Service_: Company_Size_Service,
+    public Vertical_Service_: Vertical_Service,
     public dialogBox: MatDialog,
     private router: Router,
     private fb: FormBuilder,
-    private Master_Refresh_Service_: Master_Refresh_Service
+    private Master_Refresh_Service_: Master_Refresh_Service,
+    private snackBar: MatSnackBar,
+    private notificationService: NotificationService
   ) { 
     this.Initialize_Contact_Form();
   }
@@ -161,6 +167,22 @@ export class LeadComponent implements OnInit {
       }
     }, err => {
       console.error('Error loading Company Sizes:', err);
+    });
+  }
+
+  private normalizeRows(response: any): any[] {
+    const rows = response && response.success !== undefined ? response.data : response;
+    if (Array.isArray(rows) && rows.length > 0 && Array.isArray(rows[0])) return rows[0];
+    if (Array.isArray(rows)) return rows;
+    return [];
+  }
+
+  Get_Industries() {
+    this.Vertical_Service_.Get_All_Industries().subscribe(Rows => {
+      this.Vertical_Data = this.normalizeRows(Rows);
+      this.Apply_Lead_Filters();
+    }, err => {
+      console.error('Error loading Industries:', err);
     });
   }
 
@@ -207,6 +229,7 @@ export class LeadComponent implements OnInit {
           this.Staff_Data = Rows[8];
         }
         this.Set_Default_Raw_Lead_Stage();
+        this.Get_Industries();
         this.User_Details_Service_.Search_User_Details('', 1, 1).subscribe(StaffRows => {
           if (StaffRows != null) {
             this.Staff_Data = Array.isArray(StaffRows[0]) ? StaffRows[0] : (Array.isArray(StaffRows) ? StaffRows : []);
@@ -563,6 +586,10 @@ export class LeadComponent implements OnInit {
     this.Lead_Service_.Save_Lead(Lead_Copy).pipe(finalize(() => this.issLoading = false)).subscribe({
       next: (res: any) => {
         if (res && res.success) {
+          if (res.data && res.data.notified) {
+            this.snackBar.open('Staff assigned and notified successfully.', 'Close', { duration: 3000 });
+            this.notificationService.refresh();
+          }
           this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
           this.Close_Click();
           this.Get_Leads();

@@ -30,6 +30,20 @@ router.get('/Search_Vertical', function (req, res, next) {
     }
 });
 
+router.get('/Get_All_Industries', function (req, res, next) {
+    try {
+        Vertical.Get_All_Industries(function (err, rows) {
+            if (err) {
+                res.json(err);
+            } else {
+                res.json(rows);
+            }
+        });
+    } catch (e) {
+        res.json(e);
+    }
+});
+
 router.get('/Delete_Vertical/:Vertical_Id_?', function (req, res, next) {
     try {
         Vertical.Delete_Vertical(req.params.Vertical_Id_, function (err, rows) {

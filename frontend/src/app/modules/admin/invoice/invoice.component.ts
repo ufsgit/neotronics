@@ -96,9 +96,12 @@ myDate:Date=new Date();
 Search_ToDate=new Date().toString();
 Sales_Master_Name_Search:string;
 Entry_View:boolean=false;
+Show_Filter:boolean=false;
 myInnerHeight: number;
 EditIndex: number;
 Total_Entries: number=0;
+Page_Index: number = 0;
+Page_Size: number = 10;
 color = 'primary';
 mode = 'indeterminate';
 value = 50;
@@ -340,6 +343,10 @@ if(this.Sales_Master_Id > 0)
 if(this.PerformaInvoiceId >0){
     debugger
     this.loadPerformaInvoice()
+}
+if(this.quotationId <= 0 && this.PerformaInvoiceId <= 0 && this.DeliveryOrderMaster_Id <= 0 && this.Sales_Master_Id <= 0)
+{
+    this.Search_Sales(false);
 }
 }
 Load_Company() 
@@ -1832,10 +1839,11 @@ Calculation_GSt()
       this.Sales_Master_.Handling_Total = Number(this.Sales_Master_.Handling_Charge) + Number(this.Sales_Master_.Handling_Gst);
  }
 }
-Search_Sales()
+Search_Sales(showNoDetails: boolean = true)
 {
   var look_In_Date_Value=0,CustomerId_=0,Item_Group_Id_=0,CurrencyDetails_Id_=0,User_Details_Id_ = 0, AccountType_Id_ = 0;
   this.Sales_Master_Total_Amount=0;    
+  this.Page_Index = 0;
   if (this.Date_Check == true )
       look_In_Date_Value = 1;
   if(this.Search_Customer.Client_Accounts_Id==null || this.Search_Customer.Client_Accounts_Id==undefined)
@@ -1888,7 +1896,7 @@ this.Login_User_Id).subscribe(Rows => {
       }
   }
   this.Total_Entries=this.Sales_Master_Data.length;
-  if(this.Sales_Master_Data.length==0)
+  if(showNoDetails && this.Sales_Master_Data.length==0)
   {
   const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
   }
@@ -1898,6 +1906,38 @@ this.Login_User_Id).subscribe(Rows => {
       this.issLoading=false;
       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
   });
+}
+
+get Paginated_Sales_Master_Data(): Sales_Master[] {
+  const source = this.Sales_Master_Data || [];
+  const start = this.Page_Index * this.Page_Size;
+  return source.slice(start, start + this.Page_Size);
+}
+
+get Invoice_Total_Pages(): number {
+  const total = this.Total_Entries || (this.Sales_Master_Data || []).length;
+  return Math.max(1, Math.ceil(total / this.Page_Size));
+}
+
+get Invoice_Page_Start(): number {
+  if (!this.Total_Entries) return 0;
+  return this.Page_Index * this.Page_Size + 1;
+}
+
+get Invoice_Page_End(): number {
+  return Math.min((this.Page_Index + 1) * this.Page_Size, this.Total_Entries || 0);
+}
+
+Previous_Invoice_Page() {
+  if (this.Page_Index > 0) {
+      this.Page_Index--;
+  }
+}
+
+Next_Invoice_Page() {
+  if (this.Page_Index < this.Invoice_Total_Pages - 1) {
+      this.Page_Index++;
+  }
 }
 Add_Sales_Details()
 {     

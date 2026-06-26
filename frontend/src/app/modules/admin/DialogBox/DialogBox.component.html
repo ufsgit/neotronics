@@ -1,20 +1,19 @@
-<html>
-  <body class="mat-dialog-form">
-    <div class="mat-dialog-container" style="Height:60%;">
-      <h1 class="main-title-contents" mat-dialog-title>{{ Heading }}</h1>
-      <div mat-dialog-content>
-          <img class="image-conform-box img-cntnts-sme-lne-pop-up" style="width: 60px; Height:60px;" src='{{Image_Url}}'>
-        <p class="main-text-contents cntnts-sme-lne-pop-up">{{ message }}</p>
-      </div>
-      <div mat-dialog-actions>
-        <div [hidden]="!show">
-          <button mat-raised-button class="btn btn-danger pull-right" (click)="onNoClick()">{{ NoButton }}</button>
-          <!-- <button mat-button (click)="onNoClick()">{{ NoButton }}</button> -->
-        </div>
-        <button mat-raised-button class="btn btn-danger pull-right" (click)="onYesClick()">{{ YesButton }}</button>
-        <!---<button mat-button (click)="onYesClick()">{{ YesButton }}</button>--->
-        <!---<button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>--->
-      </div>
+<div class="modern-dialog-container" [ngClass]="{'error-shake': showNo == '2', 'cool-success': showNo == 'false' || showNo == 'False'}">
+  <div class="dialog-header" *ngIf="Heading">
+    <h2>{{ Heading }}</h2>
+  </div>
+  
+  <div class="dialog-content">
+    <div class="icon-wrapper">
+      <img [src]="Image_Url" alt="icon" class="dialog-icon" />
     </div>
-  </body>
-</html>
+    <div class="text-wrapper">
+      <p class="dialog-message">{{ message }}</p>
+    </div>
+  </div>
+  
+  <div class="dialog-actions">
+    <button *ngIf="show" class="btn-cancel" (click)="onNoClick()">{{ NoButton }}</button>
+    <button class="btn-confirm" (click)="onYesClick()">{{ YesButton }}</button>
+  </div>
+</div>

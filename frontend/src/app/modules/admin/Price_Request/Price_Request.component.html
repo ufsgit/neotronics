@@ -5,7 +5,21 @@
 <div class="main-content" style="padding: 0px 0px !important;background-color: #f1f1f1;">
     <div class="container-fluid" #topDiv1>
         <div class="row col-md-12  mb-0" *ngIf="!Entry_View">
-            <div class="row mb-3 card-body" style="align-items: flex-end; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%; padding: 15px; background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);">
+            <div class="price-request-list-toolbar">
+                <button mat-raised-button type="button" (click)="Search_Price_Request()" class="price-request-search-btn">
+                    <i class="fa fa-search" aria-hidden="true"></i> Search
+                </button>
+                <button mat-raised-button type="button" (click)="Show_Filter = !Show_Filter" class="price-request-filter-btn">
+                    <i class="fa fa-filter" aria-hidden="true"></i> {{Show_Filter ? 'Hide Filter' : 'Filter'}}
+                </button>
+                <button mat-raised-button type="button" (click)="Create_New()" class="price-request-add-btn" aria-label="Create price request">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true" class="price-request-export-btn">
+                    Export
+                </button>
+            </div>
+            <div *ngIf="Show_Filter" class="row mb-3 card-body price-request-filter-panel" style="align-items: flex-end; border: 0; border-radius: 6px; margin-left: 2px; color: #333333; background: #fff; width: 100%; padding: 15px; background-color: #f1f1f1; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);">
                 <div class="row w-100 mb-3" style="margin-left: 0;">
                     <!-- Date Checkbox -->
                     <div class="col-md-1" style="display: flex; flex-direction: column; justify-content: center; height: 60px;">
@@ -84,15 +98,9 @@
                     </div>
 
                     <!-- Buttons -->
-                    <div class="col-md-4" style="display: flex; gap: 10px; justify-content: flex-end; align-items: flex-end; height: 60px;">
+                    <div class="col-md-4 price-request-filter-actions">
                         <button mat-raised-button type="button" (click)="Search_Price_Request()" class="btn btn-danger m-0" style="height: 40px; border-radius: 8px; padding: 0 20px;">
                             <i class="fa fa-search" aria-hidden="true" style="margin-right: 5px;"></i> Search
-                        </button>
-                        <button mat-raised-button type="button" (click)="Create_New()" class="btn btn-danger m-0" style="height: 40px; border-radius: 8px; padding: 0 15px;">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                        </button>
-                        <button mat-raised-button type="button" (click)="Export()" [hidden]="Export_View == true" class="btn btn-primary m-0" style="background-color: #3e6bdd; color: white; height: 40px; border-radius: 8px; padding: 0 20px;">
-                            Export
                         </button>
                     </div>
                 </div>
@@ -117,22 +125,22 @@
                             </thead>
                             <!-- <ng-container
                                         *cdkVirtualFor="let Sales_Master of Price_Request_Master_Data; let i =index"> -->
-                            <tr *ngFor="let Sales_Master of Price_Request_Master_Data; let i =index">
+                            <tr class="price-request-list-row" *ngFor="let Sales_Master of Paginated_Price_Request_Master_Data; let i =index">
                                 <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{ i+1 }}</td>
+                                            vertical-align: middle;">{{ (Page_Index * Page_Size) + i + 1 }}</td>
                                 <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["Customer"]}}</td>
+                                            vertical-align: middle;"><span class="price-request-hover-text" [title]="Sales_Master['Customer']">{{Sales_Master["Customer"]}}</span></td>
                                 <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["Price_RequestNo"]}}</td>
+                                            vertical-align: middle;"><span class="price-request-hover-text price-request-hover-text-sm" [title]="Sales_Master['Price_RequestNo']">{{Sales_Master["Price_RequestNo"]}}</span></td>
                                 <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["FormattedEntryDate"]}}</td>
+                                            vertical-align: middle;"><span class="price-request-hover-text price-request-hover-text-sm" [title]="Sales_Master['FormattedEntryDate']">{{Sales_Master["FormattedEntryDate"]}}</span></td>
                                 <td style="    padding: 0px;
                                             padding-left: 5px;
-                                            vertical-align: middle;">{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</td>
+                                            vertical-align: middle;"><span class="price-request-hover-text price-request-hover-text-sm" [title]="Sales_Master['NetTotal'] || Sales_Master['TotalAmount'] || Sales_Master['Total_Amount'] || Sales_Master['GrandTotal']">{{Sales_Master["NetTotal"] || Sales_Master["TotalAmount"] || Sales_Master["Total_Amount"] || Sales_Master["GrandTotal"]}}</span></td>
                                 <td>
                                     <button _ngcontent-jry-c5="" _ngcontent-gxp-c5=""
                                         [hidden]="Sales_Master_Edit==false" aria-describedby="cdk-describedby-message-0"
@@ -142,7 +150,7 @@
                                         ng-reflect-position="above" type="button"><span class="mat-button-wrapper"><span
                                                 _ngcontent-jry-c5="" class="mat-button-wrapper">
                                                 <i _ngcontent-jry-c5="" _ngcontent-gxp-c5="" class="material-icons"
-                                                    (click)="Edit_Price_Request_Master(Sales_Master,i)">edit</i></span>
+                                                    (click)="Edit_Price_Request_Master(Sales_Master,(Page_Index * Page_Size) + i)">edit</i></span>
                                             <div _ngcontent-jry-c5="" class="mat-button-ripple mat-ripple" matripple=""
                                                 ng-reflect-centered="false" ng-reflect-disabled="false"
                                                 ng-reflect-trigger="[object HTMLButtonElement]"></div>
@@ -162,7 +170,7 @@
                                         aria-describedby="cdk-describedby-message-1" cdk-describedby-host=""
                                         ng-reflect-position="above" ng-reflect-message="Remove"><span
                                             class="mat-button-wrapper"><i _ngcontent-gdi-c11="" class="material-icons"
-                                                (click)="Delete_Price_Request_Master(Get_Price_Request_Master_Id(Sales_Master),i)">close</i></span>
+                                                (click)="Delete_Price_Request_Master(Get_Price_Request_Master_Id(Sales_Master),(Page_Index * Page_Size) + i)">close</i></span>
                                         <div class="mat-button-ripple mat-ripple" matripple=""
                                             ng-reflect-centered="false" ng-reflect-disabled="false"
                                             ng-reflect-trigger="[object HTMLButtonElement]"></div>
@@ -183,6 +191,15 @@
                         </table>
                     </div>
                     <!-- </cdk-virtual-scroll-viewport> -->
+                </div>
+                <div class="listing-pagination">
+                    <button mat-button type="button" class="listing-page-btn" (click)="Previous_Price_Request_Page()" [disabled]="Page_Index === 0">
+                        <i class="material-icons">chevron_left</i>
+                    </button>
+                    <span class="listing-page-status">Showing {{Price_Request_Page_Start}} - {{Price_Request_Page_End}} of {{Total_Entries}}</span>
+                    <button mat-button type="button" class="listing-page-btn" (click)="Next_Price_Request_Page()" [disabled]="Page_Index >= Price_Request_Total_Pages - 1">
+                        <i class="material-icons">chevron_right</i>
+                    </button>
                 </div>
             </div>
             <div class="col-md-4">

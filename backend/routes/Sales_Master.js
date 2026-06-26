@@ -511,6 +511,17 @@ router.post('/Save_AddStock/', asyncHandler(async function (req, res, next) {
     return sendSuccess(res, { message: "Saved", data: Array.isArray(resp) ? resp : [resp] });
 }));
 
+router.get('/Search_AddStock/:Is_Date_Check_?/:FromDate_?/:ToDate_?/:User_Type_?/:Login_User_Id_?', asyncHandler(async function (req, res, next) {
+    const rows = await Sales_Master.Search_AddStock(
+        req.params.Is_Date_Check_,
+        req.params.FromDate_,
+        req.params.ToDate_,
+        req.params.User_Type_,
+        req.params.Login_User_Id_
+    );
+    return sendSuccess(res, { data: rows });
+}));
+
 router.get('/Delete_AddStock_Master/:Stock_Add_Master_Id_?', asyncHandler(async function (req, res, next) {
     const rows = await Sales_Master.Delete_AddStock_Master(req.params.Stock_Add_Master_Id_);
     return sendSuccess(res, { data: rows });

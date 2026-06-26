@@ -208,6 +208,147 @@
 .btn-just-icon .material-icons,
 .aligyn-crect-deprtnment .material-icons { font-size: 16px !important; }
 
+.purchase-order-toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px 14px 0;
+}
+
+.purchase-order-search-btn,
+.purchase-order-filter-btn,
+.purchase-order-add-btn,
+.purchase-order-export-btn {
+  height: 36px !important;
+  min-width: unset !important;
+  border-radius: 8px !important;
+  border: none !important;
+  color: #fff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 0 16px !important;
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.12) !important;
+  text-transform: none !important;
+}
+
+.purchase-order-search-btn,
+.purchase-order-filter-btn,
+.purchase-order-add-btn {
+  background: #111827 !important;
+}
+
+.purchase-order-add-btn {
+  width: 46px !important;
+  min-width: 46px !important;
+  padding: 0 !important;
+}
+
+.purchase-order-export-btn {
+  background: #6366f1 !important;
+}
+
+.purchase-order-export-btn .material-icons {
+  font-size: 16px !important;
+}
+
+.purchase-order-filter-panel {
+  margin-bottom: 10px !important;
+}
+
+.purchase-order-filter-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: flex-end;
+  height: 50px;
+}
+
+.thead th,
+.table thead th,
+.table > thead > tr > th,
+.bg-col-stock-add-diary th {
+  padding: 13px 16px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  background: #2c3b52 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+  text-align: left !important;
+}
+
+.table tbody td,
+.table > tbody > tr > td {
+  padding: 5px 12px !important;
+  font-size: 13px !important;
+  height: 42px !important;
+  line-height: 1.25 !important;
+  color: #374151 !important;
+}
+
+.purchase-order-row {
+  height: 42px !important;
+}
+
+.purchase-order-hover-text {
+  display: inline-block;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.purchase-order-hover-text-sm {
+  max-width: 145px;
+}
+
+.listing-pagination {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  border-top: 1px solid #edf0f4;
+  background: #fff;
+}
+
+.listing-page-btn {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  border-radius: 50% !important;
+  color: #9ca3af !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.listing-page-btn:not(:disabled):hover {
+  background: #f3f4f6 !important;
+  color: #2c3b52 !important;
+}
+
+.listing-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.listing-page-status {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
 /* ══════════════════════════════════════════
    ENTRY VIEW — MASTER SECTION
    ══════════════════════════════════════════ */
@@ -352,4 +493,336 @@
 
 @media (max-width: 768px) {
   .main-content { padding: 16px !important; }
+}
+
+.purchase-order-entry-page {
+  margin: 0 !important;
+}
+
+.purchase-order-entry-container {
+  padding: 8px 10px 0 !important;
+}
+
+.purchase-order-entry-page .card {
+  margin-bottom: 8px !important;
+}
+
+.purchase-order-master-card > .card-body,
+.purchase-order-line-card > .card-body,
+.purchase-order-footer-card > .card-body {
+  padding: 10px 14px !important;
+}
+
+.purchase-order-master-card .row.mb-1,
+.purchase-order-master-card .row.mb-2,
+.purchase-order-footer-card .row.mb-1,
+.purchase-order-footer-card .row.mb-2 {
+  margin-bottom: 4px !important;
+}
+
+.purchase-order-master-card .col-form-label,
+.purchase-order-footer-card .col-form-label {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: 1.15 !important;
+}
+
+.purchase-order-master-card .form-control-sm,
+.purchase-order-footer-card .form-control-sm,
+.purchase-order-master-card .mat-form-field.w-100 {
+  height: 34px !important;
+  min-height: 34px !important;
+}
+
+.purchase-order-master-card .col-md-9 input.mb-1 {
+  margin-bottom: 4px !important;
+}
+
+.purchase-order-line-entry-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+  margin-bottom: 6px !important;
+}
+
+.purchase-order-line-entry-row > .col {
+  flex-grow: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.purchase-order-item-field,
+.purchase-order-description-field {
+  flex: 1 1 150px !important;
+  min-width: 130px !important;
+}
+
+.purchase-order-compact-field {
+  flex: 0 0 88px !important;
+  min-width: 88px !important;
+}
+
+.purchase-order-small-field {
+  flex: 0 0 82px !important;
+  min-width: 82px !important;
+}
+
+.purchase-order-add-field {
+  flex: 0 0 76px !important;
+  min-width: 76px !important;
+}
+
+.purchase-order-line-entry-row label {
+  min-height: 15px !important;
+  line-height: 1.15 !important;
+  margin-bottom: 3px !important;
+  white-space: nowrap !important;
+}
+
+.purchase-order-line-entry-row .for-input-selct-tblelst,
+.purchase-order-line-entry-row .mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn {
+  height: 34px !important;
+  min-height: 34px !important;
+}
+
+.purchase-order-add-field .btn {
+  width: 76px !important;
+  height: 34px !important;
+  min-width: 76px !important;
+  padding: 0 12px !important;
+  justify-content: center !important;
+}
+
+.purchase-order-details-table-scroll {
+  max-height: 210px !important;
+  min-height: 96px !important;
+  overflow-y: auto !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+}
+
+.purchase-order-details-table-scroll table {
+  margin-bottom: 0 !important;
+}
+
+.purchase-order-details-table-scroll th {
+  padding: 9px 10px !important;
+}
+
+.purchase-order-details-table-scroll td {
+  height: 34px !important;
+  padding: 4px 10px !important;
+}
+
+.purchase-order-footer-card textarea.form-control-sm {
+  height: 58px !important;
+  min-height: 58px !important;
+  padding-top: 6px !important;
+}
+
+.purchase-order-footer-card .table-sm td,
+.purchase-order-footer-card .table-sm th {
+  padding: 3px 8px !important;
+}
+
+.purchase-order-footer-card .table .form-control-sm {
+  height: 32px !important;
+  min-height: 32px !important;
+}
+
+.purchase-order-entry-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  padding: 0 0 8px !important;
+}
+
+.purchase-order-entry-actions .btn {
+  float: none !important;
+  height: 34px !important;
+  min-width: 78px !important;
+  margin-left: 0 !important;
+  padding: 0 14px !important;
+}
+
+@media (max-width: 1500px) {
+  .purchase-order-line-entry-row {
+    flex-wrap: wrap !important;
+  }
+}
+
+.purchase-order-entry-container {
+  padding: 4px 10px 0 !important;
+}
+
+.purchase-order-master-card,
+.purchase-order-line-card,
+.purchase-order-footer-card {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  margin-bottom: 6px !important;
+}
+
+.purchase-order-master-card > .card-body,
+.purchase-order-line-card > .card-body,
+.purchase-order-footer-card > .card-body {
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  padding: 8px 10px !important;
+  margin-bottom: 0 !important;
+}
+
+.purchase-order-master-card .row.mb-1,
+.purchase-order-master-card .row.mb-2 {
+  margin-bottom: 2px !important;
+}
+
+.purchase-order-master-card .form-control-sm,
+.purchase-order-master-card .mat-form-field.w-100 {
+  height: 30px !important;
+  min-height: 30px !important;
+  font-size: 13px !important;
+  padding: 0 10px !important;
+}
+
+.purchase-order-master-card .col-form-label {
+  font-size: 11px !important;
+}
+
+.purchase-order-master-card .col-md-9 input.mb-1 {
+  margin-bottom: 2px !important;
+}
+
+.purchase-order-line-entry-row {
+  gap: 6px !important;
+  margin-bottom: 4px !important;
+}
+
+.purchase-order-item-field,
+.purchase-order-description-field {
+  min-width: 150px !important;
+}
+
+.purchase-order-compact-field {
+  flex-basis: 82px !important;
+  min-width: 82px !important;
+}
+
+.purchase-order-small-field {
+  flex-basis: 76px !important;
+  min-width: 76px !important;
+}
+
+.purchase-order-line-entry-row .for-input-selct-tblelst,
+.purchase-order-line-entry-row .mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn,
+.purchase-order-add-field .btn {
+  height: 30px !important;
+  min-height: 30px !important;
+}
+
+.purchase-order-line-entry-row label {
+  font-size: 10.5px !important;
+  margin-bottom: 2px !important;
+}
+
+.purchase-order-details-table-scroll {
+  min-height: 66px !important;
+  max-height: 170px !important;
+  border-radius: 7px !important;
+}
+
+.purchase-order-details-table-scroll th {
+  padding: 8px 10px !important;
+}
+
+.purchase-order-details-table-scroll td {
+  height: 30px !important;
+  padding: 3px 10px !important;
+}
+
+.purchase-order-entry-page .purchase-order-master-card {
+  overflow: visible !important;
+}
+
+.purchase-order-entry-page {
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+  box-sizing: border-box !important;
+}
+
+.purchase-order-entry-container {
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+  overflow: visible !important;
+}
+
+.purchase-order-entry-page .row,
+.purchase-order-master-card .row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.purchase-order-master-card > .card-body {
+  overflow: visible !important;
+}
+
+.purchase-order-master-card .card-body > .row {
+  align-items: flex-start !important;
+}
+
+.purchase-order-master-card .col-md-6 {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+
+.purchase-order-master-card .col-form-label {
+  flex: 0 0 150px !important;
+  max-width: 150px !important;
+  padding-left: 4px !important;
+  padding-right: 10px !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+}
+
+.purchase-order-master-card .label-to-crect-all-names-to-divs {
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+.purchase-order-master-card .col-md-9 {
+  flex: 1 1 auto !important;
+  max-width: calc(100% - 150px) !important;
+}
+
+.purchase-order-master-card .col-md-8 {
+  flex: 1 1 auto !important;
+  max-width: calc(100% - 150px) !important;
+}
+
+.purchase-order-master-card .row.align-items-center {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+}
+
+.purchase-order-master-card .row.mb-1.align-items-center:nth-child(2) {
+  align-items: flex-start !important;
+}
+
+.purchase-order-line-card,
+.purchase-order-footer-card {
+  clear: both !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.purchase-order-line-card {
+  margin-top: 8px !important;
+}
+
+.purchase-order-footer-card {
+  margin-top: 10px !important;
 }

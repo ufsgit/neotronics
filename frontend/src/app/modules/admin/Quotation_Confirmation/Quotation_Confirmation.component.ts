@@ -40,6 +40,7 @@ export class Quotation_ConfirmationComponent implements OnInit, AfterViewInit {
     Quotation_Master_Data: any[] = [];
     Total_Entries: number = 0;
     Total_Amount: number = 0;
+    Show_Filter: boolean = false;
 
     // Filter properties
     Search_Customer: string = '';

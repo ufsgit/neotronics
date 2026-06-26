@@ -21,6 +21,10 @@ export class Vertical_Service {
     return this.http.get(environment.BasePath + 'Vertical/Search_Vertical/', { params: params });
   }
 
+  Get_All_Industries(): Observable<any> {
+    return this.http.get(environment.BasePath + 'Vertical/Get_All_Industries/');
+  }
+
   Delete_Vertical(Vertical_Id) {
     return this.http.get(environment.BasePath + 'Vertical/Delete_Vertical/' + Vertical_Id);
   }

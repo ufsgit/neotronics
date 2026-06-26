@@ -526,3 +526,192 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   .main-content { padding: 16px !important; }
   .croct-float-purchase-master-section { margin-bottom: 12px; }
 }
+
+/* Price request compact layout synced with Requirement page */
+.price-request-list-toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px 4px 0;
+}
+
+.price-request-search-btn,
+.price-request-filter-btn,
+.price-request-add-btn,
+.price-request-export-btn {
+  height: 36px !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.12) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 16px !important;
+  min-width: unset !important;
+  text-transform: none !important;
+}
+
+.price-request-search-btn,
+.price-request-filter-btn,
+.price-request-add-btn {
+  background: #111827 !important;
+}
+
+.price-request-add-btn {
+  width: 46px !important;
+  min-width: 46px !important;
+  padding: 0 !important;
+  justify-content: center !important;
+}
+
+.price-request-export-btn {
+  background: #6366f1 !important;
+}
+
+.price-request-filter-panel {
+  margin-top: 0 !important;
+}
+
+.price-request-filter-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: flex-end;
+  height: 60px;
+}
+
+.thead th,
+.table thead th,
+.table > thead > tr > th,
+.bg-col-stock-add-diary th {
+  padding: 13px 16px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  background: #2c3b52 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+  text-align: left !important;
+}
+
+.table tbody td,
+.table > tbody > tr > td {
+  padding: 5px 12px !important;
+  font-size: 13px !important;
+  height: 42px !important;
+  line-height: 1.25 !important;
+}
+
+.price-request-list-row {
+  height: 42px !important;
+}
+
+.price-request-hover-text {
+  display: inline-block;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.price-request-hover-text-sm {
+  max-width: 145px;
+}
+
+.listing-pagination {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  border-top: 1px solid #edf0f4;
+  background: #fff;
+}
+
+.listing-page-btn {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  border-radius: 50% !important;
+  color: #9ca3af !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.listing-page-btn:not(:disabled):hover {
+  background: #f3f4f6 !important;
+  color: #2c3b52 !important;
+}
+
+.listing-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.listing-page-status {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.croct-float-purchase-master-section {
+  padding: 10px 14px !important;
+  margin-bottom: 8px !important;
+}
+
+.col-md-12.mb-1 {
+  margin-bottom: 5px !important;
+  gap: 8px !important;
+  min-height: 32px !important;
+}
+
+.mrgn-crct-input-text-div-tre-prt-sles1,
+.mrgn-crct-input-bx-sls-mstr-rspnsv-nw-sctn,
+.form-control-standard {
+  height: 32px !important;
+  min-height: 32px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  padding: 0 9px !important;
+}
+
+.card {
+  margin-bottom: 8px !important;
+}
+
+.for-input-selct-tblelst {
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 8px !important;
+}
+
+.btn.btn-danger.change-colour-button,
+.buton-to-upward-crect-alighn-boxes,
+.change-colour-button {
+  height: 32px !important;
+  padding: 0 14px !important;
+}
+
+.row.mt-2[style*="background-color"] {
+  margin-top: 4px !important;
+}
+
+.row.mt-2[style*="background-color"] > .container-fluid {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.row.mt-2[style*="background-color"] label {
+  margin-bottom: 2px !important;
+}

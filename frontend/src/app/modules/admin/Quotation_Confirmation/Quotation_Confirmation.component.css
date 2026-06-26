@@ -468,3 +468,153 @@ button[mat-icon-button] mat-icon { font-size: 18px !important; }
 @media (max-width: 768px) {
   .main-content { padding: 16px !important; }
 }
+
+/* Quotation confirmation list synced with Lead listing */
+.quotation-confirmation-list-toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px 14px 0;
+}
+
+.quotation-confirmation-search-btn,
+.quotation-confirmation-filter-btn,
+.quotation-confirmation-icon-btn,
+.quotation-confirmation-export-btn {
+  height: 36px !important;
+  border-radius: 8px !important;
+  border: none !important;
+  color: #fff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 0 16px !important;
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.12) !important;
+  text-transform: none !important;
+  min-width: unset !important;
+}
+
+.quotation-confirmation-search-btn,
+.quotation-confirmation-filter-btn,
+.quotation-confirmation-icon-btn {
+  background: #111827 !important;
+}
+
+.quotation-confirmation-icon-btn {
+  width: 46px !important;
+  min-width: 46px !important;
+  padding: 0 !important;
+}
+
+.quotation-confirmation-icon-btn .material-icons,
+.quotation-confirmation-export-btn .material-icons {
+  font-size: 16px !important;
+}
+
+.quotation-confirmation-export-btn {
+  background: #6366f1 !important;
+}
+
+.quotation-confirmation-status-control {
+  width: 270px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-right: 8px;
+}
+
+.quotation-confirmation-status-control label {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #6b7280 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  margin: 0 !important;
+}
+
+.quotation-confirmation-status-control select {
+  width: 100%;
+  height: 36px !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  color: #111827 !important;
+  font-size: 14px !important;
+  padding: 0 10px !important;
+  outline: none !important;
+}
+
+.quotation-confirmation-filter-panel {
+  margin-bottom: 10px !important;
+}
+
+.quotation-confirmation-filter-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: flex-end;
+  height: 50px;
+}
+
+.table-responsive.card,
+.table-responsive {
+  overflow: auto !important;
+}
+
+.thead th,
+.table thead th,
+.table > thead > tr > th {
+  padding: 13px 16px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  background: #2c3b52 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+  text-align: left !important;
+}
+
+.table tbody td,
+.table > tbody > tr > td {
+  padding: 5px 12px !important;
+  font-size: 13px !important;
+  height: 42px !important;
+  line-height: 1.25 !important;
+  color: #374151 !important;
+}
+
+.quotation-confirmation-list-row {
+  height: 42px !important;
+}
+
+.quotation-confirmation-hover-text {
+  display: inline-block;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.quotation-confirmation-hover-text-sm {
+  max-width: 145px;
+}
+
+.badge-pill {
+  min-height: 30px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+td .btn-primary.btn-link,
+td .btn-danger.btn-link,
+td .aligyn-crect-deprtnment {
+  width: 30px !important;
+  height: 30px !important;
+}

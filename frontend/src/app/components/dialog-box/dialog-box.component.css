@@ -3,7 +3,7 @@
   padding: 0px;
   border-radius: 0px;
   box-sizing: content-box;
-  overflow: auto;
+  overflow: hidden;
   outline: 0;
   width: 500px;
   height: 200px;
@@ -19,7 +19,7 @@
   margin: 0 0px;
   padding: 0 24px;
   max-height: 65vh;
-  overflow: auto;
+  overflow: hidden;
   -webkit-overflow-scrolling: touch;
 }
 .modal-header {
