@@ -603,41 +603,19 @@
                             </div>
 
 <div class="col-md-12">
-                                <!-- <button mat-raised-button type="button" id="Tab_Edit" (click)="Edit_Button_Click()" class="btn btn-danger pull-right">Edit</button> -->
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
-                                    (click)="Close_Click();">Close</button>
-
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-info div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                                                        (click)="Quotation_Pending_Click(Requirement_Master_)">Quotation Pending</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-info div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="Price_Response_Listing_Click()">Price Response Listing</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-primary div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="Create_Quotation_Click(Requirement_Master_)">Quotation</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-info div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                                                        (click)="PriceRequest_Pending_Click(Requirement_Master_)">Price Request Pending</button>
-                                <button mat-raised-button type="button"
-                                    class="btn pull-right btn-primary div-rspnsv-pstn-crct-sls-mstr" *ngIf="Edit_Sales>0"
-                                    (click)="Price_Request_Click(Requirement_Master_)">Price Request</button>
-
-                                <button mat-raised-button type="button" id="Save_Button"
-                                    class="btn pull-right btn-danger div-rspnsv-pstn-crct-sls-mstr"
-                                    [hidden]="Sales_Master_Save==false" (click)="Save_Requirement(0)">Save</button>
-                                <button mat-raised-button type="button" [hidden]="Sales_Print"
-                                    class="btn btn-danger pull-right no-print" (click)="Print_Click()" title="Professional Print">
-                                    <i class="fa fa-print" aria-hidden="true"></i> Print</button>
-                                <button mat-raised-button type="button" [hidden]="Sales_Print"
-                                    class="btn btn-danger pull-right no-print" (click)="Preview_PDF()" title="Preview PDF">
-                                    <i class="fa fa-eye" aria-hidden="true"></i> Preview</button>
-                                <button mat-raised-button type="button" [hidden]="Sales_Print"
-                                    class="btn btn-danger pull-right no-print" (click)="Download_PDF()" title="Download PDF">
-                                    <i class="fa fa-download" aria-hidden="true"></i> Download</button>
-                            </div>
-                            </div><div class="clearfix"></div>
+    <div class="action-buttons-container">
+        <button type="button" class="ig-btn-action" (click)="Close_Click();">Close</button>
+        <button type="button" class="ig-btn-action" *ngIf="Edit_Sales>0" (click)="Quotation_Pending_Click(Requirement_Master_)">Quotation Pending</button>
+        <button type="button" class="ig-btn-action" *ngIf="Edit_Sales>0" (click)="Price_Response_Listing_Click()">Price Response Listing</button>
+        <button type="button" class="ig-btn-action" *ngIf="Edit_Sales>0" (click)="Create_Quotation_Click(Requirement_Master_)">Quotation</button>
+        <button type="button" class="ig-btn-action" *ngIf="Edit_Sales>0" (click)="PriceRequest_Pending_Click(Requirement_Master_)">Price Request Pending</button>
+        <button type="button" class="ig-btn-action" *ngIf="Edit_Sales>0" (click)="Price_Request_Click(Requirement_Master_)">Price Request</button>
+        <button type="button" id="Save_Button" class="ig-btn-action" [hidden]="Sales_Master_Save==false" (click)="Save_Requirement(0)">Save</button>
+        <button type="button" class="ig-btn-action no-print" [hidden]="Sales_Print" (click)="Print_Click()" title="Professional Print"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
+        <button type="button" class="ig-btn-action no-print" [hidden]="Sales_Print" (click)="Preview_PDF()" title="Preview PDF"><i class="fa fa-eye" aria-hidden="true"></i> Preview</button>
+        <button type="button" class="ig-btn-action no-print" [hidden]="Sales_Print" (click)="Download_PDF()" title="Download PDF"><i class="fa fa-download" aria-hidden="true"></i> Download</button>
+    </div>
+</div><div class="clearfix"></div>
                         </div>
                     </div>
                 </div>

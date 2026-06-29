@@ -13,7 +13,6 @@
     <div class="ig-header">
       <div>
         <h1 class="ig-title">{{ Client_Accounts_.Client_Accounts_Id > 0 ? 'Edit Account' : 'New Account' }}</h1>
-        <p class="ig-subtitle">{{ Client_Accounts_.Client_Accounts_Id > 0 ? 'Update account details' : 'Fill in the details to create a new account' }}</p>
       </div>
       <button class="ig-btn-cancel" type="button" (click)="Close_Click()">
         <i class="material-icons" style="font-size:15px;">close</i> Cancel
@@ -188,15 +187,19 @@
     <div class="ig-header">
       <div>
         <h1 class="ig-title">Accounts</h1>
-        <p class="ig-subtitle">Manage client accounts and groups</p>
       </div>
-      <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
-        <i class="material-icons">add</i> Add Account
-      </button>
+      <div class="ig-header-actions" style="display: flex; align-items: center; gap: 12px; flex-direction: row; flex-wrap: nowrap; white-space: nowrap;">
+        <button mat-button class="ig-btn-filter" type="button" (click)="Filter_Visible = !Filter_Visible">
+          <i class="material-icons">filter_list</i> Filter
+        </button>
+        <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
+          <i class="material-icons">add</i> Add Account
+        </button>
+      </div>
     </div>
 
     <!-- Filters -->
-    <div class="ig-filter-card">
+    <div class="ig-filter-card" *ngIf="Filter_Visible">
       <div class="ig-filter-grid">
 
         <div class="ig-field">
@@ -227,22 +230,17 @@
       </div>
     </div>
 
-    <!-- Meta bar -->
-    <div class="ig-meta-bar">
-      <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
-    </div>
-
     <!-- Table -->
     <div class="ig-table-card">
       <div class="ig-table-wrap" [style.max-height.px]="myInnerHeight">
         <table class="ig-table">
           <thead>
             <tr>
-              <th class="ig-th ig-th-no">#</th>
-              <th class="ig-th">Account Name</th>
-              <th class="ig-th">Group</th>
-              <th class="ig-th">Address</th>
-              <th class="ig-th ig-th-actions">Actions</th>
+              <th class="ig-th ig-th-no" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">#</th>
+              <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Account Name</th>
+              <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Group</th>
+              <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Address</th>
+              <th class="ig-th ig-th-actions" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -270,21 +268,17 @@
       </div>
 
       <!-- Pagination -->
-      <div class="ig-pagination">
-        <div class="ig-page-left">
-          <span class="ig-pg-label">Rows per page</span>
-          <select class="ig-page-select" [(ngModel)]="pageSize" (change)="onPageSizeChange()" name="pageSize">
-            <option [value]="10">10</option>
-            <option [value]="25">25</option>
-            <option [value]="50">50</option>
-            <option [value]="100">100</option>
-          </select>
-          <span class="ig-pg-label">Total: <strong>{{ Total_Entries }}</strong></span>
-        </div>
-        <div class="ig-page-right">
-          <button class="ig-pg-btn" (click)="goToPrevious()" [disabled]="currentPage === 1">Previous</button>
-          <span class="ig-pg-label">Page {{ currentPage }} of {{ totalPages }}</span>
-          <button class="ig-pg-btn" (click)="goToNext()" [disabled]="currentPage === totalPages">Next</button>
+      <div class="ig-pagination" style="padding: 12px 20px; border-top: 1px solid #e5e7eb; background: #fff; display: flex; justify-content: center; align-items: center;">
+        <div class="ig-page-nav" style="display: flex; align-items: center; gap: 10px;">
+          <button mat-icon-button (click)="goToPrevious()" [disabled]="currentPage <= 1" style="width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border: 1px solid #e5e7eb; border-radius: 6px; background: transparent; cursor: pointer;">
+            <i class="material-icons" style="font-size: 16px; color: #4b5563;">west</i>
+          </button>
+          <span class="ig-page-label" style="font-size: 13px; font-weight: 500; color: #6b7280;">
+            Showing {{ Client_Accounts_Data?.length ? ((currentPage - 1) * pageSize + 1) : 0 }} - {{ (currentPage - 1) * pageSize + Paginated_Data?.length }} of {{Client_Accounts_Data?.length}}
+          </span>
+          <button mat-icon-button (click)="goToNext()" [disabled]="currentPage >= totalPages" style="width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border: 1px solid #e5e7eb; border-radius: 6px; background: transparent; cursor: pointer;">
+            <i class="material-icons" style="font-size: 16px; color: #4b5563;">east</i>
+          </button>
         </div>
       </div>
 

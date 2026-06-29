@@ -16,7 +16,11 @@ templateUrl: './User_Details.component.html',
 styleUrls: ['./User_Details.component.css']
 })
 export class User_DetailsComponent implements OnInit {
-User_Details_Data:User_Details[]
+User_Details_Data:User_Details[];
+Paged_User_Details_Data: User_Details[] = [];
+Page_Index: number = 1;
+Page_Size: number = 25;
+Total_Pages: number = 1;
 Search_User_Name_: string;
 Employee_Temp:Client_Accounts= new Client_Accounts();
 Employee_:Client_Accounts= new Client_Accounts();
@@ -287,24 +291,38 @@ Load_Dropdowns()
    
 Search_User_Details()
 {
-this.issLoading=true;
- 
-if(this.Search_User_Name_==undefined)
-this.Search_User_Name_="";
-this.User_Details_Service_.Search_User_Details(this.Search_User_Name_,1,1).subscribe(Rows => {
-     
- this.User_Details_Data=Rows[0];
-this.Total_Entries=this.User_Details_Data.length;
-if(this.User_Details_Data.length==0)
-{
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type: "3" }});
+    this.issLoading=true;
+    if(this.Search_User_Name_==undefined)
+    this.Search_User_Name_="";
+    this.User_Details_Service_.Search_User_Details(this.Search_User_Name_, 1, 1).subscribe(Rows => {
+    this.User_Details_Data=Rows[0];
+    this.Total_Entries=this.User_Details_Data.length;
+    this.Page_Index = 1;
+    this.Update_Pagination();
+    if(this.User_Details_Data.length==0)
+    {
+    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
+    }
+    this.issLoading=false;
+    },
+    Rows => {
+    this.issLoading=false;
+    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
+    });
 }
-this.issLoading=false;
- },
- Rows => { 
-     this.issLoading=false;
-const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
- });
+
+Update_Pagination() {
+  this.Total_Pages = Math.ceil(this.User_Details_Data.length / this.Page_Size);
+  const start = (this.Page_Index - 1) * this.Page_Size;
+  const end = start + this.Page_Size;
+  this.Paged_User_Details_Data = this.User_Details_Data.slice(start, end);
+}
+
+Change_Page(step: number) {
+  this.Page_Index += step;
+  if (this.Page_Index < 1) this.Page_Index = 1;
+  if (this.Page_Index > this.Total_Pages) this.Page_Index = this.Total_Pages;
+  this.Update_Pagination();
 }
 
 

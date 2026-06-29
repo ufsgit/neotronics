@@ -317,3 +317,144 @@
       padding-left: 20px !important;
   }
 }
+
+/* ── NOTIFICATIONS PANEL ── */
+::ng-deep .notification-menu-panel {
+  background: transparent !important;
+  box-shadow: none !important;
+  margin-top: 15px !important;
+}
+
+::ng-deep .mat-menu-panel.notification-menu-panel {
+  background: transparent !important;
+  min-width: 320px !important;
+  box-shadow: none !important;
+}
+
+.notification-panel {
+  background: rgba(30, 41, 59, 0.95);
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 
+              inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  width: 320px;
+  max-height: 400px;
+  overflow-y: auto;
+  color: #fff;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  animation: dropdownPop 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top right;
+  border-top: 4px solid #ef4444; /* Red accent for notifications */
+}
+
+/* Scrollbar for notification panel */
+.notification-panel::-webkit-scrollbar {
+  width: 6px;
+}
+.notification-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.notification-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+.notification-title {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 0;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notification-empty {
+  padding: 30px 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+}
+
+.notification-item {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-lead {
+  font-weight: 600;
+  font-size: 14px;
+  color: #3b82f6; /* Electric blue */
+  margin-bottom: 4px;
+}
+
+.notification-message {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.notification-meta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 10px;
+}
+
+.notification-read-btn {
+  align-self: flex-start;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #ef4444 !important;
+  padding: 4px 12px !important;
+  border-radius: 6px !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+  min-width: auto !important;
+  line-height: 1.5 !important;
+  transition: all 0.3s ease !important;
+}
+
+.notification-read-btn:hover {
+  background: #ef4444 !important;
+  color: #fff !important;
+}
+
+.notification-btn {
+  color: rgba(255, 255, 255, 0.7) !important;
+  transition: color 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notification-btn:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+::ng-deep .mat-badge-content {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+}

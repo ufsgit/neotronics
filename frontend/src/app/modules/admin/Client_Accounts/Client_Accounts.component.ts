@@ -32,6 +32,7 @@ Entry_View:boolean=true;
 myInnerHeight: number;
 EditIndex: number;
  Total_Entries: number=0;
+ Filter_Visible: boolean = false;
 
 // Pagination
 currentPage: number = 1;

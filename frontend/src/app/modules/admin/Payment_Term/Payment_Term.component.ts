@@ -11,7 +11,11 @@ templateUrl: './Payment_Term.component.html',
 styleUrls: ['./Payment_Term.component.css']
 })
 export class Payment_TermComponent implements OnInit {
-payment_term_Data:payment_term[]
+payment_term_Data:payment_term[];
+Paged_payment_term_Data: payment_term[] = [];
+Page_Index: number = 1;
+Page_Size: number = 25;
+Total_Pages: number = 1;
 payment_term_Datas_:payment_term[]
 Under_Role_Temp:payment_term= new payment_term();
 payment_term_:payment_term= new payment_term();
@@ -90,6 +94,8 @@ this.issLoading=true;
 this.payment_term_Service_.Search_payment_term(this.search_payment_term_).subscribe(Rows => {
 this.payment_term_Data=Rows[0];
 this.Total_Entries=this.payment_term_Data.length;
+this.Page_Index = 1;
+this.Update_Pagination();
 if(this.payment_term_Data.length==0)
 { 
 const dialogRef = this.dialogBox.open ( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type: "3" }});
@@ -120,6 +126,19 @@ this.issLoading=false;
 })
 }
   
+Update_Pagination() {
+  this.Total_Pages = Math.ceil(this.payment_term_Data.length / this.Page_Size);
+  const start = (this.Page_Index - 1) * this.Page_Size;
+  const end = start + this.Page_Size;
+  this.Paged_payment_term_Data = this.payment_term_Data.slice(start, end);
+}
+
+Change_Page(step: number) {
+  this.Page_Index += step;
+  if (this.Page_Index < 1) this.Page_Index = 1;
+  if (this.Page_Index > this.Total_Pages) this.Page_Index = this.Total_Pages;
+  this.Update_Pagination();
+}
 
 Delete_payment_term(payment_term_Id,index)
 {

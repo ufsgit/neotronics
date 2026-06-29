@@ -15,6 +15,10 @@ import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service
 })
 export class VerticalComponent implements OnInit {
   Vertical_Data: Vertical[] = [];
+  Paged_Vertical_Data: Vertical[] = [];
+  Page_Index: number = 1;
+  Page_Size: number = 25;
+  Total_Pages: number = 1;
   Vertical_: Vertical = new Vertical();
   Search_Vertical_: string = "";
   Entry_View: boolean = false;
@@ -99,12 +103,28 @@ export class VerticalComponent implements OnInit {
     this.Vertical_Service_.Search_Vertical(this.Search_Vertical_).subscribe(Rows => {
       this.Vertical_Data = this.normalizeRows(Rows);
       this.Total_Entries = this.Vertical_Data.length;
+      this.Page_Index = 1;
+      this.Update_Pagination();
       this.issLoading = false;
     },
     error => {
       this.issLoading = false;
       this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
     });
+  }
+
+  Update_Pagination() {
+      this.Total_Pages = Math.ceil(this.Vertical_Data.length / this.Page_Size);
+      const start = (this.Page_Index - 1) * this.Page_Size;
+      const end = start + this.Page_Size;
+      this.Paged_Vertical_Data = this.Vertical_Data.slice(start, end);
+  }
+
+  Change_Page(step: number) {
+      this.Page_Index += step;
+      if (this.Page_Index < 1) this.Page_Index = 1;
+      if (this.Page_Index > this.Total_Pages) this.Page_Index = this.Total_Pages;
+      this.Update_Pagination();
   }
 
   Save_Vertical() {

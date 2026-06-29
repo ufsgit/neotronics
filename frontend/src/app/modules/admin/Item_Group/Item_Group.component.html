@@ -9,11 +9,23 @@
   <div class="ig-header">
     <div>
       <h1 class="ig-title">Item Groups</h1>
-      <p class="ig-subtitle">Manage product categories</p>
     </div>
-    <button mat-button class="ig-btn-add" type="button" (click)="Create_New()" *ngIf="!Entry_View">
-      <i class="material-icons">add</i> Add Group
-    </button>
+    <div class="ig-header-actions" *ngIf="!Entry_View">
+      <div class="ig-search-wrap">
+        <input
+          type="text"
+          class="ig-search-input"
+          [(ngModel)]="search_Item_Group_"
+          name="search_input"
+          placeholder="Search item groups…"
+          (ngModelChange)="Search_Item_Group()"
+        />
+        <i class="material-icons" (click)="Search_Item_Group()" style="cursor: pointer;">search</i>
+      </div>
+      <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
+        <i class="material-icons">add</i> Add Group
+      </button>
+    </div>
   </div>
 
   <!-- ── ENTRY FORM ── -->
@@ -44,21 +56,7 @@
     </div>
   </div>
 
-  <!-- ── SEARCH ── -->
-  <div class="ig-search-bar" *ngIf="!Entry_View">
-    <div class="ig-search-wrap">
-      <i class="material-icons" (click)="Search_Item_Group()" style="cursor: pointer;">search</i>
-      <input
-        type="text"
-        class="ig-search-input"
-        [(ngModel)]="search_Item_Group_"
-        name="search_input"
-        placeholder="Search item groups…"
-        (ngModelChange)="Search_Item_Group()"
-      />
-    </div>
-    <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
-  </div>
+
 
   <!-- ── TABLE ── -->
   <div class="ig-table-card" *ngIf="!Entry_View">
@@ -72,8 +70,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let grp of Item_Group_Data; let i = index" class="ig-tr">
-            <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+          <tr *ngFor="let grp of Paged_Item_Group_Data; let i = index" class="ig-tr">
+            <td class="ig-td ig-td-no">{{ (Page_Index - 1) * Page_Size + i + 1 }}</td>
             <td class="ig-td ig-td-name">{{ grp['Item_Group_Name'] }}</td>
             <td class="ig-td ig-td-actions">
               <button
@@ -95,6 +93,19 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div class="ig-pagination">
+      <div class="ig-page-nav" style="margin: 0 auto; display: flex; align-items: center; gap: 10px;">
+        <button mat-icon-button (click)="Change_Page(-1)" [disabled]="Page_Index <= 1" class="ig-nav-btn">
+          <i class="material-icons">west</i>
+        </button>
+        <span class="ig-page-label">Showing {{ Item_Group_Data?.length ? ((Page_Index - 1) * Page_Size + 1) : 0 }} - {{ (Page_Index - 1) * Page_Size + Paged_Item_Group_Data?.length }} of {{Item_Group_Data?.length}}</span>
+        <button mat-icon-button (click)="Change_Page(1)" [disabled]="Page_Index >= Total_Pages" class="ig-nav-btn">
+          <i class="material-icons">east</i>
+        </button>
+      </div>
     </div>
   </div>
 

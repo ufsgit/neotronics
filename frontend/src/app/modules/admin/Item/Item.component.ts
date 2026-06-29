@@ -37,6 +37,10 @@ Item_Group_Data:Item_Group[];
 Item_Group_:Item_Group=new Item_Group();
 Item_Group_Temp:Item_Group=new Item_Group();
  Total_Entries: number=0;
+ Page_Index: number = 1;
+ Page_Size: number = 10;
+ Total_Pages: number = 1;
+ Paged_Item_Data: Item[] = [];
 color = 'primary';
 mode = 'indeterminate';
 value = 50;Item_Group_Data1=[];
@@ -48,6 +52,7 @@ Item_Edit:boolean;
 Item_Save:boolean;
 Item_Delete:boolean;
 Check_Hide:boolean=true;
+Filter_Visible:boolean=false;
 Tax_Errors: any = {};
 constructor(public Item_Service_:Item_Service,public Item_Group_Service_:Item_Group_Service,public Sale_Unit_Service_:Sale_Unit_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog, private Master_Refresh_Service_: Master_Refresh_Service) { }
 ngOnInit() 
@@ -101,6 +106,10 @@ Close_Click()
     this.Check_Hide = true;
     //this.Search_Item();
     this.Search_Item_Group()
+}
+
+Toggle_Filter() {
+    this.Filter_Visible = !this.Filter_Visible;
 }
 Clr_Item()
 {
@@ -282,6 +291,8 @@ Search_Item(){
      debugger
     this.Item_Data=Rows[0];
     this.Total_Entries=this.Item_Data.length;
+    this.Page_Index = 1;
+    this.Update_Pagination();
     if(this.Item_Data.length==0)
     {
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type: "3" }});
@@ -293,6 +304,19 @@ Search_Item(){
    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}}); });
   
 }
+
+Change_Page(direction: number) {
+  this.Page_Index += direction;
+  this.Update_Pagination();
+}
+
+Update_Pagination() {
+  if(!this.Item_Data) return;
+  this.Total_Pages = Math.ceil(this.Item_Data.length / this.Page_Size);
+  const start = (this.Page_Index - 1) * this.Page_Size;
+  this.Paged_Item_Data = this.Item_Data.slice(start, start + this.Page_Size);
+}
+
 Delete_Item(Item_Id,index)
 {   
    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Do you want to delete ?',Type:"true",Heading:'Confirm'}});

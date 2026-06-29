@@ -18,6 +18,11 @@ export class Working_StatusComponent implements OnInit {
     Total_Entries: number = 0;
     Search_Name: string = '';
 
+    issLoading: boolean = false;
+    color = 'primary';
+    mode = 'indeterminate';
+    value = 50;
+
     constructor(public User_Role_Service_: User_RoleService, public dialogBox: MatDialog) { }
 
     ngOnInit() {

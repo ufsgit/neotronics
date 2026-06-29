@@ -417,17 +417,20 @@ var Client_Accounts = {
 		);
 	},
 	Search_Company: function (Company_Name_, callback) {
-		if (
-			Company_Name_ === "undefined" ||
-			Company_Name_ === "" ||
-			Company_Name_ === undefined
-		)
-			Company_Name_ = "";
-		return db.query(
-			"CALL Search_Company_Table(@Company_Name_ :=?)",
-			[Company_Name_],
-			callback
-		);
+		Company_Name_ = Company_Name_ && Company_Name_ !== "undefined" ? Company_Name_ : "";
+        
+        let q = "SELECT * FROM company_info WHERE (DeleteStatus = 0 OR DeleteStatus = false OR DeleteStatus IS NULL)";
+        let params = [];
+        if (Company_Name_ !== "") {
+            q += " AND Company_Name LIKE ?";
+            params.push("%" + Company_Name_ + "%");
+        }
+        q += " ORDER BY Company_Id DESC";
+        
+		return db.query(q, params, function(err, rows) {
+            if (err) return callback(err);
+            callback(null, [rows]);
+        });
 	},
 
 	Save_Cheque_Book: function (Cheque_Book_, callback) {

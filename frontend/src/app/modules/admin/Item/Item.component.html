@@ -12,7 +12,6 @@
     <div class="ig-header">
       <div>
         <h1 class="ig-title">{{ Item_.Item_Id > 0 ? 'Edit Item' : 'New Item' }}</h1>
-        <p class="ig-subtitle">{{ Item_.Item_Id > 0 ? 'Update item details below' : 'Fill in the details to add a new item' }}</p>
       </div>
       <button class="ig-btn-cancel" type="button" (click)="Close_Click()">
         <i class="material-icons" style="font-size:16px;">close</i> Cancel
@@ -73,7 +72,7 @@
 
       <!-- Section: Tax Details -->
       <p class="ig-section-title">Tax Details</p>
-      <div class="ig-grid-3">
+      <div class="ig-grid-6">
 
         <div class="ig-field">
           <label class="ig-label">GST (%)</label>
@@ -139,15 +138,19 @@
     <div class="ig-header">
       <div>
         <h1 class="ig-title">Items</h1>
-        <p class="ig-subtitle">Manage your product catalog</p>
       </div>
-      <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
-        <i class="material-icons">add</i> Add Item
-      </button>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <button mat-button class="ig-btn-filter" type="button" (click)="Toggle_Filter()" [class.active]="Filter_Visible">
+          <i class="material-icons">filter_list</i> Filter
+        </button>
+        <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
+          <i class="material-icons">add</i> Add Item
+        </button>
+      </div>
     </div>
 
     <!-- Search Filters -->
-    <div class="ig-filter-card">
+    <div class="ig-filter-card" *ngIf="Filter_Visible">
       <div class="ig-filter-grid">
 
         <div class="ig-field">
@@ -177,12 +180,7 @@
       </div>
     </div>
 
-    <!-- Record count -->
-    <div class="ig-meta-bar">
-      <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
-    </div>
 
-    <!-- Table -->
     <div class="ig-table-card">
       <div class="ig-table-wrap" [style.max-height.px]="myInnerHeight">
         <table class="ig-table">
@@ -198,10 +196,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of Item_Data; let i = index" class="ig-tr">
-              <td class="ig-td ig-td-no">{{ i + 1 }}</td>
-              <td class="ig-td ig-td-name">{{ item['Item_Name'] }}</td>
-              <td class="ig-td">{{ item['Item_Code'] || '—' }}</td>
+            <tr *ngFor="let item of Paged_Item_Data; let i = index" class="ig-tr">
+              <td class="ig-td ig-td-no">{{ (Page_Index - 1) * Page_Size + i + 1 }}</td>
+              <td class="ig-td ig-td-name ig-hover-cell" [attr.data-full]="item['Item_Name']">
+                <span class="ig-hover-text">{{ item['Item_Name'] }}</span>
+              </td>
+              <td class="ig-td ig-hover-cell" [attr.data-full]="item['Item_Code'] || '—'">
+                <span class="ig-hover-text">{{ item['Item_Code'] || '—' }}</span>
+              </td>
               <td class="ig-td">{{ item['Group_Name'] }}</td>
               <td class="ig-td">{{ item['HSNCODE'] || '—' }}</td>
               <td class="ig-td">{{ item['Saleunit_Name'] }}</td>
@@ -221,8 +223,23 @@
             </tr>
           </tbody>
         </table>
-      </div>
     </div>
 
+    <!-- Pagination Footer -->
+    <div class="ig-pagination" style="padding: 12px 20px; border-top: 1px solid #e5e7eb; background: #fff; display: flex; justify-content: center; align-items: center;">
+      <div class="ig-page-nav" style="display: flex; align-items: center; gap: 10px;">
+        <button mat-icon-button (click)="Change_Page(-1)" [disabled]="Page_Index <= 1" style="width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border: 1px solid #e5e7eb; border-radius: 6px; background: transparent; cursor: pointer;">
+          <i class="material-icons" style="font-size: 16px; color: #4b5563;">west</i>
+        </button>
+        <span class="ig-page-label" style="font-size: 13px; font-weight: 500; color: #6b7280;">
+          Showing {{ Item_Data?.length ? ((Page_Index - 1) * Page_Size + 1) : 0 }} - {{ (Page_Index - 1) * Page_Size + Paged_Item_Data?.length }} of {{Item_Data?.length}}
+        </span>
+        <button mat-icon-button (click)="Change_Page(1)" [disabled]="Page_Index >= Total_Pages" style="width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border: 1px solid #e5e7eb; border-radius: 6px; background: transparent; cursor: pointer;">
+          <i class="material-icons" style="font-size: 16px; color: #4b5563;">east</i>
+        </button>
+      </div>
+    </div>
   </div>
+
+</div>
 </div>

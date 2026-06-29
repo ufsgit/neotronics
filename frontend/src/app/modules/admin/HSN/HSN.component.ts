@@ -22,6 +22,10 @@ Entry_View:boolean=true;
 myInnerHeight: number;
 EditIndex: number;
  Total_Entries: number=0;
+ Page_Index: number = 1;
+ Page_Size: number = 10;
+ Total_Pages: number = 1;
+ Paged_HSN_Data: HSN[] = [];
 color = 'primary';
 mode = 'indeterminate';
 value = 50;
@@ -105,6 +109,8 @@ Search_HSN()
     this.HSN_Service_.Search_HSN(this.Search_Name).subscribe(Rows => {
     this.HSN_Data=Rows[0];
     this.Total_Entries=this.HSN_Data.length;
+    this.Page_Index = 1;
+    this.Update_Pagination();
     if(this.HSN_Data.length==0)
     {
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type: "3" }});
@@ -115,6 +121,18 @@ Search_HSN()
         this.issLoading=false;
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     });
+}
+
+Change_Page(direction: number) {
+  this.Page_Index += direction;
+  this.Update_Pagination();
+}
+
+Update_Pagination() {
+  if(!this.HSN_Data) return;
+  this.Total_Pages = Math.ceil(this.HSN_Data.length / this.Page_Size);
+  const start = (this.Page_Index - 1) * this.Page_Size;
+  this.Paged_HSN_Data = this.HSN_Data.slice(start, start + this.Page_Size);
 }
 
 Delete_HSN(HSN_Id,index)

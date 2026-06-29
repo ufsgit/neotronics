@@ -14,6 +14,10 @@ import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service
 })
 export class Company_SizeComponent implements OnInit {
   Company_Size_Data: Company_Size[] = [];
+  Paged_Company_Size_Data: Company_Size[] = [];
+  Page_Index: number = 1;
+  Page_Size: number = 25;
+  Total_Pages: number = 1;
   Company_Size_: Company_Size = new Company_Size();
   Search_Company_Size_: string = '';
   Entry_View: boolean = false;
@@ -69,12 +73,28 @@ export class Company_SizeComponent implements OnInit {
         this.Company_Size_Data = [];
       }
       this.Total_Entries = this.Company_Size_Data.length;
+      this.Page_Index = 1;
+      this.Update_Pagination();
       this.issLoading = false;
     },
     error => {
       this.issLoading = false;
       this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: '2' } });
     });
+  }
+
+  Update_Pagination() {
+      this.Total_Pages = Math.ceil(this.Company_Size_Data.length / this.Page_Size);
+      const start = (this.Page_Index - 1) * this.Page_Size;
+      const end = start + this.Page_Size;
+      this.Paged_Company_Size_Data = this.Company_Size_Data.slice(start, end);
+  }
+
+  Change_Page(step: number) {
+      this.Page_Index += step;
+      if (this.Page_Index < 1) this.Page_Index = 1;
+      if (this.Page_Index > this.Total_Pages) this.Page_Index = this.Total_Pages;
+      this.Update_Pagination();
   }
 
   Save_Company_Size() {

@@ -126,11 +126,18 @@ Search_Company()
      this.issLoading=true;
 debugger;
 this.Client_Accounts_Service_.Search_Company(this.Company_Name_Search).subscribe(Rows => {
-            debugger;
-            console.log('rows:',Rows)
-            this.Company_Data = Rows[0];
+            console.log('Search_Company rows:', Rows);
+            let data = Rows;
+            if (Rows && Rows.data !== undefined) data = Rows.data;
+            if (Array.isArray(data) && Array.isArray(data[0])) {
+                this.Company_Data = data[0];
+            } else if (Array.isArray(data)) {
+                this.Company_Data = data;
+            } else {
+                this.Company_Data = [];
+            }
             
- this.Total_Entries=this.Company_Data.length;
+ this.Total_Entries = this.Company_Data ? this.Company_Data.length : 0;
  if(this.Company_Data.length==0)
  {
  const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});

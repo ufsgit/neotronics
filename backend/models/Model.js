@@ -65,6 +65,17 @@ Search_Model:function(Model_Name_,callback)
     });
 },
 
+Delete_Model:function(Model_Id_,callback)
+{
+    const fallbackSql = "DELETE FROM Model WHERE Model_Id = ?";
+    return db.query("CALL Delete_Model(@Model_Id_ :=?)", [Model_Id_], function(err, rows) {
+        if (err && (err.code === 'ER_SP_DOES_NOT_EXIST' || err.code === 'ER_NO_SUCH_TABLE' || err.code === 'ER_BAD_FIELD_ERROR')) {
+            return db.query(fallbackSql, [Model_Id_], callback);
+        }
+        return callback(err, rows);
+    });
+}
+
 };
 module.exports=Model;
 

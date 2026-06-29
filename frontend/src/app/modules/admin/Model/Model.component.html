@@ -9,11 +9,17 @@
   <div class="ig-header">
     <div>
       <h1 class="ig-title">Model Management</h1>
-      <p class="ig-subtitle">Manage product models</p>
     </div>
-    <button mat-button class="ig-btn-add" type="button" (click)="Create_New()" *ngIf="!Entry_View">
-      <i class="material-icons">add</i> Add Model
-    </button>
+    <div class="ig-header-actions" *ngIf="!Entry_View" style="display: flex; align-items: center; gap: 12px; flex-direction: row; flex-wrap: nowrap; white-space: nowrap;">
+      <div class="ig-search-wrap">
+        <input type="text" class="ig-search-input" placeholder="Search models..."
+          [(ngModel)]="Search_Model_" name="Search_Model_" (keyup.enter)="Search_Model()" />
+        <i class="material-icons" (click)="Search_Model()" style="cursor: pointer;">search</i>
+      </div>
+      <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
+        <i class="material-icons">add</i> Add Model
+      </button>
+    </div>
   </div>
 
   <!-- ── ENTRY FORM ── -->
@@ -77,21 +83,7 @@
     </form>
   </div>
 
-  <!-- ── SEARCH ── -->
-  <div class="ig-search-bar" *ngIf="!Entry_View">
-    <div class="ig-search-wrap">
-      <i class="material-icons">search</i>
-      <input
-        type="text"
-        class="ig-search-input"
-        [(ngModel)]="Search_Model_"
-        name="Search_Model_"
-        placeholder="Search models…"
-        (keyup.enter)="Search_Model()"
-      />
-    </div>
-    <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
-  </div>
+
 
   <!-- ── TABLE ── -->
   <div class="ig-table-card" *ngIf="!Entry_View">
@@ -99,15 +91,15 @@
       <table class="ig-table">
         <thead>
           <tr>
-            <th class="ig-th ig-th-no">#</th>
-            <th class="ig-th">Model Name</th>
-            <th class="ig-th">Item Name</th>
-            <th class="ig-th ig-th-actions">Actions</th>
+            <th class="ig-th ig-th-no" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">#</th>
+            <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Model Name</th>
+            <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Item Name</th>
+            <th class="ig-th ig-th-actions" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let model of Model_Data; let i = index" class="ig-tr">
-            <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+          <tr *ngFor="let model of Paged_Model_Data; let i = index" class="ig-tr">
+            <td class="ig-td ig-td-no">{{ (Page_Index - 1) * Page_Size + i + 1 }}</td>
             <td class="ig-td ig-td-name">{{ model.Model_Name }}</td>
             <td class="ig-td">{{ model.Item_Name }}</td>
             <td class="ig-td ig-td-actions">
@@ -117,6 +109,12 @@
                 (click)="Edit_Model(model, i)"
                 title="Edit"
               ><i class="material-icons">edit</i></button>
+              <button
+                class="ig-icon-btn ig-delete"
+                [hidden]="Model_Delete == false"
+                (click)="Delete_Model(model.Model_Id, i)"
+                title="Delete"
+              ><i class="material-icons">delete_outline</i></button>
             </td>
           </tr>
           <tr *ngIf="Model_Data?.length === 0">
@@ -125,6 +123,22 @@
         </tbody>
       </table>
     </div>
+    
+    <!-- Pagination Footer -->
+    <div class="ig-pagination" style="padding: 12px 20px; border-top: 1px solid #e5e7eb; background: #fff; display: flex; justify-content: center; align-items: center;">
+      <div class="ig-page-nav" style="display: flex; align-items: center; gap: 10px;">
+        <button mat-icon-button (click)="Change_Page(-1)" [disabled]="Page_Index <= 1" style="width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border: 1px solid #e5e7eb; border-radius: 6px; background: transparent; cursor: pointer;">
+          <i class="material-icons" style="font-size: 16px; color: #4b5563;">west</i>
+        </button>
+        <span class="ig-page-label" style="font-size: 13px; font-weight: 500; color: #6b7280;">
+          Showing {{ Model_Data?.length ? ((Page_Index - 1) * Page_Size + 1) : 0 }} - {{ (Page_Index - 1) * Page_Size + Paged_Model_Data?.length }} of {{Model_Data?.length}}
+        </span>
+        <button mat-icon-button (click)="Change_Page(1)" [disabled]="Page_Index >= Total_Pages" style="width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border: 1px solid #e5e7eb; border-radius: 6px; background: transparent; cursor: pointer;">
+          <i class="material-icons" style="font-size: 16px; color: #4b5563;">east</i>
+        </button>
+      </div>
+    </div>
+    
   </div>
 
 </div>

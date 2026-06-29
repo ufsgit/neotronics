@@ -9,11 +9,23 @@
   <div class="ig-header">
     <div>
       <h1 class="ig-title">HSN Codes</h1>
-      <p class="ig-subtitle">Manage HSN / tax classification codes</p>
     </div>
-    <button mat-button class="ig-btn-add" type="button" (click)="Create_New()" *ngIf="!Entry_View">
-      <i class="material-icons">add</i> Add HSN
-    </button>
+    <div class="ig-header-actions" *ngIf="!Entry_View">
+      <div class="ig-search-wrap">
+        <input
+          type="text"
+          class="ig-search-input"
+          [(ngModel)]="Search_Name"
+          name="search_input"
+          placeholder="Search HSN codes…"
+          (keyup.enter)="Search_HSN()"
+        />
+        <i class="material-icons" (click)="Search_HSN()" style="cursor: pointer;">search</i>
+      </div>
+      <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
+        <i class="material-icons">add</i> Add HSN
+      </button>
+    </div>
   </div>
 
   <!-- ── ENTRY FORM ── -->
@@ -44,21 +56,7 @@
     </div>
   </div>
 
-  <!-- ── SEARCH ── -->
-  <div class="ig-search-bar" *ngIf="!Entry_View">
-    <div class="ig-search-wrap">
-      <i class="material-icons">search</i>
-      <input
-        type="text"
-        class="ig-search-input"
-        [(ngModel)]="Search_Name"
-        name="search_input"
-        placeholder="Search HSN codes…"
-        (keyup.enter)="Search_HSN()"
-      />
-    </div>
-    <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
-  </div>
+
 
   <!-- ── TABLE ── -->
   <div class="ig-table-card" *ngIf="!Entry_View">
@@ -72,8 +70,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let hsn of HSN_Data; let i = index" class="ig-tr">
-            <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+          <tr *ngFor="let hsn of Paged_HSN_Data; let i = index" class="ig-tr">
+            <td class="ig-td ig-td-no">{{ (Page_Index - 1) * Page_Size + i + 1 }}</td>
             <td class="ig-td ig-td-name">{{ hsn['HSN_CODE'] }}</td>
             <td class="ig-td ig-td-actions">
               <button
@@ -95,6 +93,21 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div class="ig-pagination" style="padding: 12px 20px; border-top: 1px solid #e5e7eb; background: #fff; display: flex; justify-content: center; align-items: center;">
+      <div class="ig-page-nav" style="display: flex; align-items: center; gap: 10px;">
+        <button mat-icon-button (click)="Change_Page(-1)" [disabled]="Page_Index <= 1" style="width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border: 1px solid #e5e7eb; border-radius: 6px; background: transparent; cursor: pointer;">
+          <i class="material-icons" style="font-size: 16px; color: #4b5563;">west</i>
+        </button>
+        <span class="ig-page-label" style="font-size: 13px; font-weight: 500; color: #6b7280;">
+          Showing {{ HSN_Data?.length ? ((Page_Index - 1) * Page_Size + 1) : 0 }} - {{ (Page_Index - 1) * Page_Size + Paged_HSN_Data?.length }} of {{HSN_Data?.length}}
+        </span>
+        <button mat-icon-button (click)="Change_Page(1)" [disabled]="Page_Index >= Total_Pages" style="width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border: 1px solid #e5e7eb; border-radius: 6px; background: transparent; cursor: pointer;">
+          <i class="material-icons" style="font-size: 16px; color: #4b5563;">east</i>
+        </button>
+      </div>
     </div>
   </div>
 

@@ -22,6 +22,10 @@ Entry_View:boolean=true;
 myInnerHeight: number;
 EditIndex: number;
  Total_Entries: number=0;
+ Page_Index: number = 1;
+ Page_Size: number = 10;
+ Total_Pages: number = 1;
+ Paged_Sale_Unit_Data: Sale_Unit[] = [];
 color = 'primary';
 mode = 'indeterminate';
 value = 50;
@@ -93,8 +97,10 @@ Search_Sale_Unit()
 {
 this.issLoading=true;
 this.Sale_Unit_Service_.Search_Sale_Unit(this.Search_Name).subscribe(Rows => {
- this.Sale_Unit_Data=Rows[0];
+this.Sale_Unit_Data=Rows[0];
 this.Total_Entries=this.Sale_Unit_Data.length;
+this.Page_Index = 1;
+this.Update_Pagination();
 if(this.Sale_Unit_Data.length==0)
 {
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type: "3" }});
@@ -105,6 +111,18 @@ this.issLoading=false;
     this.issLoading=false;
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
  });
+ }
+
+Change_Page(direction: number) {
+  this.Page_Index += direction;
+  this.Update_Pagination();
+}
+
+Update_Pagination() {
+  if(!this.Sale_Unit_Data) return;
+  this.Total_Pages = Math.ceil(this.Sale_Unit_Data.length / this.Page_Size);
+  const start = (this.Page_Index - 1) * this.Page_Size;
+  this.Paged_Sale_Unit_Data = this.Sale_Unit_Data.slice(start, start + this.Page_Size);
 }
 
 Delete_Sale_Unit(Sale_Unit_Id,index)

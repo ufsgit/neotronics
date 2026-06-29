@@ -16,6 +16,10 @@ import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service
 })
 export class ModelComponent implements OnInit {
     Model_Data: Model[] = [];
+    Paged_Model_Data: Model[] = [];
+    Page_Index: number = 1;
+    Page_Size: number = 25;
+    Total_Pages: number = 1;
     Model_: Model = new Model();
     Item_Data: any[] = [];
     Item_: any;
@@ -110,6 +114,8 @@ export class ModelComponent implements OnInit {
             Rows => {
                 this.Model_Data = this.normalizeArrayResponse(Rows);
                 this.Total_Entries = this.Model_Data.length;
+                this.Page_Index = 1;
+                this.Update_Pagination();
                 if (!this.Model_Data || this.Model_Data.length === 0) {
                     const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'No Details Found', Type: '3' } });
                 }
@@ -120,6 +126,20 @@ export class ModelComponent implements OnInit {
                 const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: '2' } });
             }
         );
+    }
+
+    Update_Pagination() {
+        this.Total_Pages = Math.ceil(this.Model_Data.length / this.Page_Size);
+        const start = (this.Page_Index - 1) * this.Page_Size;
+        const end = start + this.Page_Size;
+        this.Paged_Model_Data = this.Model_Data.slice(start, end);
+    }
+
+    Change_Page(step: number) {
+        this.Page_Index += step;
+        if (this.Page_Index < 1) this.Page_Index = 1;
+        if (this.Page_Index > this.Total_Pages) this.Page_Index = this.Total_Pages;
+        this.Update_Pagination();
     }
 
     Search_Item_Typeahead(event: any) {
@@ -224,5 +244,28 @@ export class ModelComponent implements OnInit {
         this.Model_ = Object.assign({}, model);
         this.Item_ = { Item_Id: this.Model_.Item_Id, Item_Name: this.Model_.Item_Name };
         this.Item_Data = [];
+    }
+
+    Delete_Model(Model_Id, index) {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Do you want to delete ?', Type: "true", Heading: 'Confirm' } });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result == 'Yes') {
+                this.issLoading = true;
+                this.Model_Service_.Delete_Model(Model_Id).subscribe(Delete_status => {
+                    if (Delete_status) {
+                        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted', Type: "false" } });
+                        this.Search_Model();
+                        this.Master_Refresh_Service_.refreshMaster('Model');
+                    } else {
+                        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Cannot be Deleted', Type: "2" } });
+                    }
+                    this.issLoading = false;
+                },
+                error => {
+                    this.issLoading = false;
+                    const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
+                });
+            }
+        });
     }
 }

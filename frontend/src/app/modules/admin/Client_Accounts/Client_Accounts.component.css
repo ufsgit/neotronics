@@ -1,6 +1,6 @@
 /* ── PAGE ── */
 .ig-page {
-  padding: 28px 32px;
+  padding: 16px 24px;
   background: #f9fafb;
   min-height: 100vh;
   box-sizing: border-box;
@@ -12,7 +12,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
 .ig-title {
@@ -46,7 +46,36 @@
   transition: background 0.15s !important;
 }
 .ig-btn-add:hover { background: #1f2937 !important; }
-.ig-btn-add i { font-size: 17px; }
+.ig-btn-add i {
+  font-size: 17px;
+}
+
+/* ── FILTER BUTTON ── */
+.ig-btn-filter {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 38px !important;
+  padding: 0 16px !important;
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 7px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: all 0.15s !important;
+}
+
+.ig-btn-filter:hover {
+  background: #e5e7eb !important;
+  border-color: #d1d5db !important;
+}
+
+.ig-btn-filter i {
+  font-size: 17px;
+  color: #6b7280;
+}
 
 .ig-btn-save {
   height: 40px;
@@ -85,8 +114,8 @@
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
-  padding: 24px 26px;
-  margin-bottom: 20px;
+  padding: 10px 16px;
+  margin-bottom: 8px;
 }
 
 .ig-section-title {
@@ -95,26 +124,26 @@
   color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  margin: 0 0 16px;
+  margin: 0 0 6px;
 }
 
 .ig-divider {
   border: none;
   border-top: 1px solid #f3f4f6;
-  margin: 22px 0;
+  margin: 10px 0;
 }
 
 /* ── GRID LAYOUTS ── */
 .ig-grid-2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px 24px;
+  gap: 8px 16px;
 }
 
 .ig-grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px 24px;
+  gap: 8px 16px;
 }
 
 /* ── FIELD ── */
@@ -135,11 +164,11 @@
 .ig-req { color: #ef4444; margin-left: 1px; }
 
 .ig-input {
-  height: 40px;
-  padding: 0 12px;
+  height: 28px;
+  padding: 0 8px;
   border: 1px solid #d1d5db;
-  border-radius: 7px;
-  font-size: 14px;
+  border-radius: 5px;
+  font-size: 13px;
   color: #111827;
   background: #fff;
   outline: none;
@@ -160,9 +189,9 @@
 .ig-mat-field .mat-form-field-underline { display: none !important; }
 .ig-mat-field .mat-form-field-infix {
   border: 1px solid #d1d5db !important;
-  border-radius: 7px !important;
-  padding: 9px 12px !important;
-  font-size: 14px !important;
+  border-radius: 5px !important;
+  padding: 3px 8px !important;
+  font-size: 13px !important;
   color: #111827 !important;
   background: #fff !important;
   width: 100% !important;
@@ -181,7 +210,7 @@
   align-items: center;
   gap: 10px;
   justify-content: flex-end;
-  padding-top: 20px;
+  padding-top: 10px;
   margin-top: 4px;
   border-top: 1px solid #f3f4f6;
 }
@@ -191,20 +220,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .ig-btn-add-contact {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  height: 32px;
-  padding: 0 14px;
+  height: 24px;
+  padding: 0 10px;
   background: transparent;
   color: #6366f1;
   border: 1px solid #e0e7ff;
-  border-radius: 6px;
-  font-size: 12px;
+  border-radius: 4px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
@@ -247,11 +276,11 @@
 .ig-ctd-rm  { text-align: center; }
 
 .ig-inline-input {
-  height: 34px;
+  height: 28px;
   width: 100%;
-  padding: 0 10px;
+  padding: 0 8px;
   border: 1px solid #e5e7eb;
-  border-radius: 6px;
+  border-radius: 5px;
   font-size: 13px;
   color: #111827;
   outline: none;
@@ -262,11 +291,11 @@
 .ig-inline-input:focus { border-color: #6366f1; }
 
 .ig-inline-select {
-  height: 34px;
+  height: 28px;
   width: 100%;
   padding: 0 8px;
   border: 1px solid #e5e7eb;
-  border-radius: 6px;
+  border-radius: 5px;
   font-size: 13px;
   color: #111827;
   background: #fff;
@@ -352,42 +381,86 @@
 }
 
 .ig-th-no      { width: 50px;  text-align: center !important; }
-.ig-th-actions { width: 90px;  text-align: center !important; }
+.ig-th-actions { width: 90px;  text-align: center }
 
-.ig-tr:hover .ig-td { background: #fafafa; }
+/* ── TABLE ROWS ── */
+.ig-tr:hover .ig-td {
+  background: #f8fafc;
+}
 
 .ig-td {
-  padding: 13px 18px;
+  padding: 6px 18px;
   font-size: 14px;
-  color: #374151;
-  border-bottom: 1px solid #f3f4f6;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
+  height: 40px;
+  position: relative;
 }
 
-.ig-td-no     { text-align: center; font-size: 13px; color: #9ca3af; font-weight: 500; }
-.ig-td-name   { font-weight: 500; color: #111827; }
-.ig-td-addr   { max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ig-td-actions { text-align: center; }
+.ig-td-no {
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+  font-weight: 500;
+}
 
-/* ── ICON BUTTONS ── */
+.ig-td-name {
+  font-weight: 500;
+  color: #111827;
+}
+
+.ig-td-actions {
+  text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  white-space: nowrap;
+}
+
+/* ── ACTION ICON BUTTONS ── */
 .ig-icon-btn {
-  width: 32px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 6px;
+  width: 34px !important;
+  height: 34px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
   cursor: pointer;
-  background: transparent;
-  transition: background 0.15s;
-  margin: 0 2px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  padding: 0 !important;
+  min-width: unset !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+  margin: 0 4px;
 }
-.ig-icon-btn i { font-size: 16px; }
-.ig-edit  { color: #6366f1; }
-.ig-edit:hover  { background: #eef2ff; }
-.ig-delete { color: #ef4444; }
-.ig-delete:hover { background: #fef2f2; }
+
+.ig-icon-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.ig-icon-btn i {
+  font-size: 18px !important;
+}
+
+.ig-edit {
+  color: #3b82f6 !important; 
+  border-color: #bfdbfe !important;
+}
+
+.ig-edit:hover {
+  background: #eff6ff !important;
+}
+
+.ig-delete {
+  color: #ef4444 !important; 
+  border-color: #fecaca !important;
+}
+
+.ig-delete:hover {
+  background: #fef2f2 !important;
+}
 
 /* ── PAGINATION ── */
 .ig-pagination {

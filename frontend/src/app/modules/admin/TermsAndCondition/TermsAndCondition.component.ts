@@ -14,6 +14,10 @@ import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service
 })
 export class TermsAndConditionComponent implements OnInit {
     Terms_Data: TermsAndCondition[] = [];
+    Paged_Terms_Data: TermsAndCondition[] = [];
+    Page_Index: number = 1;
+    Page_Size: number = 25;
+    Total_Pages: number = 1;
     Term_: TermsAndCondition = new TermsAndCondition();
     Search_Caption: string = '';
     myInnerHeight: number;
@@ -100,6 +104,8 @@ export class TermsAndConditionComponent implements OnInit {
             Rows => {
                 this.Terms_Data = this.normalizeArrayResponse(Rows);
                 this.Total_Entries = this.Terms_Data.length;
+                this.Page_Index = 1;
+                this.Update_Pagination();
                 if (!this.Terms_Data || this.Terms_Data.length === 0) {
                     this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'No Details Found', Type: '3' } });
                 }
@@ -110,6 +116,20 @@ export class TermsAndConditionComponent implements OnInit {
                 this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: '2' } });
             }
         );
+    }
+
+    Update_Pagination() {
+        this.Total_Pages = Math.ceil(this.Terms_Data.length / this.Page_Size);
+        const start = (this.Page_Index - 1) * this.Page_Size;
+        const end = start + this.Page_Size;
+        this.Paged_Terms_Data = this.Terms_Data.slice(start, end);
+    }
+
+    Change_Page(step: number) {
+        this.Page_Index += step;
+        if (this.Page_Index < 1) this.Page_Index = 1;
+        if (this.Page_Index > this.Total_Pages) this.Page_Index = this.Total_Pages;
+        this.Update_Pagination();
     }
 
     Save_Term() {

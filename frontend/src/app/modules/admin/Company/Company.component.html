@@ -13,7 +13,6 @@
     <div class="ig-header">
       <div>
         <h1 class="ig-title">{{ Company_.Company_Id > 0 ? 'Edit Company' : 'Company Settings' }}</h1>
-        <p class="ig-subtitle">{{ Company_.Company_Id > 0 ? 'Update company details' : 'Configure your company information' }}</p>
       </div>
       <button class="ig-btn-cancel" type="button" (click)="Close_Click()">
         <i class="material-icons" style="font-size:15px;">close</i> Cancel
@@ -131,13 +130,12 @@
     <div class="ig-header">
       <div>
         <h1 class="ig-title">Companies</h1>
-        <p class="ig-subtitle">Manage registered company profiles</p>
       </div>
-      <div class="ig-header-actions">
-        <div class="ig-search-box">
-          <i class="material-icons">search</i>
+      <div class="ig-header-actions" style="display: flex; align-items: center; gap: 12px; flex-direction: row; flex-wrap: nowrap; white-space: nowrap;">
+        <div class="ig-search-wrap">
           <input type="text" class="ig-search-input" placeholder="Search companies..."
             [(ngModel)]="Company_Name_Search" (ngModelChange)="Search_Company()" />
+          <i class="material-icons">search</i>
         </div>
         <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
           <i class="material-icons">add</i> Add Company
@@ -145,10 +143,7 @@
       </div>
     </div>
 
-    <!-- Meta -->
-    <div class="ig-meta-bar">
-      <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
-    </div>
+
 
     <!-- Table -->
     <div class="ig-table-card">
@@ -156,11 +151,11 @@
         <table class="ig-table">
           <thead>
             <tr>
-              <th class="ig-th ig-th-no">#</th>
-              <th class="ig-th">Company</th>
-              <th class="ig-th">Contact Info</th>
-              <th class="ig-th">Address</th>
-              <th class="ig-th ig-th-actions">Actions</th>
+              <th class="ig-th ig-th-no" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">#</th>
+              <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Company</th>
+              <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Contact Info</th>
+              <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Address</th>
+              <th class="ig-th ig-th-actions" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -168,21 +163,21 @@
               <td class="ig-td ig-td-no">{{ i + 1 }}</td>
               <td class="ig-td">
                 <div class="ig-company-info">
-                  <span class="ig-primary-text">{{ comp['Company_Name'] }}</span>
-                  <span class="ig-secondary-text" *ngIf="comp['EMail']">{{ comp['EMail'] }}</span>
+                  <span class="ig-primary-text">{{ comp['Company_Name'] || comp['company_name'] || comp['CompanyName'] || 'Unknown' }}</span>
+                  <span class="ig-secondary-text" *ngIf="comp['EMail'] || comp['email']">{{ comp['EMail'] || comp['email'] }}</span>
                 </div>
               </td>
               <td class="ig-td">
                 <div class="ig-contact-info">
-                  <span class="ig-item" *ngIf="comp['Phone_Number']"><i class="material-icons">phone</i> {{ comp['Phone_Number'] }}</span>
-                  <span class="ig-item" *ngIf="comp['GSTNO']"><i class="material-icons">badge</i> {{ comp['GSTNO'] }}</span>
+                  <span class="ig-item" *ngIf="comp['Phone_Number'] || comp['phone_number'] || comp['PhoneNumber']"><i class="material-icons">phone</i> {{ comp['Phone_Number'] || comp['phone_number'] || comp['PhoneNumber'] }}</span>
+                  <span class="ig-item" *ngIf="comp['GSTNO'] || comp['gst_no']"><i class="material-icons">badge</i> {{ comp['GSTNO'] || comp['gst_no'] }}</span>
                 </div>
               </td>
               <td class="ig-td">
-                <span class="ig-address" *ngIf="comp['Address1'] || comp['Address2']">
-                  {{ comp['Address1'] }}<span *ngIf="comp['Address2']">, {{ comp['Address2'] }}</span>
+                <span class="ig-address" *ngIf="comp['Address1'] || comp['address1'] || comp['Address2'] || comp['address2']">
+                  {{ comp['Address1'] || comp['address1'] }}<span *ngIf="comp['Address2'] || comp['address2']">, {{ comp['Address2'] || comp['address2'] }}</span>
                 </span>
-                <span class="ig-empty-field" *ngIf="!comp['Address1'] && !comp['Address2']">-</span>
+                <span class="ig-empty-field" *ngIf="!comp['Address1'] && !comp['address1'] && !comp['Address2'] && !comp['address2']">-</span>
               </td>
               <td class="ig-td ig-td-actions">
                 <button class="ig-icon-btn ig-edit" [hidden]="Company_Edit == false"

@@ -23,6 +23,10 @@ Entry_View:boolean=true;
 myInnerHeight: number;
 EditIndex: number;
  Total_Entries: number=0;
+ Page_Index: number = 1;
+ Page_Size: number = 10;
+ Total_Pages: number = 1;
+ Paged_Item_Group_Data: Item_Group[] = [];
 color = 'primary';
 mode = 'indeterminate';
 value = 50;
@@ -107,6 +111,8 @@ this.Item_Group_Service_.Search_Item_Group(this.search_Item_Group_).subscribe(Ro
     debugger;
 this.Item_Group_Data=Rows[0];
 this.Total_Entries=this.Item_Group_Data.length;
+this.Page_Index = 1;
+this.Update_Pagination();
 if(this.Item_Group_Data.length==0)
 { 
 const dialogRef = this.dialogBox.open ( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type: "3" }});
@@ -135,6 +141,17 @@ const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogb
 
 }
   
+Change_Page(direction: number) {
+  this.Page_Index += direction;
+  this.Update_Pagination();
+}
+
+Update_Pagination() {
+  if(!this.Item_Group_Data) return;
+  this.Total_Pages = Math.ceil(this.Item_Group_Data.length / this.Page_Size);
+  const start = (this.Page_Index - 1) * this.Page_Size;
+  this.Paged_Item_Group_Data = this.Item_Group_Data.slice(start, start + this.Page_Size);
+}
 
 // Search_Item_Group()
 // {

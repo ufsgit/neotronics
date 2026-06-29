@@ -47,6 +47,29 @@ router.get('/Search_Model/',function(req,res,next)
         res.status(500).json({ error: 'Model search exception', details: e });
     }
 });
+router.get('/Delete_Model/:Model_Id_',function(req,res,next)
+{ 
+    try 
+    {
+        Model.Delete_Model(req.params.Model_Id_, function (err, rows) 
+        {
+            if (err) 
+            {
+                console.error('Model.Delete_Model error:', err);
+                res.status(500).json({ error: 'Model delete failed', details: err });
+            }
+            else 
+            {
+                res.json(rows);
+            }
+        });
+    }
+    catch (e) 
+    {
+        console.error('Model.Delete_Model exception:', e);
+        res.status(500).json({ error: 'Model delete exception', details: e });
+    }
+});
 
 module.exports = router;
 

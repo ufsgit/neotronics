@@ -6,15 +6,21 @@
 <div class="ig-page">
 
   <!-- ── HEADER ── -->
-  <div class="ig-header">
-    <div>
-      <h1 class="ig-title">Brands</h1>
-      <p class="ig-subtitle">Manage product brands and their linked items</p>
+    <div class="ig-header">
+      <div>
+        <h1 class="ig-title">Brands</h1>
+      </div>
+      <div class="ig-header-actions" *ngIf="!Entry_View" style="display: flex; align-items: center; gap: 12px; flex-direction: row; flex-wrap: nowrap; white-space: nowrap;">
+        <div class="ig-search-wrap">
+          <input type="text" class="ig-search-input" placeholder="Search brands..."
+            [(ngModel)]="Search_Brand_" name="Search_Brand_" (keyup.enter)="Search_Brand()" />
+          <i class="material-icons" (click)="Search_Brand()" style="cursor: pointer;">search</i>
+        </div>
+        <button mat-button class="ig-btn-add" type="button" (click)="Create_New()">
+          <i class="material-icons">add</i> Add Brand
+        </button>
+      </div>
     </div>
-    <button mat-button class="ig-btn-add" type="button" (click)="Create_New()" *ngIf="!Entry_View">
-      <i class="material-icons">add</i> Add Brand
-    </button>
-  </div>
 
   <!-- ── ENTRY FORM ── -->
   <div class="ig-form-card" *ngIf="Entry_View">
@@ -46,11 +52,11 @@
             (click)="Search_Item_Typeahead($event)"
             class="ig-mat-input"
           />
-          <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item">
+          <mat-autocomplete #autoItem="matAutocomplete" [displayWith]="display_Item" (optionSelected)="Item_Change($event.option.value)">
             <mat-option *ngIf="issLoading"><mat-spinner diameter="20"></mat-spinner></mat-option>
             <ng-container *ngIf="!issLoading">
               <mat-option *ngFor="let item of Item_Data" [value]="item">
-                <span (click)="Item_Change(item)">{{ item.Item_Name || item.ItemName }}</span>
+                <span>{{ item.Item_Name || item.ItemName }}</span>
               </mat-option>
             </ng-container>
           </mat-autocomplete>
@@ -71,21 +77,7 @@
     </div>
   </div>
 
-  <!-- ── SEARCH ── -->
-  <div class="ig-search-bar" *ngIf="!Entry_View">
-    <div class="ig-search-wrap">
-      <i class="material-icons">search</i>
-      <input
-        type="text"
-        class="ig-search-input"
-        [(ngModel)]="Search_Brand_"
-        name="Search_Brand_"
-        placeholder="Search brands…"
-        (keyup.enter)="Search_Brand()"
-      />
-    </div>
-    <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
-  </div>
+
 
   <!-- ── TABLE ── -->
   <div class="ig-table-card" *ngIf="!Entry_View">
@@ -93,17 +85,17 @@
       <table class="ig-table">
         <thead>
           <tr>
-            <th class="ig-th ig-th-no">#</th>
-            <th class="ig-th">Brand Name</th>
-            <th class="ig-th">Item Name</th>
-            <th class="ig-th ig-th-actions">Actions</th>
+            <th class="ig-th ig-th-no" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">#</th>
+            <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Brand Name</th>
+            <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Item Name</th>
+            <th class="ig-th ig-th-actions" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let brand of Brand_Data; let i = index" class="ig-tr">
-            <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+          <tr *ngFor="let brand of Paged_Brand_Data; let i = index" class="ig-tr">
+            <td class="ig-td ig-td-no">{{ (Page_Index - 1) * Page_Size + i + 1 }}</td>
             <td class="ig-td ig-td-name">{{ brand['Brand_Name'] }}</td>
-            <td class="ig-td">{{ brand['Item_Name'] || '—' }}</td>
+            <td class="ig-td">{{ brand['Item_Name'] || brand['item_name'] || brand['ItemName'] || '' }}</td>
             <td class="ig-td ig-td-actions">
               <button
                 class="ig-icon-btn ig-edit"
@@ -125,6 +117,20 @@
         </tbody>
       </table>
     </div>
+    
+    <!-- Pagination Footer -->
+    <div class="ig-pagination" style="padding: 12px 20px; border-top: 1px solid #e5e7eb; background: #fff; display: flex; justify-content: center; align-items: center;">
+      <div class="ig-page-nav" style="display: flex; align-items: center; gap: 10px;">
+        <button mat-icon-button (click)="Change_Page(-1)" [disabled]="Page_Index <= 1" style="width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border: 1px solid #e5e7eb; border-radius: 6px; background: transparent; cursor: pointer;">
+          <i class="material-icons" style="font-size: 16px; color: #4b5563;">west</i>
+        </button>
+        <span class="ig-page-label" style="font-size: 13px; font-weight: 500; color: #6b7280;">
+          Showing {{ Brand_Data?.length ? ((Page_Index - 1) * Page_Size + 1) : 0 }} - {{ (Page_Index - 1) * Page_Size + Paged_Brand_Data?.length }} of {{Brand_Data?.length}}
+        </span>
+        <button mat-icon-button (click)="Change_Page(1)" [disabled]="Page_Index >= Total_Pages" style="width: 32px; height: 32px; display: inline-flex; justify-content: center; align-items: center; border: 1px solid #e5e7eb; border-radius: 6px; background: transparent; cursor: pointer;">
+          <i class="material-icons" style="font-size: 16px; color: #4b5563;">east</i>
+        </button>
+      </div>
+    </div>
+    
   </div>
-
-</div>

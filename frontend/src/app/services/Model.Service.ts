@@ -28,4 +28,8 @@ export class Model_Service {
         }
         return this.http.get(environment.BasePath + 'Model/Search_Model/', { params: Search_Data });
     }
+
+    Delete_Model(Model_Id): Observable<any> {
+        return this.http.get(environment.BasePath + 'Model/Delete_Model/' + Model_Id);
+    }
 }

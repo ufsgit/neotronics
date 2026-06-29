@@ -21,6 +21,10 @@ styleUrls: ['./Brand.component.css']
 })
 export class BrandComponent implements OnInit {
 Brand_Data:Brand[] = []; // Initialize as empty array
+Paged_Brand_Data: Brand[] = [];
+Page_Index: number = 1;
+Page_Size: number = 25;
+Total_Pages: number = 1;
 HSN_Data:HSN[]
 Brand_:Brand= new Brand();
 Brand_Name_Search:string;
@@ -214,6 +218,8 @@ Search_Brand()
     }
     
     this.Total_Entries=this.Brand_Data.length;
+    this.Page_Index = 1;
+    this.Update_Pagination();
     if(this.Brand_Data.length==0)
     {
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type: "3" }});
@@ -225,6 +231,20 @@ Search_Brand()
         this.Brand_Data = []; // Ensure it's always an array
    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}}); });
   
+}
+
+Update_Pagination() {
+  this.Total_Pages = Math.ceil(this.Brand_Data.length / this.Page_Size);
+  const start = (this.Page_Index - 1) * this.Page_Size;
+  const end = start + this.Page_Size;
+  this.Paged_Brand_Data = this.Brand_Data.slice(start, end);
+}
+
+Change_Page(step: number) {
+  this.Page_Index += step;
+  if (this.Page_Index < 1) this.Page_Index = 1;
+  if (this.Page_Index > this.Total_Pages) this.Page_Index = this.Total_Pages;
+  this.Update_Pagination();
 }
 Delete_Brand(Brand_Id,index)
 {   
