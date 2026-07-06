@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 
@@ -109,6 +109,9 @@ export class LeadComponent implements OnInit {
     District: 0,
     State: 0
   };
+  Query_Status: string = null;
+  Query_Assigned: string = null;
+  Query_Followup: string = null;
   Page_Index: number = 1;
   Page_Size: number = 10;
   Page_Size_Options: number[] = [10, 25, 50, 100];
@@ -129,6 +132,7 @@ export class LeadComponent implements OnInit {
     public Vertical_Service_: Vertical_Service,
     public dialogBox: MatDialog,
     private router: Router,
+    private route: ActivatedRoute,
     private fb: FormBuilder,
     private Master_Refresh_Service_: Master_Refresh_Service,
     private snackBar: MatSnackBar,
@@ -138,7 +142,36 @@ export class LeadComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.Page_Load();
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.Load_Column_Preferences();
+      this.Get_Dropdowns_Lead();
+      this.Get_Company_Sizes();
+      this.issLoading = true;
+      this.Lead_Service_.Get_Lead(id).subscribe(data => {
+        this.issLoading = false;
+        if (data && data.length > 0 && data[0].length > 0) {
+           this.Edit_Lead(data[0][0]);
+        } else {
+           this.snackBar.open("Record Not Found", "Close", { duration: 3000 });
+           this.router.navigate(['/LeadDashboard']);
+        }
+      }, err => {
+         this.issLoading = false;
+         this.snackBar.open("Error fetching lead", "Close", { duration: 3000 });
+      });
+    } else {
+      this.Page_Load();
+    }
+
+    this.route.queryParams.subscribe(params => {
+      this.Query_Status = params['status'] || null;
+      this.Query_Assigned = params['assigned'] || null;
+      this.Query_Followup = params['followup'] || null;
+      if (this.Lead_Data && this.Lead_Data.length > 0) {
+        this.Apply_Lead_Filters();
+      }
+    });
 
     // Subscribe to master data updates
     this.Master_Refresh_Service_.masterUpdated$.subscribe(masterName => {
@@ -204,7 +237,7 @@ export class LeadComponent implements OnInit {
         this.Map_Staff_Names();
         this.Apply_Lead_Filters();
       } else {
-        this.Lead_Data = [];
+        this.Filtered_Lead_Data = this.Lead_Data;
         this.Apply_Lead_Filters();
       }
       this.issLoading = false;
@@ -267,7 +300,36 @@ export class LeadComponent implements OnInit {
         (lead.Status_Name || '').toLowerCase().includes(searchText) ||
         (lead.Lead_Id || '').toString().includes(searchText);
 
+      let statusMatch = true;
+      if (this.Query_Status) {
+        const sName = (lead.Status_Name || '').toLowerCase();
+        const qStatus = this.Query_Status.toLowerCase();
+        if (qStatus === 'in progress') {
+          statusMatch = !sName.includes('new') && !sName.includes('lost') && !sName.includes('close') && !sName.includes('reject');
+        } else if (qStatus === 'converted') {
+          statusMatch = sName.includes('won') || sName.includes('converted');
+        } else {
+          statusMatch = sName.includes(qStatus);
+        }
+      }
+
+      let assignedMatch = true;
+      if (this.Query_Assigned === 'true') assignedMatch = lead.Staff_Id > 0;
+      if (this.Query_Assigned === 'false') assignedMatch = !lead.Staff_Id || lead.Staff_Id == 0;
+
+      let followupMatch = true;
+      if (this.Query_Followup) {
+         if (this.Query_Followup === 'Today') {
+            followupMatch = lead.Next_FollowUp_Date && (new Date(lead.Next_FollowUp_Date).setHours(0,0,0,0) === new Date().setHours(0,0,0,0));
+         } else if (this.Query_Followup === 'Pending') {
+            followupMatch = lead.Next_FollowUp_Date && (new Date(lead.Next_FollowUp_Date).setHours(0,0,0,0) < new Date().setHours(0,0,0,0));
+         }
+      }
+
       return searchMatch
+        && statusMatch
+        && assignedMatch
+        && followupMatch
         && (!filters.Industry || Number(lead.Vertical) === Number(filters.Industry) || Number(lead.Vertical_Id) === Number(filters.Industry) || (industry && lead.Vertical_Name === industry.Vertical_Name))
         && (!filters.Stage || Number(lead.Status_Id) === Number(filters.Stage))
         && (!filters.Priority || lead.Lead_Priority === filters.Priority)

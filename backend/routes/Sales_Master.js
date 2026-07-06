@@ -133,7 +133,7 @@ router.get('/Print_Quotation/:Sales_Master_Id', asyncHandler(async function (req
     try {
         const sales_Master_Id = req.params.Sales_Master_Id;
         console.log("Print_Quotation request received for ID:", sales_Master_Id);
-        
+
         if (!sales_Master_Id || sales_Master_Id === 'undefined') {
             return res.status(400).json({ success: false, message: 'Invalid Quotation ID provided' });
         }
@@ -141,7 +141,7 @@ router.get('/Print_Quotation/:Sales_Master_Id', asyncHandler(async function (req
         // Fetch Master Data
         const masterRows = await Sales_Master.Load_SalesQuotationMaster(sales_Master_Id);
         const master = (masterRows && masterRows[0]) ? masterRows[0][0] : null;
-        
+
         if (!master) {
             console.error(`Quotation master data not found for ID: ${sales_Master_Id}`);
             return res.status(404).json({ success: false, message: 'Quotation not found in database' });
@@ -156,6 +156,7 @@ router.get('/Print_Quotation/:Sales_Master_Id', asyncHandler(async function (req
         const company = (companyRows && companyRows[0] && companyRows[0][0]) ? companyRows[0][0] : {};
         const bank = (companyRows && companyRows[1] && companyRows[1][0]) ? companyRows[1][0] : {};
 
+        console.log("PDF master description1:", master.Description1, "Payment_Term_Description:", master.Payment_Term_Description, "PaymentTerms:", master.PaymentTerms);
         // Generate HTML
         const htmlContent = getQuotationTemplate({
             master: master,
@@ -170,7 +171,7 @@ router.get('/Print_Quotation/:Sales_Master_Id', asyncHandler(async function (req
 
         // Generate PDF
         const pdfBuffer = await generatePdf(htmlContent);
-        
+
         if (!pdfBuffer || pdfBuffer.length === 0) {
             console.error("Error: Generated PDF buffer is empty");
             return res.status(500).json({ success: false, message: 'Generated PDF buffer is empty' });
@@ -186,10 +187,10 @@ router.get('/Print_Quotation/:Sales_Master_Id', asyncHandler(async function (req
 
     } catch (error) {
         console.error('Print Route Error:', error);
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
-            message: 'An error occurred during PDF generation', 
-            error: error.message 
+            message: 'An error occurred during PDF generation',
+            error: error.message
         });
     }
 }));
@@ -197,7 +198,7 @@ router.get('/Print_Quotation/:Sales_Master_Id', asyncHandler(async function (req
 router.post('/Print_Quotation_JSON', asyncHandler(async function (req, res, next) {
     try {
         const { master, details } = req.body;
-        
+
         // Fetch Company and Bank details from DB
         const companyRows = await Sales_Master.Load_Company();
         const company = (companyRows && companyRows[0] && companyRows[0][0]) ? companyRows[0][0] : {};
@@ -334,7 +335,7 @@ router.post('/Save_Quotation/', asyncHandler(async function (req, res, next) {
     } catch (e) {
         console.error("Save_Quotation Error:", e);
         const fs = require('fs');
-        fs.appendFileSync('quotation_err.log', JSON.stringify({body: req.body, err: e.message, stack: e.stack}) + '\n');
+        fs.appendFileSync('quotation_err.log', JSON.stringify({ body: req.body, err: e.message, stack: e.stack }) + '\n');
         throw e;
     }
 }));

@@ -911,11 +911,11 @@ Load_Currency() {
 Load_Print_Caption() {
 	this.Receipt_Voucher_Service_.Search_Print_Caption('').subscribe(Rows => {
 		if (Rows != null) {
-			this.printCaptionData = Rows[0];
+			this.printCaptionData = Rows[0] || [];
 			this.printCaptionData.unshift({
 			  "Print_Caption_Id": 0,
 			  "Print_Caption_Name": "Select"
-		  })
+		  });
 		}
 		this.issLoading = false;
 	},

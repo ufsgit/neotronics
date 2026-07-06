@@ -54,7 +54,7 @@
 .ig-table-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
 .ig-table-wrap { overflow-y: auto; }
 .ig-table { width: 100%; border-collapse: collapse; }
-.ig-th { padding: 11px 18px; font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; background: #f9fafb; border-bottom: 1px solid #e5e7eb; text-align: left; position: sticky; top: 0; z-index: 2; }
+.ig-th { padding: 8px 18px; font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; background: #f9fafb; border-bottom: 1px solid #e5e7eb; text-align: left; position: sticky; top: 0; z-index: 2; }
 .ig-th-no { width: 60px; text-align: center !important; }
 .ig-th-actions { width: 100px; text-align: center !important; }
 .ig-tr:hover .ig-td { background: #f8fafc; }

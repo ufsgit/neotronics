@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from "@angular/core";
+import { Component, OnInit, NgZone, ChangeDetectorRef } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { CustomValidators } from "../../../helpers/custom-validators";
 import { UserData } from "../../../services/user-data";
@@ -41,7 +41,8 @@ export class LoginComponent implements OnInit {
 		public userService: UserData,
 		public router: Router,
 		public dialogBox: MatDialog,
-		private ngZone: NgZone
+		private ngZone: NgZone,
+		private cdr: ChangeDetectorRef
 	) {
 		this.userService.logout();
 		this.initForm();
@@ -87,10 +88,10 @@ export class LoginComponent implements OnInit {
 	async login() {
 		if (this.loginForm.valid) {
 			this.issLoading = true;
+			this.cdr.detectChanges();
 
 			const success = await this.userService.login(this.loginForm.value);
 			if (success === true) {
-				this.issLoading = false;
 				// this.router.navigateByUrl('Dashboard');
 				this.Login_Id = localStorage.getItem("Login_User");
 				ROUTES.length = 0;
@@ -1572,14 +1573,23 @@ debugger
 								JSON.stringify(Pointer_Table)
 							);
 							this.ngZone.run(() => {
+								this.issLoading = false;
+								this.cdr.detectChanges();
 								this.router.navigateByUrl("/Lead");
 							});
+						} else {
+							this.issLoading = false;
+							this.cdr.detectChanges();
 						}
 					},
-					(Rows) => {}
+					(Rows) => {
+						this.issLoading = false;
+						this.cdr.detectChanges();
+					}
 				);
 			} else {
 				this.issLoading = false;
+				this.cdr.detectChanges();
 				const dialogRef = this.dialogBox.open(DialogBox_Component, {
 					panelClass: "Dialogbox-Class",
 					data: { Message: "Invalid User Name/Password", Type: "3" },

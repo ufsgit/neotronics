@@ -138,6 +138,7 @@ Total_Entries: number=0;
 color = 'primary';
 mode = 'indeterminate';
 value = 50;
+Query_Status: string = null;
 issLoading: boolean;
 Permissions: any;
 Sales_Master_Edit:boolean;
@@ -317,6 +318,12 @@ constructor(public Sales_Master_Service_: Sales_Master_Service, public currencyd
     ngOnInit() 
 {
     // debugger;
+    this.route.queryParams.subscribe(params => {
+        this.Query_Status = params['status'] || null;
+        if (this.Query_Status && this.Quotation_Master_Data && this.Quotation_Master_Data.length > 0) {
+            this.Search_Quotation();
+        }
+    });
     this.User_Type=(localStorage.getItem('User_Type'));
     this.User_Type_Id=Number(localStorage.getItem('User_Type_Id'));
     this.Login_User_Id=localStorage.getItem('Login_User');
@@ -497,8 +504,9 @@ Page_Load()
         this.Sales_Print = false;
         // debugger;
         this.Load_SalesQuotationMaster();
+    } else if (!this.Entry_View) {
+        this.Search_Quotation();
     }
-    //this.myDate=new Date();
 }
 Load_Company() 
     {   
@@ -2334,7 +2342,12 @@ Search_Quotation()
     .subscribe({
         next: (response) => {
             if (response.success) {
-                this.Quotation_Master_Data = response.data[0];
+                let fetchedData = response.data[0] || [];
+                if (this.Query_Status) {
+                    const qStatus = this.Query_Status.toLowerCase();
+                    fetchedData = fetchedData.filter(q => (q.Status_Name || '').toLowerCase().includes(qStatus));
+                }
+                this.Quotation_Master_Data = fetchedData;
                 if (this.Quotation_Master_Data && this.Quotation_Master_Data.length > 0) {
                     for (var i = 0; i < this.Quotation_Master_Data.length; i++) {
                         this.Sales_Master_Total_Amount = Number(this.Sales_Master_Total_Amount) + Number(this.Quotation_Master_Data[i].NetTotal);
@@ -2342,6 +2355,18 @@ Search_Quotation()
                     }
                 }
                 this.Total_Entries = (this.Quotation_Master_Data || []).length;
+                
+                const autoOpenNo = localStorage.getItem('Auto_Open_Number');
+                const autoOpenStage = localStorage.getItem('Auto_Open_Stage');
+                if (autoOpenNo && autoOpenStage === 'Quotation') {
+                    const target = this.Quotation_Master_Data.find(q => String(q.QuotationNo) === String(autoOpenNo) || String(q.SalesQuotationMaster_Id) === String(autoOpenNo));
+                    if (target) {
+                        localStorage.removeItem('Auto_Open_Number');
+                        localStorage.removeItem('Auto_Open_Stage');
+                        const targetIndex = this.Quotation_Master_Data.indexOf(target);
+                        this.Edit_Quotation_Master(target, targetIndex);
+                    }
+                }
             } else {
                 this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: response.message || 'No Details Found', Type: "3" } });
             }

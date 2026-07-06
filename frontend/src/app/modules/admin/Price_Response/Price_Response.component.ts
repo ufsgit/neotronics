@@ -1760,6 +1760,19 @@ Search_Price_Response()
                 console.log("No data to map.");
             }
             this.Total_Entries = (this.Price_Response_Master_Data || []).length;
+            
+            const autoOpenNo = localStorage.getItem('Auto_Open_Number');
+            const autoOpenStage = localStorage.getItem('Auto_Open_Stage');
+            if (autoOpenNo && autoOpenStage === 'Price Response') {
+                const target = this.Price_Response_Master_Data.find(p => String(p.Price_Response_No) === String(autoOpenNo) || String(p.Price_RequestNo) === String(autoOpenNo) || String(p.Price_Response_Master_Id) === String(autoOpenNo));
+                if (target) {
+                    localStorage.removeItem('Auto_Open_Number');
+                    localStorage.removeItem('Auto_Open_Stage');
+                    const targetIndex = this.Price_Response_Master_Data.indexOf(target);
+                    this.Edit_Price_Response_Master(target, targetIndex);
+                }
+            }
+            
             this.issLoading = false;
             this.cdr.detectChanges();
         },

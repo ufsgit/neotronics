@@ -462,8 +462,9 @@ Page_Load()
         this.Sales_Print = false;
 
         this.Load_Price_Request_Master();
+    } else if (!this.Entry_View) {
+        this.Search_Price_Request();
     }
-    //this.myDate=new Date();
 }
 
 Load_Next_Price_Request_No() {
@@ -498,7 +499,7 @@ Load_Company()
     // API wraps response with sendSuccess: { success: true, data: [[companyRows],[bankRows]] }
     const Rows = (response && typeof response === 'object' && 'success' in response) ? response.data : response;
     if (Rows != null) {
-    const companyRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : [];
+    const companyRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : (Array.isArray(Rows) ? Rows : []);
     const bankRows = Array.isArray(Rows) && Array.isArray(Rows[1]) ? Rows[1] : [];
     this.Print_Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
     this.Company_ = companyRows.length > 0 ? companyRows[0] : new Company();
@@ -643,7 +644,7 @@ Close_Click()
     this.deliveryPendingView = false;
     this.purchasePendingView = false;
     this.packingListPendingView = false;
-    //this.Search_Price_Request();
+    this.Search_Price_Request();
     setTimeout(() => {
         if (this.topDiv1) {
             this.topDiv1.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1264,7 +1265,7 @@ Load_Company_bank()
     this.Sales_Master_Service_.Load_Company_Bank().subscribe((response: any) => {   
       if (response != null) {
             const Rows = response.success ? response.data : response;
-            const bankRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : [];
+            const bankRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : (Array.isArray(Rows) ? Rows : []);
             const companyRows = Array.isArray(Rows) && Array.isArray(Rows[1]) ? Rows[1] : [];
             this.Bank_Data = bankRows;
             this.Bank_ = bankRows.length > 0 ? bankRows[0] : null;
@@ -1762,13 +1763,27 @@ Search_Price_Request()
                     }
                 }
                 this.Total_Entries = (this.Price_Request_Master_Data || []).length;
+                
+                const autoOpenNo = localStorage.getItem('Auto_Open_Number');
+                const autoOpenStage = localStorage.getItem('Auto_Open_Stage');
+                if (autoOpenNo && autoOpenStage === 'Price Request') {
+                    const target = this.Price_Request_Master_Data.find(p => String(p.Price_RequestNo) === String(autoOpenNo) || String(p.Price_Request_Master_Id) === String(autoOpenNo));
+                    if (target) {
+                        localStorage.removeItem('Auto_Open_Number');
+                        localStorage.removeItem('Auto_Open_Stage');
+                        const targetIndex = this.Price_Request_Master_Data.indexOf(target);
+                        this.Edit_Price_Request_Master(target, targetIndex);
+                    }
+                }
             } else {
                 this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: (response && response.message) || 'No Details Found', Type: "3" } });
             }
             this.issLoading = false;
+            if(this.cdr){this.cdr.detectChanges();}
         },
         error: (err) => {
             this.issLoading = false;
+            if(this.cdr){this.cdr.detectChanges();}
             this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: "2" } });
         }
     });
@@ -3005,7 +3020,7 @@ formatDate(dateString): string {
       {   
       this.Sales_Master_Service_.Load_Vat_Percentage().subscribe(Rows => {    
       if (Rows != null) {
-      const vatRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : [];
+      const vatRows = Array.isArray(Rows) && Array.isArray(Rows[0]) ? Rows[0] : (Array.isArray(Rows) ? Rows : []);
       this.Default_Vat_Percentage = vatRows.length > 0 ? vatRows[0].vat_percentage : 0;
    }
    this.issLoading = false;

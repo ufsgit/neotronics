@@ -249,6 +249,18 @@
 			</li> -->
 
 			<li class="nav-item">
+				<a class="nav-link" [routerLink]="['/LeadDashboard']">
+					 <i
+							class="fa fa-dashboard"></i> Lead Dashboard</a>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link" [routerLink]="['/OperationsDashboard']">
+					 <i
+							class="fa fa-dashboard"></i> Operations Dashboard</a>
+			</li>
+
+			<li class="nav-item">
 				<a class="nav-link" [routerLink]="['/Lead']">
 					 <i
 							class="fa fa-bullhorn"></i> Lead</a>
@@ -928,13 +940,16 @@ href="javascript:void(0)"
 					<div class="notification-panel" (click)="$event.stopPropagation()">
 						<div class="notification-title">Notifications</div>
 						<div class="notification-empty" *ngIf="(unreadCount$ | async) === 0">No unread notifications</div>
-						<div class="notification-item" *ngFor="let notification of notifications$ | async" (click)="markNotificationRead(notification, $event)">
-							<div class="notification-lead">{{ notification.Lead_Name || 'Lead' }}</div>
-							<div class="notification-message">{{ notification.message }}</div>
-							<div class="notification-meta">{{ notification.created_at | date:'short' }}</div>
-							<button mat-button type="button" class="notification-read-btn" (click)="markNotificationRead(notification, $event)">
-								Mark as read
-							</button>
+						<div class="notification-item" *ngFor="let notification of notifications$ | async" (click)="markNotificationRead(notification, $event); router.navigate(['/Lead'])" style="cursor: pointer; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 8px;">
+							<div class="notification-lead" style="font-weight: bold; font-size: 14px;">{{ notification.Lead_Name || 'New Lead' }} (ID: {{ notification.lead_id }})</div>
+							<div class="notification-meta" style="font-size: 12px; color: #555;">
+								<span *ngIf="notification.Contact_Person"><i class="fa fa-user"></i> {{ notification.Contact_Person }}</span>
+								<span *ngIf="notification.Contact_Number || notification.Phone" style="margin-left: 8px;"><i class="fa fa-phone"></i> {{ notification.Contact_Number || notification.Phone }}</span>
+							</div>
+							<div class="notification-meta" style="font-size: 12px; color: #777; margin-top: 4px;">
+								<span>Assigned By: {{ notification.assigned_by_name || 'System' }}</span>
+							</div>
+							<div class="notification-meta" style="font-size: 11px; color: #999; margin-top: 4px;">{{ notification.created_at | date:'medium' }}</div>
 						</div>
 					</div>
 				</mat-menu>

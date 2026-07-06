@@ -1,0 +1,396 @@
+<div class="main-content dash-board pb-5">
+  <div class="container-fluid">
+    
+    <!-- Header row with Filter Button (Absolute positioned to save vertical space) -->
+    <div style="position: absolute; right: 30px; top: 15px; z-index: 99;">
+      <button class="btn btn-primary" (click)="toggleFilters()">
+        <i class="fa fa-filter"></i> {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+      </button>
+    </div>
+
+    <!-- Spacer when filters are shown so they don't overlap -->
+    <div *ngIf="showFilters" style="height: 50px;"></div>
+
+    <!-- Top Filter Bar -->
+    <div class="row align-items-center mb-4 dashboard-filters p-3 mx-0 shadow-sm rounded bg-white" *ngIf="showFilters">
+      <div class="col-md-2 mb-2 mb-md-0">
+        <label class="font-weight-bold text-muted small">Date Range</label>
+        <select class="form-control" [(ngModel)]="filterDateRange" (change)="applyFilters()">
+          <option value="All">All Time</option>
+          <option value="Today">Today</option>
+          <option value="Last 7 Days">Last 7 Days</option>
+          <option value="This Month">This Month</option>
+        </select>
+      </div>
+      <div class="col-md-2 mb-2 mb-md-0">
+        <label class="font-weight-bold text-muted small">Staff</label>
+        <select class="form-control" [(ngModel)]="filterStaff" (change)="applyFilters()">
+          <option value="All">All Staff</option>
+          <option *ngFor="let staff of staffList" [value]="staff">{{staff}}</option>
+        </select>
+      </div>
+      <div class="col-md-2 mb-2 mb-md-0">
+        <label class="font-weight-bold text-muted small">Status</label>
+        <select class="form-control" [(ngModel)]="filterStatus" (change)="applyFilters()">
+          <option value="All">All Statuses</option>
+          <option *ngFor="let status of statusList" [value]="status">{{status}}</option>
+        </select>
+      </div>
+      <div class="col-md-3 mb-2 mb-md-0">
+        <label class="font-weight-bold text-muted small">Source</label>
+        <select class="form-control" [(ngModel)]="filterSource" (change)="applyFilters()">
+          <option value="All">All Sources</option>
+          <option *ngFor="let source of sourceList" [value]="source">{{source}}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="font-weight-bold text-muted small">Industry</label>
+        <select class="form-control" [(ngModel)]="filterIndustry" (change)="applyFilters()">
+          <option value="All">All Industries</option>
+          <option *ngFor="let ind of industryList" [value]="ind">{{ind}}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- KPI Cards Section -->
+    <div class="row" #kpiSection>
+      <!-- Card 1 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2" (click)="navigateFromCard('Total Leads')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Leads</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalLeads}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">people</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2" (click)="navigateFromCard('New Leads')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">New Leads</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{newLeads}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">fiber_new</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2" (click)="navigateFromCard('Assigned Leads')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Assigned Leads</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{assignedLeads}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">assignment_ind</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 4 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2" (click)="navigateFromCard('Unassigned Leads')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Unassigned Leads</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{unassignedLeads}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">warning</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Card 5 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-secondary shadow h-100 py-2" (click)="navigateFromCard('In Progress')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">In Progress</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{inProgressLeads}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">hourglass_empty</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 6 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2" (click)="navigateFromCard('Follow-up Pending')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Follow-up Pending</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{followUpPending}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">access_time</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 7 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2" (click)="navigateFromCard('Follow-up Today')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Follow-up Today</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{followUpToday}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">today</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 8 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2" (click)="navigateFromCard('Quotation Sent')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Quotation Sent</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{quotationSent}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">send</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 9 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2" (click)="navigateFromCard('Converted Leads')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Converted Leads</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{convertedLeads}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">emoji_events</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 10 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2" (click)="navigateFromCard('Lost Leads')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Lost Leads</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{lostLeads}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">thumb_down</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 11 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-secondary shadow h-100 py-2" (click)="navigateFromCard('Closed Leads')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Closed Leads</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{closedLeads}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">done_all</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 12 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2" (click)="navigateFromCard('Rejected Leads')" style="cursor: pointer; transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Rejected Leads</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{rejectedLeads}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">cancel</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div #chartSection>
+      <div class="row mt-3" *ngIf="chartsVisible">
+      <!-- Status Chart -->
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Lead Status Overview</h6>
+          </div>
+          <div class="card-body chart-container p-0">
+            <google-chart [title]="''" [type]="chartStatusType" [data]="chartStatusData" [columnNames]="chartStatusColumns" [options]="chartOptions" style="width: 100%; height: 250px;"></google-chart>
+          </div>
+        </div>
+      </div>
+      <!-- Source Chart -->
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-success">Lead Source Analysis</h6>
+          </div>
+          <div class="card-body chart-container p-0">
+            <google-chart [title]="''" [type]="chartSourceType" [data]="chartSourceData" [columnNames]="chartSourceColumns" [options]="chartOptions" style="width: 100%; height: 250px;"></google-chart>
+          </div>
+        </div>
+      </div>
+      <!-- Industry Chart -->
+      <div class="col-lg-4 col-md-12 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-info">Industry-wise Analysis</h6>
+          </div>
+          <div class="card-body chart-container p-0">
+            <google-chart [title]="''" [type]="chartIndustryType" [data]="chartIndustryData" [columnNames]="chartIndustryColumns" [options]="chartBarOptions" style="width: 100%; height: 250px;"></google-chart>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- Trend and Leaderboard Section -->
+    <div class="row mt-2">
+      <!-- Monthly Trend -->
+      <div class="col-lg-7 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Monthly Lead Trend</h6>
+          </div>
+          <div class="card-body p-0">
+             <google-chart [title]="''" [type]="chartTrendType" [data]="chartTrendData" [columnNames]="chartTrendColumns" [options]="chartBarOptions" style="width: 100%; height: 350px;"></google-chart>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Leaderboard -->
+      <div class="col-lg-5 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Staff Performance Leaderboard</h6>
+          </div>
+          <div class="card-body p-0 overflow-auto" style="max-height: 350px;">
+            <table class="table table-hover table-striped mb-0 text-sm">
+              <thead class="thead-light">
+                <tr>
+                  <th>Staff Name</th>
+                  <th class="text-center">Assigned</th>
+                  <th class="text-center">Converted</th>
+                  <th class="text-center">Conv. Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let s of staffPerformance; let i = index">
+                  <td class="font-weight-bold">
+                    <span class="badge badge-pill badge-primary mr-2" *ngIf="i < 3">#{{i+1}}</span>
+                    {{s.name}}
+                  </td>
+                  <td class="text-center">{{s.assigned}}</td>
+                  <td class="text-center text-success font-weight-bold">{{s.converted}}</td>
+                  <td class="text-center">{{s.conversionRate}}</td>
+                </tr>
+                <tr *ngIf="staffPerformance.length === 0">
+                  <td colspan="4" class="text-center text-muted p-4">No data available</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Leads Table -->
+    <div class="row mt-2">
+      <div class="col-12">
+        <div class="card shadow mb-4">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Recent Leads</h6>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table mat-table [dataSource]="dataSource" class="mat-elevation-z0 w-100 table-hover">
+                <ng-container matColumnDef="Lead_Id">
+                  <th mat-header-cell *matHeaderCellDef> ID </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Lead_Id}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Customer_Name">
+                  <th mat-header-cell *matHeaderCellDef> Customer Name </th>
+                  <td mat-cell *matCellDef="let element" class="font-weight-bold" [title]="element.Contact_Person">
+                    {{ (element.Contact_Person && element.Contact_Person.length > 20) ? (element.Contact_Person | slice:0:20) + '...' : element.Contact_Person }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Company_Name">
+                  <th mat-header-cell *matHeaderCellDef> Company </th>
+                  <td mat-cell *matCellDef="let element" [title]="element.Lead_Name">
+                    {{ (element.Lead_Name && element.Lead_Name.length > 20) ? (element.Lead_Name | slice:0:20) + '...' : element.Lead_Name }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Phone">
+                  <th mat-header-cell *matHeaderCellDef> Phone </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Phone}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Email">
+                  <th mat-header-cell *matHeaderCellDef> Email </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Email}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Vertical_Name">
+                  <th mat-header-cell *matHeaderCellDef> Industry </th>
+                  <td mat-cell *matCellDef="let element"> <span class="badge badge-secondary">{{element.Vertical_Name}}</span> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Staff_Name">
+                  <th mat-header-cell *matHeaderCellDef> Staff </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Staff_Name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Status_Name">
+                  <th mat-header-cell *matHeaderCellDef> Status </th>
+                  <td mat-cell *matCellDef="let element"> 
+                    <span class="badge" 
+                      [ngClass]="{'badge-success': (element.Status_Name || '').toLowerCase().includes('won'), 
+                                  'badge-danger': (element.Status_Name || '').toLowerCase().includes('lost'),
+                                  'badge-primary': (element.Status_Name || '').toLowerCase().includes('new'),
+                                  'badge-info': !(element.Status_Name || '').toLowerCase().includes('won') && !(element.Status_Name || '').toLowerCase().includes('lost') && !(element.Status_Name || '').toLowerCase().includes('new')}">
+                      {{element.Status_Name}}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Entry_Date">
+                  <th mat-header-cell *matHeaderCellDef> Created </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Entry_Date | date:'mediumDate'}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openLead(row.Lead_Id)" style="cursor: pointer;"></tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

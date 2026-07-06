@@ -372,6 +372,23 @@ var Lead = {
             enrichLeadsWithLatestFollowUp(rows, callback);
         });
     },
+    Get_Lead: function (Lead_Id, callback) {
+        return db.query("CALL Get_Leads(?, ?)", [1, 1000000], (err, rows) => {
+            if (err) return callback(err, null);
+            
+            let allLeads = [];
+            if (rows && Array.isArray(rows[0])) {
+                allLeads = rows[0];
+            } else if (Array.isArray(rows)) {
+                allLeads = rows;
+            }
+            
+            const lead = allLeads.find(l => String(l.Lead_Id) === String(Lead_Id));
+            const newRows = lead ? [[lead]] : [[]];
+            
+            enrichLeadsWithLatestFollowUp(newRows, callback);
+        });
+    },
     Get_Dropdowns_Lead: function (callback) {
         return db.query("CALL Get_Dropdowns_Lead()", [], (err, rows) => {
             if (err) return callback(err, rows);

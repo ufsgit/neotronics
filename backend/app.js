@@ -113,6 +113,7 @@ var Department = require('./routes/Department');
 var DepartmentStatus = require('./routes/DepartmentStatus');
 var Price_Response = require('./routes/Price_Response');
 var Notifications = require('./routes/Notifications');
+var OperationsDashboard = require('./routes/OperationsDashboard');
 
 
 var app = express();
@@ -120,8 +121,20 @@ var server = http.Server(app);
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
-app.use(cors({ origin: true, credentials: true }));
-app.options('*', cors({ origin: true, credentials: true }));
+const allowedOrigins = ['http://localhost:4202', 'https://neotronics.trackbox.live'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') return res.sendStatus(200);
   next();
@@ -218,13 +231,16 @@ app.use('/requirementdetails', requirementdetails);
 app.use('/requirementworkflow', requirementworkflow);
 app.use('/Sales_Order_Master', Sales_Order_Master);
 app.use('/Vertical', Vertical);
+app.use('/api/Vertical', Vertical);
 app.use('/Designation', Designation);
 app.use('/Company_Size', Company_Size);
 app.use('/Department', Department);
 app.use('/DepartmentStatus', DepartmentStatus);
 app.use('/Price_Response', Price_Response);
 app.use('/Notification', Notifications);
+app.use('/api/Notification', Notifications);
 app.use('/api/notifications', Notifications);
+app.use('/OperationsDashboard', OperationsDashboard);
 
 app.use(errorHandler);
 

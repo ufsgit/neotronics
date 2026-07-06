@@ -192,11 +192,11 @@ Quotation_Master_Total_Overdue1:string;
 Load_VoucherType() {
   this.Receipt_Voucher_Service_.Get_Voucher_Type().subscribe(Rows => {
       if (Rows != null) {
-          this.voucherTypeData = Rows[0];
+          this.voucherTypeData = Rows[0] || [];
           this.voucherTypeData.unshift({
               "Voucher_Type_Id": 0,
               "Voucher_Type_Name": "All"
-          })
+          });
       }
       this.issLoading = false;
   },

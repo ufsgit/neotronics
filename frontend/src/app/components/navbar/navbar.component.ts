@@ -190,7 +190,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     menuArray: any[];
     notifications$: Observable<any[]>;
     unreadCount$: Observable<number>;
-    constructor(location: Location, public userData: UserData, private element: ElementRef, private router: Router, public notificationService: NotificationService) {
+    constructor(location: Location, public userData: UserData, private element: ElementRef, public router: Router, public notificationService: NotificationService) {
         this.location = location;
         this.sidebarVisible = false;
         this.notifications$ = this.notificationService.notifications$;

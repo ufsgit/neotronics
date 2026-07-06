@@ -20,4 +20,8 @@ export class TermsAndCondition_Service {
         };
         return this.http.get(environment.BasePath + 'TermsAndCondition/Search_TermsAndCondition/', { params: Search_Data });
     }
+
+    Delete_TermsAndCondition(Term_Id): Observable<any> {
+        return this.http.get(environment.BasePath + 'TermsAndCondition/Delete_TermsAndCondition/' + Term_Id);
+    }
 }

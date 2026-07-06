@@ -221,8 +221,8 @@
 .ig-table-card {
   background: #fff;
   border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  overflow: hidden;
+  border-radius: 6px;
+  overflow: visible;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   display: flex;
   flex: 1;
@@ -233,7 +233,7 @@
 
 .ig-table-wrap {
   flex: 1;
-  overflow: auto;
+  overflow: visible;
   position: relative;
 }
 
@@ -246,7 +246,7 @@
 
 /* ── TABLE HEADER ── */
 .ig-th {
-  padding: 14px 18px;
+  padding: 8px 18px;
   font-size: 13px;
   font-weight: 600;
   color: #ffffff;
@@ -261,10 +261,10 @@
 }
 
 .ig-table thead tr th:first-child {
-  border-top-left-radius: 11px;
+  border-top-left-radius: 5px;
 }
 .ig-table thead tr th:last-child {
-  border-top-right-radius: 11px;
+  border-top-right-radius: 5px;
 }
 
 .ig-th-no      { width: 60px;  text-align: center !important; }

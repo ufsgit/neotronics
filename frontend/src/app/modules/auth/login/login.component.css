@@ -329,3 +329,18 @@
     padding: 34px 28px;
   }
 }
+
+.thunder-loader {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+  animation: flash 1s ease-in-out infinite;
+  fill: #ffeb3b;
+}
+
+@keyframes flash {
+  0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 2px rgba(255, 235, 59, 0.5)); }
+  50% { opacity: 0.6; transform: scale(0.9); filter: drop-shadow(0 0 8px rgba(255, 235, 59, 0.9)); }
+}

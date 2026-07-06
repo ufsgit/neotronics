@@ -1,6 +1,6 @@
 /* ── PAGE ── */
 .ig-page {
-  padding: 24px;
+  padding: 12px 24px 24px;
   background: #f8fafc;
   min-height: 100vh;
   display: flex;
@@ -107,7 +107,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
   gap: 12px;
 }
@@ -436,7 +436,7 @@
 .ig-table-card {
   background: #fff;
   border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border-radius: 6px;
   overflow: visible;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   display: flex;
@@ -461,7 +461,7 @@
 
 
 .ig-th {
-  padding: 14px 18px;
+  padding: 8px 18px;
   font-size: 13px;
   font-weight: 600;
   color: #ffffff;
@@ -475,10 +475,10 @@
   white-space: nowrap;
 }
 .ig-table thead tr th:first-child {
-  border-top-left-radius: 11px;
+  border-top-left-radius: 5px;
 }
 .ig-table thead tr th:last-child {
-  border-top-right-radius: 11px;
+  border-top-right-radius: 5px;
 }
 .ig-th-actions { text-align: center !important; width: 140px; }
 
@@ -651,12 +651,12 @@
 
 /* ── BUTTON OVERRIDE FOR BLUE ── */
 .ig-btn-new-lead {
-  background: #3b82f6 !important; /* Electric Blue to match Nav Accent */
+  background: #3b82f6 !important;
   color: #fff !important;
   font-weight: 600 !important;
   height: 38px !important;
   padding: 0 20px !important;
-  border-radius: 12px !important;
+  border-radius: 6px !important;
   font-size: 13.5px !important;
   display: inline-flex !important;
   align-items: center !important;
@@ -669,42 +669,6 @@
   background: #2563eb !important; 
   transform: translateY(-1px);
   box-shadow: 0 6px 15px rgba(59, 130, 246, 0.35) !important;
-}
-
-/* ── EMPTY ── */
-.ig-empty {
-  text-align: center;
-  padding: 48px 20px;
-  font-size: 14px;
-  color: #9ca3af;
-}
-
-/* ── FILTER BAR ── */
-.ig-filter-bar { margin-bottom: 16px; }
-.ig-filter-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: flex-end;
-}
-.ig-filter-grid .ig-field { min-width: 160px; flex: 1; }
-.ig-filter-grid .ig-field-auto { flex: 0 0 auto; min-width: unset; }
-
-/* ── COLUMN CUSTOMIZER ── */
-.ig-customizer { margin-bottom: 16px; }
-.ig-customizer-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px 24px;
-  padding: 4px 0;
-}
-.ig-customizer-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid #f3f4f6;
 }
 
 /* ── PAGINATION ── */

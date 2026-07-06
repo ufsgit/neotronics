@@ -12,7 +12,9 @@ export const environment = {
 	BasePath: "http://localhost:3502/",
 	FilePath: "http://localhost:3502/uploads/",
 	// BasePath: "https://neotronicsapi.trackbox.live/",
+	
 	// FilePath: "https://neotronicsapi.trackbox.live/uploads/",
+	
 
  
 	// 	BasePath: "https://perfecthillsapi.trackbox.net.in/",

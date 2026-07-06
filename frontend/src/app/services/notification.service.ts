@@ -3,13 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subscription, interval } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+import * as io from 'socket.io-client';
+
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
   private notificationsSubject = new BehaviorSubject<any[]>([]);
   private unreadCountSubject = new BehaviorSubject<number>(0);
-  private pollSubscription: Subscription;
+  private socket: any;
   private activeStaffId = 0;
 
   notifications$ = this.notificationsSubject.asObservable();
@@ -24,13 +26,34 @@ export class NotificationService {
     this.activeStaffId = parsedStaffId;
     this.refresh();
 
-    if (this.pollSubscription) this.pollSubscription.unsubscribe();
-    this.pollSubscription = interval(30000).subscribe(() => this.refresh());
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+    
+    // Connect to the backend socket
+    const socketUrl = environment.BasePath.replace('/api/', ''); 
+    const token = localStorage.getItem('Access_Token') || '';
+    this.socket = io(socketUrl, {
+      query: { token: token },
+      withCredentials: true
+    });
+    
+    this.socket.on('connect', () => {
+      this.socket.emit('register', this.activeStaffId);
+    });
+
+    this.socket.on('lead_assigned', (notif: any) => {
+      const currentNotifications = this.notificationsSubject.value;
+      const updatedNotifications = [notif, ...currentNotifications];
+      this.setNotifications(updatedNotifications);
+    });
   }
 
   stopPolling() {
-    if (this.pollSubscription) this.pollSubscription.unsubscribe();
-    this.pollSubscription = null;
+    if (this.socket) {
+      this.socket.disconnect();
+      this.socket = null;
+    }
     this.activeStaffId = 0;
     this.setNotifications([]);
   }

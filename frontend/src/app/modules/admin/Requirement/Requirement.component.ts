@@ -477,6 +477,8 @@ Page_Load()
                 this.isLoading = false;
             }
         });
+    } else if (!this.Entry_View) {
+        this.Search_Requirement();
     }
 }
 
@@ -2290,6 +2292,19 @@ Search_Requirement()
     if (this.Requirement_Master_Data.length == 0) {
     const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
     }
+
+    const autoOpenNo = localStorage.getItem('Auto_Open_Number');
+    const autoOpenStage = localStorage.getItem('Auto_Open_Stage');
+    if (autoOpenNo && (autoOpenStage === 'Requirement' || autoOpenStage === 'Pending')) {
+        const target = this.Requirement_Master_Data_All.find(r => String(r.RequirementNo) === String(autoOpenNo) || String(r.RequirementMaster_Id) === String(autoOpenNo));
+        if (target) {
+            localStorage.removeItem('Auto_Open_Number');
+            localStorage.removeItem('Auto_Open_Stage');
+            const targetIndex = this.Requirement_Master_Data_All.indexOf(target);
+            this.Edit_Requirement_Master(target, targetIndex);
+        }
+    }
+    
     this.isLoading=false;
     },
     Rows => {

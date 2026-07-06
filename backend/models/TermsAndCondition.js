@@ -45,6 +45,9 @@ var TermsAndCondition = {
                 callback(null, rows);
             });
         });
+    },
+    Delete_TermsAndCondition: function (Term_Id, callback) {
+        return db.query("DELETE FROM TermsAndCondition WHERE Term_Id = ?", [Term_Id], callback);
     }
 };
 

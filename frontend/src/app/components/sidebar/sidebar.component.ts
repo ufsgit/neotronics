@@ -166,6 +166,47 @@ Menus:any[];
     });
   }
 
+  private ensureLeadDashboardMenuItem() {
+    if (!Array.isArray(this.menuItems)) this.menuItems = [];
+    const exists = this.menuItems.some((m: any) => (m && (m.path === '/LeadDashboard' || m.path === 'LeadDashboard')));
+    if (exists) return;
+    this.menuItems.unshift({
+      path: '/LeadDashboard',
+      title: 'Lead Dashboard',
+      icon: 'dashboard',
+      class: '',
+      Menu_Id: '0',
+      View: 'true',
+      Save: 'true',
+      Edit: 'true',
+      Delete: 'true',
+      Menu_Type: true,
+    });
+  }
+
+  private ensureOperationsDashboardMenuItem() {
+    if (!Array.isArray(this.menuItems)) this.menuItems = [];
+    const exists = this.menuItems.some((m: any) => (m && (m.path === '/OperationsDashboard' || m.path === 'OperationsDashboard')));
+    if (exists) return;
+    
+    // Find index of LeadDashboard to insert right after it
+    const leadDashIndex = this.menuItems.findIndex((m: any) => (m && (m.path === '/LeadDashboard' || m.path === 'LeadDashboard')));
+    const index = leadDashIndex >= 0 ? leadDashIndex + 1 : 0;
+    
+    this.menuItems.splice(index, 0, {
+      path: '/OperationsDashboard',
+      title: 'Operations Dashboard',
+      icon: 'assessment',
+      class: '',
+      Menu_Id: '0',
+      View: 'true',
+      Save: 'true',
+      Edit: 'true',
+      Delete: 'true',
+      Menu_Type: true,
+    });
+  }
+
   private ensureQuotationConfirmationMenuItem() {
     if (!Array.isArray(this.menuItems)) this.menuItems = [];
     const exists = this.menuItems.some((m: any) => (m && (m.path === '/Quotation_Confirmation' || m.path === 'Quotation_Confirmation')));
@@ -190,20 +231,18 @@ Menus:any[];
   ) {
     
     this.menuItems= ROUTES.filter(menuItem => menuItem);
+    this.ensureLeadDashboardMenuItem();
+    this.ensureOperationsDashboardMenuItem();
     this.ensurePriceRequestMenuItem();
     this.ensurePriceResponseMenuItem();
     this.ensureVerticalMenuItem();
     this.ensureDesignationMenuItem();
     this.ensureCompanySizeMenuItem();
     this.ensureQuotationConfirmationMenuItem();
-    // this.router.navigateByUrl('Leads');
-   }
+  }
 
   ngOnInit() {
     
-    // this.menuItems= ROUTES.filter(menuItem => menuItem);
-    // this.router.navigateByUrl('Leads');
-
 this.uname=localStorage.getItem('uname');
 var retrievedObject=localStorage.getItem('Routes_Temp');
 ROUTES=JSON.parse(retrievedObject);
@@ -211,14 +250,15 @@ ROUTES=JSON.parse(retrievedObject);
 var retrievedPointer=localStorage.getItem('Pointer_Temp');
 Pointer_Table=JSON.parse(retrievedPointer);
 this.menuItems= ROUTES.filter(menuItem => menuItem);
+this.ensureLeadDashboardMenuItem();
 this.ensurePriceRequestMenuItem();
 this.ensurePriceResponseMenuItem();
 this.ensureVerticalMenuItem();
 this.ensureDesignationMenuItem();
 this.ensureCompanySizeMenuItem();
 this.ensureQuotationConfirmationMenuItem();
-
   }
+
   isMobileMenu() {
     if ($(window).width() > 991) {
       return false;

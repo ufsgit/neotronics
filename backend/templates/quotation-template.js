@@ -8,7 +8,7 @@ const formatCurrency = (amount) => {
 const getQuotationTemplate = (data) => {
     const { master, details, company, bank } = data;
     const currency = master.CurrecnyName || master.CurrencyName || '';
-    
+
     let itemsHtml = details.map((item, index) => `
         <tr style="page-break-inside: avoid;">
             <td style="text-align: center; border: 1px solid #000;">${index + 1}</td>
@@ -217,13 +217,9 @@ const getQuotationTemplate = (data) => {
                 </div>
 
                 <div class="terms-section">
+                    <strong>Payment Term:</strong> ${master.Payment_Term_Description || master.PaymentTerms || ''}<br>
                     <strong>Terms & Conditions:</strong>
-                    <ul style="margin: 5px 0; padding-left: 15px;">
-                        <li>Validity: ${master.Validity || '15 Days'}</li>
-                        <li>Delivery: ${master.Delivery || 'Ex-Stock'}</li>
-                        <li>Price Basis: ${master.PriceBasis || 'DDP'}</li>
-                        <li>Payment: ${master.PaymentTerms || 'Immediate'}</li>
-                    </ul>
+                    <div style="margin-top: 5px; white-space: pre-wrap;">${master.Description1 || ''}</div>
                 </div>
 
                 <div class="bank-details">

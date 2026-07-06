@@ -34,4 +34,20 @@ router.get('/Search_TermsAndCondition/', function (req, res, next) {
     }
 });
 
+router.get('/Delete_TermsAndCondition/:Term_Id?', function (req, res, next) {
+    try {
+        TermsAndCondition.Delete_TermsAndCondition(req.params.Term_Id, function (err, rows) {
+            if (err) {
+                console.error('Delete_TermsAndCondition error:', err);
+                res.status(500).json({ error: 'Delete failed', details: err });
+            } else {
+                res.json(rows);
+            }
+        });
+    } catch (e) {
+        console.error('Delete_TermsAndCondition exception:', e);
+        res.status(500).json({ error: 'Delete exception', details: e });
+    }
+});
+
 module.exports = router;

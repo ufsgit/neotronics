@@ -116,6 +116,8 @@ import { DepartmentStatusComponent } from './DepartmentStatus/DepartmentStatus.c
 
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { RouterModule } from "@angular/router";
+import { LeadDashboardComponent } from './lead-dashboard/lead-dashboard.component';
+import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 
 @NgModule({
 	imports: [
@@ -231,7 +233,9 @@ import { RouterModule } from "@angular/router";
 		Company_SizeComponent,
 		Quotation_ConfirmationComponent,
 		DepartmentComponent,
-		DepartmentStatusComponent
+		DepartmentStatusComponent,
+		LeadDashboardComponent,
+		OperationsDashboardComponent
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],

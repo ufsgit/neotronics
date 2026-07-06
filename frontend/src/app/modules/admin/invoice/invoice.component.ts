@@ -1900,12 +1900,32 @@ this.Login_User_Id).subscribe(Rows => {
   {
   const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'No Details Found',Type:"3"}});
   }
+
+  const autoOpenNo = localStorage.getItem('Auto_Open_Number');
+  const autoOpenStage = localStorage.getItem('Auto_Open_Stage');
+  if (autoOpenNo && autoOpenStage === 'Invoice') {
+      const target = this.Sales_Master_Data.find(i => String(i.Invoice_No) === String(autoOpenNo) || String(i.Sales_Master_Id) === String(autoOpenNo));
+      if (target) {
+          localStorage.removeItem('Auto_Open_Number');
+          localStorage.removeItem('Auto_Open_Stage');
+          const targetIndex = this.Sales_Master_Data.indexOf(target);
+          this.Edit_Sales_Master(target, targetIndex);
+      }
+  }
+
   this.issLoading=false;
   },
   Rows => {
       this.issLoading=false;
       const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
   });
+}
+
+Edit_Sales_Master(Sales_Master_e: Sales_Master, index: number) {
+    this.Sales_Master_Id = Sales_Master_e.Sales_Master_Id;
+    this.Sales_Master_Id_Edit = Sales_Master_e.Sales_Master_Id;
+    this.Edit_Sales = 1;
+    this.Load_SalesMaster();
 }
 
 get Paginated_Sales_Master_Data(): Sales_Master[] {
@@ -2805,7 +2825,9 @@ Load_SalesMaster()
     this.issLoading = true;
       debugger;
       console.log("Inv - Outside Load_SalesMaster ");
-      this.Sales_Master_Service_.Load_SalesMaster(this.Sales_Master_Id).subscribe(rows=>{
+      this.Sales_Master_Service_.Load_SalesMaster(this.Sales_Master_Id).subscribe(response=>{
+        let rows = (response && typeof response === 'object' && 'success' in response) ? (<any>response).data : response;
+        if (rows && typeof rows === 'object' && !Array.isArray(rows) && rows.rows) { rows = rows.rows; }
         console.log("Inv - Inside Load_SalesMaster ");
 
 
@@ -2879,7 +2901,9 @@ this.Sales_Master_Service_.Search_Customer_Typeahead_1('1,2,3,36,37,38,39','').s
             }
         } }
     },);
-        this.Sales_Master_Service_.Get_Sales_Details(rows[0][0].Sales_Master_Id).subscribe(Rows1 => {   
+        this.Sales_Master_Service_.Get_Sales_Details(rows[0][0].Sales_Master_Id).subscribe(response1 => {   
+            let Rows1 = (response1 && typeof response1 === 'object' && 'success' in response1) ? (<any>response1).data : response1;
+            if (Rows1 && typeof Rows1 === 'object' && !Array.isArray(Rows1) && Rows1.rows) { Rows1 = Rows1.rows; }
             if (Rows1 != null) {
                 this.Sales_Details_Data = Rows1[0];
                 this.Final_Amounts();

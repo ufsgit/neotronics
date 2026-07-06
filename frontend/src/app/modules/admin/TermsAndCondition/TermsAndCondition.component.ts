@@ -188,4 +188,23 @@ export class TermsAndConditionComponent implements OnInit {
         this.Check_Hide = false;
         this.Term_ = Object.assign({}, term);
     }
+
+    Delete_Term(Term_Id, index) {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Do you want to delete ?', Type: true, Heading: 'Confirm' } });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result == 'Yes') {
+                this.issLoading = true;
+                this.Terms_Service_.Delete_TermsAndCondition(Term_Id).subscribe(
+                    Save_status => {
+                        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Deleted Successfully', Type: 'false' } });
+                        this.Search_Term();
+                    },
+                    error => {
+                        this.issLoading = false;
+                        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error Occured', Type: '2' } });
+                    }
+                );
+            }
+        });
+    }
 }

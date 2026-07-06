@@ -81,6 +81,9 @@ import { Company_SizeComponent } from './Company_Size/Company_Size.component';
 import { Quotation_ConfirmationComponent } from './Quotation_Confirmation/Quotation_Confirmation.component';
 import { DepartmentComponent } from './Department/Department.component';
 import { DepartmentStatusComponent } from './DepartmentStatus/DepartmentStatus.component';
+import { DashboardComponent } from './Dashboard/Dashboard.component';
+import { LeadDashboardComponent } from './lead-dashboard/lead-dashboard.component';
+import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 
 export const AdminRoutes: Routes = [
 	{
@@ -153,6 +156,7 @@ export const AdminRoutes: Routes = [
 			{path:"Stock_Take",component:StockTakeComponent},
 			{path:"StockTakeName",component:StockTakeNameComponent},
 			{ path: 'Lead', component: LeadComponent },
+			{ path: 'Lead/:id', component: LeadComponent },
 			{ path: 'LeadRequirement', component: LeadRequirementComponent },
 			{ path: 'LeadRequirementTransaction/:id', component: LeadRequirementTransactionComponent },
 			{ path: 'SalesOrder', component: SalesOrderComponent },
@@ -167,6 +171,8 @@ export const AdminRoutes: Routes = [
 			{ path: "Quotation_Confirmation", component: Quotation_ConfirmationComponent },
 			{ path: "Department", component: DepartmentComponent },
 			{ path: "DepartmentStatus", component: DepartmentStatusComponent },
+			{ path: "LeadDashboard", component: LeadDashboardComponent },
+			{ path: "OperationsDashboard", component: OperationsDashboardComponent },
 
 
 			{ path: "**", redirectTo: "/auth/login" },

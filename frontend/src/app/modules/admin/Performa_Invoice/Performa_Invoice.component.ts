@@ -2741,6 +2741,18 @@ Search_PerformaInvoice(showNoDetails: boolean = true)
                 if (showNoDetails && this.performainvoice_Data.length == 0) {
                     this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'No Details Found', Type: "3" } });
                 }
+
+                const autoOpenNo = localStorage.getItem('Auto_Open_Number');
+                const autoOpenStage = localStorage.getItem('Auto_Open_Stage');
+                if (autoOpenNo && autoOpenStage === 'Performa_Invoice') {
+                    const target = this.performainvoice_Data.find(p => String(p.PerformaInvNo) === String(autoOpenNo) || String(p.PerformaInvoiceMaster_Id) === String(autoOpenNo));
+                    if (target) {
+                        localStorage.removeItem('Auto_Open_Number');
+                        localStorage.removeItem('Auto_Open_Stage');
+                        const targetIndex = this.performainvoice_Data.indexOf(target);
+                        this.Edit_Performa_invoice(target, targetIndex);
+                    }
+                }
             } else {
                 this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Error: ' + (res && res.message ? res.message : 'Search failed'), Type: "2" } });
             }

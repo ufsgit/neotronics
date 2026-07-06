@@ -82,6 +82,23 @@ router.get('/Get_Leads/', function (req, res, next) {
     }
 });
 
+router.get('/Get_Lead/:Lead_Id', function (req, res, next) {
+    try {
+        Lead.Get_Lead(req.params.Lead_Id, function (err, rows) {
+            if (err) {
+                res.json(err);
+            }
+            else {
+                res.json(rows);
+            }
+        });
+    }
+    catch (e) {
+        console.error("Exception in Get_Lead:", e);
+        res.status(500).json({ error: e.message || String(e) });
+    }
+});
+
     router.get('/Get_Dropdowns_Lead/', function (req, res, next) {
         console.log("API: Get_Dropdowns_Lead called");
         try {

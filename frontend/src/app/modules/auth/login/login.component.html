@@ -40,9 +40,15 @@
         </label>
       </div>
 
-      <button mat-raised-button type="submit" class="modern-btn-submit" (click)="onLoginClick($event, userNameInput, passwordInput)">
+      <button mat-raised-button type="submit" class="modern-btn-submit" (click)="onLoginClick($event, userNameInput, passwordInput)" [disabled]="issLoading">
         <span class="btn-fluid"></span>
-        <span>Login</span>
+        <span *ngIf="!issLoading">Login</span>
+        <span *ngIf="issLoading">
+          <svg class="thunder-loader" viewBox="0 0 24 24">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+          </svg> 
+          Logging in...
+        </span>
       </button>
     </form>
   </div>

@@ -1,0 +1,388 @@
+<div class="main-content dash-board pb-5">
+  <div class="container-fluid">
+    <!-- Header row with Filter Button (Absolute positioned to save vertical space) -->
+    <div style="position: absolute; right: 30px; top: 15px; z-index: 99;">
+      <button class="btn btn-primary" (click)="toggleFilters()">
+        <i class="fa fa-filter"></i> {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+      </button>
+    </div>
+    
+    <!-- Spacer when filters are shown so they don't overlap -->
+    <div *ngIf="showFilters" style="height: 50px;"></div>
+
+    <!-- Top Filter Bar -->
+    <div class="row align-items-center mb-4 dashboard-filters p-3 mx-0 shadow-sm rounded bg-white" *ngIf="showFilters">
+      <div class="col-md-2 mb-2 mb-md-0">
+        <label class="font-weight-bold text-muted small">Date Range</label>
+        <select class="form-control" [(ngModel)]="filterDateRange" (change)="applyFilters()">
+          <option value="All">All Time</option>
+          <option value="Today">Today</option>
+          <option value="Last 7 Days">Last 7 Days</option>
+          <option value="This Month">This Month</option>
+        </select>
+      </div>
+      <div class="col-md-2 mb-2 mb-md-0">
+        <label class="font-weight-bold text-muted small">Staff</label>
+        <select class="form-control" [(ngModel)]="filterStaff" (change)="applyFilters()">
+          <option value="All">All Staff</option>
+          <option *ngFor="let staff of staffList" [value]="staff">{{staff}}</option>
+        </select>
+      </div>
+      <div class="col-md-2 mb-2 mb-md-0">
+        <label class="font-weight-bold text-muted small">Status</label>
+        <select class="form-control" [(ngModel)]="filterStatus" (change)="applyFilters()">
+          <option value="All">All Statuses</option>
+          <option *ngFor="let status of statusList" [value]="status">{{status}}</option>
+        </select>
+      </div>
+      <div class="col-md-3 mb-2 mb-md-0">
+        <label class="font-weight-bold text-muted small">Source</label>
+        <select class="form-control" [(ngModel)]="filterSource" (change)="applyFilters()">
+          <option value="All">All Sources</option>
+          <option *ngFor="let source of sourceList" [value]="source">{{source}}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="font-weight-bold text-muted small">Industry</label>
+        <select class="form-control" [(ngModel)]="filterIndustry" (change)="applyFilters()">
+          <option value="All">All Industries</option>
+          <option *ngFor="let ind of industryList" [value]="ind">{{ind}}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- KPI Cards Section -->
+    <div class="row" #kpiSection>
+      <!-- Card 1 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2" style="cursor: pointer;" (click)="navigateToPage('/Requirement')">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Requirements</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.requirement.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">assignment</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2" style="cursor: pointer;" (click)="navigateToPage('/PriceRequest')">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Price Requests</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.priceRequest.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">request_quote</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2" style="cursor: pointer;" (click)="navigateToPage('/PriceResponse')">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Price Responses</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.priceResponse.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">reply</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 4 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2" style="cursor: pointer;" (click)="navigateToPage('/Quotation')">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Quotation Confirmations</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.quotationConfirmation.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">thumb_up</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Card 5 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2" style="cursor: pointer;" (click)="navigateToPage('/Quotation')">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Quotations</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.quotation.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">description</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 6 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-secondary shadow h-100 py-2" style="cursor: pointer;" (click)="navigateToPage('/Performa_Invoice')">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Proforma Invoices</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.proformaInvoice.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">receipt</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 7 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2" style="cursor: pointer;" (click)="navigateToPage('/Invoice')">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Invoices</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.invoice.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">monetization_on</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 8 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Pending Workflow</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.pendingWorkflow.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">pause_circle_filled</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 9 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Completed Operations</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.completedOperations.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">check_circle</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 10 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Cancelled / Rejected</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.cancelledRejected.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">cancel</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 11 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">In Progress</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.inProgress.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">autorenew</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card 12 -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Today's Activities</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{data.todaysActivities.total}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">today</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div #chartSection>
+      <div class="row mt-3" *ngIf="chartsVisible">
+      <!-- Workflow Distribution -->
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Workflow Distribution</h6>
+          </div>
+          <div class="card-body chart-container p-0">
+            <google-chart [title]="''" [type]="'PieChart'" [data]="chartStatusData" [columnNames]="['Stage', 'Count']" [options]="chartOptions" style="width: 100%; height: 250px;"></google-chart>
+          </div>
+        </div>
+      </div>
+      <!-- Conversion Funnel -->
+      <div class="col-lg-8 col-md-12 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-success">Conversion Funnel</h6>
+          </div>
+          <div class="card-body chart-container p-0">
+            <google-chart [title]="''" [type]="'BarChart'" [data]="chartSourceData" [columnNames]="['Stage', 'Count']" [options]="chartBarOptions" style="width: 100%; height: 250px;"></google-chart>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- Trend and Staff Performance Section -->
+    <div class="row mt-2">
+      <!-- Monthly Trend -->
+      <div class="col-lg-7 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Monthly Operations Trend</h6>
+          </div>
+          <div class="card-body p-0">
+             <google-chart [title]="''" [type]="chartTrendType" [data]="chartTrendData" [columnNames]="chartTrendColumns" [options]="chartTrendOptions" style="width: 100%; height: 350px;"></google-chart>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Staff Performance -->
+      <div class="col-lg-5 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Staff Performance Leaderboard</h6>
+          </div>
+          <div class="card-body p-0 overflow-auto" style="max-height: 350px;">
+            <table class="table table-hover table-striped mb-0 text-sm">
+              <thead class="thead-light">
+                <tr>
+                  <th>Staff</th>
+                  <th class="text-center">Reqs</th>
+                  <th class="text-center">Quotes</th>
+                  <th class="text-center">Invoices</th>
+                  <th class="text-center">Conv. %</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let s of staffPerformance; let i = index">
+                  <td class="font-weight-bold">
+                    <span class="badge badge-pill badge-primary mr-2" *ngIf="i < 3">#{{i+1}}</span>
+                    {{s.name}}
+                  </td>
+                  <td class="text-center">{{s.reqs}}</td>
+                  <td class="text-center">{{s.quotes}}</td>
+                  <td class="text-center">{{s.invoices}}</td>
+                  <td class="text-center text-success font-weight-bold">{{s.conversionRate}}</td>
+                </tr>
+                <tr *ngIf="!staffPerformance || staffPerformance.length === 0">
+                  <td colspan="5" class="text-center text-muted p-4">No data available</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Operations Table -->
+    <div class="row mt-2">
+      <div class="col-12">
+        <div class="card shadow mb-4">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Recent Operations Workflow</h6>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table mat-table [dataSource]="dataSource" class="mat-elevation-z0 w-100 table-hover">
+                
+                <ng-container matColumnDef="Requirement No">
+                  <th mat-header-cell *matHeaderCellDef> Req No </th>
+                  <td mat-cell *matCellDef="let element" class="font-weight-bold text-primary cursor-pointer"> {{element.Number}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Customer">
+                  <th mat-header-cell *matHeaderCellDef> Customer </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Customer}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Company">
+                  <th mat-header-cell *matHeaderCellDef> Company </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Company}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Staff">
+                  <th mat-header-cell *matHeaderCellDef> Staff </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Staff}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Current Stage">
+                  <th mat-header-cell *matHeaderCellDef> Current Stage </th>
+                  <td mat-cell *matCellDef="let element"> 
+                    <span class="badge badge-info">{{element.Current_Stage}}</span> 
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Status">
+                  <th mat-header-cell *matHeaderCellDef> Status </th>
+                  <td mat-cell *matCellDef="let element"> 
+                    <span class="badge" [ngClass]="{'badge-success': element.Status === 'Completed', 'badge-warning': element.Status === 'Pending'}">
+                      {{element.Status}}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Quotation No">
+                  <th mat-header-cell *matHeaderCellDef> Quote No </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Quotation_No || '-'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Invoice No">
+                  <th mat-header-cell *matHeaderCellDef> Invoice No </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Invoice_No || '-'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Date">
+                  <th mat-header-cell *matHeaderCellDef> Date </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Date | date:'mediumDate'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Action">
+                  <th mat-header-cell *matHeaderCellDef> Action </th>
+                  <td mat-cell *matCellDef="let element"> 
+                    <button class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i></button> 
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" style="cursor: pointer;" (click)="navigateToDetails(row)"></tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

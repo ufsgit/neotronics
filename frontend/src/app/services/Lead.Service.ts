@@ -17,6 +17,10 @@ export class Lead_Service {
     return this.http.get(environment.BasePath + 'Lead/Get_Leads/');
   }
 
+  Get_Lead(Lead_Id): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_Lead/' + Lead_Id);
+  }
+
   Get_Dropdowns_Lead(): Observable<any> {
     return this.http.get(environment.BasePath + 'Lead/Get_Dropdowns_Lead/');
   }

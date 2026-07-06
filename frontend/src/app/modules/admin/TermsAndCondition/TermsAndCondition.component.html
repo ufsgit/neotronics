@@ -88,13 +88,20 @@
             <td class="ig-td ig-td-no">{{ (Page_Index - 1) * Page_Size + i + 1 }}</td>
             <td class="ig-td ig-td-name">{{ term.Caption }}</td>
             <td class="ig-td ig-td-desc" [title]="term.Description">{{ term.Description }}</td>
-            <td class="ig-td ig-td-actions">
+            <td class="ig-td ig-td-actions" style="display: flex; gap: 8px;">
               <button
                 class="ig-icon-btn ig-edit"
                 [hidden]="Term_Edit == false"
                 (click)="Edit_Term(term, i)"
                 title="Edit"
               ><i class="material-icons">edit</i></button>
+              <button
+                class="ig-icon-btn ig-delete"
+                [hidden]="Term_Delete == false"
+                (click)="Delete_Term(term.Term_Id, i)"
+                title="Delete"
+                style="color: #ef4444;"
+              ><i class="material-icons">delete</i></button>
             </td>
           </tr>
           <tr *ngIf="Terms_Data?.length === 0">

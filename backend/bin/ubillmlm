@@ -34,6 +34,38 @@ server.listen(3502, "0.0.0.0");
 server.on("error", onError);
 server.on("listening", onListening);
 
+const allowedSocketOrigins = ['http://localhost:4202', 'https://neotronics.trackbox.live'];
+var io = require("socket.io")(server, {
+  origins: (origin, callback) => {
+    if (!origin || allowedSocketOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback('origin not allowed', false);
+  }
+});
+var userSockets = new Map();
+
+io.on('connection', (socket) => {
+  socket.on('register', (userId) => {
+    if (userId) {
+      userSockets.set(Number(userId), socket.id);
+      console.log(`Socket connected & registered for User ID: ${userId} (Socket: ${socket.id})`);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    for (let [uid, sid] of userSockets.entries()) {
+      if (sid === socket.id) {
+        userSockets.delete(uid);
+        break;
+      }
+    }
+  });
+});
+
+app.set('io', io);
+app.set('userSockets', userSockets);
+
 /**
  * Normalize a port into a number, string, or false.
  */
