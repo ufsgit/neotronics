@@ -33,7 +33,14 @@
         <div class="ig-grid ig-grid-4">
           <div class="ig-field">
             <label class="ig-label">Company Name <span class="ig-req">*</span></label>
-            <input type="text" class="ig-input" placeholder="e.g. Acme Corp" name="Lead_Name" [(ngModel)]="Lead_.Lead_Name">
+            <input type="text" class="ig-input" placeholder="e.g. Acme Corp" name="Lead_Name" 
+                   [(ngModel)]="Lead_.Lead_Name" (ngModelChange)="onCompanyNameChange($event)"
+                   [matAutocomplete]="autoCompany" autocomplete="off">
+            <mat-autocomplete #autoCompany="matAutocomplete">
+              <mat-option *ngFor="let name of Filtered_Company_Names" [value]="name">
+                {{name}}
+              </mat-option>
+            </mat-autocomplete>
           </div>
           <div class="ig-field">
             <label class="ig-label">Operational Size</label>

@@ -558,6 +558,16 @@ var Lead = {
     Update_Latest_FollowUp: function (Lead_Id, Staff_Id, callback) {
         const query = "UPDATE `Follow_up` SET Staff_Id = ?, Staff_Name = (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = ?) WHERE Lead_Id = ? ORDER BY FollowUp_Id DESC LIMIT 1";
         return db.query(query, [Staff_Id, Staff_Id, Lead_Id], callback);
+    },
+    Search_Company_Name: function (query, callback) {
+        if (!query) return callback(null, []);
+        const searchTerm = '%' + query + '%';
+        // We omit DeleteStatus check here because the Lead table might not have it (as seen in Delete_Lead logic)
+        const sql = "SELECT DISTINCT Lead_Name FROM `Lead` WHERE Lead_Name LIKE ? ORDER BY Lead_Name LIMIT 15";
+        return db.query(sql, [searchTerm], (err, rows) => {
+            if (err) return callback(err);
+            callback(null, rows.map(r => r.Lead_Name));
+        });
     }
 };
 

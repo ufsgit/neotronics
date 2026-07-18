@@ -228,4 +228,19 @@ router.get('/Force_Fix_Staff_Names', function (req, res, next) {
     });
 });
 
+router.get('/Search_Company_Name/:query', function (req, res, next) {
+    try {
+        Lead.Search_Company_Name(req.params.query, function (err, rows) {
+            if (err) {
+                res.status(500).json({ success: false, message: "Database error", error: err.message });
+            } else {
+                res.json(rows);
+            }
+        });
+    } catch (e) {
+        console.error("Exception in Search_Company_Name:", e);
+        res.status(500).json({ error: e.message || String(e) });
+    }
+});
+
 module.exports = router;

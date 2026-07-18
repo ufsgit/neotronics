@@ -52,4 +52,8 @@ export class Lead_Service {
   Get_Lead_Quote_Tracking(Lead_Id): Observable<any> {
     return this.http.get(environment.BasePath + 'Lead/Get_Lead_Quote_Tracking/' + Lead_Id);
   }
+
+  Search_Company_Name(query: string): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Search_Company_Name/' + encodeURIComponent(query));
+  }
 }

@@ -130,6 +130,7 @@ export class LeadComponent implements OnInit {
   Selected_Enquiry_For: number[] = [];
   Custom_Field_Data: any[] = [];
   Enquiry_For_Data: any[] = [];
+  Filtered_Company_Names: string[] = [];
 
   Reprocess_Drawer_Visible: boolean = false;
   Requirement_Details_Input: string = '';
@@ -203,6 +204,19 @@ export class LeadComponent implements OnInit {
     this.Get_Dropdowns_Lead();
     this.Get_Company_Sizes();
     this.Get_Custom_Fields();
+  }
+
+  onCompanyNameChange(value: string) {
+    if (!value || value.length < 2) {
+      this.Filtered_Company_Names = [];
+      return;
+    }
+    this.Lead_Service_.Search_Company_Name(value).subscribe(names => {
+      this.Filtered_Company_Names = names || [];
+    }, err => {
+      console.error('Error fetching company names:', err);
+      this.Filtered_Company_Names = [];
+    });
   }
 
   Get_Custom_Fields() {
