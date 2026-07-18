@@ -9,6 +9,7 @@ import { Client_AccountsComponent } from "./Client_Accounts/Client_Accounts.comp
 import { Contra_EntryComponent } from "./Contra_Entry/Contra_Entry.component";
 import { Employee_DetailsComponent } from "./Employee_Details/Employee_Details.component";
 import { General_SettingsComponent } from "./General_Settings/General_Settings.component";
+import { Custom_FieldComponent } from "./Custom_Field/Custom_Field.component";
 import { HSNComponent } from "./HSN/HSN.component";
 import { ItemComponent } from "./Item/Item.component";
 import { Item_GroupComponent } from "./Item_Group/Item_Group.component";
@@ -100,6 +101,7 @@ export const AdminRoutes: Routes = [
 
 			{ path: "Employee_Details", component: Employee_DetailsComponent },
 			{ path: "General_Settings", component: General_SettingsComponent },
+			{ path: "Custom_Field", component: Custom_FieldComponent },
 			{ path: "HSN", component: HSNComponent },
 			{ path: "Item", component: ItemComponent },
 			{ path: "Item_Group", component: Item_GroupComponent },

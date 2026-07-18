@@ -151,22 +151,88 @@
         </div>
       </div>
 
+      <!-- ── Dynamic Custom Fields ── -->
+      <div class="ig-section-card" *ngIf="Custom_Field_Data && Custom_Field_Data.length > 0">
+        <p class="ig-section-title"><i class="material-icons">extension</i> Custom Details</p>
+        <div class="ig-grid ig-grid-2">
+          <div class="ig-field" *ngFor="let field of Custom_Field_Data">
+            <label class="ig-label">{{field.Field_Name}}</label>
+            
+            <ng-container [ngSwitch]="field.Field_Type">
+                <!-- Text -->
+                <input *ngSwitchCase="'Text'" type="text" class="ig-input" 
+                       [name]="'custom_'+field.Custom_Field_Id" 
+                       [(ngModel)]="Dynamic_Field_Values[field.Custom_Field_Id]" 
+                       placeholder="Enter {{field.Field_Name}}">
+                
+                <!-- Number -->
+                <input *ngSwitchCase="'Number'" type="number" class="ig-input" 
+                       [name]="'custom_'+field.Custom_Field_Id" 
+                       [(ngModel)]="Dynamic_Field_Values[field.Custom_Field_Id]" 
+                       placeholder="0">
+                
+                <!-- Date -->
+                <input *ngSwitchCase="'Date'" type="date" class="ig-input" 
+                       [name]="'custom_'+field.Custom_Field_Id" 
+                       [(ngModel)]="Dynamic_Field_Values[field.Custom_Field_Id]">
+                
+                <!-- Dropdown -->
+                <select *ngSwitchCase="'Dropdown'" class="ig-select" 
+                        [name]="'custom_'+field.Custom_Field_Id" 
+                        [(ngModel)]="Dynamic_Field_Values[field.Custom_Field_Id]">
+                    <option value="">Select {{field.Field_Name}}</option>
+                    <option *ngFor="let opt of ParseFieldList(field.Field_List)" [value]="opt">{{opt}}</option>
+                </select>
+                
+                <!-- Radio -->
+                <div *ngSwitchCase="'Radio'" style="display: flex; gap: 15px; margin-top: 8px;">
+                    <label *ngFor="let opt of ParseFieldList(field.Field_List)" style="display: flex; align-items: center; gap: 5px;">
+                        <input type="radio" [name]="'custom_'+field.Custom_Field_Id" 
+                               [(ngModel)]="Dynamic_Field_Values[field.Custom_Field_Id]" [value]="opt">
+                        {{opt}}
+                    </label>
+                </div>
+
+                <!-- Checkbox -->
+                <div *ngSwitchCase="'Checkbox'" style="margin-top: 5px;">
+                    <ng-container *ngIf="ParseFieldList(field.Field_List).length > 0; else singleCheckbox">
+                        <div style="display: flex; gap: 15px; margin-top: 8px;">
+                            <mat-checkbox *ngFor="let opt of ParseFieldList(field.Field_List)" 
+                                          color="primary"
+                                          [checked]="isCheckboxChecked(field.Custom_Field_Id, opt)"
+                                          (change)="toggleCheckbox(field.Custom_Field_Id, opt, $event.checked)">
+                                {{opt}}
+                            </mat-checkbox>
+                        </div>
+                    </ng-container>
+                    <ng-template #singleCheckbox>
+                        <mat-checkbox color="primary" 
+                                      [name]="'custom_'+field.Custom_Field_Id" 
+                                      [(ngModel)]="Dynamic_Field_Values[field.Custom_Field_Id]">
+                            {{field.Field_Name}}
+                        </mat-checkbox>
+                    </ng-template>
+                </div>
+
+                <!-- File Upload -->
+                <div *ngSwitchCase="'File Upload'" style="margin-top: 5px;">
+                    <input type="file" (change)="onDynamicFileUpload($event, field.Custom_Field_Id)" />
+                    <div *ngIf="Dynamic_Field_Values[field.Custom_Field_Id]" style="margin-top: 5px; font-size: 12px;">
+                        <a [href]="Dynamic_Field_Values[field.Custom_Field_Id]" target="_blank" style="color: #007bff; text-decoration: underline;">
+                            <i class="material-icons" style="font-size: 14px; vertical-align: middle;">open_in_new</i> View Uploaded File
+                        </a>
+                    </div>
+                </div>
+                
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
       <!-- ── Requirement Profile ── -->
       <div class="ig-section-card">
         <p class="ig-section-title"><i class="material-icons">fact_check</i> Requirement Profile</p>
         <div class="ig-grid ig-grid-2">
-          <div class="ig-field">
-            <label class="ig-label">Service / Product Interests</label>
-            <mat-form-field floatLabel="never" class="ig-mat-field">
-              <mat-select placeholder="Choose requirements" name="Enquiry_For" [(ngModel)]="Selected_Enquiry_For" multiple (ngModelChange)="onEnquiryForChange()">
-                <mat-select-trigger>
-                  <span *ngIf="Selected_Enquiry_For.length === 0" class="ig-placeholder">Click to select</span>
-                  <span class="ig-chip" *ngFor="let eId of Selected_Enquiry_For">{{getVerticalName(eId)}}</span>
-                </mat-select-trigger>
-                <mat-option *ngFor="let opt of Vertical_Data" [value]="opt.Vertical_Id">{{opt.Vertical_Name}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
           <div class="ig-field">
             <label class="ig-label">Acquisition Source</label>
             <select class="ig-select" name="Enquiry_Source" [(ngModel)]="Lead_.Source">
@@ -357,8 +423,17 @@
                 <div class="ig-td-muted" title="{{lead.Address}}">{{lead.Address | slice:0:30}}{{lead.Address?.length > 30 ? '...' : ''}}</div>
               </td>
               <td class="ig-td" *ngIf="Is_Column_Visible('Contact')">{{lead.Contact_Number || lead.Phone}}</td>
-              <td class="ig-td ig-hover-cell" *ngIf="Is_Column_Visible('Enquiry_for')" [attr.data-full]="lead.Vertical_Name">
-                <span class="ig-hover-text">{{lead.Vertical_Name}}</span>
+              <td class="ig-td" *ngIf="Is_Column_Visible('Enquiry_for')">
+                <!-- Only show if this lead has custom field values saved -->
+                <span
+                  *ngIf="lead.CF_Count > 0"
+                  class="ig-cf-badge"
+                  (click)="Open_Custom_Fields_Popup(lead)"
+                  title="{{lead.CF_Summary}}">
+                  <i class="material-icons" style="font-size:13px;vertical-align:middle;">extension</i>
+                  View Fields
+                </span>
+                <span *ngIf="!lead.CF_Count || lead.CF_Count == 0" class="ig-td-muted">—</span>
               </td>
               <td class="ig-td" *ngIf="Is_Column_Visible('Status')">
                 <span class="ig-status-pill text-test">{{lead.Status_Name || 'test'}}</span>
@@ -402,4 +477,73 @@
     </div>
 
   </div>
+
+  <!-- ══════════════════════════════════════════
+       CUSTOM FIELDS POPUP OVERLAY
+  ══════════════════════════════════════════ -->
+  <div class="ig-cf-overlay" *ngIf="CF_Popup_Open" (click)="CF_Popup_Open = false">
+    <div class="ig-cf-popup" (click)="$event.stopPropagation()">
+      <div class="ig-cf-popup-header">
+        <div>
+          <p class="ig-cf-popup-lead">{{ CF_Popup_Lead?.Lead_Name }}</p>
+          <p class="ig-cf-popup-sub">Custom Field Details</p>
+        </div>
+        <button class="ig-cf-close" (click)="CF_Popup_Open = false">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+
+      <div class="ig-cf-popup-body">
+        <div *ngIf="CF_Popup_Loading" style="text-align:center; padding: 30px;">
+          <mat-spinner diameter="36"></mat-spinner>
+        </div>
+
+        <div *ngIf="!CF_Popup_Loading && Custom_Field_Data && Custom_Field_Data.length > 0">
+          <div class="ig-cf-row" *ngFor="let field of Custom_Field_Data">
+            <div class="ig-cf-label">
+              <i class="material-icons ig-cf-icon">{{getCFIcon(field.Field_Type)}}</i>
+              {{ field.Field_Name }}
+              <span class="ig-cf-type-badge">{{ field.Field_Type }}</span>
+            </div>
+            <div class="ig-cf-value">
+              <ng-container [ngSwitch]="field.Field_Type">
+                <!-- File Upload: show link -->
+                <a *ngSwitchCase="'File Upload'" 
+                   [href]="CF_Popup_Values[field.Custom_Field_Id] || '#'" 
+                   target="_blank" 
+                   class="ig-cf-file-link"
+                   [class.ig-cf-empty]="!CF_Popup_Values[field.Custom_Field_Id]">
+                  <i class="material-icons" style="font-size:14px;vertical-align:middle;">open_in_new</i>
+                  {{ CF_Popup_Values[field.Custom_Field_Id] ? 'View File' : 'No file uploaded' }}
+                </a>
+                <!-- Checkbox: show tick/cross for single, or comma-separated string for multi-select -->
+                <ng-container *ngSwitchCase="'Checkbox'">
+                  <ng-container *ngIf="ParseFieldList(field.Field_List).length > 0; else singleCheckboxVal">
+                    <span class="ig-cf-val-text" [class.ig-cf-empty]="!CF_Popup_Values[field.Custom_Field_Id]">
+                      {{ CF_Popup_Values[field.Custom_Field_Id] || '—' }}
+                    </span>
+                  </ng-container>
+                  <ng-template #singleCheckboxVal>
+                    <span class="ig-cf-bool" [class.ig-cf-bool-yes]="CF_Popup_Values[field.Custom_Field_Id] && CF_Popup_Values[field.Custom_Field_Id] !== 'false'">
+                      <i class="material-icons">{{ (CF_Popup_Values[field.Custom_Field_Id] && CF_Popup_Values[field.Custom_Field_Id] !== 'false') ? 'check_circle' : 'cancel' }}</i>
+                      {{ (CF_Popup_Values[field.Custom_Field_Id] && CF_Popup_Values[field.Custom_Field_Id] !== 'false') ? 'Yes' : 'No' }}
+                    </span>
+                  </ng-template>
+                </ng-container>
+                <!-- Default -->
+                <span *ngSwitchDefault class="ig-cf-val-text" [class.ig-cf-empty]="!CF_Popup_Values[field.Custom_Field_Id]">
+                  {{ CF_Popup_Values[field.Custom_Field_Id] || '—' }}
+                </span>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!CF_Popup_Loading && (!Custom_Field_Data || Custom_Field_Data.length === 0)" style="text-align:center; color:#999; padding:30px;">
+          No custom fields configured.
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

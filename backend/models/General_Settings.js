@@ -42,6 +42,11 @@ return db.query("CALL Get_General_Settings(@General_Settings_Id_ :=?)",[General_
 General_Settings_Name_='';
 return db.query("CALL Search_General_Settings(@General_Settings_Name_ :=?)",[General_Settings_Name_],callback);
  }
+ ,
+ Get_General_Settings1:function(callback)
+ { 
+return db.query("CALL Search_General_Settings(@General_Settings_Name_ :=?)",[''],callback);
+ }
   };
   module.exports=General_Settings;
 

@@ -81,7 +81,7 @@ Search_General_Settings()
 {
 this.issLoading=true;
 this.General_Settings_Service_.Search_General_Settings('').subscribe(Rows => {
- this.General_Settings_Data=Rows[0];
+ this.General_Settings_Data = (Rows && Rows[0]) ? Rows[0] : [];
 this.issLoading=false;
 this.Total_Entries=this.General_Settings_Data.length;
 if(this.General_Settings_Data.length==0)
@@ -160,10 +160,9 @@ Get_General_Settings1()
 debugger
 this.issLoading=true;
 this.General_Settings_Service_.Get_General_Settings1().subscribe(Rows => {
-    debugger
- this.General_Settings_Data=Rows[0];
- var General_Settings_e = this.General_Settings_Data[0]
- this.General_Settings_=Object.assign({},General_Settings_e)
+ this.General_Settings_Data = (Rows && Rows[0]) ? Rows[0] : [];
+ var General_Settings_e = this.General_Settings_Data.length > 0 ? this.General_Settings_Data[0] : null;
+ if (General_Settings_e) { this.General_Settings_ = Object.assign({}, General_Settings_e); }
 this.issLoading=false;
 this.Total_Entries=this.General_Settings_Data.length;
 if(this.General_Settings_Data.length==0)

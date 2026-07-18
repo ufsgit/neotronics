@@ -33,7 +33,8 @@ import { Client_AccountsComponent } from "./Client_Accounts/Client_Accounts.comp
 import { Contra_EntryComponent } from "./Contra_Entry/Contra_Entry.component";
 import { Damage_MasterComponent } from "./Damage_Master/Damage_Master.component";
 import { Employee_DetailsComponent } from "./Employee_Details/Employee_Details.component";
-import { General_SettingsComponent } from "./General_Settings/General_Settings.component";
+import { General_SettingsComponent } from './General_Settings/General_Settings.component';
+import { Custom_FieldComponent } from './Custom_Field/Custom_Field.component';
 import { HSNComponent } from "./HSN/HSN.component";
 import { ItemComponent } from "./Item/Item.component";
 import { Item_GroupComponent } from "./Item_Group/Item_Group.component";
@@ -164,6 +165,7 @@ import { OperationsDashboardComponent } from './operations-dashboard/operations-
 		Employee_DetailsComponent,
 		CustomerComponent,
 		General_SettingsComponent,
+		Custom_FieldComponent,
 		HSNComponent,
 		ItemComponent,
 		Item_GroupComponent,

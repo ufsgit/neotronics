@@ -93,5 +93,28 @@ General_Settings.Delete_General_Settings(req.params.General_Settings_Id_, functi
  {
  }
   });
+ router.get('/Get_General_Settings1/',function(req,res,next)
+ { 
+ try 
+ {
+General_Settings.Get_General_Settings1(function (err, rows) 
+ {
+  if (err) 
+  {
+  res.json(err);
+  }
+  else 
+  {
+    res.json(rows);
+  }
+  });
+  }
+ catch (e) 
+ {
+ }
+ finally 
+ {
+ }
+  });
   module.exports = router;
 

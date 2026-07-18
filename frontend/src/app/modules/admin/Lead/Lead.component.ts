@@ -11,6 +11,8 @@ import { User_Details_Service } from '../../../services/User_Details.Service';
 import { Requirement_Master_Service } from '../../../services/Requirement_Master.Service';
 import { Company_Size_Service } from '../../../services/Company_Size.Service';
 import { Vertical_Service } from '../../../services/Vertical.Service';
+import { Custom_Field_Service } from '../../../services/Custom_Field.Service';
+import { Lead_Custom_Value_Service } from '../../../services/Lead_Custom_Value.Service';
 import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationService } from '../../../services/notification.service';
@@ -54,6 +56,12 @@ export class LeadComponent implements OnInit {
   Company_Size_Data: any[] = [];
   readonly Raw_Lead_Stage_Name: string = 'RAW Lead';
   readonly Lost_Stage_Name: string = 'Lost';
+
+  // Custom Fields popup
+  CF_Popup_Open: boolean = false;
+  CF_Popup_Loading: boolean = false;
+  CF_Popup_Lead: any = null;
+  CF_Popup_Values: any = {};
   Lost_Reason_Data: string[] = [
     'Price Too High',
     'Competitor Offered Better Price',
@@ -118,7 +126,9 @@ export class LeadComponent implements OnInit {
   Total_Pages: number = 1;
 
   Selected_Vertical: number = 0;
+  Dynamic_Field_Values: any = {};
   Selected_Enquiry_For: number[] = [];
+  Custom_Field_Data: any[] = [];
   Enquiry_For_Data: any[] = [];
 
   Reprocess_Drawer_Visible: boolean = false;
@@ -130,6 +140,8 @@ export class LeadComponent implements OnInit {
     public Requirement_Master_Service_: Requirement_Master_Service,
     public Company_Size_Service_: Company_Size_Service,
     public Vertical_Service_: Vertical_Service,
+    public Custom_Field_Service_: Custom_Field_Service,
+    public Lead_Custom_Value_Service_: Lead_Custom_Value_Service,
     public dialogBox: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
@@ -147,6 +159,7 @@ export class LeadComponent implements OnInit {
       this.Load_Column_Preferences();
       this.Get_Dropdowns_Lead();
       this.Get_Company_Sizes();
+      this.Get_Custom_Fields();
       this.issLoading = true;
       this.Lead_Service_.Get_Lead(id).subscribe(data => {
         this.issLoading = false;
@@ -189,6 +202,88 @@ export class LeadComponent implements OnInit {
     this.Get_Leads();
     this.Get_Dropdowns_Lead();
     this.Get_Company_Sizes();
+    this.Get_Custom_Fields();
+  }
+
+  Get_Custom_Fields() {
+    this.Custom_Field_Service_.Search_Custom_Field('Enquiry_For').subscribe(Rows => {
+      this.Custom_Field_Data = (Rows && Rows[0]) ? Rows[0] : [];
+    });
+  }
+
+  getCustomFieldName(id: number): string {
+    if (!this.Custom_Field_Data || !this.Custom_Field_Data.length) return '';
+    const field = this.Custom_Field_Data.find(f => f.Custom_Field_Id == id);
+    return field ? field.Field_Name : '';
+  }
+
+  getCustomFieldNamesString(idsString: string): string {
+    if (!idsString) return '';
+    const ids = idsString.toString().split(',');
+    const names = ids.map(id => this.getCustomFieldName(Number(id))).filter(n => n);
+    return names.join(', ');
+  }
+
+  getCFIcon(type: string): string {
+    const map = { 'Text': 'text_fields', 'Number': 'pin', 'Date': 'event', 'Dropdown': 'arrow_drop_down_circle', 'Checkbox': 'check_box', 'Radio': 'radio_button_checked', 'File Upload': 'attach_file' };
+    return map[type] || 'extension';
+  }
+
+  Open_Custom_Fields_Popup(lead: any) {
+    this.CF_Popup_Lead = lead;
+    this.CF_Popup_Values = {};
+    this.CF_Popup_Open = true;
+    this.CF_Popup_Loading = true;
+    this.Lead_Custom_Value_Service_.Get_Lead_Custom_Values(lead.Lead_Id).subscribe({
+      next: (Rows) => {
+        const values = (Rows && Rows[0]) ? Rows[0] : [];
+        values.forEach(val => { this.CF_Popup_Values[val.Custom_Field_Id] = val.Field_Value; });
+        this.CF_Popup_Loading = false;
+      },
+      error: () => { this.CF_Popup_Loading = false; }
+    });
+  }
+
+  ParseFieldList(fieldList: string): string[] {
+      if (!fieldList || String(fieldList).trim() === '') return [];
+      return String(fieldList).split(',').map(s => s.trim()).filter(s => s);
+  }
+
+  isCheckboxChecked(fieldId: number, option: string): boolean {
+    const val = this.Dynamic_Field_Values[fieldId];
+    if (!val) return false;
+    const parts = String(val).split(',').map(s => s.trim());
+    return parts.includes(option);
+  }
+
+  toggleCheckbox(fieldId: number, option: string, checked: boolean) {
+    const val = this.Dynamic_Field_Values[fieldId] || '';
+    let parts = val ? String(val).split(',').map(s => s.trim()).filter(s => s) : [];
+    if (checked) {
+      if (!parts.includes(option)) parts.push(option);
+    } else {
+      parts = parts.filter(p => p !== option);
+    }
+    this.Dynamic_Field_Values[fieldId] = parts.join(', ');
+  }
+
+  onDynamicFileUpload(event: Event, customFieldId: number) {
+      const file = (event.target as HTMLInputElement).files[0];
+      if (file) {
+          if (file.size > 5 * 1024 * 1024) {
+              this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'File size exceeds 5 MB. Please select a smaller file.', Type: "3" } });
+              return;
+          }
+          this.issLoading = true;
+          this.Lead_Custom_Value_Service_.uploadFile(file).then(res => {
+              this.Dynamic_Field_Values[customFieldId] = res['Location'] || '';
+              this.issLoading = false;
+              this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'File Uploaded Successfully', Type: "false" } });
+          }).catch(err => {
+              this.issLoading = false;
+              this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'File upload failed.', Type: "3" } });
+          });
+      }
   }
 
   Get_Company_Sizes() {
@@ -652,9 +747,14 @@ export class LeadComponent implements OnInit {
             this.snackBar.open('Staff assigned and notified successfully.', 'Close', { duration: 3000 });
             this.notificationService.refresh();
           }
-          this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
-          this.Close_Click();
-          this.Get_Leads();
+          let leadId = res.data.Key_Id || this.Lead_.Lead_Id;
+          if (leadId && leadId > 0) {
+              this.Save_Dynamic_Fields(leadId);
+          } else {
+              this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
+              this.Close_Click();
+              this.Get_Leads();
+          }
         } else {
           this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: (res && res.message) || 'Error Occurred during Save', Type: "2" } });
         }
@@ -707,7 +807,45 @@ export class LeadComponent implements OnInit {
     this.Get_Lead_Activity_Log(this.Lead_.Lead_Id);
     this.Get_Lead_Meetings(this.Lead_.Lead_Id);
     this.Get_Lead_Quote_Tracking(this.Lead_.Lead_Id);
+    this.Get_Lead_Dynamic_Fields(this.Lead_.Lead_Id);
     this.Entry_View = true;
+  }
+
+  Get_Lead_Dynamic_Fields(Lead_Id: number) {
+    this.Lead_Custom_Value_Service_.Get_Lead_Custom_Values(Lead_Id).subscribe(Rows => {
+        const values = (Rows && Rows[0]) ? Rows[0] : [];
+        this.Dynamic_Field_Values = {};
+        values.forEach(val => {
+            this.Dynamic_Field_Values[val.Custom_Field_Id] = val.Field_Value;
+        });
+    });
+  }
+
+  Save_Dynamic_Fields(Lead_Id: number) {
+      const finish = () => {
+          this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
+          this.Close_Click();
+          this.Get_Leads();
+      };
+
+      const keys = Object.keys(this.Dynamic_Field_Values);
+      if (keys.length === 0) {
+          finish();
+          return;
+      }
+      
+      let pending = keys.length;
+      keys.forEach(key => {
+          const valueObj = {
+              Lead_Id: Lead_Id,
+              Custom_Field_Id: Number(key),
+              Field_Value: this.Dynamic_Field_Values[key]
+          };
+          this.Lead_Custom_Value_Service_.Save_Lead_Custom_Value(valueObj).subscribe({
+              next: () => { if (--pending === 0) finish(); },
+              error: () => { if (--pending === 0) finish(); }
+          });
+      });
   }
 
   Get_Lead_FollowUp_History(Lead_Id) {

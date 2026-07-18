@@ -1,0 +1,103 @@
+<div *ngIf="issLoading" class="ig-overlay">
+  <mat-progress-spinner [color]="color" [mode]="mode" [value]="value" diameter="36"></mat-progress-spinner>
+</div>
+
+<div class="ig-page">
+  <!-- ENTRY VIEW -->
+  <div *ngIf="Entry_View" class="ig-entry-view" style="max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <div class="ig-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eaeaea; padding-bottom: 15px; margin-bottom: 20px;">
+      <div>
+        <h1 class="ig-title" style="margin:0; font-size: 20px; font-weight: 500;">{{ Custom_Field_.Custom_Field_Id > 0 ? 'Update Custom Field' : 'Add Custom Field' }}</h1>
+      </div>
+      <div class="ig-header-actions">
+        <button mat-icon-button (click)="Close_Click()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <form style="display: flex; flex-direction: column; gap: 20px;">
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Field Name <span style="color:red;">*</span></mat-label>
+        <input matInput name="Field_Name" [(ngModel)]="Custom_Field_.Field_Name" placeholder="e.g. GST Number">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Field type <span style="color:red;">*</span></mat-label>
+        <mat-select name="Field_Type" [(ngModel)]="Custom_Field_.Field_Type">
+          <mat-option *ngFor="let type of Field_Types" [value]="type.Field_Type_Name">{{type.Field_Type_Name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+
+      <div *ngIf="['Dropdown', 'Checkbox', 'Radio'].includes(Custom_Field_.Field_Type)" style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
+        <p style="margin-top:0; color:#555; font-weight:500;">Field List <span style="color:red;">*</span></p>
+        
+        <div style="display:flex; flex-direction: column; gap: 10px;">
+            <div *ngFor="let item of Field_List_Array; let i = index; trackBy: trackByFn" style="display: flex; gap:10px; align-items:center;">
+                <input type="text" style="flex:1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" [name]="'field_list_'+i" [(ngModel)]="Field_List_Array[i]" placeholder="Option {{i+1}}">
+                <button mat-icon-button color="warn" (click)="removeFieldListItem(i)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <button mat-stroked-button color="primary" style="margin-top:15px;" (click)="addFieldListItem()">
+            <mat-icon>add</mat-icon> Add
+        </button>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap: 10px; margin-top:20px;">
+          <button mat-stroked-button (click)="Close_Click()">Cancel</button>
+          <button mat-flat-button color="primary" (click)="Save_Custom_Field()">Save</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- SEARCH VIEW -->
+  <div *ngIf="!Entry_View" class="ig-search-view">
+    <div class="ig-header">
+      <div>
+        <h1 class="ig-title">Custom Fields</h1>
+      </div>
+      <div class="ig-header-actions">
+        <button mat-button type="button" class="ig-btn-new" (click)="Create_New()">
+          <i class="material-icons">add</i> Add New
+        </button>
+      </div>
+    </div>
+
+    <div class="ig-table-container">
+      <table class="table table-hover">
+        <thead class="text-primary">
+          <tr>
+            <th>Sl No</th>
+            <th>Field Name</th>
+            <th>Field Type</th>
+            <th>Options</th>
+            <th [hidden]="Custom_Field_Edit == false">Edit</th>
+            <th [hidden]="Custom_Field_Delete == false">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let Custom_Field1 of Custom_Field_Data; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ Custom_Field1.Field_Name }}</td>
+            <td>{{ Custom_Field1.Field_Type }}</td>
+            <td>{{ Custom_Field1.Field_List }}</td>
+            <td [hidden]="Custom_Field_Edit == false">
+              <button mat-icon-button class="ig-icon-btn ig-edit" (click)="Edit_Custom_Field(Custom_Field1)">
+                <i class="material-icons">edit</i>
+              </button>
+            </td>
+            <td [hidden]="Custom_Field_Delete == false">
+              <button mat-icon-button class="ig-icon-btn ig-delete" (click)="Delete_Custom_Field(Custom_Field1.Custom_Field_Id, i)">
+                <i class="material-icons">delete</i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,7 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+
 import { RouterModule } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
@@ -31,7 +31,7 @@ import { MatSelectModule } from '@angular/material/select';
     FormsModule, MatExpansionModule, MatInputModule, CommonModule, MatDialogModule, MatSelectModule,
     
     ReactiveFormsModule,
-    HttpModule,
+
     ComponentsModule,
     RouterModule,
     AppRoutingModule,   

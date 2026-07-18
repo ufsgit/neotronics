@@ -14,7 +14,7 @@ export class Lead_Service {
   }
 
   Get_Leads(): Observable<any> {
-    return this.http.get(environment.BasePath + 'Lead/Get_Leads/');
+    return this.http.get(environment.BasePath + 'Lead/Get_Leads/', { params: { _t: Date.now().toString() } });
   }
 
   Get_Lead(Lead_Id): Observable<any> {

@@ -221,36 +221,40 @@ function enrichLeadsWithLatestFollowUp(rows, callback) {
 
 var Lead = {
     Save_Lead: function (Lead_, callback) {
+        // Helper: convert empty strings/undefined to null; keep 0 as 0 for integer columns
+        const intOrNull  = v => (v === '' || v === null || v === undefined) ? null : (isNaN(Number(v)) ? null : Number(v));
+        const strOrNull  = v => (v === '' || v === null || v === undefined) ? null : v;
+
         const params28 = [
-            Lead_.Lead_Id,
-            Lead_.Lead_Name,
-            Lead_.Phone,
-            Lead_.Source,
-            Lead_.Contact_Person,
-            Lead_.Contact_Number,
-            Lead_.Vertical,
-            Lead_.Enquiry_For,
-            Lead_.Designation,
-            Lead_.Email,
-            Lead_.Website,
-            Lead_.Address,
-            Lead_.Review,
-            Lead_.Rate,
-            Lead_.State,
-            Lead_.District,
-            Lead_.Department_Id,
-            Lead_.Status_Id,
-            Lead_.Staff_Id,
-            Lead_.Remark,
-            Lead_.Is_FollowUp,
-            Lead_.FollowUp_Department_Id,
-            Lead_.FollowUp_Status_Id,
-            Lead_.FollowUp_Staff_Id,
-            Lead_.FollowUp_Remark,
-            Lead_.FollowUp_Date,
-            Lead_.Login_User_Id,
-            Lead_.Next_FollowUp_Date
-        ].map(p => p === undefined ? null : p);
+            intOrNull(Lead_.Lead_Id),
+            strOrNull(Lead_.Lead_Name),
+            strOrNull(Lead_.Phone),
+            intOrNull(Lead_.Source),
+            strOrNull(Lead_.Contact_Person),
+            strOrNull(Lead_.Contact_Number),
+            intOrNull(Lead_.Vertical),
+            strOrNull(Lead_.Enquiry_For),
+            intOrNull(Lead_.Designation),
+            strOrNull(Lead_.Email),
+            strOrNull(Lead_.Website),
+            strOrNull(Lead_.Address),
+            strOrNull(Lead_.Review),
+            strOrNull(Lead_.Rate),
+            intOrNull(Lead_.State),
+            intOrNull(Lead_.District),
+            intOrNull(Lead_.Department_Id),
+            intOrNull(Lead_.Status_Id),
+            intOrNull(Lead_.Staff_Id),
+            strOrNull(Lead_.Remark),
+            Lead_.Is_FollowUp ? 1 : 0,
+            intOrNull(Lead_.FollowUp_Department_Id),
+            intOrNull(Lead_.FollowUp_Status_Id),
+            intOrNull(Lead_.FollowUp_Staff_Id),
+            strOrNull(Lead_.FollowUp_Remark),
+            strOrNull(Lead_.FollowUp_Date),
+            intOrNull(Lead_.Login_User_Id),
+            strOrNull(Lead_.Next_FollowUp_Date)
+        ];
 
         const isNewLead = !Lead_.Lead_Id || Number(Lead_.Lead_Id) === 0;
         getLeadSnapshot(Number(Lead_.Lead_Id || 0), (snapshotErr, oldLead) => {
@@ -367,13 +371,13 @@ var Lead = {
         });
     },
     Get_Leads: function (callback) {
-        return db.query("CALL Get_Leads(?, ?)", [1, 1000000], (err, rows) => {
+        return db.query("CALL Get_Leads()", [], (err, rows) => {
             if (err) return callback(err, rows);
             enrichLeadsWithLatestFollowUp(rows, callback);
         });
     },
     Get_Lead: function (Lead_Id, callback) {
-        return db.query("CALL Get_Leads(?, ?)", [1, 1000000], (err, rows) => {
+        return db.query("CALL Get_Leads()", [], (err, rows) => {
             if (err) return callback(err, null);
             
             let allLeads = [];
