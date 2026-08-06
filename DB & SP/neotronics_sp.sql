@@ -3261,46 +3261,6 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Filter_Dropdown`(
-    IN p_Type VARCHAR(50),
-    IN p_Search VARCHAR(100),
-    IN p_Page INT
-)
-BEGIN
-    DECLARE v_Offset INT;
-    
-    -- Calculate Offset: If page is 1, offset is 0. If page is 2, offset is 20.
-    SET v_Offset = (p_Page - 1) * 20;
-    
-    IF p_Type = 'vertical' THEN
-        SELECT Vertical_Id AS id, Vertical_Name AS name 
-        FROM vertical 
-        WHERE DeleteStatus = 0 
-          AND Vertical_Name LIKE CONCAT(p_Search, '%') 
-        ORDER BY Vertical_Name ASC
-        LIMIT 20 OFFSET v_Offset;
-        
-    ELSEIF p_Type = 'designation' THEN
-        SELECT Designation_Id AS id, Designation_Name AS name 
-        FROM designation 
-        WHERE DeleteStatus = 0 
-          AND Designation_Name LIKE CONCAT(p_Search, '%') 
-        ORDER BY Designation_Name ASC
-        LIMIT 20 OFFSET v_Offset;
-        
-    ELSEIF p_Type = 'district' THEN
-        SELECT District_Id AS id, District_Name AS name 
-        FROM district 
-        WHERE District_Name LIKE CONCAT(p_Search, '%') 
-        ORDER BY District_Name ASC
-        LIMIT 20 OFFSET v_Offset;
-        
-    END IF;
-
-END$$
-DELIMITER ;
-
-DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_FollowUp_History`(IN _Lead_Id INT)
 BEGIN
     SELECT 

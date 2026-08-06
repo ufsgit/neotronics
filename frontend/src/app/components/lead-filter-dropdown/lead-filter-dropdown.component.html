@@ -1,6 +1,6 @@
 <div class="ig-lead-dropdown-container">
   <div class="ig-lead-dropdown-trigger" (click)="toggleDropdown($event)">
-    <span class="selected-value">{{ selectedOptionName || placeholder }}</span>
+    <span class="selected-value">{{ selectedOption || placeholder }}</span>
     <i class="material-icons">expand_more</i>
   </div>
   
@@ -8,15 +8,12 @@
     <div class="search-container">
       <input #searchInput type="text" placeholder="Search..." [value]="searchTerm" (input)="onSearch($event)" class="search-input">
     </div>
-    <div class="options-container" (scroll)="onScroll($event)">
-      <div class="option-item" *ngFor="let opt of options" (click)="selectOption(opt, $event)">
-        {{ opt.name }}
+    <div class="options-container">
+      <div class="option-item" *ngFor="let opt of filteredOptions" (click)="selectOption(opt, $event)">
+        {{ opt }}
       </div>
-      <div class="option-item loading-text" *ngIf="isLoading">
-        Loading...
-      </div>
-      <div class="option-item no-results" *ngIf="options.length === 0 && !isLoading">
-        No options found
+      <div class="option-item no-results" *ngIf="filteredOptions.length === 0">
+        No results found
       </div>
     </div>
   </div>
