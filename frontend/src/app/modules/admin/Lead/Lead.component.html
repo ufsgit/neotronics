@@ -30,7 +30,7 @@
       <!-- ── Quick Lead Details ── -->
       <div class="ig-section-card" *ngIf="Is_Quick_Lead_Form">
         <p class="ig-section-title"><i class="material-icons">flash_on</i> Quick Lead Details</p>
-        <div class="ig-grid ig-grid-2">
+        <div class="ig-grid ig-grid-3">
           <div class="ig-field">
             <label class="ig-label">Company Name <span class="ig-req">*</span></label>
             <input type="text" class="ig-input" placeholder="e.g. Acme Corp" name="QL_Lead_Name" 
@@ -47,6 +47,33 @@
             <select class="ig-select" name="QL_Vertical2" [(ngModel)]="Selected_Vertical" (ngModelChange)="onVerticalChange()">
               <option value="0">Select Sector</option>
               <option *ngFor="let v of Vertical_Data" [value]="v.Vertical_Id">{{v.Vertical_Name}}</option>
+            </select>
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">HQ Address</label>
+            <input type="text" class="ig-input" placeholder="City or Full Address" name="QL_Address" [(ngModel)]="Lead_.Address">
+          </div>
+        </div>
+        <div class="ig-grid ig-grid-3">
+          <div class="ig-field">
+            <label class="ig-label">Operating State</label>
+            <select class="ig-select" name="QL_State" [(ngModel)]="Lead_.State">
+              <option value="0">Select State</option>
+              <option *ngFor="let s of State_Data" [value]="s.State_Id">{{s.State_Name}}</option>
+            </select>
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Acquisition Source</label>
+            <select class="ig-select" name="QL_Enquiry_Source" [(ngModel)]="Lead_.Source">
+              <option value="0">Select Source</option>
+              <option *ngFor="let source of Source_Data" [value]="source.Source_Id">{{source.Source_Name}}</option>
+            </select>
+          </div>
+          <div class="ig-field">
+            <label class="ig-label">Company Size</label>
+            <select class="ig-select" name="QL_Company_Size_Id" [(ngModel)]="Lead_.Company_Size_Id">
+              <option [value]="0">Select Size</option>
+              <option *ngFor="let cs of Company_Size_Data" [value]="cs.Company_Size_Id">{{cs.Company_Size_Name}}</option>
             </select>
           </div>
         </div>
@@ -398,12 +425,12 @@
       
       <!-- Lead Type Tabs -->
       <div class="ig-filter-chips" style="display: flex; gap: 10px; overflow-x: auto; margin: 0 20px; flex: 1; align-items: center;">
-        <button (click)="Set_Lead_Type('All')" [ngStyle]="{'background-color': Selected_Lead_Type === 'All' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'All' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'All' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">All</button>
-        <button (click)="Set_Lead_Type('Quick Lead')" [ngStyle]="{'background-color': Selected_Lead_Type === 'Quick Lead' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'Quick Lead' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'Quick Lead' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">Quick Lead</button>
-        <button (click)="Set_Lead_Type('Raw lead')" [ngStyle]="{'background-color': Selected_Lead_Type === 'Raw lead' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'Raw lead' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'Raw lead' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">Raw lead</button>
-        <button (click)="Set_Lead_Type('Processed')" [ngStyle]="{'background-color': Selected_Lead_Type === 'Processed' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'Processed' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'Processed' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">Processed</button>
-        <button (click)="Set_Lead_Type('Lead')" [ngStyle]="{'background-color': Selected_Lead_Type === 'Lead' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'Lead' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'Lead' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">Lead</button>
-        <button (click)="Set_Lead_Type('Market study')" [ngStyle]="{'background-color': Selected_Lead_Type === 'Market study' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'Market study' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'Market study' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">Market study</button>
+        <button (click)="Selected_Lead_Type = 'All'" [ngStyle]="{'background-color': Selected_Lead_Type === 'All' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'All' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'All' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">All</button>
+        <button (click)="Selected_Lead_Type = 'Quick Lead'" [ngStyle]="{'background-color': Selected_Lead_Type === 'Quick Lead' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'Quick Lead' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'Quick Lead' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">Quick Lead</button>
+        <button (click)="Selected_Lead_Type = 'Raw lead'" [ngStyle]="{'background-color': Selected_Lead_Type === 'Raw lead' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'Raw lead' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'Raw lead' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">Raw lead</button>
+        <button (click)="Selected_Lead_Type = 'Processed'" [ngStyle]="{'background-color': Selected_Lead_Type === 'Processed' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'Processed' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'Processed' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">Processed</button>
+        <button (click)="Selected_Lead_Type = 'Lead'" [ngStyle]="{'background-color': Selected_Lead_Type === 'Lead' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'Lead' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'Lead' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">Lead</button>
+        <button (click)="Selected_Lead_Type = 'Market study'" [ngStyle]="{'background-color': Selected_Lead_Type === 'Market study' ? '#007bff' : 'transparent', 'border-color': Selected_Lead_Type === 'Market study' ? '#007bff' : '#ccc', 'color': Selected_Lead_Type === 'Market study' ? '#fff' : '#555'}" style="padding: 4px 12px; border-radius: 4px; border: 1px solid; cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap;">Market study</button>
       </div>
       
       <div class="ig-search-container">

@@ -438,23 +438,8 @@ export class LeadComponent implements OnInit {
          }
       }
 
-      let typeMatch = true;
-      if (this.Selected_Lead_Type === 'Quick Lead') {
-        typeMatch = !lead.Contact_Person && !lead.Phone && !lead.Email && !lead.Contact_Number
-                    && (!lead.Address || lead.Address.trim() === '')
-                    && (!lead.State || lead.State == 0)
-                    && (!lead.Source || lead.Source == 0)
-                    && (!lead.Company_Size_Id || lead.Company_Size_Id == 0);
-      } else if (this.Selected_Lead_Type === 'Raw lead') {
-        typeMatch = (lead.Status_Name || '').toLowerCase() === 'raw lead';
-      } else if (this.Selected_Lead_Type !== 'All') {
-        // For other tabs, just match the status name exactly
-        typeMatch = (lead.Status_Name || '').toLowerCase() === this.Selected_Lead_Type.toLowerCase();
-      }
-
       return searchMatch
         && statusMatch
-        && typeMatch
         && assignedMatch
         && followupMatch
         && (!filters.Industry || Number(lead.Vertical) === Number(filters.Industry) || Number(lead.Vertical_Id) === Number(filters.Industry) || (industry && lead.Vertical_Name === industry.Vertical_Name))
@@ -468,11 +453,6 @@ export class LeadComponent implements OnInit {
 
   Clear_Lead_Filters() {
     this.Lead_Filter = { Industry: 0, Stage: 0, Priority: '', Date: '', Assigned_Staff: 0, District: 0, State: 0 };
-    this.Apply_Lead_Filters();
-  }
-
-  Set_Lead_Type(type: string) {
-    this.Selected_Lead_Type = type;
     this.Apply_Lead_Filters();
   }
 
