@@ -243,4 +243,30 @@ router.get('/Search_Company_Name/:query', function (req, res, next) {
     }
 });
 
+
+
+router.get('/Get_Lead_Filter_Dropdown/', function (req, res, next) {
+    try {
+        const type = req.query.type;
+        const search = req.query.search;
+        const page = parseInt(req.query.page) || 1;
+
+        if (!type) {
+            return res.status(400).json({ error: "type is required" });
+        }
+
+        Lead.Get_Lead_Filter_Dropdown(type, search, page, function (err, rows) {
+            if (err) {
+                res.json(err);
+            } else {
+                // The stored procedure will return a result set wrapped in an array
+                // e.g. rows[0] contains the actual data rows
+                res.json(rows[0]);
+            }
+        });
+    } catch (e) {
+        res.json(e);
+    }
+});
+
 module.exports = router;
