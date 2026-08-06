@@ -58,7 +58,6 @@ export class LeadComponent implements OnInit {
   readonly Lost_Stage_Name: string = 'Lost';
 
   Selected_Lead_Type: string = 'All';
-  Is_Quick_Lead_Form: boolean = false;
 
   // Custom Fields popup
   CF_Popup_Open: boolean = false;
@@ -568,8 +567,7 @@ export class LeadComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
-  Create_New(isQuickLead: boolean = false) {
-    this.Is_Quick_Lead_Form = isQuickLead;
+  Create_New() {
     this.Entry_View = true;
     this.Lead_ = new Lead();
     this.Set_Default_Raw_Lead_Stage();
@@ -589,10 +587,6 @@ export class LeadComponent implements OnInit {
     this.Quote_Tracking_Data = [];
     this.Initialize_Contact_Form();
     this.addContact();
-  }
-
-  Create_New_Quick() {
-    this.Create_New(true);
   }
 
   Initialize_Contact_Form() {
