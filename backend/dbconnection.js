@@ -8,6 +8,6 @@ var connection = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "root123",
-  database: "neo" 
+  database: "neotronics" 
 });
 module.exports = connection;
