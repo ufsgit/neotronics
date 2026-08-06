@@ -10,6 +10,7 @@ import { FooterComponent } from './footer/footer.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { DialogBoxComponent } from './dialog-box/dialog-box.component';
+import { LeadFilterDropdownComponent } from './lead-filter-dropdown/lead-filter-dropdown.component';
 
 @NgModule({
   imports: [
@@ -24,13 +25,15 @@ import { DialogBoxComponent } from './dialog-box/dialog-box.component';
     FooterComponent,
     NavbarComponent,
     SidebarComponent,
-    DialogBoxComponent
+    DialogBoxComponent,
+    LeadFilterDropdownComponent
   ],
   exports: [
     FooterComponent,
     NavbarComponent,
     SidebarComponent,
-    DialogBoxComponent
+    DialogBoxComponent,
+    LeadFilterDropdownComponent
   ]
 })
 export class ComponentsModule { }

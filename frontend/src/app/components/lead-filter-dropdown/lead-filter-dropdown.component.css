@@ -1,0 +1,91 @@
+:host {
+  display: block;
+}
+
+.ig-lead-dropdown-container {
+  position: relative;
+  width: 100%;
+  min-width: 140px;
+  font-family: inherit;
+}
+
+.ig-lead-dropdown-trigger {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: transparent;
+  color: #333;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 32px;
+  box-sizing: border-box;
+}
+
+.ig-lead-dropdown-trigger .material-icons {
+  font-size: 16px;
+  color: #666;
+}
+
+.ig-lead-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 4px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 10000;
+  max-height: 250px;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-container {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.search-input {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.options-container {
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+.option-item {
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #333;
+  cursor: pointer;
+}
+
+.option-item:hover {
+  background-color: #f5f5f5;
+}
+
+.no-results {
+  color: #999;
+  text-align: center;
+  cursor: default;
+}
+
+.no-results:hover {
+  background-color: transparent;
+}

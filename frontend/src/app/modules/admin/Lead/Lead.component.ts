@@ -57,6 +57,8 @@ export class LeadComponent implements OnInit {
   readonly Raw_Lead_Stage_Name: string = 'RAW Lead';
   readonly Lost_Stage_Name: string = 'Lost';
 
+  Selected_Lead_Type: string = 'All';
+
   // Custom Fields popup
   CF_Popup_Open: boolean = false;
   CF_Popup_Loading: boolean = false;
