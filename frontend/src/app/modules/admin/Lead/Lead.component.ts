@@ -437,12 +437,23 @@ export class LeadComponent implements OnInit {
          }
       }
 
+      let typeMatch = true;
+      if (this.Selected_Lead_Type && this.Selected_Lead_Type !== 'All') {
+        const typeL = this.Selected_Lead_Type.toLowerCase();
+        const statusStr = (lead.Status_Name || '').toLowerCase();
+        const priorityStr = (lead.Lead_Priority || '').toLowerCase();
+        typeMatch = statusStr.includes(typeL) || priorityStr.includes(typeL);
+      }
+
       return searchMatch
         && statusMatch
         && assignedMatch
         && followupMatch
+        && typeMatch
         && (!filters.Industry || Number(lead.Vertical) === Number(filters.Industry) || Number(lead.Vertical_Id) === Number(filters.Industry) || (industry && lead.Vertical_Name === industry.Vertical_Name))
+        && (!filters.Designation || Number(lead.Designation) === Number(filters.Designation))
         && (!filters.Stage || Number(lead.Status_Id) === Number(filters.Stage))
+        && (!filters.District || Number(lead.District) === Number(filters.District))
         && (!filters.Priority || lead.Lead_Priority === filters.Priority)
         && (!filters.Date || entryDate === filters.Date);
     });
