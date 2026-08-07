@@ -222,8 +222,8 @@ function enrichLeadsWithLatestFollowUp(rows, callback) {
 var Lead = {
     Save_Lead: function (Lead_, callback) {
         // Helper: convert empty strings/undefined to null; keep 0 as 0 for integer columns
-        const intOrNull  = v => (v === '' || v === null || v === undefined) ? null : (isNaN(Number(v)) ? null : Number(v));
-        const strOrNull  = v => (v === '' || v === null || v === undefined) ? null : v;
+        const intOrNull = v => (v === '' || v === null || v === undefined) ? null : (isNaN(Number(v)) ? null : Number(v));
+        const strOrNull = v => (v === '' || v === null || v === undefined) ? null : v;
 
         const params28 = [
             intOrNull(Lead_.Lead_Id),
@@ -261,113 +261,113 @@ var Lead = {
             if (snapshotErr) return callback(snapshotErr);
 
             return db.query("CALL Save_Lead(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            params28, (err, rows) => {
-                if (err) return callback(err, rows);
+                params28, (err, rows) => {
+                    if (err) return callback(err, rows);
 
-                // Extract the Lead_Id returned from the SP (for new records) or use the existing one
-                let savedLeadId = Lead_.Lead_Id;
-                if (!savedLeadId || savedLeadId === 0) {
-                    if (rows && rows[0] && rows[0][0]) {
-                        savedLeadId = rows[0][0].Lead_Id || rows[0][0].Key_Id || 0;
+                    // Extract the Lead_Id returned from the SP (for new records) or use the existing one
+                    let savedLeadId = Lead_.Lead_Id;
+                    if (!savedLeadId || savedLeadId === 0) {
+                        if (rows && rows[0] && rows[0][0]) {
+                            savedLeadId = rows[0][0].Lead_Id || rows[0][0].Key_Id || 0;
+                        }
                     }
-                }
 
-                const logActivities = (done) => {
-                    if (!savedLeadId) return done();
+                    const logActivities = (done) => {
+                        if (!savedLeadId) return done();
 
-                    const activities = [];
-                    const userId = Number(Lead_.Login_User_Id || 0);
-                    if (isNewLead) {
-                        activities.push({
-                            Lead_Id: savedLeadId,
-                            Activity_Type: 'LEAD_CREATED',
-                            Activity_Title: 'Lead created',
-                            New_Value: Lead_.Lead_Name || '',
-                            User_Id: userId
+                        const activities = [];
+                        const userId = Number(Lead_.Login_User_Id || 0);
+                        if (isNewLead) {
+                            activities.push({
+                                Lead_Id: savedLeadId,
+                                Activity_Type: 'LEAD_CREATED',
+                                Activity_Title: 'Lead created',
+                                New_Value: Lead_.Lead_Name || '',
+                                User_Id: userId
+                            });
+                        }
+
+                        if ((Lead_.Remark || '') !== ((oldLead && oldLead.Remark) || '')) {
+                            activities.push({
+                                Lead_Id: savedLeadId,
+                                Activity_Type: 'REMARK',
+                                Activity_Title: 'Remarks updated',
+                                Old_Value: oldLead ? (oldLead.Remark || '') : '',
+                                New_Value: Lead_.Remark || '',
+                                User_Id: userId
+                            });
+                        }
+
+                        if (!isNewLead && oldLead && Number(oldLead.Status_Id || 0) !== Number(Lead_.Status_Id || 0)) {
+                            activities.push({
+                                Lead_Id: savedLeadId,
+                                Activity_Type: 'STATUS_CHANGE',
+                                Activity_Title: 'Lead stage changed',
+                                Old_Value: oldLead.Status_Name || String(oldLead.Status_Id || ''),
+                                New_Value: Lead_.Status_Name || String(Lead_.Status_Id || ''),
+                                User_Id: userId
+                            });
+                        }
+
+                        if (Lead_.Is_FollowUp == 1 || Lead_.Is_FollowUp === true || Lead_.Is_FollowUp === '1') {
+                            activities.push({
+                                Lead_Id: savedLeadId,
+                                Activity_Type: 'FOLLOW_UP',
+                                Activity_Title: 'Follow-up updated',
+                                New_Value: Lead_.FollowUp_Date || Lead_.Next_FollowUp_Date || '',
+                                Remarks: Lead_.FollowUp_Remark || '',
+                                User_Id: userId
+                            });
+                        }
+
+                        let index = 0;
+                        function addNext() {
+                            if (index >= activities.length) return done();
+                            addLeadActivity(activities[index++], (activityErr) => {
+                                if (activityErr) console.error('Error logging lead activity:', activityErr);
+                                addNext();
+                            });
+                        }
+                        addNext();
+                    };
+
+                    const finish = () => logActivities(() => callback(null, rows));
+
+                    if (savedLeadId > 0) {
+                        const extraParams = [
+                            Lead_.Project_Name || null,
+                            Lead_.POC_Name || null,
+                            Lead_.Company_Size_Id || 0,
+                            Lead_.Next_Call_Action ? 1 : 0,
+                            Lead_.Lead_Priority || 'Medium',
+                            Lead_.Contact_Person_Details ? JSON.stringify(Lead_.Contact_Person_Details) : null,
+                            Lead_.Lost_Reason || null,
+                            Lead_.Lost_Primary_Issue || null,
+                            Lead_.Lost_Competitor_Name || null,
+                            Lead_.Lost_Competitor_Price || null,
+                            Lead_.Lost_Was_Price_Issue ? 1 : 0,
+                            Lead_.Lost_Was_Solution_Issue ? 1 : 0,
+                            Lead_.Lost_Quote_Only_Comparison ? 1 : 0,
+                            Lead_.Lost_Reopen_Possibility || null,
+                            Lead_.Lost_Expected_Reconnect_Date || null,
+                            Lead_.Lost_Remarks || null,
+                            savedLeadId
+                        ];
+                        ensureLeadLostColumns((lostColumnErr) => {
+                            if (lostColumnErr) console.error('Error ensuring Lost Lead fields:', lostColumnErr);
+                            db.query(
+                                "UPDATE `Lead` SET Project_Name = ?, POC_Name = ?, Company_Size_Id = ?, Next_Call_Action = ?, Lead_Priority = ?, Contact_Person_Details = ?, Lost_Reason = ?, Lost_Primary_Issue = ?, Lost_Competitor_Name = ?, Lost_Competitor_Price = ?, Lost_Was_Price_Issue = ?, Lost_Was_Solution_Issue = ?, Lost_Quote_Only_Comparison = ?, Lost_Reopen_Possibility = ?, Lost_Expected_Reconnect_Date = ?, Lost_Remarks = ? WHERE Lead_Id = ?",
+                                extraParams,
+                                (err2) => {
+                                    if (err2) console.error('Error saving extra Lead fields:', err2);
+                                    return finish();
+                                }
+                            );
                         });
+                    } else {
+                        return finish();
                     }
-
-                    if ((Lead_.Remark || '') !== ((oldLead && oldLead.Remark) || '')) {
-                        activities.push({
-                            Lead_Id: savedLeadId,
-                            Activity_Type: 'REMARK',
-                            Activity_Title: 'Remarks updated',
-                            Old_Value: oldLead ? (oldLead.Remark || '') : '',
-                            New_Value: Lead_.Remark || '',
-                            User_Id: userId
-                        });
-                    }
-
-                    if (!isNewLead && oldLead && Number(oldLead.Status_Id || 0) !== Number(Lead_.Status_Id || 0)) {
-                        activities.push({
-                            Lead_Id: savedLeadId,
-                            Activity_Type: 'STATUS_CHANGE',
-                            Activity_Title: 'Lead stage changed',
-                            Old_Value: oldLead.Status_Name || String(oldLead.Status_Id || ''),
-                            New_Value: Lead_.Status_Name || String(Lead_.Status_Id || ''),
-                            User_Id: userId
-                        });
-                    }
-
-                    if (Lead_.Is_FollowUp == 1 || Lead_.Is_FollowUp === true || Lead_.Is_FollowUp === '1') {
-                        activities.push({
-                            Lead_Id: savedLeadId,
-                            Activity_Type: 'FOLLOW_UP',
-                            Activity_Title: 'Follow-up updated',
-                            New_Value: Lead_.FollowUp_Date || Lead_.Next_FollowUp_Date || '',
-                            Remarks: Lead_.FollowUp_Remark || '',
-                            User_Id: userId
-                        });
-                    }
-
-                    let index = 0;
-                    function addNext() {
-                        if (index >= activities.length) return done();
-                        addLeadActivity(activities[index++], (activityErr) => {
-                            if (activityErr) console.error('Error logging lead activity:', activityErr);
-                            addNext();
-                        });
-                    }
-                    addNext();
-                };
-
-                const finish = () => logActivities(() => callback(null, rows));
-
-                if (savedLeadId > 0) {
-                    const extraParams = [
-                        Lead_.Project_Name || null,
-                        Lead_.POC_Name || null,
-                        Lead_.Company_Size_Id || 0,
-                        Lead_.Next_Call_Action ? 1 : 0,
-                        Lead_.Lead_Priority || 'Medium',
-                        Lead_.Contact_Person_Details ? JSON.stringify(Lead_.Contact_Person_Details) : null,
-                        Lead_.Lost_Reason || null,
-                        Lead_.Lost_Primary_Issue || null,
-                        Lead_.Lost_Competitor_Name || null,
-                        Lead_.Lost_Competitor_Price || null,
-                        Lead_.Lost_Was_Price_Issue ? 1 : 0,
-                        Lead_.Lost_Was_Solution_Issue ? 1 : 0,
-                        Lead_.Lost_Quote_Only_Comparison ? 1 : 0,
-                        Lead_.Lost_Reopen_Possibility || null,
-                        Lead_.Lost_Expected_Reconnect_Date || null,
-                        Lead_.Lost_Remarks || null,
-                        savedLeadId
-                    ];
-                    ensureLeadLostColumns((lostColumnErr) => {
-                        if (lostColumnErr) console.error('Error ensuring Lost Lead fields:', lostColumnErr);
-                        db.query(
-                            "UPDATE `Lead` SET Project_Name = ?, POC_Name = ?, Company_Size_Id = ?, Next_Call_Action = ?, Lead_Priority = ?, Contact_Person_Details = ?, Lost_Reason = ?, Lost_Primary_Issue = ?, Lost_Competitor_Name = ?, Lost_Competitor_Price = ?, Lost_Was_Price_Issue = ?, Lost_Was_Solution_Issue = ?, Lost_Quote_Only_Comparison = ?, Lost_Reopen_Possibility = ?, Lost_Expected_Reconnect_Date = ?, Lost_Remarks = ? WHERE Lead_Id = ?",
-                            extraParams,
-                            (err2) => {
-                                if (err2) console.error('Error saving extra Lead fields:', err2);
-                                return finish();
-                            }
-                        );
-                    });
-                } else {
-                    return finish();
-                }
-            });
+                });
         });
     },
     Get_Leads: function (callback) {
@@ -379,17 +379,17 @@ var Lead = {
     Get_Lead: function (Lead_Id, callback) {
         return db.query("CALL Get_Leads()", [], (err, rows) => {
             if (err) return callback(err, null);
-            
+
             let allLeads = [];
             if (rows && Array.isArray(rows[0])) {
                 allLeads = rows[0];
             } else if (Array.isArray(rows)) {
                 allLeads = rows;
             }
-            
+
             const lead = allLeads.find(l => String(l.Lead_Id) === String(Lead_Id));
             const newRows = lead ? [[lead]] : [[]];
-            
+
             enrichLeadsWithLatestFollowUp(newRows, callback);
         });
     },
@@ -486,7 +486,7 @@ var Lead = {
                         New_Value: meeting.Meeting_Date || '',
                         Remarks: meeting.Outcome || meeting.Notes || '',
                         User_Id: params[5]
-                    }, () => {});
+                    }, () => { });
                     callback(null, { success: true, LeadMeeting_Id: result.insertId });
                 }
             );
@@ -531,7 +531,7 @@ var Lead = {
                         New_Value: params[2] || String(result.insertId),
                         Remarks: params[5],
                         User_Id: params[6]
-                    }, () => {});
+                    }, () => { });
                     callback(null, { success: true, LeadQuoteTracking_Id: result.insertId });
                 }
             );
@@ -568,6 +568,13 @@ var Lead = {
             if (err) return callback(err);
             callback(null, rows.map(r => r.Lead_Name));
         });
+    },
+
+    Get_Lead_Filter_Dropdown: function (type, search, page, callback) {
+        if (!search) search = '';
+        if (!page || isNaN(page)) page = 1;
+
+        return db.query("CALL Get_Lead_Filter_Dropdown(?, ?, ?)", [type, search, page], callback);
     }
 };
 
