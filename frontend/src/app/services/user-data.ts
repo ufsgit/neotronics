@@ -28,13 +28,13 @@ export class UserData {
         
       var id=httpData[0];
       console.log(id)
-      debugger;
+      // debugger;
       localStorage.setItem('Access_Token',httpData.token);
       localStorage.setItem('Login_User',id[0].User_Details_Id);
       localStorage.setItem('uname',id[0].User_Details_Name);
       localStorage.setItem('User_Type',id[0].User_Type);
       localStorage.setItem('User_Type_Id',id[0].User_Type_Id);
-      debugger;
+      // debugger;
       // localStorage.setItem('Employee_Id',id[0].Employee_Id);
       // localStorage.setItem('Employee_Name',id[0].Employee_Name);
       this.setToken(httpData.access_token);

@@ -136,12 +136,12 @@ export class AdminComponent implements OnInit {
         if (window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
             const elemMainPanel = <HTMLElement>document.querySelector('.main-panel');
             const elemSidebar = <HTMLElement>document.querySelector('.sidebar .sidebar-wrapper');
-            if (elemMainPanel) {
-                let ps = new PerfectScrollbar(elemMainPanel);
-            }
-            if (elemSidebar) {
-                let ps = new PerfectScrollbar(elemSidebar);
-            }
+            // if (elemMainPanel) {
+            //     let ps = new PerfectScrollbar(elemMainPanel);
+            // }
+            // if (elemSidebar) {
+            //     let ps = new PerfectScrollbar(elemSidebar);
+            // }
         }
         this.runOnRouteChange();
     }
@@ -158,8 +158,8 @@ export class AdminComponent implements OnInit {
     runOnRouteChange(): void {
         if (window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
             const elemMainPanel = <HTMLElement>document.querySelector('.main-panel');
-            const ps = new PerfectScrollbar(elemMainPanel);
-            ps.update();
+            // const ps = new PerfectScrollbar(elemMainPanel);
+            // ps.update();
         }
     }
     isMac(): boolean {

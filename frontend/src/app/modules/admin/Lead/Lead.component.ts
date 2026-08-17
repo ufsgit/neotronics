@@ -59,6 +59,63 @@ export class LeadComponent implements OnInit {
 
   Selected_Lead_Type: string = 'All';
 
+  Requirement_Note: string = '';
+  
+  Available_Interests: string[] = ['Web Development', 'Mobile App Development', 'SEO Optimization', 'Digital Marketing', 'Cloud Hosting', 'UI/UX Design', 'IT Consulting'];
+  Selected_Interest: string = '';
+  Added_Interests: string[] = [];
+  Interest_Already_Exists: boolean = false;
+  Clear_Interests_Popup_Open: boolean = false;
+
+  Available_Market_Systems: string[] = ['CRM', 'MCRS', 'WhatsApp (WA)', 'Mail box', 'Cloud services', 'PBX', 'Call center'];
+  Added_Market_Systems: string[] = [];
+
+  Available_Pipeline_Stages: string[] = ['New', 'Need to call', 'In Progress', 'Negotiation', 'Closed Won', 'Closed Lost'];
+  Selected_Pipeline_Stage: string = '';
+  
+  Available_Pulses: string[] = ['Interested', 'Not interested', 'Very excited', 'Ghosting'];
+  Selected_Pulse: string = '';
+
+  Available_Workflows: string[] = [
+    'Asked us to send data via Email/WABA → no reply',
+    'Meeting completed → no response',
+    'Proposal sent → no response'
+  ];
+  Selected_Workflow: string = '';
+  Show_History: boolean = false;
+  Show_Pipeline_History: boolean = false;
+
+  Toggle_Market_System(system: string) {
+    const index = this.Added_Market_Systems.indexOf(system);
+    if (index > -1) {
+      this.Added_Market_Systems.splice(index, 1);
+    } else {
+      this.Added_Market_Systems.push(system);
+    }
+  }
+
+  Clear_All_Interests() {
+    this.Added_Interests = [];
+    this.Interest_Already_Exists = false;
+    this.Clear_Interests_Popup_Open = false;
+  }
+
+  Add_Interest() {
+    if (this.Selected_Interest) {
+      if (this.Added_Interests.includes(this.Selected_Interest)) {
+        this.Interest_Already_Exists = true;
+      } else {
+        this.Added_Interests.push(this.Selected_Interest);
+        this.Selected_Interest = '';
+        this.Interest_Already_Exists = false;
+      }
+    }
+  }
+
+  Remove_Interest(index: number) {
+    this.Added_Interests.splice(index, 1);
+  }
+
   // Custom Fields popup
   CF_Popup_Open: boolean = false;
   CF_Popup_Loading: boolean = false;
@@ -617,7 +674,13 @@ export class LeadComponent implements OnInit {
       Phone: [contact ? contact.Phone : '', [Validators.pattern('^[0-9]*$')]],
       Designation: [contact ? contact.Designation : 0],
       Email: [contact ? contact.Email : '', [Validators.email]],
-      Next_Call_Action: [contact ? !!contact.Next_Call_Action : false]
+      Next_Call_Action: [contact ? !!contact.Next_Call_Action : false],
+      State: [contact ? contact.State : 0],
+      Sitting_Location: [contact ? contact.Sitting_Location : 0],
+      Office_Type: [contact ? contact.Office_Type : 'Head office'],
+      Name_Captured: [contact ? !!contact.Name_Captured : false],
+      Number_Captured: [contact ? !!contact.Number_Captured : false],
+      Email_Captured: [contact ? !!contact.Email_Captured : false]
     });
   }
 

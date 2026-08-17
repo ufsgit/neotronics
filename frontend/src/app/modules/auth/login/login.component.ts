@@ -95,7 +95,7 @@ export class LoginComponent implements OnInit {
 				// this.router.navigateByUrl('Dashboard');
 				this.Login_Id = localStorage.getItem("Login_User");
 				ROUTES.length = 0;
-debugger
+// debugger
 				Pointer_Table = new Array(210);/**38 */
 				for(var i=0;i<Pointer_Table.length;i++)
 					Pointer_Table[i]=-1;
@@ -103,7 +103,7 @@ debugger
 				// console.log(Pointer_Table,'ptable after array38');
 				this.Menu_Service_.Get_Menu_Permission(this.Login_Id).subscribe(
 					(Rows) => {
-						debugger
+						// debugger
 						//   console.log(Rows)
 						if (Rows != null) {
 							var Menus;
@@ -1566,7 +1566,7 @@ debugger
 							// }
 
 							// }
-							debugger;
+							// debugger;
 							localStorage.setItem("Routes_Temp", JSON.stringify(ROUTES));
 							localStorage.setItem(
 								"Pointer_Temp",

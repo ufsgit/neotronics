@@ -855,6 +855,29 @@
 }
 .ig-cf-row:last-child { border-bottom: none; }
 
+.ig-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: #475569;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.ig-toggle-btn:hover {
+  background-color: #e2e8f0;
+}
+.ig-toggle-btn.active {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border-color: #7dd3fc;
+  font-weight: 500;
+}
+
 .ig-cf-label {
   display: flex;
   align-items: center;

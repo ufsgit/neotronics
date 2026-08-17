@@ -119,6 +119,7 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { RouterModule } from "@angular/router";
 import { LeadDashboardComponent } from './lead-dashboard/lead-dashboard.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
+import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
 
 @NgModule({
 	imports: [
@@ -237,7 +238,8 @@ import { OperationsDashboardComponent } from './operations-dashboard/operations-
 		DepartmentComponent,
 		DepartmentStatusComponent,
 		LeadDashboardComponent,
-		OperationsDashboardComponent
+		OperationsDashboardComponent,
+		Lead_ConfigComponent
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],

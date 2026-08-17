@@ -1,0 +1,48 @@
+<div class="ig-page">
+
+
+  <div class="config-layout">
+    <!-- Left Sidebar Menu -->
+    <div class="config-sidebar ig-section-card" [class.collapsed]="!isSidebarOpen">
+      <div class="sidebar-header" (click)="toggleSidebar()">
+        <i class="material-icons menu-icon">menu</i>
+      </div>
+      <ul class="config-menu">
+        <li *ngFor="let section of sections" 
+            [class.active]="activeSection === section.name"
+            (click)="selectSection(section.name)"
+            title="{{section.name}}">
+          <i class="material-icons item-icon">{{ section.icon }}</i>
+          <span class="item-text" *ngIf="isSidebarOpen">{{ section.name }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Right Content Area -->
+    <div class="config-content ig-section-card">
+      <div class="content-header">
+        <h2 class="section-title">{{ activeSection }}</h2>
+        
+        <!-- Horizontal Tabs -->
+        <div class="tabs-container" *ngIf="subTabs[activeSection]?.length > 0">
+          <div class="tab" 
+               *ngFor="let tab of subTabs[activeSection]"
+               [class.active]="activeSubTab === tab"
+               (click)="selectSubTab(tab)">
+            {{ tab }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="tab-content">
+        <p style="color: #64748b; margin-top: 20px;">Manage <strong>{{ activeSubTab }}</strong> data here.</p>
+        
+        <!-- Example Component Placeholders -->
+        <div *ngIf="activeSection === 'Company Details' && activeSubTab === 'Vertical'">
+          <!-- <app-vertical-management></app-vertical-management> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -213,7 +213,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.notificationService.startPolling(Number(localStorage.getItem('Login_User') || 0));
         this.menuItems = ROUTES.filter(menuItem => menuItem);
         this.listTitles = ROUTES.filter(listTitle => listTitle);
-    debugger
+    // debugger
 
 const navbar: HTMLElement = this.element.nativeElement;
 
@@ -321,7 +321,7 @@ const navbar: HTMLElement = this.element.nativeElement;
       };
     logout() {
 
-        debugger
+        // debugger
         this.userData.logout();
     
         // localStorage.removeItem("Routes_Temp");

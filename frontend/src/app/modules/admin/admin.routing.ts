@@ -85,6 +85,7 @@ import { DepartmentStatusComponent } from './DepartmentStatus/DepartmentStatus.c
 import { DashboardComponent } from './Dashboard/Dashboard.component';
 import { LeadDashboardComponent } from './lead-dashboard/lead-dashboard.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
+import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
 
 export const AdminRoutes: Routes = [
 	{
@@ -175,6 +176,7 @@ export const AdminRoutes: Routes = [
 			{ path: "DepartmentStatus", component: DepartmentStatusComponent },
 			{ path: "LeadDashboard", component: LeadDashboardComponent },
 			{ path: "OperationsDashboard", component: OperationsDashboardComponent },
+			{ path: "Lead_Config", component: Lead_ConfigComponent },
 
 
 			{ path: "**", redirectTo: "/auth/login" },
