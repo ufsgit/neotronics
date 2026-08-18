@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class Lead_ConfigComponent implements OnInit {
   activeSection: string = 'Company Details';
   activeSubTab: string = 'Vertical';
+  expandedSection: string = 'Company Details';
   isSidebarOpen: boolean = true;
 
   sections = [
@@ -36,11 +37,19 @@ export class Lead_ConfigComponent implements OnInit {
   }
 
   selectSection(section: string) {
-    this.activeSection = section;
-    if (this.subTabs[section] && this.subTabs[section].length > 0) {
-      this.activeSubTab = this.subTabs[section][0];
+    if (this.expandedSection === section) {
+      this.expandedSection = '';
     } else {
-      this.activeSubTab = '';
+      this.expandedSection = section;
+    }
+
+    if (this.activeSection !== section) {
+      this.activeSection = section;
+      if (this.subTabs[section] && this.subTabs[section].length > 0) {
+        this.activeSubTab = this.subTabs[section][0];
+      } else {
+        this.activeSubTab = '';
+      }
     }
   }
 

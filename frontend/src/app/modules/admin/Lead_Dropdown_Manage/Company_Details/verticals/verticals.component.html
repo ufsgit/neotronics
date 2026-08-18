@@ -1,0 +1,13 @@
+<app-shared-dropdown-table
+  title="Manage Verticals"
+  [columns]="tableColumns"
+  [data]="tableData"
+  [totalItems]="totalRows"
+  [pageSize]="10"
+  [currentPage]="currentPage"
+  (search)="onSearch($event)"
+  (pageChange)="onPageChange($event)"
+  (addAction)="onAddNew()"
+  (editAction)="onEdit($event)"
+  (deleteAction)="onDelete($event)">
+</app-shared-dropdown-table>

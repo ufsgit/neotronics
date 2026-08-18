@@ -120,6 +120,19 @@ import { RouterModule } from "@angular/router";
 import { LeadDashboardComponent } from './lead-dashboard/lead-dashboard.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
+import { VerticalsComponent } from './Lead_Dropdown_Manage/Company_Details/verticals/verticals.component';
+import { StateComponent } from './Lead_Dropdown_Manage/Company_Details/state/state.component';
+import { DistrictComponent } from './Lead_Dropdown_Manage/Company_Details/district/district.component';
+import { CompanySizeComponent } from './Lead_Dropdown_Manage/Company_Details/company-size/company-size.component';
+import { SourceComponent } from './Lead_Dropdown_Manage/Company_Details/source/source.component';
+import { ServiceProductComponent } from './Lead_Dropdown_Manage/Requirement_Profile/service-product/service-product.component';
+import { MarketSystemComponent } from './Lead_Dropdown_Manage/Market_Study/market-system/market-system.component';
+import { PipelineStageComponent } from './Lead_Dropdown_Manage/Pipeline_Stage_Pulse/pipeline-stage/pipeline-stage.component';
+import { PulseComponent } from './Lead_Dropdown_Manage/Pipeline_Stage_Pulse/pulse/pulse.component';
+import { TargetStageComponent } from './Lead_Dropdown_Manage/Pipeline_Stage_Pulse/target-stage/target-stage.component';
+import { BranchComponent } from './Lead_Dropdown_Manage/Assignment/branch/branch.component';
+import { WorkflowComponent } from './Lead_Dropdown_Manage/Follow_up_Automation/workflow/workflow.component';
+import { SharedDropdownTableComponent } from './Lead_Dropdown_Manage/shared-dropdown-table/shared-dropdown-table.component';
 
 @NgModule({
 	imports: [
@@ -239,7 +252,20 @@ import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
 		DepartmentStatusComponent,
 		LeadDashboardComponent,
 		OperationsDashboardComponent,
-		Lead_ConfigComponent
+		Lead_ConfigComponent,
+		VerticalsComponent,
+		StateComponent,
+		DistrictComponent,
+		CompanySizeComponent,
+		SourceComponent,
+		ServiceProductComponent,
+		MarketSystemComponent,
+		PipelineStageComponent,
+		PulseComponent,
+		TargetStageComponent,
+		BranchComponent,
+		WorkflowComponent,
+		SharedDropdownTableComponent
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],
