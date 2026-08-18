@@ -1,0 +1,28 @@
+<div class="ig-dropdown-container">
+  <div class="ig-dropdown-toggle ig-input" (click)="toggleDropdown()" [class.open]="isOpen">
+    <span class="ig-dropdown-value" *ngIf="value != null && value !== 0 && getDisplayValue()">{{ getDisplayValue() }}</span>
+    <span class="ig-dropdown-placeholder" *ngIf="value == null || value === 0 || !getDisplayValue()">{{ placeholder }}</span>
+    <i class="material-icons ig-dropdown-caret">arrow_drop_down</i>
+  </div>
+
+  <div class="ig-dropdown-menu" *ngIf="isOpen">
+    <div class="ig-dropdown-search">
+      <input type="text" class="ig-input" placeholder="Type to search..." (input)="onSearchChange($event)" (click)="$event.stopPropagation()">
+      <i class="material-icons">search</i>
+    </div>
+    
+    <div class="ig-dropdown-list" (scroll)="onScroll($event)">
+      <div class="ig-dropdown-item" *ngIf="!data || data.length === 0" style="color: #94a3b8; font-style: italic;" (click)="$event.stopPropagation()">
+        No options available
+      </div>
+      
+      <div class="ig-dropdown-item" *ngFor="let item of data" (click)="selectItem(item, $event)" [class.selected]="value === item[bindValue]">
+        {{ item[bindLabel] }}
+      </div>
+
+      <div class="ig-dropdown-loading" *ngIf="loading">
+        Loading more...
+      </div>
+    </div>
+  </div>
+</div>

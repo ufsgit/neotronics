@@ -86,6 +86,7 @@ import { DashboardComponent } from './Dashboard/Dashboard.component';
 import { LeadDashboardComponent } from './lead-dashboard/lead-dashboard.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
+import { Register_LeadComponent } from "./Register_Lead/Register_Lead.component";
 
 export const AdminRoutes: Routes = [
 	{
@@ -159,6 +160,8 @@ export const AdminRoutes: Routes = [
 			{path:"Stock_Take",component:StockTakeComponent},
 			{path:"StockTakeName",component:StockTakeNameComponent},
 			{ path: 'Lead', component: LeadComponent },
+			{ path: 'Lead/New', component: Register_LeadComponent },
+			{ path: 'Lead/Edit/:id', component: Register_LeadComponent },
 			{ path: 'Lead/:id', component: LeadComponent },
 			{ path: 'LeadRequirement', component: LeadRequirementComponent },
 			{ path: 'LeadRequirementTransaction/:id', component: LeadRequirementTransactionComponent },

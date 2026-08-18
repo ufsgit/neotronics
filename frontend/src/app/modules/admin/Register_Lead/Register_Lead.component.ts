@@ -18,11 +18,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationService } from '../../../services/notification.service';
 
 @Component({
-  selector: 'app-Lead',
-  templateUrl: './Lead.component.html',
-  styleUrls: ['./Lead.component.css']
+  selector: 'app-Register_Lead',
+  templateUrl: './Register_Lead.component.html',
+  styleUrls: ['./Register_Lead.component.css']
 })
-export class LeadComponent implements OnInit {
+export class Register_LeadComponent implements OnInit {
   Lead_: Lead = new Lead();
   Lead_Data: Lead[] = [];
   Filtered_Lead_Data: Lead[] = [];
@@ -241,7 +241,8 @@ export class LeadComponent implements OnInit {
          this.snackBar.open("Error fetching lead", "Close", { duration: 3000 });
       });
     } else {
-      this.Page_Load();
+      // Add one default contact row for new leads
+      this.addContact();
     }
 
     this.route.queryParams.subscribe(params => {
@@ -262,25 +263,20 @@ export class LeadComponent implements OnInit {
         this.Get_Company_Sizes();
       }
     });
-  }
 
-  Page_Load() {
-    this.Load_Column_Preferences();
-    this.Get_Leads();
+    this.Entry_View = true;
     this.Get_Dropdowns_Lead();
     this.Get_Company_Sizes();
     this.Get_Custom_Fields();
     
-    // Initial fetch for all dropdowns
     ['State', 'District', 'Vertical', 'CompanySize', 'Source', 'Designation'].forEach(type => {
       this.DropdownPage[type] = 1;
       this.DropdownSearch[type] = '';
       this.DropdownEnd[type] = false;
       this.loadDropdownData(type);
     });
-  }
 
-  loadDropdownData(type: string, append: boolean = false) {
+  }  loadDropdownData(type: string, append: boolean = false) {
     if (this.DropdownLoading[type]) return;
     if (append && this.DropdownEnd[type]) return;
     
@@ -688,7 +684,31 @@ export class LeadComponent implements OnInit {
   }
 
   Create_New() {
-    this.router.navigate(['/Lead/New']);
+    this.Entry_View = true;
+    this.Lead_ = new Lead();
+    this.Set_Default_Raw_Lead_Stage();
+    this.Selected_Vertical = 0;
+    this.Selected_Enquiry_For = [];
+    this.Enquiry_For_Data = [];
+    if (this.State_Data && this.State_Data.length > 0) {
+      const kerala = this.State_Data.find(s => s.State_Name && s.State_Name.toLowerCase() === 'kerala');
+      if (kerala) this.Lead_.State = kerala.State_Id;
+    }
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    this.Lead_.FollowUp_Date = now.toISOString().slice(0, 16);
+    this.FollowUp_History = [];
+    this.Activity_Log = [];
+    this.Meeting_Data = [];
+    this.Quote_Tracking_Data = [];
+    this.Initialize_Contact_Form();
+    this.addContact();
+    
+    ['State', 'District', 'Vertical', 'CompanySize', 'Source', 'Designation'].forEach(type => {
+      this.DropdownPage[type] = 1;
+      this.DropdownSearch[type] = '';
+      this.loadDropdownData(type);
+    });
   }
 
   Initialize_Contact_Form() {
@@ -740,6 +760,7 @@ export class LeadComponent implements OnInit {
   }
 
   Close_Click() {
+    this.router.navigate(['/Lead']);
     this.Entry_View = false;
     this.Lead_ = new Lead();
     this.Selected_Vertical = 0;
@@ -885,15 +906,49 @@ export class LeadComponent implements OnInit {
     });
   }
 
-
-
   Save_FollowUp() {
     this.Lead_.Is_FollowUp = true;
     this.Save_Lead();
   }
 
   Edit_Lead(lead_e: Lead) {
-    this.router.navigate(['/Lead/Edit', lead_e.Lead_Id]);
+    this.Lead_ = Object.assign({}, lead_e);
+    this.Lead_.Is_FollowUp = (this.Lead_.Is_FollowUp as any) == 1 ? true : false;
+    this.Lead_.Next_Call_Action = (this.Lead_.Next_Call_Action as any) == 1 ? true : false;
+    if (this.Lead_.Vertical && String(this.Lead_.Vertical).trim() !== '') {
+      this.Lead_.Vertical = String(this.Lead_.Vertical).split(',')[0].trim();
+    }
+    if (this.Lead_.Enquiry_For && String(this.Lead_.Enquiry_For).trim() !== '') {
+      this.Selected_Enquiry_For = String(this.Lead_.Enquiry_For).split(',').map(v => Number(v.trim())).filter(v => v > 0);
+    } else this.Selected_Enquiry_For = [];
+    if (this.Lead_.Staff_Id > 0) this.Lead_.FollowUp_Staff_Id = this.Lead_.Staff_Id;
+    if (this.Lead_.Department_Id > 0) this.Lead_.FollowUp_Department_Id = this.Lead_.Department_Id;
+    if (this.Lead_.Status_Id > 0) this.Lead_.FollowUp_Status_Id = this.Lead_.Status_Id;
+    if (this.Lead_.Location_Id > 0) this.Lead_.FollowUp_Location_Id = this.Lead_.Location_Id;
+    this.Initialize_Contact_Form();
+    let contacts = (this.Lead_ as any).Contact_Person_Details;
+    if (typeof contacts === 'string' && contacts.trim() !== '') {
+      try { contacts = JSON.parse(contacts); } catch (e) { contacts = []; }
+    }
+    if (contacts && Array.isArray(contacts) && contacts.length > 0) {
+      contacts.forEach(c => this.contactPersons.push(this.createContactRow(c)));
+      if (!contacts.some(c => !!c.Next_Call_Action) && this.Lead_.Next_Call_Action && this.contactPersons.length > 0) this.contactPersons.at(0).get('Next_Call_Action').setValue(true);
+    } else {
+      this.contactPersons.push(this.createContactRow({
+        Contact_Person: this.Lead_.Contact_Person,
+        Contact_Number: this.Lead_.Contact_Number,
+        Phone: this.Lead_.Phone,
+        Designation: this.Lead_.Designation,
+        Email: this.Lead_.Email,
+        Next_Call_Action: this.Lead_.Next_Call_Action
+      }));
+    }
+    this.Get_Lead_FollowUp_History(this.Lead_.Lead_Id);
+    this.Get_Lead_Activity_Log(this.Lead_.Lead_Id);
+    this.Get_Lead_Meetings(this.Lead_.Lead_Id);
+    this.Get_Lead_Quote_Tracking(this.Lead_.Lead_Id);
+    this.Get_Lead_Dynamic_Fields(this.Lead_.Lead_Id);
+    this.Entry_View = true;
   }
 
   Get_Lead_Dynamic_Fields(Lead_Id: number) {

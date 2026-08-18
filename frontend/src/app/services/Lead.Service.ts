@@ -36,6 +36,17 @@ export class Lead_Service {
     });
   }
 
+  Search_Lead_Dropdowns(type: string, search: string, page: number): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Search_Lead_Dropdowns/', {
+      params: {
+        type: type,
+        search: search,
+        page: page.toString(),
+        _t: Date.now().toString()
+      }
+    });
+  }
+
   Delete_Lead(Lead_Id): Observable<any> {
     return this.http.get(environment.BasePath + 'Lead/Delete_Lead/' + Lead_Id);
   }

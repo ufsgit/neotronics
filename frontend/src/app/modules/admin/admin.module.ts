@@ -25,6 +25,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from "../shared-module/shared-module";
 import { AdminRoutes } from "./admin.routing";
 import { AdminComponent } from "./admin.component";
+import { Register_LeadComponent } from "./Register_Lead/Register_Lead.component";
 import { HttpClientModule } from "@angular/common/http";
 import { GoogleChartsModule } from "angular-google-charts";
 import { Account_GroupComponent } from "./Account_Group/Account_Group.component";
@@ -168,9 +169,10 @@ import { SharedDropdownTableComponent } from './Lead_Dropdown_Manage/shared-drop
 	declarations: [
 		AdminComponent,	
 		Account_GroupComponent,
-		Cheque_BookComponent,
 		Account_YearsComponent,
-		
+		LeadComponent,
+		Register_LeadComponent,
+		Cheque_BookComponent,
 		BankComponent,
 		Client_AccountsComponent,
 		Contra_EntryComponent,
