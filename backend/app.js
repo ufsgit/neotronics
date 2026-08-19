@@ -116,6 +116,7 @@ var DepartmentStatus = require('./routes/DepartmentStatus');
 var Price_Response = require('./routes/Price_Response');
 var Notifications = require('./routes/Notifications');
 var OperationsDashboard = require('./routes/OperationsDashboard');
+var leadconfig = require('./routes/leadconfig');
 
 
 var app = express();
@@ -245,6 +246,7 @@ app.use('/Notification', Notifications);
 app.use('/api/Notification', Notifications);
 app.use('/api/notifications', Notifications);
 app.use('/OperationsDashboard', OperationsDashboard);
+app.use('/leadconfig', leadconfig);
 
 app.use(errorHandler);
 
