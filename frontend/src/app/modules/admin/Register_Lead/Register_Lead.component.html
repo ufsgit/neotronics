@@ -323,10 +323,7 @@
             <select class="ig-input" style="width: 100%; max-width: 100% !important;" name="Lead_Priority"
               [(ngModel)]="Lead_.Lead_Priority">
               <option value="">Select Priority</option>
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-              <option value="Critical">Critical</option>
+              <option *ngFor="let p of Available_Priorities" [value]="p">{{p}}</option>
             </select>
           </div>
         </div>
@@ -400,7 +397,7 @@
         <div class="ig-grid ig-grid-4" style="margin-top: 15px;">
           <div class="ig-field">
             <label class="ig-label" style="text-transform: uppercase;">Branch <span class="ig-req">*</span></label>
-            <select class="ig-select" name="FollowUp_Location_Id" [(ngModel)]="Lead_.FollowUp_Location_Id">
+            <select class="ig-select" name="FollowUp_Location_Id" [(ngModel)]="Lead_.FollowUp_Location_Id" (change)="Location_Change()">
               <option value="0">Select Branch</option>
               <option *ngFor="let loc of Location_Data" [value]="loc.Location_Id">{{loc.Location_Name}}</option>
             </select>
@@ -408,9 +405,9 @@
           <div class="ig-field">
             <label class="ig-label" style="text-transform: uppercase;">Department Responsibility <span
                 class="ig-req">*</span></label>
-            <select class="ig-select" name="FollowUp_Department_Id" [(ngModel)]="Lead_.FollowUp_Department_Id">
+            <select class="ig-select" name="FollowUp_Department_Id" [(ngModel)]="Lead_.FollowUp_Department_Id" (change)="Department_Change()">
               <option value="0">Select Department</option>
-              <option *ngFor="let dept of Department_Data" [value]="dept.Department_Id">{{dept.Department_Name}}
+              <option *ngFor="let dept of Filtered_Department_Data" [value]="dept.Department_Id">{{dept.Department_Name}}
               </option>
             </select>
           </div>
@@ -419,7 +416,7 @@
                 class="ig-req">*</span></label>
             <select class="ig-select" name="FollowUp_Staff_Id" [(ngModel)]="Lead_.FollowUp_Staff_Id">
               <option value="0">Select Staff</option>
-              <option *ngFor="let staff of Staff_Data" [value]="staff.User_Details_Id">{{staff.User_Details_Name}}
+              <option *ngFor="let staff of Filtered_Staff_Data" [value]="staff.User_Details_Id">{{staff.User_Details_Name}}
               </option>
             </select>
           </div>
@@ -428,7 +425,7 @@
                 class="ig-req">*</span></label>
             <select class="ig-select" name="FollowUp_Status_Id" [(ngModel)]="Lead_.FollowUp_Status_Id">
               <option value="0">Select Stage</option>
-              <option *ngFor="let status of Status_Data" [value]="status.Status_Id">{{status.Status_Name}}</option>
+              <option *ngFor="let ts of Available_Target_Stages" [value]="ts">{{ts}}</option>
             </select>
           </div>
         </div>

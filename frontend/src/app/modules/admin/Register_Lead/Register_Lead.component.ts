@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { finalize, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 
 import { Lead_Service } from '../../../services/Lead.Service';
@@ -23,6 +24,7 @@ import { NotificationService } from '../../../services/notification.service';
   styleUrls: ['./Register_Lead.component.css']
 })
 export class Register_LeadComponent implements OnInit {
+  companyNameSubject: Subject<string> = new Subject<string>();
   Lead_: Lead = new Lead();
   Lead_Data: Lead[] = [];
   Filtered_Lead_Data: Lead[] = [];
@@ -44,6 +46,7 @@ export class Register_LeadComponent implements OnInit {
   District_Data: any[] = [];
   Location_Data: any[] = [];
   Staff_Data: any[] = [];
+  Filtered_Staff_Data: any[] = [];
   FollowUp_History: any[] = [];
   Activity_Log: any[] = [];
   Meeting_Data: any[] = [];
@@ -54,14 +57,16 @@ export class Register_LeadComponent implements OnInit {
   Show_Quote_Form: boolean = false;
   Selected_Meeting_Type: string = 'OFFLINE';
   Company_Size_Data: any[] = [];
+  Filtered_Department_Data: any[] = [];
   readonly Raw_Lead_Stage_Name: string = 'RAW Lead';
   readonly Lost_Stage_Name: string = 'Lost';
 
   Selected_Lead_Type: string = 'All';
 
+  Available_Priorities: string[] = [];
   Requirement_Note: string = '';
   
-  Available_Interests: string[] = ['Web Development', 'Mobile App Development', 'SEO Optimization', 'Digital Marketing', 'Cloud Hosting', 'UI/UX Design', 'IT Consulting'];
+  Available_Interests: string[] = [];
   Selected_Interest: string = '';
   Added_Interests: string[] = [];
   Interest_Already_Exists: boolean = false;
@@ -70,11 +75,13 @@ export class Register_LeadComponent implements OnInit {
   Available_Market_Systems: string[] = ['CRM', 'MCRS', 'WhatsApp (WA)', 'Mail box', 'Cloud services', 'PBX', 'Call center'];
   Added_Market_Systems: string[] = [];
 
-  Available_Pipeline_Stages: string[] = ['New', 'Need to call', 'In Progress', 'Negotiation', 'Closed Won', 'Closed Lost'];
+  Available_Pipeline_Stages: string[] = [];
   Selected_Pipeline_Stage: string = '';
   
-  Available_Pulses: string[] = ['Interested', 'Not interested', 'Very excited', 'Ghosting'];
+  Available_Pulses: string[] = [];
   Selected_Pulse: string = '';
+
+  Available_Target_Stages: string[] = [];
 
   Available_Workflows: string[] = [
     'Asked us to send data via Email/WABA → no reply',
@@ -221,6 +228,22 @@ export class Register_LeadComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.companyNameSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      if (!value || value.length < 2) {
+        this.Filtered_Company_Names = [];
+        return;
+      }
+      this.Lead_Service_.Search_Company_Name(value).subscribe(names => {
+        this.Filtered_Company_Names = names || [];
+      }, err => {
+        console.error('Error fetching company names:', err);
+        this.Filtered_Company_Names = [];
+      });
+    });
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.Load_Column_Preferences();
@@ -267,6 +290,11 @@ export class Register_LeadComponent implements OnInit {
     this.Entry_View = true;
     this.Get_Dropdowns_Lead();
     this.Get_Company_Sizes();
+    this.Get_Service_Interests();
+    this.Get_Lead_Priorities();
+    this.Get_Pipeline_Stages();
+    this.Get_Pulses();
+    this.Get_Target_Stages();
     this.Get_Custom_Fields();
     
     ['State', 'District', 'Vertical', 'CompanySize', 'Source', 'Designation'].forEach(type => {
@@ -314,16 +342,7 @@ export class Register_LeadComponent implements OnInit {
   }
 
   onCompanyNameChange(value: string) {
-    if (!value || value.length < 2) {
-      this.Filtered_Company_Names = [];
-      return;
-    }
-    this.Lead_Service_.Search_Company_Name(value).subscribe(names => {
-      this.Filtered_Company_Names = names || [];
-    }, err => {
-      console.error('Error fetching company names:', err);
-      this.Filtered_Company_Names = [];
-    });
+    this.companyNameSubject.next(value);
   }
 
   Get_Custom_Fields() {
@@ -419,6 +438,99 @@ export class Register_LeadComponent implements OnInit {
     });
   }
 
+  Get_Service_Interests() {
+    this.Lead_Service_.Search_Lead_Dropdowns('ServiceInterest', '', 1).subscribe(Rows => {
+      if (Rows && Array.isArray(Rows)) {
+        this.Available_Interests = Rows.map(r => r.name);
+      } else {
+        this.Available_Interests = [];
+      }
+    }, err => {
+      console.error('Error loading Service Interests:', err);
+    });
+  }
+
+  Get_Lead_Priorities() {
+    this.Lead_Service_.Search_Lead_Dropdowns('LeadPriority', '', 1).subscribe(Rows => {
+      if (Rows && Array.isArray(Rows)) {
+        this.Available_Priorities = Rows.map(r => r.name);
+      } else {
+        this.Available_Priorities = [];
+      }
+    }, err => {
+      console.error('Error loading Lead Priorities:', err);
+    });
+  }
+
+  Get_Pipeline_Stages() {
+    this.Lead_Service_.Search_Lead_Dropdowns('PipelineStage', '', 1).subscribe(Rows => {
+      if (Rows && Array.isArray(Rows)) {
+        this.Available_Pipeline_Stages = Rows.map(r => r.name);
+      } else {
+        this.Available_Pipeline_Stages = [];
+      }
+    }, err => {
+      console.error('Error loading Pipeline Stages:', err);
+    });
+  }
+
+  Get_Pulses() {
+    this.Lead_Service_.Search_Lead_Dropdowns('Pulse', '', 1).subscribe(Rows => {
+      if (Rows && Array.isArray(Rows)) {
+        this.Available_Pulses = Rows.map(r => r.name);
+      } else {
+        this.Available_Pulses = [];
+      }
+    }, err => {
+      console.error('Error loading Pulses:', err);
+    });
+  }
+
+  Get_Target_Stages() {
+    this.Lead_Service_.Search_Lead_Dropdowns('TargetStage', '', 1).subscribe(Rows => {
+      if (Rows && Array.isArray(Rows)) {
+        this.Available_Target_Stages = Rows.map(r => r.name);
+      } else {
+        this.Available_Target_Stages = [];
+      }
+    }, err => {
+      console.error('Error loading Target Stages:', err);
+    });
+  }
+
+  Location_Change() {
+    if (this.Lead_.FollowUp_Location_Id && this.Lead_.FollowUp_Location_Id != 0) {
+      this.Filtered_Department_Data = this.Department_Data.filter(d => d.Branch_Id == this.Lead_.FollowUp_Location_Id);
+    } else {
+      this.Filtered_Department_Data = [...this.Department_Data];
+    }
+    const validDept = this.Filtered_Department_Data.find(d => d.Department_Id == this.Lead_.FollowUp_Department_Id);
+    if (!validDept) {
+      this.Lead_.FollowUp_Department_Id = 0;
+    }
+    this.Filter_Staff();
+  }
+
+  Department_Change() {
+    this.Filter_Staff();
+  }
+
+  Filter_Staff() {
+    let staff = [...(this.Staff_Data || [])];
+    if (this.Lead_.FollowUp_Location_Id && this.Lead_.FollowUp_Location_Id != 0) {
+      staff = staff.filter(s => s.Branch_Id == this.Lead_.FollowUp_Location_Id);
+    }
+    if (this.Lead_.FollowUp_Department_Id && this.Lead_.FollowUp_Department_Id != 0) {
+      staff = staff.filter(s => s.Department_Id == this.Lead_.FollowUp_Department_Id);
+    }
+    this.Filtered_Staff_Data = staff;
+
+    const validStaff = this.Filtered_Staff_Data.find(s => s.User_Details_Id == this.Lead_.FollowUp_Staff_Id);
+    if (!validStaff) {
+      this.Lead_.FollowUp_Staff_Id = 0;
+    }
+  }
+
   private normalizeRows(response: any): any[] {
     const rows = response && response.success !== undefined ? response.data : response;
     if (Array.isArray(rows) && rows.length > 0 && Array.isArray(rows[0])) return rows[0];
@@ -464,10 +576,11 @@ export class Register_LeadComponent implements OnInit {
   }
 
   Get_Dropdowns_Lead() {
-    this.Lead_Service_.Get_Dropdowns_Lead().subscribe(Rows => {
-      if (Rows != null) {
-        this.Department_Data = Array.isArray(Rows[0]) ? Rows[0] : [];
-        this.Status_Data = Array.isArray(Rows[1]) ? Rows[1] : [];
+      this.Lead_Service_.Get_Dropdowns_Lead().subscribe(Rows => {
+        if (Rows != null) {
+          this.Department_Data = Array.isArray(Rows[0]) ? Rows[0] : [];
+          this.Filtered_Department_Data = [...this.Department_Data];
+          this.Status_Data = Array.isArray(Rows[1]) ? Rows[1] : [];
         this.Source_Data = Array.isArray(Rows[2]) ? Rows[2] : [];
         this.Vertical_Data = Array.isArray(Rows[3]) ? Rows[3] : [];
         this.Designation_Data = Array.isArray(Rows[4]) ? Rows[4] : [];
@@ -482,6 +595,7 @@ export class Register_LeadComponent implements OnInit {
         this.User_Details_Service_.Search_User_Details('', 1, 1).subscribe(StaffRows => {
           if (StaffRows != null) {
             this.Staff_Data = Array.isArray(StaffRows[0]) ? StaffRows[0] : (Array.isArray(StaffRows) ? StaffRows : []);
+            this.Filter_Staff();
             this.Map_Staff_Names();
           }
         });
