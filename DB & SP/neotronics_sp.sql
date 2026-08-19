@@ -3262,38 +3262,60 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Filter_Dropdown`(
-    IN p_Type VARCHAR(50),
-    IN p_Search VARCHAR(100),
+    IN p_Type VARCHAR(100),
+    IN p_Search VARCHAR(255),
     IN p_Page INT
 )
 BEGIN
+    -- Declare pagination variables
+    DECLARE v_Limit INT DEFAULT 20;
     DECLARE v_Offset INT;
     
-    -- Calculate Offset: If page is 1, offset is 0. If page is 2, offset is 20.
-    SET v_Offset = (p_Page - 1) * 20;
+    -- Format search parameter for LIKE query
+    SET p_Search = CONCAT('%', COALESCE(p_Search, ''), '%');
     
-    IF p_Type = 'vertical' THEN
-        SELECT Vertical_Id AS id, Vertical_Name AS name 
-        FROM vertical 
-        WHERE DeleteStatus = 0 
-          AND Vertical_Name LIKE CONCAT(p_Search, '%') 
-        ORDER BY Vertical_Name ASC
-        LIMIT 20 OFFSET v_Offset;
+    -- Calculate offset
+    IF p_Page < 1 OR p_Page IS NULL THEN 
+        SET p_Page = 1; 
+    END IF;
+    SET v_Offset = (p_Page - 1) * v_Limit;
+
+    -- Map based on type
+    IF p_Type = 'State' THEN
+        SELECT State_Id AS id, State_Name AS name FROM State 
+        WHERE State_Name LIKE p_Search 
+        ORDER BY State_Name 
+        LIMIT v_Limit OFFSET v_Offset;
         
-    ELSEIF p_Type = 'designation' THEN
-        SELECT Designation_Id AS id, Designation_Name AS name 
-        FROM designation 
-        WHERE DeleteStatus = 0 
-          AND Designation_Name LIKE CONCAT(p_Search, '%') 
-        ORDER BY Designation_Name ASC
-        LIMIT 20 OFFSET v_Offset;
+    ELSEIF p_Type = 'District' THEN
+        SELECT District_Id AS id, District_Name AS name FROM District 
+        WHERE District_Name LIKE p_Search 
+        ORDER BY District_Name 
+        LIMIT v_Limit OFFSET v_Offset;
         
-    ELSEIF p_Type = 'district' THEN
-        SELECT District_Id AS id, District_Name AS name 
-        FROM district 
-        WHERE District_Name LIKE CONCAT(p_Search, '%') 
-        ORDER BY District_Name ASC
-        LIMIT 20 OFFSET v_Offset;
+    ELSEIF p_Type = 'Vertical' THEN
+        SELECT Vertical_Id AS id, Vertical_Name AS name FROM Vertical 
+        WHERE Vertical_Name LIKE p_Search 
+        ORDER BY Vertical_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+    ELSEIF p_Type = 'CompanySize' THEN
+        SELECT Company_Size_Id AS id, Company_Size_Name AS name FROM Company_Size 
+        WHERE Company_Size_Name LIKE p_Search 
+        ORDER BY Company_Size_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+    ELSEIF p_Type = 'Source' THEN
+        SELECT Source_Id AS id, Source_Name AS name FROM Source 
+        WHERE Source_Name LIKE p_Search 
+        ORDER BY Source_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+    ELSEIF p_Type = 'Designation' THEN
+        SELECT Designation_Id AS id, Designation_Name AS name FROM Designation 
+        WHERE Designation_Name LIKE p_Search 
+        ORDER BY Designation_Name 
+        LIMIT v_Limit OFFSET v_Offset;
         
     END IF;
 
@@ -26245,6 +26267,68 @@ where journal_entry.DeleteStatus=0 AND journal_entry.To_Account_Id=Account_Party
 -- group by journal_entry.Journal_Entry_Id,Voucher_No,journal_entry.Date,journal_entry.Amount,journal_entry.To_Account_Id
 and (COALESCE(journal_entry.Amount,0)-(ifnull(journal_entry.PaidAmount,0)))>0;
 End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Search_Lead_Dropdowns`(
+    IN p_Type VARCHAR(100),
+    IN p_Search VARCHAR(255),
+    IN p_Page INT
+)
+BEGIN
+    -- Declare pagination variables
+    DECLARE v_Limit INT DEFAULT 20;
+    DECLARE v_Offset INT;
+    
+    -- Format search parameter for LIKE query
+    SET p_Search = CONCAT('%', COALESCE(p_Search, ''), '%');
+    
+    -- Calculate offset
+    IF p_Page < 1 OR p_Page IS NULL THEN 
+        SET p_Page = 1; 
+    END IF;
+    SET v_Offset = (p_Page - 1) * v_Limit;
+
+    -- Map based on type
+    IF p_Type = 'State' THEN
+        SELECT State_Id AS id, State_Name AS name FROM State 
+        WHERE State_Name LIKE p_Search 
+        ORDER BY State_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+    ELSEIF p_Type = 'District' THEN
+        SELECT District_Id AS id, District_Name AS name FROM District 
+        WHERE District_Name LIKE p_Search 
+        ORDER BY District_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+    ELSEIF p_Type = 'Vertical' THEN
+        SELECT Vertical_Id AS id, Vertical_Name AS name FROM Vertical 
+        WHERE Vertical_Name LIKE p_Search 
+        ORDER BY Vertical_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+    ELSEIF p_Type = 'CompanySize' THEN
+        SELECT Company_Size_Id AS id, Company_Size_Name AS name FROM Company_Size 
+        WHERE Company_Size_Name LIKE p_Search 
+        ORDER BY Company_Size_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+    ELSEIF p_Type = 'Source' THEN
+        SELECT Source_Id AS id, Source_Name AS name FROM Source 
+        WHERE Source_Name LIKE p_Search 
+        ORDER BY Source_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+    ELSEIF p_Type = 'Designation' THEN
+        SELECT Designation_Id AS id, Designation_Name AS name FROM Designation 
+        WHERE Designation_Name LIKE p_Search 
+        ORDER BY Designation_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+    END IF;
+
+END$$
 DELIMITER ;
 
 DELIMITER $$
