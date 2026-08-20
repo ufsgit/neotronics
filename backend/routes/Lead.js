@@ -65,6 +65,21 @@ router.post('/Save_Lead/', function (req, res, next) {
     }
 });
 
+router.post('/Save_NewLead/', function (req, res, next) {
+    try {
+        Lead.Save_NewLead(req.body, function (err, rows) {
+            if (err) {
+                console.error("SQL Error in Save_NewLead:", err);
+                return res.status(500).json({ success: false, message: "Database error", error: err.message });
+            }
+            res.json(rows);
+        });
+    } catch (e) {
+        console.error("Exception in Save_NewLead:", e);
+        res.status(500).json({ success: false, message: "Internal server error", error: e.message });
+    }
+});
+
 router.get('/Get_Leads/', function (req, res, next) {
     try {
         Lead.Get_Leads(function (err, rows) {

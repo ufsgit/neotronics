@@ -36,7 +36,7 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
   constructor(private elementRef: ElementRef) {}
 
   ngOnInit() {
-    this.searchSubject.pipe(debounceTime(500)).subscribe((searchValue) => {
+    this.searchSubject.pipe(debounceTime(1000)).subscribe((searchValue) => {
       this.search.emit(searchValue);
     });
   }
@@ -48,7 +48,10 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
   @HostListener('document:click', ['$event'])
   clickout(event: any) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.isOpen = false;
+      if (this.isOpen) {
+        this.isOpen = false;
+        this.clearSearch();
+      }
     }
   }
 
@@ -56,6 +59,8 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
     this.isOpen = !this.isOpen;
     if (this.isOpen) {
       this.onTouched();
+    } else {
+      this.clearSearch();
     }
   }
 
@@ -69,6 +74,14 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
     this.value = item[this.bindValue];
     this.onChange(this.value);
     this.isOpen = false;
+    this.clearSearch();
+  }
+
+  clearSearch() {
+    if (this.searchText !== '') {
+      this.searchText = '';
+      this.searchSubject.next('');
+    }
   }
 
   onScroll(event: any) {

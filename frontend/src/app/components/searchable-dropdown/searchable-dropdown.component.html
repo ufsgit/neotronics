@@ -7,7 +7,7 @@
 
   <div class="ig-dropdown-menu" *ngIf="isOpen">
     <div class="ig-dropdown-search">
-      <input type="text" class="ig-input" placeholder="Type to search..." (input)="onSearchChange($event)" (click)="$event.stopPropagation()">
+      <input type="text" class="ig-input" placeholder="Type to search..." [value]="searchText" (input)="onSearchChange($event)" (click)="$event.stopPropagation()">
       <i class="material-icons">search</i>
     </div>
     

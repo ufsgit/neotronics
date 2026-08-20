@@ -9,8 +9,16 @@ import { Observable } from 'rxjs';
 export class Lead_Service {
   constructor(private http: HttpClient) { }
 
+  // Save_Lead(Lead_): Observable<any> {
+  //   return this.http.post(environment.BasePath + 'Lead/Save_Lead/', Lead_);
+  // }
+
   Save_Lead(Lead_): Observable<any> {
     return this.http.post(environment.BasePath + 'Lead/Save_Lead/', Lead_);
+  }
+
+  Save_NewLead(Lead_): Observable<any> {
+    return this.http.post(environment.BasePath + 'Lead/Save_NewLead/', Lead_);
   }
 
   Get_Leads(): Observable<any> {

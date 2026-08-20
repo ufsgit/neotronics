@@ -202,6 +202,9 @@ export class Register_LeadComponent implements OnInit {
   Requirement_Details_Input: string = '';
 
   // Dropdown state tracking
+  DropdownOriginalData: { [key: string]: any[] } = {};
+  DropdownOriginalPage: { [key: string]: number } = {};
+  DropdownOriginalEnd: { [key: string]: boolean } = {};
   DropdownData: { [key: string]: any[] } = {};
   DropdownPage: { [key: string]: number } = {};
   DropdownSearch: { [key: string]: string } = {};
@@ -247,9 +250,6 @@ export class Register_LeadComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.Load_Column_Preferences();
-      this.Get_Dropdowns_Lead();
-      this.Get_Company_Sizes();
-      this.Get_Custom_Fields();
       this.issLoading = true;
       this.Lead_Service_.Get_Lead(id).subscribe(data => {
         this.issLoading = false;
@@ -279,25 +279,12 @@ export class Register_LeadComponent implements OnInit {
 
     // Subscribe to master data updates
     this.Master_Refresh_Service_.masterUpdated$.subscribe(masterName => {
-      if (masterName === 'Vertical' || masterName === 'Industry' || masterName === 'Designation') {
-        this.Get_Dropdowns_Lead();
-      }
-      if (masterName === 'Company_Size') {
-        this.Get_Company_Sizes();
-      }
+      // Get_Dropdowns_Lead removed per request
     });
 
     this.Entry_View = true;
-    this.Get_Dropdowns_Lead();
-    this.Get_Company_Sizes();
-    this.Get_Service_Interests();
-    this.Get_Lead_Priorities();
-    this.Get_Pipeline_Stages();
-    this.Get_Pulses();
-    this.Get_Target_Stages();
-    this.Get_Custom_Fields();
-    
-    ['State', 'District', 'Vertical', 'CompanySize', 'Source', 'Designation'].forEach(type => {
+
+    ['Vertical', 'State', 'District', 'CompanySize', 'Source', 'Designation', 'ServiceInterest', 'LeadPriority', 'PipelineStage', 'Pulse', 'TargetStage'].forEach(type => {
       this.DropdownPage[type] = 1;
       this.DropdownSearch[type] = '';
       this.DropdownEnd[type] = false;
@@ -315,13 +302,23 @@ export class Register_LeadComponent implements OnInit {
     this.Lead_Service_.Search_Lead_Dropdowns(type, search, page).subscribe(Rows => {
       this.DropdownLoading[type] = false;
       const data = Array.isArray(Rows) ? Rows : [];
-      if (data.length === 0) {
+      if (data.length < 20) {
         this.DropdownEnd[type] = true;
       }
       if (append) {
         this.DropdownData[type] = [...(this.DropdownData[type] || []), ...data];
+        if (search === '') {
+          this.DropdownOriginalData[type] = [...this.DropdownData[type]];
+          this.DropdownOriginalPage[type] = this.DropdownPage[type] || 1;
+          this.DropdownOriginalEnd[type] = this.DropdownEnd[type] || false;
+        }
       } else {
         this.DropdownData[type] = data;
+        if (search === '') {
+          this.DropdownOriginalData[type] = [...data];
+          this.DropdownOriginalPage[type] = this.DropdownPage[type] || 1;
+          this.DropdownOriginalEnd[type] = this.DropdownEnd[type] || false;
+        }
       }
     }, err => {
       console.error(`Error loading dropdown for ${type}`, err);
@@ -331,12 +328,22 @@ export class Register_LeadComponent implements OnInit {
 
   onSearchDropdown(type: string, searchText: string) {
     this.DropdownSearch[type] = searchText;
-    this.DropdownPage[type] = 1;
     this.DropdownEnd[type] = false;
+
+    if (searchText === '' && this.DropdownOriginalData[type]) {
+      this.DropdownData[type] = [...this.DropdownOriginalData[type]];
+      this.DropdownPage[type] = this.DropdownOriginalPage[type] || 1;
+      this.DropdownEnd[type] = this.DropdownOriginalEnd[type] || false;
+      return;
+    }
+
+    this.DropdownPage[type] = 1;
+
     this.loadDropdownData(type, false);
   }
 
   onLoadMoreDropdown(type: string) {
+    if (this.DropdownLoading[type] || this.DropdownEnd[type]) return;
     this.DropdownPage[type] = (this.DropdownPage[type] || 1) + 1;
     this.loadDropdownData(type, true);
   }
@@ -424,78 +431,6 @@ export class Register_LeadComponent implements OnInit {
               this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'File upload failed.', Type: "3" } });
           });
       }
-  }
-
-  Get_Company_Sizes() {
-    this.Company_Size_Service_.Get_All_Company_Sizes().subscribe(Rows => {
-      if (Rows && Array.isArray(Rows)) {
-        this.Company_Size_Data = Rows;
-      } else {
-        this.Company_Size_Data = [];
-      }
-    }, err => {
-      console.error('Error loading Company Sizes:', err);
-    });
-  }
-
-  Get_Service_Interests() {
-    this.Lead_Service_.Search_Lead_Dropdowns('ServiceInterest', '', 1).subscribe(Rows => {
-      if (Rows && Array.isArray(Rows)) {
-        this.Available_Interests = Rows.map(r => r.name);
-      } else {
-        this.Available_Interests = [];
-      }
-    }, err => {
-      console.error('Error loading Service Interests:', err);
-    });
-  }
-
-  Get_Lead_Priorities() {
-    this.Lead_Service_.Search_Lead_Dropdowns('LeadPriority', '', 1).subscribe(Rows => {
-      if (Rows && Array.isArray(Rows)) {
-        this.Available_Priorities = Rows.map(r => r.name);
-      } else {
-        this.Available_Priorities = [];
-      }
-    }, err => {
-      console.error('Error loading Lead Priorities:', err);
-    });
-  }
-
-  Get_Pipeline_Stages() {
-    this.Lead_Service_.Search_Lead_Dropdowns('PipelineStage', '', 1).subscribe(Rows => {
-      if (Rows && Array.isArray(Rows)) {
-        this.Available_Pipeline_Stages = Rows.map(r => r.name);
-      } else {
-        this.Available_Pipeline_Stages = [];
-      }
-    }, err => {
-      console.error('Error loading Pipeline Stages:', err);
-    });
-  }
-
-  Get_Pulses() {
-    this.Lead_Service_.Search_Lead_Dropdowns('Pulse', '', 1).subscribe(Rows => {
-      if (Rows && Array.isArray(Rows)) {
-        this.Available_Pulses = Rows.map(r => r.name);
-      } else {
-        this.Available_Pulses = [];
-      }
-    }, err => {
-      console.error('Error loading Pulses:', err);
-    });
-  }
-
-  Get_Target_Stages() {
-    this.Lead_Service_.Search_Lead_Dropdowns('TargetStage', '', 1).subscribe(Rows => {
-      if (Rows && Array.isArray(Rows)) {
-        this.Available_Target_Stages = Rows.map(r => r.name);
-      } else {
-        this.Available_Target_Stages = [];
-      }
-    }, err => {
-      console.error('Error loading Target Stages:', err);
-    });
   }
 
   Location_Change() {
@@ -837,15 +772,15 @@ export class Register_LeadComponent implements OnInit {
 
   createContactRow(contact?: any): FormGroup {
     return this.fb.group({
-      Contact_Person: [contact ? contact.Contact_Person : '', Validators.required],
-      Contact_Number: [contact ? contact.Contact_Number : '', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(10)]],
-      Phone: [contact ? contact.Phone : '', [Validators.pattern('^[0-9]*$')]],
-      Designation: [contact ? contact.Designation : 0],
-      Email: [contact ? contact.Email : '', [Validators.email]],
+      POC_Full_Name: [contact ? contact.POC_Full_Name : '', Validators.required],
+      POC_Direct_Mobile: [contact ? contact.POC_Direct_Mobile : '', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(10)]],
+      POC_Work_Phone: [contact ? contact.POC_Work_Phone : '', [Validators.pattern('^[0-9]*$')]],
+      POC_Designation_Id: [contact ? contact.POC_Designation_Id : 0],
+      POC_Email: [contact ? contact.POC_Email : '', [Validators.email]],
       Next_Call_Action: [contact ? !!contact.Next_Call_Action : false],
-      State: [contact ? contact.State : 0],
-      Sitting_Location: [contact ? contact.Sitting_Location : 0],
-      Office_Type: [contact ? contact.Office_Type : 'Head office'],
+      POC_State_Id: [contact ? contact.POC_State_Id : 0],
+      POC_Location_Id: [contact ? contact.POC_Location_Id : 0],
+      POC_Office_Type: [contact ? contact.POC_Office_Type : 'Head office'],
       Name_Captured: [contact ? !!contact.Name_Captured : false],
       Number_Captured: [contact ? !!contact.Number_Captured : false],
       Email_Captured: [contact ? !!contact.Email_Captured : false]
@@ -957,45 +892,88 @@ export class Register_LeadComponent implements OnInit {
     }
     const contactPersonValues = this.contactForm && this.contactForm.value && this.contactForm.value.contactPersons ? this.contactForm.value.contactPersons : [];
     const selectedContactValue = contactPersonValues.find(c => !!c.Next_Call_Action) || contactPersonValues[0] || null;
-    if (!this.Lead_.Phone && selectedContactValue && selectedContactValue.Contact_Number) this.Lead_.Phone = selectedContactValue.Contact_Number;
+    if (!this.Lead_.Phone && selectedContactValue && selectedContactValue.POC_Direct_Mobile) this.Lead_.Phone = selectedContactValue.POC_Direct_Mobile;
     if (!this.Lead_.Phone) {
       this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter Phone Number', Type: "3" } });
       return;
     }
+
     let Lead_Copy = Object.assign({}, this.Lead_);
-    (Lead_Copy as any).Contact_Person_Details = contactPersonValues;
+
+    // Map Enquiry_For and Remark
+    Lead_Copy.Enquiry_For = this.Added_Interests.join('*');
+    Lead_Copy.Remark = this.Requirement_Note;
+
+    // Map Name fields from IDs
+    Lead_Copy.Vertical_Name = this.DropdownData['Vertical'] ? (this.DropdownData['Vertical'].find(x => x.id == Lead_Copy.Vertical) || {}).name || '' : '';
+    Lead_Copy.State_Name = this.DropdownData['State'] ? (this.DropdownData['State'].find(x => x.id == Lead_Copy.State) || {}).name || '' : '';
+    Lead_Copy.District_Name = this.DropdownData['District'] ? (this.DropdownData['District'].find(x => x.id == Lead_Copy.District) || {}).name || '' : '';
+    Lead_Copy.Company_Size_Name = this.DropdownData['CompanySize'] ? (this.DropdownData['CompanySize'].find(x => x.id == Lead_Copy.Company_Size_Id) || {}).name || '' : '';
+    Lead_Copy.Source_Name = this.DropdownData['Source'] ? (this.DropdownData['Source'].find(x => x.id == Lead_Copy.Source) || {}).name || '' : '';
+
+    // Process Contacts
+    let serializedContacts = contactPersonValues.map((c, i) => ({
+      Full_Name: c.POC_Full_Name,
+      Designation_Id: c.POC_Designation_Id,
+      Designation_Name: this.DropdownData['Designation'] ? (this.DropdownData['Designation'].find(d => d.id == c.POC_Designation_Id) || {}).name || '' : '',
+      Direct_Mobile: c.POC_Direct_Mobile,
+      Email_Address: c.POC_Email,
+      Work_Phone: c.POC_Work_Phone,
+      State_Id: c.POC_State_Id,
+      State_Name: this.DropdownData['State'] ? (this.DropdownData['State'].find(s => s.id == c.POC_State_Id) || {}).name || '' : '',
+      Sitting_Location: c.POC_Location_Id,
+      Office_Type: c.POC_Office_Type,
+      Name_Captured: c.Name_Captured ? 1 : 0,
+      Number_Captured: c.Number_Captured ? 1 : 0,
+      Email_Captured: c.Email_Captured ? 1 : 0,
+      Is_Primary: (!!c.Next_Call_Action || (i === 0 && !contactPersonValues.some(cp => cp.Next_Call_Action))) ? 1 : 0
+    }));
+
+    (Lead_Copy as any).Contact_Person_Details = JSON.stringify(serializedContacts);
     Lead_Copy.Next_Call_Action = contactPersonValues.some(c => !!c.Next_Call_Action);
+
+    // Map Primary Contact to Lead fields
     if (contactPersonValues.length > 0) {
       const firstContact = selectedContactValue || contactPersonValues[0];
-      Lead_Copy.Contact_Person = firstContact.Contact_Person;
-      Lead_Copy.Contact_Number = firstContact.Contact_Number;
-      Lead_Copy.Phone = firstContact.Phone || firstContact.Contact_Number || Lead_Copy.Phone;
-      Lead_Copy.Designation = firstContact.Designation;
-      Lead_Copy.Email = firstContact.Email;
+      Lead_Copy.POC_Full_Name = firstContact.POC_Full_Name;
+      Lead_Copy.POC_Direct_Mobile = firstContact.POC_Direct_Mobile;
+      Lead_Copy.POC_Work_Phone = firstContact.POC_Work_Phone || firstContact.POC_Direct_Mobile || Lead_Copy.POC_Work_Phone;
+      Lead_Copy.POC_Designation_Id = firstContact.POC_Designation_Id;
+      Lead_Copy.POC_Designation = this.DropdownData['Designation'] ? (this.DropdownData['Designation'].find(d => d.id == firstContact.POC_Designation_Id) || {}).name || '' : '';
+      Lead_Copy.POC_Email = firstContact.POC_Email;
+      
+      Lead_Copy.POC_State_Id = firstContact.POC_State_Id;
+      Lead_Copy.POC_State = this.DropdownData['State'] ? (this.DropdownData['State'].find(s => s.id == firstContact.POC_State_Id) || {}).name || '' : '';
+      Lead_Copy.POC_Location_Id = firstContact.POC_Location_Id;
+      Lead_Copy.POC_Loc = this.DropdownData['Location'] ? (this.DropdownData['Location'].find(l => l.id == firstContact.POC_Location_Id) || {}).name || '' : '';
+      Lead_Copy.POC_Office_Type = firstContact.POC_Office_Type;
+      Lead_Copy.Name_Captured = firstContact.Name_Captured;
+      Lead_Copy.Number_Captured = firstContact.Number_Captured;
+      Lead_Copy.Email_Captured = firstContact.Email_Captured;
     }
+
     (Lead_Copy as any).Is_FollowUp = Lead_Copy.Is_FollowUp ? 1 : 0;
     if (this.Lead_.Is_FollowUp) {
       Lead_Copy.Department_Id = this.Lead_.FollowUp_Department_Id;
       Lead_Copy.Status_Id = this.Lead_.FollowUp_Status_Id;
       Lead_Copy.Staff_Id = this.Lead_.FollowUp_Staff_Id;
       Lead_Copy.Location_Id = this.Lead_.FollowUp_Location_Id;
-      Lead_Copy.Next_FollowUp_Date = this.Lead_.FollowUp_Next_Date;
     } else {
       Lead_Copy.Department_Id = 0;
       Lead_Copy.Status_Id = this.Lead_.Status_Id;
       Lead_Copy.Staff_Id = 0;
       Lead_Copy.Location_Id = 0;
-      Lead_Copy.Next_FollowUp_Date = null;
     }
+
     if (Lead_Copy.Entry_Date) Lead_Copy.Entry_Date = this.New_Date(new Date(Lead_Copy.Entry_Date));
-    if (Lead_Copy.Next_FollowUp_Date) Lead_Copy.Next_FollowUp_Date = this.New_Date(new Date(Lead_Copy.Next_FollowUp_Date));
     if (Lead_Copy.FollowUp_Next_Date) Lead_Copy.FollowUp_Next_Date = this.New_Date(new Date(Lead_Copy.FollowUp_Next_Date));
-    Lead_Copy.Next_FollowUp_Date = Lead_Copy.FollowUp_Next_Date;
+    
     const loginUser = localStorage.getItem('Login_User');
     if (loginUser) Lead_Copy.Login_User_Id = Number(loginUser);
     if (Lead_Copy.FollowUp_Date) Lead_Copy.FollowUp_Date = Lead_Copy.FollowUp_Date.replace('T', ' ');
+
     this.issLoading = true;
-    this.Lead_Service_.Save_Lead(Lead_Copy).pipe(finalize(() => this.issLoading = false)).subscribe({
+    this.Lead_Service_.Save_NewLead(Lead_Copy).pipe(finalize(() => this.issLoading = false)).subscribe({
       next: (res: any) => {
         if (res && res.success) {
           if (res.data && res.data.notified) {
@@ -1033,8 +1011,10 @@ export class Register_LeadComponent implements OnInit {
       this.Lead_.Vertical = String(this.Lead_.Vertical).split(',')[0].trim();
     }
     if (this.Lead_.Enquiry_For && String(this.Lead_.Enquiry_For).trim() !== '') {
-      this.Selected_Enquiry_For = String(this.Lead_.Enquiry_For).split(',').map(v => Number(v.trim())).filter(v => v > 0);
-    } else this.Selected_Enquiry_For = [];
+      this.Added_Interests = String(this.Lead_.Enquiry_For).split('*').map(v => v.trim()).filter(v => v !== '');
+    } else {
+      this.Added_Interests = [];
+    }
     if (this.Lead_.Staff_Id > 0) this.Lead_.FollowUp_Staff_Id = this.Lead_.Staff_Id;
     if (this.Lead_.Department_Id > 0) this.Lead_.FollowUp_Department_Id = this.Lead_.Department_Id;
     if (this.Lead_.Status_Id > 0) this.Lead_.FollowUp_Status_Id = this.Lead_.Status_Id;
@@ -1049,11 +1029,11 @@ export class Register_LeadComponent implements OnInit {
       if (!contacts.some(c => !!c.Next_Call_Action) && this.Lead_.Next_Call_Action && this.contactPersons.length > 0) this.contactPersons.at(0).get('Next_Call_Action').setValue(true);
     } else {
       this.contactPersons.push(this.createContactRow({
-        Contact_Person: this.Lead_.Contact_Person,
-        Contact_Number: this.Lead_.Contact_Number,
-        Phone: this.Lead_.Phone,
-        Designation: this.Lead_.Designation,
-        Email: this.Lead_.Email,
+        POC_Full_Name: this.Lead_.POC_Full_Name,
+        POC_Direct_Mobile: this.Lead_.POC_Direct_Mobile,
+        POC_Work_Phone: this.Lead_.POC_Work_Phone,
+        POC_Designation_Id: this.Lead_.POC_Designation_Id,
+        POC_Email: this.Lead_.POC_Email,
         Next_Call_Action: this.Lead_.Next_Call_Action
       }));
     }

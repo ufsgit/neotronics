@@ -234,7 +234,7 @@ var Lead = {
             strOrNull(Lead_.Contact_Number),
             intOrNull(Lead_.Vertical),
             strOrNull(Lead_.Enquiry_For),
-            intOrNull(Lead_.Designation),
+            intOrNull(Lead_.Designation_Id),
             strOrNull(Lead_.Email),
             strOrNull(Lead_.Website),
             strOrNull(Lead_.Address),
@@ -368,6 +368,39 @@ var Lead = {
                         return finish();
                     }
                 });
+        });
+    },
+    Save_NewLead: function (Lead_, callback) {
+        const intOrNull = v => (v === '' || v === null || v === undefined) ? null : (isNaN(Number(v)) ? null : Number(v));
+        const strOrNull = v => (v === '' || v === null || v === undefined) ? null : v;
+        const boolOrNull = v => (v === true || v === 1 || v === '1' || v === 'true') ? 1 : 0;
+        
+        const params = [
+            intOrNull(Lead_.Lead_Id), strOrNull(Lead_.Lead_Name), intOrNull(Lead_.Lead_Type), intOrNull(Lead_.Vertical), strOrNull(Lead_.Vertical_Name),
+            strOrNull(Lead_.Address), intOrNull(Lead_.State), strOrNull(Lead_.State_Name), intOrNull(Lead_.District), strOrNull(Lead_.District_Name),
+            intOrNull(Lead_.Company_Size_Id), strOrNull(Lead_.Company_Size_Name), intOrNull(Lead_.Source), strOrNull(Lead_.Source_Name), 
+            
+            strOrNull(Lead_.POC_Full_Name), intOrNull(Lead_.POC_Designation_Id), strOrNull(Lead_.POC_Designation), strOrNull(Lead_.POC_Direct_Mobile),
+            strOrNull(Lead_.POC_Email), intOrNull(Lead_.POC_State_Id), strOrNull(Lead_.POC_State), intOrNull(Lead_.POC_Location_Id), strOrNull(Lead_.POC_Loc),
+            strOrNull(Lead_.POC_Work_Phone), strOrNull(Lead_.POC_Office_Type), boolOrNull(Lead_.Name_Captured), boolOrNull(Lead_.Number_Captured), boolOrNull(Lead_.Email_Captured),
+            
+            strOrNull(Lead_.Enquiry_For), strOrNull(Lead_.Remark), 
+            strOrNull(Lead_.Lead_Priority), strOrNull(Lead_.Current_Pipeline_Stage), strOrNull(Lead_.Pulse), intOrNull(Lead_.Status_Id), strOrNull(Lead_.Status_Name),
+            intOrNull(Lead_.Branch_Id), strOrNull(Lead_.Branch_Name), intOrNull(Lead_.Department_Id), strOrNull(Lead_.Department_Name), intOrNull(Lead_.Staff_Id),
+            strOrNull(Lead_.Staff_Name), strOrNull(Lead_.Workflow), boolOrNull(Lead_.Workflow_Start_Status),
+            
+            boolOrNull(Lead_.Is_FollowUp), intOrNull(Lead_.FollowUp_Branch_Id), strOrNull(Lead_.FollowUp_Branch_Name), intOrNull(Lead_.FollowUp_Department_Id), strOrNull(Lead_.FollowUp_Dept_Name),
+            intOrNull(Lead_.FollowUp_Status_Id), strOrNull(Lead_.FollowUp_Status_Name), intOrNull(Lead_.FollowUp_Staff_Id), strOrNull(Lead_.FollowUp_Staff_Name),
+            strOrNull(Lead_.FollowUp_Remark), strOrNull(Lead_.FollowUp_Date), strOrNull(Lead_.FollowUp_Market_Study), intOrNull(Lead_.Login_User_Id),
+            
+            strOrNull(Lead_.Contact_Person_Details)
+        ];
+        
+        const placeholders = new Array(57).fill('?').join(',');
+        
+        return db.query(`CALL Save_NewLead(${placeholders})`, params, (err, rows) => {
+            if (err) return callback(err, rows);
+            callback(null, rows);
         });
     },
     Get_Leads: function (callback) {

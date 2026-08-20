@@ -706,7 +706,7 @@ export class LeadComponent implements OnInit {
       Contact_Person: [contact ? contact.Contact_Person : '', Validators.required],
       Contact_Number: [contact ? contact.Contact_Number : '', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(10)]],
       Phone: [contact ? contact.Phone : '', [Validators.pattern('^[0-9]*$')]],
-      Designation: [contact ? contact.Designation : 0],
+      Designation_Id: [contact ? contact.Designation_Id : 0],
       Email: [contact ? contact.Email : '', [Validators.email]],
       Next_Call_Action: [contact ? !!contact.Next_Call_Action : false],
       State: [contact ? contact.State : 0],
@@ -835,7 +835,7 @@ export class LeadComponent implements OnInit {
       Lead_Copy.Contact_Person = firstContact.Contact_Person;
       Lead_Copy.Contact_Number = firstContact.Contact_Number;
       Lead_Copy.Phone = firstContact.Phone || firstContact.Contact_Number || Lead_Copy.Phone;
-      Lead_Copy.Designation = firstContact.Designation;
+      Lead_Copy.Designation_Id = firstContact.Designation_Id;
       Lead_Copy.Email = firstContact.Email;
     }
     (Lead_Copy as any).Is_FollowUp = Lead_Copy.Is_FollowUp ? 1 : 0;

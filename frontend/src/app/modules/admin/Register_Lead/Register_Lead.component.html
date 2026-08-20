@@ -127,12 +127,12 @@
                 <!-- Row 1 -->
                 <div class="ig-field">
                   <label class="ig-label">Full Name <span class="ig-req">*</span></label>
-                  <input type="text" class="ig-input" placeholder="e.g. John Doe" formControlName="Contact_Person">
+                  <input type="text" class="ig-input" placeholder="e.g. John Doe" formControlName="POC_Full_Name">
                 </div>
                 <div class="ig-field">
                   <label class="ig-label">Designation <span class="ig-req">*</span></label>
                   <app-searchable-dropdown
-                    formControlName="Designation"
+                    formControlName="POC_Designation_Id"
                     [data]="DropdownData['Designation']"
                     bindLabel="name"
                     bindValue="id"
@@ -144,18 +144,18 @@
                 <div class="ig-field">
                   <label class="ig-label">Direct Mobile <span class="ig-req">*</span></label>
                   <input type="text" class="ig-input" placeholder="10-digit for India, international OK"
-                    formControlName="Contact_Number">
+                    formControlName="POC_Direct_Mobile">
                 </div>
 
                 <!-- Row 2 -->
                 <div class="ig-field">
                   <label class="ig-label">Email Address</label>
-                  <input type="text" class="ig-input" placeholder="name@company.com" formControlName="Email">
+                  <input type="text" class="ig-input" placeholder="name@company.com" formControlName="POC_Email">
                 </div>
                 <div class="ig-field">
                   <label class="ig-label">State</label>
                   <app-searchable-dropdown
-                    formControlName="State"
+                    formControlName="POC_State_Id"
                     [data]="DropdownData['State']"
                     bindLabel="name"
                     bindValue="id"
@@ -166,7 +166,7 @@
                 </div>
                 <div class="ig-field">
                   <label class="ig-label">Sitting location</label>
-                  <select class="ig-select" formControlName="Sitting_Location">
+                  <select class="ig-select" formControlName="POC_Location_Id">
                     <option [value]="0">Select Sitting location</option>
                     <option *ngFor="let d of District_Data" [value]="d.District_Id">{{d.District_Name}}</option>
                   </select>
@@ -175,7 +175,7 @@
                 <!-- Row 3 -->
                 <div class="ig-field">
                   <label class="ig-label">Work Phone</label>
-                  <input type="text" class="ig-input" placeholder="Office extension" formControlName="Phone">
+                  <input type="text" class="ig-input" placeholder="Office extension" formControlName="POC_Work_Phone">
                 </div>
               </div>
 
@@ -185,12 +185,12 @@
                 <div style="display: flex; align-items: center; gap: 15px;">
                   <span class="ig-label" style="margin-bottom: 0;">Office type</span>
                   <div style="display: flex; gap: 8px;">
-                    <label class="ig-toggle-btn" [class.active]="contact.get('Office_Type').value === 'Head office'">
-                      <input type="radio" formControlName="Office_Type" value="Head office" style="display: none;"> Head
+                    <label class="ig-toggle-btn" [class.active]="contact.get('POC_Office_Type').value === 'Head office'">
+                      <input type="radio" formControlName="POC_Office_Type" value="Head office" style="display: none;"> Head
                       office
                     </label>
-                    <label class="ig-toggle-btn" [class.active]="contact.get('Office_Type').value === 'Branch office'">
-                      <input type="radio" formControlName="Office_Type" value="Branch office" style="display: none;">
+                    <label class="ig-toggle-btn" [class.active]="contact.get('POC_Office_Type').value === 'Branch office'">
+                      <input type="radio" formControlName="POC_Office_Type" value="Branch office" style="display: none;">
                       Branch office
                     </label>
                   </div>
@@ -249,11 +249,17 @@
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start;">
-              <select class="ig-input" style="width: 100%; max-width: 100% !important;" [(ngModel)]="Selected_Interest"
-                name="Selected_Interest" (ngModelChange)="Interest_Already_Exists = false">
-                <option value="" disabled selected>Select an interest...</option>
-                <option *ngFor="let interest of Available_Interests" [value]="interest">{{interest}}</option>
-              </select>
+              <app-searchable-dropdown
+                name="Selected_Interest"
+                [(ngModel)]="Selected_Interest"
+                [data]="DropdownData['ServiceInterest']"
+                bindLabel="name"
+                bindValue="name"
+                placeholder="Select an interest..."
+                (search)="onSearchDropdown('ServiceInterest', $event)"
+                (loadMore)="onLoadMoreDropdown('ServiceInterest')"
+                (ngModelChange)="Interest_Already_Exists = false">
+              </app-searchable-dropdown>
               <div style="display: flex; align-items: center; gap: 10px;">
                 <button mat-button type="button" class="ig-btn-outline" style="white-space: nowrap;"
                   (click)="Add_Interest()">
@@ -320,11 +326,16 @@
           <div style="max-width: 300px;">
             <label class="ig-label" style="margin-bottom: 5px; display: block; text-transform: uppercase;">Lead
               Priority Level</label>
-            <select class="ig-input" style="width: 100%; max-width: 100% !important;" name="Lead_Priority"
-              [(ngModel)]="Lead_.Lead_Priority">
-              <option value="">Select Priority</option>
-              <option *ngFor="let p of Available_Priorities" [value]="p">{{p}}</option>
-            </select>
+            <app-searchable-dropdown
+              name="Lead_Priority"
+              [(ngModel)]="Lead_.Lead_Priority"
+              [data]="DropdownData['LeadPriority']"
+              bindLabel="name"
+              bindValue="name"
+              placeholder="Select Priority"
+              (search)="onSearchDropdown('LeadPriority', $event)"
+              (loadMore)="onLoadMoreDropdown('LeadPriority')">
+            </app-searchable-dropdown>
           </div>
         </div>
       </div>
@@ -339,11 +350,16 @@
           <!-- Stage -->
           <div style="border-right: 1px solid #e2e8f0; padding-right: 20px;">
             <label class="ig-label" style="margin-bottom: 5px; display: block; text-transform: uppercase;">Stage</label>
-            <select class="ig-input" style="width: 100%; max-width: 100% !important;"
-              [(ngModel)]="Selected_Pipeline_Stage" name="Selected_Pipeline_Stage">
-              <option value="" disabled selected>Select...</option>
-              <option *ngFor="let stage of Available_Pipeline_Stages" [value]="stage">{{stage}}</option>
-            </select>
+            <app-searchable-dropdown
+              name="Selected_Pipeline_Stage"
+              [(ngModel)]="Selected_Pipeline_Stage"
+              [data]="DropdownData['PipelineStage']"
+              bindLabel="name"
+              bindValue="name"
+              placeholder="Select Stage..."
+              (search)="onSearchDropdown('PipelineStage', $event)"
+              (loadMore)="onLoadMoreDropdown('PipelineStage')">
+            </app-searchable-dropdown>
           </div>
 
           <!-- Pulse -->
@@ -351,11 +367,16 @@
             <div>
               <label class="ig-label"
                 style="margin-bottom: 5px; display: block; text-transform: uppercase;">Pulse</label>
-              <select class="ig-input" style="width: 100%; max-width: 100% !important;" [(ngModel)]="Selected_Pulse"
-                name="Selected_Pulse">
-                <option value="" disabled selected>Select...</option>
-                <option *ngFor="let pulse of Available_Pulses" [value]="pulse">{{pulse}}</option>
-              </select>
+              <app-searchable-dropdown
+                name="Selected_Pulse"
+                [(ngModel)]="Selected_Pulse"
+                [data]="DropdownData['Pulse']"
+                bindLabel="name"
+                bindValue="name"
+                placeholder="Select Pulse..."
+                (search)="onSearchDropdown('Pulse', $event)"
+                (loadMore)="onLoadMoreDropdown('Pulse')">
+              </app-searchable-dropdown>
             </div>
           </div>
         </div>
@@ -391,10 +412,11 @@
 
       <!-- ── Assignment ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header">
-          <p class="ig-section-title"><i class="material-icons">event_available</i> Assignment</p>
+        <div class="ig-section-header" style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">
+          <label for="chk_Is_FollowUp" class="ig-section-title" style="margin: 0; display: flex; align-items: center; gap: 5px; cursor: pointer;"><i class="material-icons">event_available</i> {{ Lead_.Is_FollowUp ? 'Assignment' : 'Add Assignment' }}</label>
+          <input type="checkbox" name="Is_FollowUp" [(ngModel)]="Lead_.Is_FollowUp" style="width: 16px; height: 16px; margin: 0; cursor: pointer;" id="chk_Is_FollowUp" />
         </div>
-        <div class="ig-grid ig-grid-4" style="margin-top: 15px;">
+        <div class="ig-grid ig-grid-4" style="margin-top: 15px;" *ngIf="Lead_.Is_FollowUp">
           <div class="ig-field">
             <label class="ig-label" style="text-transform: uppercase;">Branch <span class="ig-req">*</span></label>
             <select class="ig-select" name="FollowUp_Location_Id" [(ngModel)]="Lead_.FollowUp_Location_Id" (change)="Location_Change()">
@@ -423,10 +445,16 @@
           <div class="ig-field">
             <label class="ig-label" style="text-transform: uppercase;">Target Stage <span
                 class="ig-req">*</span></label>
-            <select class="ig-select" name="FollowUp_Status_Id" [(ngModel)]="Lead_.FollowUp_Status_Id">
-              <option value="0">Select Stage</option>
-              <option *ngFor="let ts of Available_Target_Stages" [value]="ts">{{ts}}</option>
-            </select>
+            <app-searchable-dropdown
+              name="FollowUp_Status_Id"
+              [(ngModel)]="Lead_.FollowUp_Status_Id"
+              [data]="DropdownData['TargetStage']"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select Stage"
+              (search)="onSearchDropdown('TargetStage', $event)"
+              (loadMore)="onLoadMoreDropdown('TargetStage')">
+            </app-searchable-dropdown>
           </div>
         </div>
       </div>
