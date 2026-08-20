@@ -2693,13 +2693,15 @@ DELIMITER ;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Dropdowns_Lead`()
 BEGIN
-    SELECT Department_Id, Department_Name FROM Department;
+    SELECT Department_Id, Department_Name, Branch_Id FROM Department;
     SELECT Status_Id, Status_Name FROM Department_Status;
     SELECT Source_Id, Source_Name FROM Enquiry_Source;
     SELECT Vertical_Id, Vertical_Name FROM Vertical;
     SELECT Designation_Id, Designation_Name FROM Designation;
     SELECT State_Id, State_Name FROM State;
     SELECT District_Id, District_Name, State_Id FROM District;
+    SELECT Branch_Id AS Location_Id, Branch_Name AS Location_Name FROM branch_master;
+    SELECT 1 AS dummy; -- placeholder for Staff_Data
 END$$
 DELIMITER ;
 
@@ -12834,6 +12836,193 @@ false);
  End If ;
  select Menu_Id_;
  End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
+    IN _Lead_Id INT,
+    IN _Lead_Name VARCHAR(100),
+    IN _Lead_Type INT,
+    IN _Vertical INT,
+    IN _Vertical_Name VARCHAR(100),
+    IN _Address VARCHAR(1000),
+    IN _State INT,
+    IN _State_Name VARCHAR(100),
+    IN _District INT,
+    IN _District_Name VARCHAR(100),
+    IN _Company_Size_Id INT,
+    IN _Company_Size_Name VARCHAR(100),
+    IN _Source INT,
+    IN _Source_Name VARCHAR(100),
+    
+    IN _POC_Full_Name VARCHAR(255),
+    IN _POC_Designation_Id INT,
+    IN _POC_Designation VARCHAR(255),
+    IN _POC_Direct_Mobile VARCHAR(50),
+    IN _POC_Email VARCHAR(255),
+    IN _POC_State_Id INT,
+    IN _POC_State VARCHAR(100),
+    IN _POC_Location_Id INT,
+    IN _POC_Loc VARCHAR(100),
+    IN _POC_Work_Phone VARCHAR(50),
+    IN _POC_Office_Type VARCHAR(100),
+    IN _Name_Captured TINYINT(1),
+    IN _Number_Captured TINYINT(1),
+    IN _Email_Captured TINYINT(1),
+    
+    IN _Enquiry_For VARCHAR(500),
+    IN _Remark VARCHAR(1000),
+    IN _Lead_Priority VARCHAR(50),
+    IN _Current_Pipeline_Stage VARCHAR(100),
+    IN _Pulse VARCHAR(100),
+    IN _Status_Id INT,
+    IN _Status_Name VARCHAR(100),
+    IN _Branch_Id INT,
+    IN _Branch_Name VARCHAR(100),
+    IN _Department_Id INT,
+    IN _Department_Name VARCHAR(100),
+    IN _Staff_Id INT,
+    IN _Staff_Name VARCHAR(100),
+    IN _Workflow VARCHAR(100),
+    IN _Workflow_Start_Status TINYINT(1),
+    
+    -- Follow-up specific fields
+    IN _Is_FollowUp BIT,
+    IN _FollowUp_Branch_Id INT,
+    IN _FollowUp_Branch_Name VARCHAR(100),
+    IN _FollowUp_Department_Id INT,
+    IN _FollowUp_Dept_Name VARCHAR(100),
+    IN _FollowUp_Status_Id INT,
+    IN _FollowUp_Status_Name VARCHAR(100),
+    IN _FollowUp_Staff_Id INT,
+    IN _FollowUp_Staff_Name VARCHAR(100),
+    IN _FollowUp_Remark VARCHAR(1000),
+    IN _FollowUp_Date DATETIME,
+    IN _FollowUp_Market_Study VARCHAR(1000),
+    IN _Login_User_Id INT,
+    
+    -- New bulk JSON parameter
+    IN _Contact_Person_Details_JSON TEXT
+)
+BEGIN
+    DECLARE _Generated_Lead_Id INT;
+
+    -- Declare rollback handler for any SQL errors
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    -- Start the transaction
+    START TRANSACTION;
+
+    IF _Lead_Id = 0 THEN
+        -- 1. INSERT INTO LEAD
+        INSERT INTO `lead` (
+            Lead_Name, Lead_Type, Vertical, Vertical_Name, Address, State, State_Name, District, District_Name,
+            Company_Size_Id, Company_Size_Name, Source, Source_Name, 
+            POC_Full_Name, POC_Designation_Id, POC_Designation, POC_Direct_Mobile, POC_Email, 
+            POC_State_Id, POC_State, POC_Location_Id, POC_Loc, POC_Work_Phone, POC_Office_Type,
+            Name_Captured, Number_Captured, Email_Captured, Enquiry_For, Remark,
+            Lead_Priority, Current_Pipeline_Stage, Pulse, Status_Id, Status_Name, Branch_Id, Branch_Name,
+            Department_Id, Department_Name, Staff_Id, Staff_Name, Workflow, Workflow_Start_Status
+        ) VALUES (
+            _Lead_Name, _Lead_Type, _Vertical, _Vertical_Name, _Address, _State, _State_Name, _District, _District_Name,
+            _Company_Size_Id, _Company_Size_Name, _Source, _Source_Name, 
+            _POC_Full_Name, _POC_Designation_Id, _POC_Designation, _POC_Direct_Mobile, _POC_Email,
+            _POC_State_Id, _POC_State, _POC_Location_Id, _POC_Loc, _POC_Work_Phone, _POC_Office_Type,
+            _Name_Captured, _Number_Captured, _Email_Captured, _Enquiry_For, _Remark,
+            _Lead_Priority, _Current_Pipeline_Stage, _Pulse, _Status_Id, _Status_Name, NULLIF(_Branch_Id, 0), _Branch_Name,
+            NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name, _Workflow, _Workflow_Start_Status
+        );
+        SET _Generated_Lead_Id = LAST_INSERT_ID();
+        
+        -- 2. INSERT PIPELINE HISTORY
+        INSERT INTO `lead_pipeline_pulse_history` (
+            Lead_Id, Pipeline_Stage, Pulse, Current_Status, Login_User_Id
+        ) VALUES (
+            _Generated_Lead_Id, _Current_Pipeline_Stage, _Pulse, _Status_Name, _Login_User_Id
+        );
+        
+    ELSE
+        -- 1. UPDATE LEAD
+        UPDATE `lead`
+        SET 
+            Lead_Name = _Lead_Name, Lead_Type = _Lead_Type, Vertical = _Vertical, Vertical_Name = _Vertical_Name,
+            Address = _Address, State = _State, State_Name = _State_Name, District = _District, District_Name = _District_Name,
+            Company_Size_Id = _Company_Size_Id, Company_Size_Name = _Company_Size_Name, Source = _Source, Source_Name = _Source_Name, 
+            POC_Full_Name = _POC_Full_Name, POC_Designation_Id = _POC_Designation_Id, POC_Designation = _POC_Designation,
+            POC_Direct_Mobile = _POC_Direct_Mobile, POC_Email = _POC_Email, POC_State_Id = _POC_State_Id, POC_State = _POC_State,
+            POC_Location_Id = _POC_Location_Id, POC_Loc = _POC_Loc, POC_Work_Phone = _POC_Work_Phone, POC_Office_Type = _POC_Office_Type,
+            Name_Captured = _Name_Captured, Number_Captured = _Number_Captured, Email_Captured = _Email_Captured, 
+            Enquiry_For = _Enquiry_For, Remark = _Remark, Lead_Priority = _Lead_Priority,
+            Current_Pipeline_Stage = _Current_Pipeline_Stage, Pulse = _Pulse, Status_Id = _Status_Id, Status_Name = _Status_Name,
+            Branch_Id = NULLIF(_Branch_Id, 0), Branch_Name = _Branch_Name, Department_Id = NULLIF(_Department_Id, 0), Department_Name = _Department_Name,
+            Staff_Id = NULLIF(_Staff_Id, 0), Staff_Name = _Staff_Name, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
+        WHERE Lead_Id = _Lead_Id;
+        
+        SET _Generated_Lead_Id = _Lead_Id;
+
+        -- 2. INSERT PIPELINE HISTORY
+        INSERT INTO `lead_pipeline_pulse_history` (
+            Lead_Id, Pipeline_Stage, Pulse, Current_Status, Login_User_Id
+        ) VALUES (
+            _Generated_Lead_Id, _Current_Pipeline_Stage, _Pulse, _Status_Name, _Login_User_Id
+        );
+
+        -- Delete existing contacts for complete replace from JSON
+        DELETE FROM `lead_contact` WHERE Lead_Id = _Generated_Lead_Id;
+    END IF;
+
+    -- 3. BULK INSERT CONTACTS FROM JSON
+    IF _Contact_Person_Details_JSON IS NOT NULL AND _Contact_Person_Details_JSON != '' AND _Contact_Person_Details_JSON != '[]' THEN
+        INSERT INTO `lead_contact` (
+            Lead_Id, Full_Name, Designation_Id, Designation_Name, Direct_Mobile, Email_Address, Work_Phone,
+            State_Id, State_Name, Sitting_Location, Office_Type, Name_Captured, Number_Captured, Email_Captured,
+            Is_Primary, Login_User_Id
+        )
+        SELECT 
+            _Generated_Lead_Id, Full_Name, Designation_Id, Designation_Name, Direct_Mobile, Email_Address, Work_Phone,
+            State_Id, State_Name, Sitting_Location, Office_Type, Name_Captured, Number_Captured, Email_Captured,
+            Is_Primary, _Login_User_Id
+        FROM JSON_TABLE(_Contact_Person_Details_JSON, '$[*]' COLUMNS (
+            Full_Name VARCHAR(150) PATH '$.Full_Name',
+            Designation_Id INT PATH '$.Designation_Id',
+            Designation_Name VARCHAR(100) PATH '$.Designation_Name',
+            Direct_Mobile VARCHAR(100) PATH '$.Direct_Mobile',
+            Email_Address VARCHAR(200) PATH '$.Email_Address',
+            Work_Phone VARCHAR(100) PATH '$.Work_Phone',
+            State_Id INT PATH '$.State_Id',
+            State_Name VARCHAR(100) PATH '$.State_Name',
+            Sitting_Location INT PATH '$.Sitting_Location',
+            Office_Type VARCHAR(50) PATH '$.Office_Type',
+            Name_Captured TINYINT(1) PATH '$.Name_Captured',
+            Number_Captured TINYINT(1) PATH '$.Number_Captured',
+            Email_Captured TINYINT(1) PATH '$.Email_Captured',
+            Is_Primary TINYINT(1) PATH '$.Is_Primary'
+        )) AS jt;
+    END IF;
+
+    -- 4. INSERT FOLLOW-UP (If checked)
+    IF _Is_FollowUp = 1 THEN
+        -- Removed Next_FollowUp_Date from this insert because it was removed from params
+        INSERT INTO `Follow_up` (
+            Lead_Id, Lead_Type, Status_Id, Status_Name, Branch_Id, Branch_Name, 
+            Department_Id, Department_Name, Staff_Id, Staff_Name, Remark, FollowUp_Date, 
+            Pipeline_Stage, Pulse, Market_Study, Login_User_Id
+        ) VALUES (
+            _Generated_Lead_Id, _Lead_Type, _FollowUp_Status_Id, _FollowUp_Status_Name, _FollowUp_Branch_Id, _FollowUp_Branch_Name, 
+            _FollowUp_Department_Id, _FollowUp_Dept_Name, _FollowUp_Staff_Id, _FollowUp_Staff_Name, _FollowUp_Remark, _FollowUp_Date, 
+            _Current_Pipeline_Stage, _Pulse, _FollowUp_Market_Study, _Login_User_Id
+        );
+    END IF;
+    
+    -- Commit the transaction if everything succeeded
+    COMMIT;
+    
+    SELECT _Generated_Lead_Id AS Key_Id;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -25983,49 +26172,59 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_User_Details`(User_Type_In INT, Login_User_Id INT, In User_Details_Name_ VARCHAR(100))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_User_Details`(
+    User_Type_In INT, 
+    Login_User_Id INT, 
+    IN User_Details_Name_ VARCHAR(100)
+)
 BEGIN
-            DECLARE SearchbyName_Value VARCHAR(2000);
-            
-            IF User_Details_Name_ IS NULL OR User_Details_Name_ = 'undefined' THEN
-                SET User_Details_Name_ = '';
-            END IF;
+    DECLARE SearchbyName_Value VARCHAR(2000);
+    
+    IF User_Details_Name_ IS NULL OR User_Details_Name_ = 'undefined' THEN
+        SET User_Details_Name_ = '';
+    END IF;
 
-            SET SearchbyName_Value = CONCAT(" AND UD.User_Details_Name like '%", User_Details_Name_, "%' ");
-            
-            IF User_Type_In = 2 THEN
-                SET SearchbyName_Value = CONCAT(" AND UD.User_Details_Id = ", Login_User_Id);
-            END IF;
-            
-            SET @query = CONCAT("
-                SELECT 
-                    UD.User_Details_Id, 
-                    UD.User_Details_Name, 
-                    UD.Password, 
-                    UD.Working_Status, 
-                    UD.User_Type, 
-                    UD.Role_Id, 
-                    UD.Address1, 
-                    UD.Address2, 
-                    UD.Address3, 
-                    UD.Address4, 
-                    UD.Pincode, 
-                    UD.Mobile, 
-                    UD.Email, 
-                    UD.Employee_Id, 
-                    UD.Working_Status_Id,
-                    UT.User_Type_Name,
-                    UR.User_Role_Name
-                FROM User_Details UD
-                LEFT JOIN User_Type UT ON UD.User_Type = UT.User_Type_Id
-                LEFT JOIN User_Role UR ON UD.Role_Id = UR.User_Role_Id
-                WHERE UD.DeleteStatus = false
-                ", SearchbyName_Value);
-                
-            PREPARE QUERY FROM @query;
-            EXECUTE QUERY;
-            DEALLOCATE PREPARE QUERY;
-        END$$
+    SET SearchbyName_Value = CONCAT(" AND UD.User_Details_Name LIKE '%", User_Details_Name_, "%' ");
+    
+    IF User_Type_In = 2 THEN
+        SET SearchbyName_Value = CONCAT(" AND UD.User_Details_Id = ", Login_User_Id);
+    END IF;
+    
+    SET @query = CONCAT("
+        SELECT 
+            UD.User_Details_Id, 
+            UD.User_Details_Name, 
+            UD.Password, 
+            UD.Working_Status, 
+            UD.User_Type, 
+            UD.Role_Id, 
+            UD.Address1, 
+            UD.Address2, 
+            UD.Address3, 
+            UD.Address4, 
+            UD.Pincode, 
+            UD.Mobile, 
+            UD.Email, 
+            UD.Employee_Id, 
+            UD.Working_Status_Id,
+            UD.Department_Id,
+            D.Department_Name,
+            UD.Branch_Id,
+            BM.Branch_Name,
+            UT.User_Type_Name,
+            UR.User_Role_Name
+        FROM User_Details UD
+        LEFT JOIN Department D ON UD.Department_Id = D.Department_Id
+        LEFT JOIN branch_master BM ON UD.Branch_Id = BM.Branch_Id
+        LEFT JOIN User_Type UT ON UD.User_Type = UT.User_Type_Id
+        LEFT JOIN User_Role UR ON UD.Role_Id = UR.User_Role_Id
+        WHERE IFNULL(UD.DeleteStatus, 0) = 0
+        ", SearchbyName_Value);
+        
+    PREPARE QUERY FROM @query;
+    EXECUTE QUERY;
+    DEALLOCATE PREPARE QUERY;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -26276,20 +26475,17 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Search_Lead_Dropdowns`(
     IN p_Page INT
 )
 BEGIN
-    -- Declare pagination variables
+    -- Changed default limit from 50 to 20!
     DECLARE v_Limit INT DEFAULT 20;
     DECLARE v_Offset INT;
     
-    -- Format search parameter for LIKE query
-    SET p_Search = CONCAT('%', COALESCE(p_Search, ''), '%');
+    SET p_Search = CONCAT(COALESCE(p_Search, ''), '%');
     
-    -- Calculate offset
     IF p_Page < 1 OR p_Page IS NULL THEN 
         SET p_Page = 1; 
     END IF;
     SET v_Offset = (p_Page - 1) * v_Limit;
 
-    -- Map based on type
     IF p_Type = 'State' THEN
         SELECT State_Id AS id, State_Name AS name FROM State 
         WHERE State_Name LIKE p_Search 
@@ -26315,9 +26511,9 @@ BEGIN
         LIMIT v_Limit OFFSET v_Offset;
         
     ELSEIF p_Type = 'Source' THEN
-        SELECT Source_Id AS id, Source_Name AS name FROM Source 
-        WHERE Source_Name LIKE p_Search 
-        ORDER BY Source_Name 
+        SELECT id AS id, sourceName AS name FROM source 
+        WHERE sourceName LIKE p_Search 
+        ORDER BY sourceName 
         LIMIT v_Limit OFFSET v_Offset;
         
     ELSEIF p_Type = 'Designation' THEN
@@ -26325,9 +26521,38 @@ BEGIN
         WHERE Designation_Name LIKE p_Search 
         ORDER BY Designation_Name 
         LIMIT v_Limit OFFSET v_Offset;
+
+    ELSEIF p_Type = 'ServiceInterest' THEN
+        SELECT ServiceInterest_Id AS id, ServiceInterest_Name AS name FROM serviceinterest_master 
+        WHERE ServiceInterest_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
+        ORDER BY ServiceInterest_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+
+    ELSEIF p_Type = 'LeadPriority' THEN
+        SELECT LeadPriority_Id AS id, LeadPriority_Name AS name FROM lead_priority_master 
+        WHERE LeadPriority_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
+        ORDER BY LeadPriority_Id 
+        LIMIT v_Limit OFFSET v_Offset;
+
+    ELSEIF p_Type = 'PipelineStage' THEN
+        SELECT PipelineStage_Id AS id, PipelineStage_Name AS name FROM pipeline_stage_master 
+        WHERE PipelineStage_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
+        ORDER BY PipelineStage_Id 
+        LIMIT v_Limit OFFSET v_Offset;
+
+    ELSEIF p_Type = 'Pulse' THEN
+        SELECT Pulse_Id AS id, Pulse_Name AS name FROM pulse_master 
+        WHERE Pulse_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
+        ORDER BY Pulse_Id 
+        LIMIT v_Limit OFFSET v_Offset;
+
+    ELSEIF p_Type = 'TargetStage' THEN
+        SELECT TargetStage_Id AS id, TargetStage_Name AS name FROM target_stage_master 
+        WHERE TargetStage_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
+        ORDER BY TargetStage_Id 
+        LIMIT v_Limit OFFSET v_Offset;
         
     END IF;
-
 END$$
 DELIMITER ;
 

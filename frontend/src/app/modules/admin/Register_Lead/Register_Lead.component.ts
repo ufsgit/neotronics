@@ -559,7 +559,7 @@ export class Register_LeadComponent implements OnInit {
       
       const searchMatch = !searchText || 
         (lead.Lead_Name || '').toLowerCase().includes(searchText) ||
-        (lead.Contact_Person || '').toLowerCase().includes(searchText) ||
+        (lead.POC_Full_Name || '').toLowerCase().includes(searchText) ||
         (lead.Contact_Number || lead.Phone || '').toLowerCase().includes(searchText) ||
         (lead.Address || '').toLowerCase().includes(searchText) ||
         (lead.Status_Name || '').toLowerCase().includes(searchText) ||
@@ -642,7 +642,7 @@ export class Register_LeadComponent implements OnInit {
   Get_Export_Rows() {
     return (this.Filtered_Lead_Data || []).map((lead: any) => ({
       'Company Name': lead.Lead_Name || '',
-      'Contact Person': lead.Contact_Person || '',
+      'Contact Person': lead.POC_Full_Name || '',
       'Number': lead.Contact_Number || lead.Phone || '',
       'Industry': lead.Vertical_Name || '',
       'Lead Stage': lead.Status_Name || '',
@@ -837,9 +837,9 @@ export class Register_LeadComponent implements OnInit {
             Lead_Id: lead.Lead_Id,
             Lead_Name: lead.Lead_Name,
             Phone: lead.Phone,
-            Contact_Person: lead.Contact_Person,
-            Contact_Number: (lead as any).Contact_Number || '',
-            Email: lead.Email,
+            POC_Full_Name: lead.POC_Full_Name,
+            POC_Direct_Mobile: lead.POC_Direct_Mobile || '',
+            POC_Email: lead.POC_Email,
             Address: lead.Address,
             State_Name: lead.State_Name,
             District_Name: lead.District_Name
@@ -853,9 +853,9 @@ export class Register_LeadComponent implements OnInit {
           Lead_Id: lead.Lead_Id,
           Lead_Name: lead.Lead_Name,
           Phone: lead.Phone,
-          Contact_Person: lead.Contact_Person,
-          Contact_Number: (lead as any).Contact_Number || '',
-          Email: lead.Email,
+          POC_Full_Name: lead.POC_Full_Name,
+          POC_Direct_Mobile: lead.POC_Direct_Mobile || '',
+          POC_Email: lead.POC_Email,
           Address: lead.Address,
           State_Name: lead.State_Name,
           District_Name: lead.District_Name

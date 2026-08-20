@@ -404,7 +404,7 @@ Page_Load()
             this.Sales_Print = true;
             this.Requirement_Master_.Lead_Id = lead.Lead_Id;
             // Fill Attention with Contact Person
-            this.Requirement_Master_.KindAttend = lead.Contact_Person || '';
+            this.Requirement_Master_.KindAttend = lead.POC_Full_Name || '';
             // Fill Employee with Contact Number
             this.Requirement_Master_.AttendEmployee = lead.Contact_Number || lead.Phone || '';
             // Fill Delivery Address with Lead Address

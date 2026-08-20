@@ -516,7 +516,7 @@ export class LeadComponent implements OnInit {
       
       const searchMatch = !searchText || 
         (lead.Lead_Name || '').toLowerCase().includes(searchText) ||
-        (lead.Contact_Person || '').toLowerCase().includes(searchText) ||
+        (lead.POC_Full_Name || '').toLowerCase().includes(searchText) ||
         (lead.Contact_Number || lead.Phone || '').toLowerCase().includes(searchText) ||
         (lead.Address || '').toLowerCase().includes(searchText) ||
         (lead.Status_Name || '').toLowerCase().includes(searchText) ||
@@ -599,7 +599,7 @@ export class LeadComponent implements OnInit {
   Get_Export_Rows() {
     return (this.Filtered_Lead_Data || []).map((lead: any) => ({
       'Company Name': lead.Lead_Name || '',
-      'Contact Person': lead.Contact_Person || '',
+      'Contact Person': lead.POC_Full_Name || '',
       'Number': lead.Contact_Number || lead.Phone || '',
       'Industry': lead.Vertical_Name || '',
       'Lead Stage': lead.Status_Name || '',
@@ -725,15 +725,15 @@ export class LeadComponent implements OnInit {
 
   createContactRow(contact?: any): FormGroup {
     return this.fb.group({
-      Contact_Person: [contact ? contact.Contact_Person : '', Validators.required],
-      Contact_Number: [contact ? contact.Contact_Number : '', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(10)]],
-      Phone: [contact ? contact.Phone : '', [Validators.pattern('^[0-9]*$')]],
-      Designation_Id: [contact ? contact.Designation_Id : 0],
-      Email: [contact ? contact.Email : '', [Validators.email]],
+      POC_Full_Name: [contact ? contact.POC_Full_Name : '', Validators.required],
+      POC_Direct_Mobile: [contact ? contact.POC_Direct_Mobile : '', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(10)]],
+      POC_Work_Phone: [contact ? contact.POC_Work_Phone : '', [Validators.pattern('^[0-9]*$')]],
+      POC_Designation_Id: [contact ? contact.POC_Designation_Id : 0],
+      POC_Email: [contact ? contact.POC_Email : '', [Validators.email]],
       Next_Call_Action: [contact ? !!contact.Next_Call_Action : false],
-      State: [contact ? contact.State : 0],
-      Sitting_Location: [contact ? contact.Sitting_Location : 0],
-      Office_Type: [contact ? contact.Office_Type : 'Head office'],
+      POC_State_Id: [contact ? contact.POC_State_Id : 0],
+      POC_Location_Id: [contact ? contact.POC_Location_Id : 0],
+      POC_Office_Type: [contact ? contact.POC_Office_Type : 'Head office'],
       Name_Captured: [contact ? !!contact.Name_Captured : false],
       Number_Captured: [contact ? !!contact.Number_Captured : false],
       Email_Captured: [contact ? !!contact.Email_Captured : false]
@@ -789,9 +789,9 @@ export class LeadComponent implements OnInit {
             Lead_Id: lead.Lead_Id,
             Lead_Name: lead.Lead_Name,
             Phone: lead.Phone,
-            Contact_Person: lead.Contact_Person,
-            Contact_Number: (lead as any).Contact_Number || '',
-            Email: lead.Email,
+            POC_Full_Name: lead.POC_Full_Name,
+            POC_Direct_Mobile: lead.POC_Direct_Mobile || '',
+            POC_Email: lead.POC_Email,
             Address: lead.Address,
             State_Name: lead.State_Name,
             District_Name: lead.District_Name
@@ -805,9 +805,9 @@ export class LeadComponent implements OnInit {
           Lead_Id: lead.Lead_Id,
           Lead_Name: lead.Lead_Name,
           Phone: lead.Phone,
-          Contact_Person: lead.Contact_Person,
-          Contact_Number: (lead as any).Contact_Number || '',
-          Email: lead.Email,
+          POC_Full_Name: lead.POC_Full_Name,
+          POC_Direct_Mobile: lead.POC_Direct_Mobile || '',
+          POC_Email: lead.POC_Email,
           Address: lead.Address,
           State_Name: lead.State_Name,
           District_Name: lead.District_Name
@@ -854,11 +854,11 @@ export class LeadComponent implements OnInit {
     Lead_Copy.Next_Call_Action = contactPersonValues.some(c => !!c.Next_Call_Action);
     if (contactPersonValues.length > 0) {
       const firstContact = selectedContactValue || contactPersonValues[0];
-      Lead_Copy.Contact_Person = firstContact.Contact_Person;
-      Lead_Copy.Contact_Number = firstContact.Contact_Number;
-      Lead_Copy.Phone = firstContact.Phone || firstContact.Contact_Number || Lead_Copy.Phone;
-      Lead_Copy.Designation_Id = firstContact.Designation_Id;
-      Lead_Copy.Email = firstContact.Email;
+      Lead_Copy.POC_Full_Name = firstContact.POC_Full_Name;
+      Lead_Copy.POC_Direct_Mobile = firstContact.POC_Direct_Mobile;
+      Lead_Copy.POC_Work_Phone = firstContact.POC_Work_Phone || firstContact.POC_Direct_Mobile || Lead_Copy.POC_Work_Phone;
+      Lead_Copy.POC_Designation_Id = firstContact.POC_Designation_Id;
+      Lead_Copy.POC_Email = firstContact.POC_Email;
     }
     (Lead_Copy as any).Is_FollowUp = Lead_Copy.Is_FollowUp ? 1 : 0;
     if (this.Lead_.Is_FollowUp) {
@@ -866,18 +866,14 @@ export class LeadComponent implements OnInit {
       Lead_Copy.Status_Id = this.Lead_.FollowUp_Status_Id;
       Lead_Copy.Staff_Id = this.Lead_.FollowUp_Staff_Id;
       Lead_Copy.Location_Id = this.Lead_.FollowUp_Location_Id;
-      Lead_Copy.Next_FollowUp_Date = this.Lead_.FollowUp_Next_Date;
     } else {
       Lead_Copy.Department_Id = 0;
       Lead_Copy.Status_Id = this.Lead_.Status_Id;
       Lead_Copy.Staff_Id = 0;
       Lead_Copy.Location_Id = 0;
-      Lead_Copy.Next_FollowUp_Date = null;
     }
     if (Lead_Copy.Entry_Date) Lead_Copy.Entry_Date = this.New_Date(new Date(Lead_Copy.Entry_Date));
-    if (Lead_Copy.Next_FollowUp_Date) Lead_Copy.Next_FollowUp_Date = this.New_Date(new Date(Lead_Copy.Next_FollowUp_Date));
     if (Lead_Copy.FollowUp_Next_Date) Lead_Copy.FollowUp_Next_Date = this.New_Date(new Date(Lead_Copy.FollowUp_Next_Date));
-    Lead_Copy.Next_FollowUp_Date = Lead_Copy.FollowUp_Next_Date;
     const loginUser = localStorage.getItem('Login_User');
     if (loginUser) Lead_Copy.Login_User_Id = Number(loginUser);
     if (Lead_Copy.FollowUp_Date) Lead_Copy.FollowUp_Date = Lead_Copy.FollowUp_Date.replace('T', ' ');
