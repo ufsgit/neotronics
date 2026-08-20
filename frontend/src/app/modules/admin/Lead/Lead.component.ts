@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
@@ -16,6 +16,7 @@ import { Lead_Custom_Value_Service } from '../../../services/Lead_Custom_Value.S
 import { Master_Refresh_Service } from '../../../services/Master_Refresh.Service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationService } from '../../../services/notification.service';
+import { LeadFilterDropdownComponent } from '../../../components/lead-filter-dropdown/lead-filter-dropdown/lead-filter-dropdown.component';
 
 @Component({
   selector: 'app-Lead',
@@ -23,6 +24,7 @@ import { NotificationService } from '../../../services/notification.service';
   styleUrls: ['./Lead.component.css']
 })
 export class LeadComponent implements OnInit {
+  @ViewChildren(LeadFilterDropdownComponent) filterDropdowns!: QueryList<LeadFilterDropdownComponent>;
   Lead_: Lead = new Lead();
   Lead_Data: Lead[] = [];
   Filtered_Lead_Data: Lead[] = [];
@@ -660,8 +662,28 @@ export class LeadComponent implements OnInit {
   }
 
   Reset_Column_Preferences() {
+    // Clear all filters
+    this.Lead_Filter = {
+      Industry: 0,
+      Stage: 0,
+      Priority: '',
+      Date: '',
+      Assigned_Staff: 0,
+      District: 0,
+      State: 0
+    };
+    
+    // Clear dropdown UI components
+    if (this.filterDropdowns) {
+      this.filterDropdowns.forEach(dropdown => dropdown.clear());
+    }
+
+    // Revert all columns to true (default state)
     this.Lead_List_Columns.forEach(column => column.visible = true);
     localStorage.removeItem(this.Lead_Column_Prefs_Key);
+
+    // Apply the cleared filters to update the table
+    this.Apply_Lead_Filters();
   }
 
   Is_Column_Visible(key: string): boolean {

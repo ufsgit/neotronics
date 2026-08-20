@@ -13,6 +13,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { DialogBoxComponent } from './dialog-box/dialog-box.component';
 import { LeadFilterDropdownComponent } from './lead-filter-dropdown/lead-filter-dropdown/lead-filter-dropdown.component';
 import { SearchableDropdownComponent } from './searchable-dropdown/searchable-dropdown.component';
+import { CommonTableComponent } from './common-table/common-table.component';
 
 @NgModule({
   imports: [
@@ -30,7 +31,8 @@ import { SearchableDropdownComponent } from './searchable-dropdown/searchable-dr
     SidebarComponent,
     DialogBoxComponent,
     LeadFilterDropdownComponent,
-    SearchableDropdownComponent
+    SearchableDropdownComponent,
+    CommonTableComponent
   ],
   exports: [
     FooterComponent,
@@ -38,7 +40,8 @@ import { SearchableDropdownComponent } from './searchable-dropdown/searchable-dr
     SidebarComponent,
     DialogBoxComponent,
     LeadFilterDropdownComponent,
-    SearchableDropdownComponent
+    SearchableDropdownComponent,
+    CommonTableComponent
   ]
 })
 export class ComponentsModule { }

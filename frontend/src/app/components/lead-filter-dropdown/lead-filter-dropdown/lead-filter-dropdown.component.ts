@@ -116,4 +116,11 @@ export class LeadFilterDropdownComponent implements OnInit, OnDestroy {
       this.isOpen = false;
     }
   }
+
+  clear() {
+    this.selectedOptionName = '';
+    this.searchTerm = '';
+    // Optional: emit null to notify parent, though the parent might reset its own model
+    this.selectionChange.emit(null);
+  }
 }

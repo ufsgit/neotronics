@@ -1,0 +1,67 @@
+<div class="common-table-container">
+  <div class="table-toolbar">
+    <div class="toolbar-title" *ngIf="title">
+      <h2>{{ title }}</h2>
+    </div>
+    <div class="toolbar-actions">
+      <div class="search-box">
+        <i class="material-icons search-icon">search</i>
+        <input type="text" placeholder="Search..." [(ngModel)]="searchText" (ngModelChange)="onSearchChange()">
+      </div>
+      <button class="add-btn" (click)="onAdd()">
+        <i class="material-icons">add</i> Add New
+      </button>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <div *ngIf="isLoading" class="loading-state">
+      Loading...
+    </div>
+    
+    <table *ngIf="!isLoading" class="custom-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th *ngFor="let col of columns">{{ col.label }}</th>
+          <th class="action-column">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data; let i = index">
+          <td>{{ (pageIndex - 1) * pageSize + (i + 1) }}</td>
+          <td *ngFor="let col of columns">{{ item[col.key] }}</td>
+          <td class="action-column">
+            <button class="action-btn edit-btn" (click)="onEdit(item)" title="Edit">
+              <i class="material-icons">edit</i>
+            </button>
+            <button class="action-btn delete-btn" (click)="onDelete(item)" title="Delete">
+              <i class="material-icons">delete_outline</i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="data.length === 0">
+          <td [attr.colspan]="columns.length + 2" class="empty-state">
+            No records found
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-container" *ngIf="totalCount > 0 && !isLoading">
+    <div class="pagination-info">
+      Showing {{ ((pageIndex - 1) * pageSize) + 1 }} to {{ min(pageIndex * pageSize, totalCount) }} of {{ totalCount }} entries
+    </div>
+    <div class="pagination-controls">
+      <button [disabled]="pageIndex === 1" (click)="prevPage()" class="page-btn">
+        <i class="material-icons">chevron_left</i>
+      </button>
+      <span class="page-current">Page {{ pageIndex }} of {{ totalPages }}</span>
+      <button [disabled]="pageIndex === totalPages" (click)="nextPage()" class="page-btn">
+        <i class="material-icons">chevron_right</i>
+      </button>
+    </div>
+  </div>
+</div>

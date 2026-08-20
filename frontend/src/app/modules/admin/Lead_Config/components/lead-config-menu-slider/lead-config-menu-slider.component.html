@@ -1,0 +1,28 @@
+<div class="config-sidebar ig-section-card" [class.collapsed]="!isSidebarOpen">
+  <div class="sidebar-header" (click)="toggleSidebar()">
+    <i class="material-icons menu-icon">menu</i>
+  </div>
+  <ul class="config-menu">
+    <ng-container *ngFor="let section of sections">
+      <li [class.active]="activeSection === section.name"
+          (click)="selectSection(section.name)"
+          title="{{section.name}}">
+        <i class="material-icons item-icon">{{ section.icon }}</i>
+        <span class="item-text" *ngIf="isSidebarOpen">{{ section.name }}</span>
+        <i class="material-icons expand-icon" *ngIf="isSidebarOpen && subTabs[section.name]?.length > 0">
+          {{ expandedSection === section.name ? 'expand_less' : 'expand_more' }}
+        </i>
+      </li>
+      
+      <!-- Sub-menu items -->
+      <div class="sub-menu" *ngIf="isSidebarOpen && expandedSection === section.name && subTabs[section.name]?.length > 0">
+        <div class="sub-menu-item" 
+             *ngFor="let tab of subTabs[section.name]"
+             [class.active]="activeSubTab === tab"
+             (click)="selectSubTab(tab)">
+          {{ tab }}
+        </div>
+      </div>
+    </ng-container>
+  </ul>
+</div>

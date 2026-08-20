@@ -1,0 +1,14 @@
+<app-common-table 
+  [title]="'Manage Workflow'"
+  [data]="data" 
+  [columns]="columns" 
+  [isLoading]="isLoading"
+  [pageIndex]="pageIndex"
+  [pageSize]="pageSize"
+  [totalCount]="totalCount"
+  (search)="onSearch($event)"
+  (pageChange)="onPageChange($event)"
+  (add)="onAdd()"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)">
+</app-common-table>

@@ -107,13 +107,13 @@ import { LeadRequirementTransactionComponent } from './LeadRequirementTransactio
 import { Price_RequestComponent } from './Price_Request/Price_Request.component';
 import { Price_ResponseComponent } from './Price_Response/Price_Response.component';
 import { VerticalComponent } from './Vertical/Vertical.component';
-import { DesignationComponent } from './Designation/Designation.component';
+
 import { User_RoleComponent } from './User_Role/User_Role.component';
 import { User_TypeComponent } from './User_Type/User_Type.component';
 import { Working_StatusComponent } from './Working_Status/Working_Status.component';
 import { Company_SizeComponent } from './Company_Size/Company_Size.component';
 import { Quotation_ConfirmationComponent } from './Quotation_Confirmation/Quotation_Confirmation.component';
-import { DepartmentComponent } from './Department/Department.component';
+
 import { DepartmentStatusComponent } from './DepartmentStatus/DepartmentStatus.component';
 
 import { CommonModule, DecimalPipe } from '@angular/common';
@@ -122,18 +122,40 @@ import { LeadDashboardComponent } from './lead-dashboard/lead-dashboard.componen
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
 import { VerticalsComponent } from './Lead_Dropdown_Manage/Company_Details/verticals/verticals.component';
-import { StateComponent } from './Lead_Dropdown_Manage/Company_Details/state/state.component';
-import { DistrictComponent } from './Lead_Dropdown_Manage/Company_Details/district/district.component';
-import { CompanySizeComponent } from './Lead_Dropdown_Manage/Company_Details/company-size/company-size.component';
-import { SourceComponent } from './Lead_Dropdown_Manage/Company_Details/source/source.component';
-import { ServiceProductComponent } from './Lead_Dropdown_Manage/Requirement_Profile/service-product/service-product.component';
-import { MarketSystemComponent } from './Lead_Dropdown_Manage/Market_Study/market-system/market-system.component';
-import { PipelineStageComponent } from './Lead_Dropdown_Manage/Pipeline_Stage_Pulse/pipeline-stage/pipeline-stage.component';
-import { PulseComponent } from './Lead_Dropdown_Manage/Pipeline_Stage_Pulse/pulse/pulse.component';
-import { TargetStageComponent } from './Lead_Dropdown_Manage/Pipeline_Stage_Pulse/target-stage/target-stage.component';
-import { BranchComponent } from './Lead_Dropdown_Manage/Assignment/branch/branch.component';
-import { WorkflowComponent } from './Lead_Dropdown_Manage/Follow_up_Automation/workflow/workflow.component';
+
+
+
+
+
+
+
+
+
+
+
 import { SharedDropdownTableComponent } from './Lead_Dropdown_Manage/shared-dropdown-table/shared-dropdown-table.component';
+import { LeadConfigMenuSliderComponent } from './Lead_Config/components/lead-config-menu-slider/lead-config-menu-slider.component';
+import { LeadVerticalComponent } from './Lead_Config/Company_Details/Vertical/vertical.component';
+import { LeadStateComponent } from './Lead_Config/Company_Details/State/state.component';
+import { LeadDistrictComponent } from './Lead_Config/Company_Details/District/district.component';
+import { LeadCompanySizeComponent } from './Lead_Config/Company_Details/CompanySize/company-size.component';
+import { LeadSourceComponent } from './Lead_Config/Company_Details/Source/source.component';
+
+
+
+import { LeadDesignationComponent } from './Lead_Config/Contacts/Designation/designation.component';
+import { LeadServiceProductComponent } from './Lead_Config/Requirement_Profile/ServiceProduct/service-product.component';
+import { LeadMarketSystemComponent } from './Lead_Config/Market_Study/MarketSystem/market-system.component';
+import { LeadPipelineStageComponent } from './Lead_Config/Pipeline_Stage_Pulse/PipelineStage/pipeline-stage.component';
+import { LeadPulseComponent } from './Lead_Config/Pipeline_Stage_Pulse/Pulse/pulse.component';
+import { LeadTargetStageComponent } from './Lead_Config/Pipeline_Stage_Pulse/TargetStage/target-stage.component';
+import { LeadBranchComponent } from './Lead_Config/Assignment/Branch/branch.component';
+import { LeadDepartmentComponent } from './Lead_Config/Assignment/Department/department.component';
+import { LeadWorkflowComponent } from './Lead_Config/Follow_up_Automation/Workflow/workflow.component';
+
+
+import { DesignationComponent } from './Designation/Designation.component';
+import { DepartmentComponent } from './Department/Department.component';
 
 @NgModule({
 	imports: [
@@ -256,20 +278,29 @@ import { SharedDropdownTableComponent } from './Lead_Dropdown_Manage/shared-drop
 		OperationsDashboardComponent,
 		Lead_ConfigComponent,
 		VerticalsComponent,
-		StateComponent,
-		DistrictComponent,
-		CompanySizeComponent,
-		SourceComponent,
-		ServiceProductComponent,
-		MarketSystemComponent,
-		PipelineStageComponent,
-		PulseComponent,
-		TargetStageComponent,
-		BranchComponent,
-		WorkflowComponent,
-		SharedDropdownTableComponent
+		LeadVerticalComponent,
+		LeadStateComponent,
+		LeadDistrictComponent,
+		LeadCompanySizeComponent,
+		LeadSourceComponent,
+		LeadConfigMenuSliderComponent,
+		SharedDropdownTableComponent,
+		DepartmentComponent,
+		LeadDesignationComponent,
+		LeadServiceProductComponent,
+		LeadMarketSystemComponent,
+		LeadPipelineStageComponent,
+		LeadPulseComponent,
+		LeadTargetStageComponent,
+		LeadBranchComponent,
+		LeadDepartmentComponent,
+		LeadWorkflowComponent,
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],
 })
 export class AdminModule {}
+
+// Trigger recompile 1787205671385
+// Trigger recompile 1787205955069
+// Trigger recompile 1787206033346
