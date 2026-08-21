@@ -244,9 +244,24 @@ app.use('/DepartmentStatus', DepartmentStatus);
 app.use('/Price_Response', Price_Response);
 app.use('/Notification', Notifications);
 app.use('/api/Notification', Notifications);
-app.use('/api/notifications', Notifications);
 app.use('/OperationsDashboard', OperationsDashboard);
 app.use('/leadconfig', leadconfig);
+
+// ── Lead Config Modular Routes ──────────────────────────────────────────
+app.use('/Lead_Config/company_details/vertical', require('./routes/Lead_Config/company_details/vertical'));
+app.use('/Lead_Config/company_details/state', require('./routes/Lead_Config/company_details/state'));
+app.use('/Lead_Config/company_details/district', require('./routes/Lead_Config/company_details/district'));
+app.use('/Lead_Config/company_details/company_size', require('./routes/Lead_Config/company_details/company_size'));
+app.use('/Lead_Config/company_details/source', require('./routes/Lead_Config/company_details/source'));
+
+app.use('/Lead_Config/contacts/designation', require('./routes/Lead_Config/contacts/designation'));
+app.use('/Lead_Config/requirement_profile/service_product', require('./routes/Lead_Config/requirement_profile/service_product'));
+app.use('/Lead_Config/market_study/market_system', require('./routes/Lead_Config/market_study/market_system'));
+app.use('/Lead_Config/pipeline_stage_pulse/pipeline_stage', require('./routes/Lead_Config/pipeline_stage_pulse/pipeline_stage'));
+app.use('/Lead_Config/pipeline_stage_pulse/pulse', require('./routes/Lead_Config/pipeline_stage_pulse/pulse'));
+app.use('/Lead_Config/pipeline_stage_pulse/target_stage', require('./routes/Lead_Config/pipeline_stage_pulse/target_stage'));
+app.use('/Lead_Config/assignment/assignment', require('./routes/Lead_Config/assignment/assignment'));
+app.use('/Lead_Config/followup_automation/followup_automation', require('./routes/Lead_Config/followup_automation/followup_automation'));
 
 app.use(errorHandler);
 
