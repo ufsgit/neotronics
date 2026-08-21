@@ -21,7 +21,10 @@ function jwt() {
             // public routes that don't require authentication
             '/Login',
             '/Public',
-            /^\/Sales_Master\/Print_Quotation\/.*/
+            /^\/Sales_Master\/Print_Quotation\/.*/,
+            /^\/Lead_Config\/.*/,
+            /^\/leadconfig\/.*/,
+            /^\/Lead\/.*/
         ],
         custom: function (req) {
             return req.method === 'OPTIONS';

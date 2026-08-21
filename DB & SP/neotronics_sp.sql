@@ -294,6 +294,13 @@ Begin
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Branch`(IN _Id INT)
+BEGIN
+    UPDATE branch SET DeleteStatus = 1 WHERE Branch_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Brand`( In Brand_Id_ Int)
 Begin 
   declare DeleteStatus_ bit;
@@ -348,6 +355,14 @@ Begin
 update Company set DeleteStatus=True where Company.Company_Id=Company_Id_;
 select Company_Id_;
 end$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Company_Size`(IN _Id INT)
+BEGIN
+    UPDATE company_size SET DeleteStatus = 1 WHERE Company_Size_Id = _Id;
+    SELECT _Id AS Company_Size_Id_;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -551,6 +566,28 @@ Begin
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Department`(IN _Id INT)
+BEGIN
+    UPDATE department SET DeleteStatus = 1 WHERE Department_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Designation`(IN _Id INT)
+BEGIN
+    UPDATE designation SET DeleteStatus = 1 WHERE Designation_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_District`(IN _Id INT)
+BEGIN
+    UPDATE district SET DeleteStatus = 1 WHERE District_Id = _Id;
+    SELECT _Id AS District_Id_;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Document`( In Document_Id_ Int)
 Begin 
  update Document set DeleteStatus=true where Document_Id =Document_Id_ ;
@@ -716,6 +753,63 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Lead_Config_Company_Size`(
+      IN _Company_Size_Id INT
+  )
+BEGIN
+      UPDATE company_size 
+      SET DeleteStatus = 1 
+      WHERE Company_Size_Id = _Company_Size_Id;
+      SELECT _Company_Size_Id AS Company_Size_Id, 'Deleted Successfully' AS Message;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Lead_Config_District`(
+      IN _District_Id INT
+  )
+BEGIN
+      DELETE FROM district 
+      WHERE District_Id = _District_Id;
+      SELECT _District_Id AS District_Id, 'Deleted Successfully' AS Message;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Lead_Config_Source`(
+      IN _Source_Id INT
+  )
+BEGIN
+      DELETE FROM enquiry_source 
+      WHERE Source_Id = _Source_Id;
+      SELECT _Source_Id AS Source_Id, 'Deleted Successfully' AS Message;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Lead_Config_State`(
+      IN _State_Id INT
+  )
+BEGIN
+      DELETE FROM state 
+      WHERE State_Id = _State_Id;
+      SELECT _State_Id AS State_Id, 'Deleted Successfully' AS Message;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Lead_Config_Vertical`(
+      IN _Vertical_Id INT
+  )
+BEGIN
+      UPDATE vertical 
+      SET DeleteStatus = 1 
+      WHERE Vertical_Id = _Vertical_Id;
+      SELECT _Vertical_Id AS Vertical_Id, 'Deleted Successfully' AS Message;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Location`( In Location_Id_ Int)
 Begin 
 
@@ -734,6 +828,13 @@ set DeleteStatus_=0;
 end if;
 select DeleteStatus_;
 end$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Market_System`(IN _Id INT)
+BEGIN
+    UPDATE market_system SET DeleteStatus = 1 WHERE Market_System_Id = _Id;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -909,6 +1010,13 @@ Begin
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Pipeline_Stage`(IN _Id INT)
+BEGIN
+    UPDATE pipeline_stage SET DeleteStatus = 1 WHERE Pipeline_Stage_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Price_Request_Master`(In price_request_master_Id_ int)
 BEGIN
 
@@ -997,6 +1105,13 @@ update Prodution_Master set DeleteStatus=true where Prodution_Master_Id=Produtio
 update Production_Materials set DeleteStatus=true where Prodution_Master_Id=Prodution_Master_Id_;
 update Prodcution_Details set DeleteStatus=true where Prodution_Master_Id=Prodution_Master_Id_;
 select Prodution_Master_Id_;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Pulse`(IN _Id INT)
+BEGIN
+    UPDATE pulse SET DeleteStatus = 1 WHERE Pulse_Id = _Id;
 END$$
 DELIMITER ;
 
@@ -1714,6 +1829,13 @@ update Service_Details set DeleteStatus=true where Service_Details.Service_Id =S
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Service_Product`(IN _Id INT)
+BEGIN
+    UPDATE service_product SET DeleteStatus = 1 WHERE Service_Product_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Service_Type`( In Service_Type_Id_ Int)
 Begin 
   declare DeleteStatus_ bit;
@@ -1731,6 +1853,22 @@ set DeleteStatus_=0;
 end if;
 select DeleteStatus_;
 end$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Source`(IN _Id INT)
+BEGIN
+    UPDATE enquiry_source SET DeleteStatus = 1 WHERE Source_Id = _Id;
+    SELECT _Id AS Source_Id_;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_State`(IN _Id INT)
+BEGIN
+    UPDATE state SET DeleteStatus = 1 WHERE State_Id = _Id;
+    SELECT _Id AS State_Id_;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -1839,6 +1977,13 @@ select Stock_Transfer_Master_Id_;
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Target_Stage`(IN _Id INT)
+BEGIN
+    UPDATE target_stage SET DeleteStatus = 1 WHERE Target_Stage_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_User_Details`( In User_Details_Id_ Int)
 Begin 
 update User_Menu_Selection set DeleteStatus=true where User_Id =User_Details_Id_ ;
@@ -1856,12 +2001,27 @@ Begin
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Vertical`(IN _Id INT)
+BEGIN
+    UPDATE vertical SET DeleteStatus = 1 WHERE Vertical_Id = _Id;
+    SELECT _Id AS Vertical_Id_;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Waste_Management`( In Waste_Management_Id_ Int)
 Begin 
  update waste_management set DeleteStatus=true where Waste_Management_Id =Waste_Management_Id_ ;
 
  select Waste_Management_Id_;
  End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_Workflow`(IN _Id INT)
+BEGIN
+    UPDATE workflow SET DeleteStatus = 1 WHERE Workflow_Id = _Id;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -2061,6 +2221,13 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Branch`(IN _Id INT)
+BEGIN
+    SELECT Branch_Id, Branch_Name, Description FROM branch WHERE Branch_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Client_Accounts`( In Client_Accounts_Id_ Int)
 Begin 
  SELECT 
@@ -2123,6 +2290,13 @@ Account_Group_Id in(4,5) and DeleteStatus=0;
 select Company_Name,Company_Id,Address1,Address2,Address3,Address4,Mobile_Number,EMail,
 GSTNO,PANNO,CINO from Company where DeleteStatus=0;
  End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Company_Size`(IN _Id INT)
+BEGIN
+    SELECT Company_Size_Id, Company_Size_Name, Description FROM company_size WHERE Company_Size_Id = _Id;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -2666,6 +2840,27 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Department`(IN _Id INT)
+BEGIN
+    SELECT Department_Id, Department_Name, Description FROM department WHERE Department_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Designation`(IN _Id INT)
+BEGIN
+    SELECT Designation_Id, Designation_Name, Description FROM designation WHERE Designation_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_District`(IN _Id INT)
+BEGIN
+    SELECT d.District_Id, d.District_Name, d.State_Id, s.State_Name FROM district d LEFT JOIN state s ON d.State_Id = s.State_Id WHERE d.District_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Document`( In Document_Id_ Int)
 Begin 
  SELECT Document_Id, Document_Name  ,Document_Type_Id ,Document_Type_Name ,Period_From  ,Period_To ,Document_Description,Doc_Photo,File_Upload
@@ -2693,15 +2888,13 @@ DELIMITER ;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Dropdowns_Lead`()
 BEGIN
-    SELECT Department_Id, Department_Name, Branch_Id FROM Department;
+    SELECT Department_Id, Department_Name FROM Department;
     SELECT Status_Id, Status_Name FROM Department_Status;
     SELECT Source_Id, Source_Name FROM Enquiry_Source;
     SELECT Vertical_Id, Vertical_Name FROM Vertical;
     SELECT Designation_Id, Designation_Name FROM Designation;
     SELECT State_Id, State_Name FROM State;
     SELECT District_Id, District_Name, State_Id FROM District;
-    SELECT Branch_Id AS Location_Id, Branch_Name AS Location_Name FROM branch_master;
-    SELECT 1 AS dummy; -- placeholder for Staff_Data
 END$$
 DELIMITER ;
 
@@ -3254,6 +3447,62 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Config_Company_Size_By_Id`(
+      IN _Company_Size_Id INT
+  )
+BEGIN
+      SELECT Company_Size_Id, Company_Size_Name, Description, DeleteStatus 
+      FROM company_size 
+      WHERE Company_Size_Id = _Company_Size_Id;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Config_District_By_Id`(
+      IN _District_Id INT
+  )
+BEGIN
+      SELECT d.District_Id, d.District_Name, d.State_Id, s.State_Name 
+      FROM district d
+      LEFT JOIN state s ON d.State_Id = s.State_Id
+      WHERE d.District_Id = _District_Id;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Config_Source_By_Id`(
+      IN _Source_Id INT
+  )
+BEGIN
+      SELECT Source_Id, Source_Name 
+      FROM enquiry_source 
+      WHERE Source_Id = _Source_Id;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Config_State_By_Id`(
+      IN _State_Id INT
+  )
+BEGIN
+      SELECT State_Id, State_Name 
+      FROM state 
+      WHERE State_Id = _State_Id;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Config_Vertical_By_Id`(
+      IN _Vertical_Id INT
+  )
+BEGIN
+      SELECT Vertical_Id, Vertical_Name, Description, DeleteStatus 
+      FROM vertical 
+      WHERE Vertical_Id = _Vertical_Id;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Custom_Values`(
     IN p_Lead_Id INT
 )
@@ -3347,6 +3596,13 @@ Begin
  SELECT Location_Id,
 Location_Name From Location where Location_Id =Location_Id_ and DeleteStatus=false ;
  End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Market_System`(IN _Id INT)
+BEGIN
+    SELECT Market_System_Id, Market_System_Name, Description FROM market_system WHERE Market_System_Id = _Id;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -3774,6 +4030,13 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Pipeline_Stage`(IN _Id INT)
+BEGIN
+    SELECT Pipeline_Stage_Id, Pipeline_Stage_Name, Description FROM pipeline_stage WHERE Pipeline_Stage_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_PriceRequest_Requirement_Details`(IN _Requirement_Master_Id INT)
 BEGIN
         SELECT pr.Price_Request_Master_Id, pr.EntryDate, pr.RequestNumber, pr.TotalAmount
@@ -3874,6 +4137,13 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Proforma_Requirement_Details`(IN `Requirement_Master_Id_Edit` INT)
 BEGIN
     SELECT * FROM requirementdetails WHERE RequirementMaster_Id = Requirement_Master_Id_Edit AND DeleteStatus = 0;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Pulse`(IN _Id INT)
+BEGIN
+    SELECT Pulse_Id, Pulse_Name, Description FROM pulse WHERE Pulse_Id = _Id;
 END$$
 DELIMITER ;
 
@@ -5261,6 +5531,27 @@ From Service_Details
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Service_Product`(IN _Id INT)
+BEGIN
+    SELECT Service_Product_Id, Service_Product_Name, Description FROM service_product WHERE Service_Product_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Source`(IN _Id INT)
+BEGIN
+    SELECT Source_Id, Source_Name FROM enquiry_source WHERE Source_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_State`(IN _Id INT)
+BEGIN
+    SELECT State_Id, State_Name FROM state WHERE State_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Stock`( In Stock_Id_ Int)
 Begin 
  SELECT Stock_Id,
@@ -5519,6 +5810,13 @@ Voucher_No From Stock_Transfer_Master where Stock_Transfer_Master_Id =Stock_Tran
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Target_Stage`(IN _Id INT)
+BEGIN
+    SELECT Target_Stage_Id, Target_Stage_Name, Description FROM target_stage WHERE Target_Stage_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_User_Details`( In User_Details_Id_ Int)
 Begin 
  SELECT User_Details_Id,
@@ -5583,6 +5881,20 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Vendors_Other_Details`(In Clien
 BEGIN
 select * from vendor_item_group where DeleteStatus=0;
 select * from vendor_item where DeleteStatus=0;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Vertical`(IN _Id INT)
+BEGIN
+    SELECT Vertical_Id, Vertical_Name, Description FROM vertical WHERE Vertical_Id = _Id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Workflow`(IN _Id INT)
+BEGIN
+    SELECT Workflow_Id, Workflow_Name, Description FROM workflow WHERE Workflow_Id = _Id;
 END$$
 DELIMITER ;
 
@@ -5683,6 +5995,91 @@ HSNCODE,Country_Id,Country_Name  From Item
 where Item_Name like Item_Name_ and DeleteStatus=false 
  ORDER BY Item_Name Asc;
  End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Delete`(
+    IN p_Vertical_Id INT
+)
+BEGIN
+    UPDATE Vertical
+    SET DeleteStatus = 1
+    WHERE Vertical_Id = p_Vertical_Id;
+
+    SELECT p_Vertical_Id AS Vertical_Id_, 'Deleted Successfully' AS Message;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Get`(
+    IN p_Vertical_Id INT
+)
+BEGIN
+    SELECT Vertical_Id, Vertical_Name, Description
+    FROM Vertical
+    WHERE Vertical_Id = p_Vertical_Id
+      AND IFNULL(DeleteStatus, 0) = 0;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Save`(
+    IN p_Vertical_Id INT,
+    IN p_Vertical_Name VARCHAR(255),
+    IN p_Description TEXT
+)
+BEGIN
+    DECLARE v_Exists INT DEFAULT 0;
+
+    -- Check duplicate name (excluding deleted)
+    SELECT COUNT(*) INTO v_Exists
+    FROM Vertical
+    WHERE Vertical_Name = p_Vertical_Name
+      AND IFNULL(DeleteStatus, 0) = 0
+      AND (p_Vertical_Id IS NULL OR p_Vertical_Id = 0 OR Vertical_Id <> p_Vertical_Id);
+
+    IF v_Exists > 0 THEN
+        SELECT 0 AS Vertical_Id_, 'Industry / Vertical Name already exists' AS Message;
+    ELSE
+        IF p_Vertical_Id > 0 THEN
+            -- Update existing record
+            UPDATE Vertical
+            SET Vertical_Name = p_Vertical_Name,
+                Description   = p_Description
+            WHERE Vertical_Id = p_Vertical_Id;
+
+            SELECT p_Vertical_Id AS Vertical_Id_, 'Saved Successfully' AS Message;
+        ELSE
+            -- Insert new record
+            INSERT INTO Vertical (Vertical_Name, Description, DeleteStatus)
+            VALUES (p_Vertical_Name, p_Description, 0);
+
+            SELECT LAST_INSERT_ID() AS Vertical_Id_, 'Saved Successfully' AS Message;
+        END IF;
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Search`(
+    IN p_Search VARCHAR(255)
+)
+BEGIN
+    IF p_Search IS NULL OR p_Search = '' THEN
+        SELECT Vertical_Id, Vertical_Name, Description
+        FROM Vertical
+        WHERE IFNULL(DeleteStatus, 0) = 0
+        ORDER BY Vertical_Name ASC
+        LIMIT 20;
+    ELSE
+        SELECT Vertical_Id, Vertical_Name, Description
+        FROM Vertical
+        WHERE Vertical_Name LIKE CONCAT('%', p_Search, '%')
+          AND IFNULL(DeleteStatus, 0) = 0
+        ORDER BY Vertical_Name ASC
+        LIMIT 20;
+    END IF;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -10255,6 +10652,17 @@ false);
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Branch`(IN _Id INT, IN _Name VARCHAR(255), IN _Desc TEXT)
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE branch SET Branch_Name = _Name, Description = _Desc, DeleteStatus = 0 WHERE Branch_Id = _Id;
+    ELSE
+        INSERT INTO branch (Branch_Name, Description, DeleteStatus) VALUES (_Name, _Desc, 0);
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Brand`( In Brand_Id_ decimal, Brand_Name_ varchar(1000) )
 Begin 
  if  Brand_Id_>0  THEN  
@@ -10393,6 +10801,19 @@ BEGIN
     -- Return the ID so the frontend knows it succeeded
     SELECT Company_Id_ AS Company_Id_;
 
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Company_Size`(IN _Id INT, IN _Name VARCHAR(255), IN _Desc TEXT)
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE company_size SET Company_Size_Name = _Name, Description = _Desc, DeleteStatus = 0 WHERE Company_Size_Id = _Id;
+        SELECT _Id AS Company_Size_Id_;
+    ELSE
+        INSERT INTO company_size (Company_Size_Name, Description, DeleteStatus) VALUES (_Name, _Desc, 0);
+        SELECT LAST_INSERT_ID() AS Company_Size_Id_;
+    END IF;
 END$$
 DELIMITER ;
 
@@ -12071,32 +12492,14 @@ false);
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Department`(
-        IN p_Department_Id INT,
-        IN p_Department_Name VARCHAR(255),
-        IN p_Description TEXT
-    )
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Department`(IN _Id INT, IN _Name VARCHAR(255), IN _Desc TEXT)
 BEGIN
-        IF p_Department_Id = 0 THEN
-            IF EXISTS (SELECT 1 FROM Department WHERE Department_Name = p_Department_Name AND DeleteStatus = 0) THEN
-                SELECT -1 AS Department_Id_;
-            ELSE
-                INSERT INTO Department (Department_Name, Description, DeleteStatus)
-                VALUES (p_Department_Name, p_Description, 0);
-                SELECT LAST_INSERT_ID() AS Department_Id_;
-            END IF;
-        ELSE
-            IF EXISTS (SELECT 1 FROM Department WHERE Department_Name = p_Department_Name AND Department_Id != p_Department_Id AND DeleteStatus = 0) THEN
-                SELECT -1 AS Department_Id_;
-            ELSE
-                UPDATE Department 
-                SET Department_Name = p_Department_Name,
-                    Description = p_Description
-                WHERE Department_Id = p_Department_Id;
-                SELECT p_Department_Id AS Department_Id_;
-            END IF;
-        END IF;
-    END$$
+    IF _Id > 0 THEN
+        UPDATE department SET Department_Name = _Name, Description = _Desc, DeleteStatus = 0 WHERE Department_Id = _Id;
+    ELSE
+        INSERT INTO department (Department_Name, Description, DeleteStatus) VALUES (_Name, _Desc, 0);
+    END IF;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -12126,6 +12529,30 @@ BEGIN
             END IF;
         END IF;
     END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Designation`(IN _Id INT, IN _Name VARCHAR(255), IN _Desc TEXT)
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE designation SET Designation_Name = _Name, Description = _Desc, DeleteStatus = 0 WHERE Designation_Id = _Id;
+    ELSE
+        INSERT INTO designation (Designation_Name, Description, DeleteStatus) VALUES (_Name, _Desc, 0);
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_District`(IN _Id INT, IN _Name VARCHAR(255), IN _StateId INT)
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE district SET District_Name = _Name, State_Id = _StateId, DeleteStatus = 0 WHERE District_Id = _Id;
+        SELECT _Id AS District_Id_;
+    ELSE
+        INSERT INTO district (District_Name, State_Id, DeleteStatus) VALUES (_Name, _StateId, 0);
+        SELECT LAST_INSERT_ID() AS District_Id_;
+    END IF;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -12727,6 +13154,109 @@ BEGIN
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Lead_Config_Company_Size`(
+      IN _Company_Size_Id INT,
+      IN _Company_Size_Name VARCHAR(100),
+      IN _Description TEXT
+  )
+BEGIN
+      IF _Company_Size_Id > 0 THEN
+          UPDATE company_size 
+          SET Company_Size_Name = _Company_Size_Name,
+              Description = _Description,
+              DeleteStatus = 0
+          WHERE Company_Size_Id = _Company_Size_Id;
+          SELECT _Company_Size_Id AS Company_Size_Id, 'Updated Successfully' AS Message;
+      ELSE
+          INSERT INTO company_size (Company_Size_Name, Description, DeleteStatus)
+          VALUES (_Company_Size_Name, _Description, 0);
+          SELECT LAST_INSERT_ID() AS Company_Size_Id, 'Inserted Successfully' AS Message;
+      END IF;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Lead_Config_District`(
+      IN _District_Id INT,
+      IN _District_Name VARCHAR(100),
+      IN _State_Id INT
+  )
+BEGIN
+      IF _District_Id > 0 THEN
+          UPDATE district 
+          SET District_Name = _District_Name,
+              State_Id = _State_Id
+          WHERE District_Id = _District_Id;
+          SELECT _District_Id AS District_Id, 'Updated Successfully' AS Message;
+      ELSE
+          INSERT INTO district (District_Name, State_Id)
+          VALUES (_District_Name, _State_Id);
+          SELECT LAST_INSERT_ID() AS District_Id, 'Inserted Successfully' AS Message;
+      END IF;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Lead_Config_Source`(
+      IN _Source_Id INT,
+      IN _Source_Name VARCHAR(100)
+  )
+BEGIN
+      IF _Source_Id > 0 THEN
+          UPDATE enquiry_source 
+          SET Source_Name = _Source_Name
+          WHERE Source_Id = _Source_Id;
+          SELECT _Source_Id AS Source_Id, 'Updated Successfully' AS Message;
+      ELSE
+          INSERT INTO enquiry_source (Source_Name)
+          VALUES (_Source_Name);
+          SELECT LAST_INSERT_ID() AS Source_Id, 'Inserted Successfully' AS Message;
+      END IF;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Lead_Config_State`(
+      IN _State_Id INT,
+      IN _State_Name VARCHAR(100)
+  )
+BEGIN
+      IF _State_Id > 0 THEN
+          UPDATE state 
+          SET State_Name = _State_Name
+          WHERE State_Id = _State_Id;
+          SELECT _State_Id AS State_Id, 'Updated Successfully' AS Message;
+      ELSE
+          INSERT INTO state (State_Name)
+          VALUES (_State_Name);
+          SELECT LAST_INSERT_ID() AS State_Id, 'Inserted Successfully' AS Message;
+      END IF;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Lead_Config_Vertical`(
+      IN _Vertical_Id INT,
+      IN _Vertical_Name VARCHAR(100),
+      IN _Description TEXT
+  )
+BEGIN
+      IF _Vertical_Id > 0 THEN
+          UPDATE vertical 
+          SET Vertical_Name = _Vertical_Name,
+              Description = _Description,
+              DeleteStatus = 0
+          WHERE Vertical_Id = _Vertical_Id;
+          SELECT _Vertical_Id AS Vertical_Id, 'Updated Successfully' AS Message;
+      ELSE
+          INSERT INTO vertical (Vertical_Name, Description, DeleteStatus)
+          VALUES (_Vertical_Name, _Description, 0);
+          SELECT LAST_INSERT_ID() AS Vertical_Id, 'Inserted Successfully' AS Message;
+      END IF;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Lead_Custom_Value`(
     IN p_Lead_Id INT,
     IN p_Custom_Field_Id INT,
@@ -12759,6 +13289,17 @@ false);
  End If ;
  select Location_Id_;
  End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Market_System`(IN _Id INT, IN _Name VARCHAR(255), IN _Desc TEXT)
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE market_system SET Market_System_Name = _Name, Description = _Desc, DeleteStatus = 0 WHERE Market_System_Id = _Id;
+    ELSE
+        INSERT INTO market_system (Market_System_Name, Description, DeleteStatus) VALUES (_Name, _Desc, 0);
+    END IF;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -12836,193 +13377,6 @@ false);
  End If ;
  select Menu_Id_;
  End$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
-    IN _Lead_Id INT,
-    IN _Lead_Name VARCHAR(100),
-    IN _Lead_Type INT,
-    IN _Vertical INT,
-    IN _Vertical_Name VARCHAR(100),
-    IN _Address VARCHAR(1000),
-    IN _State INT,
-    IN _State_Name VARCHAR(100),
-    IN _District INT,
-    IN _District_Name VARCHAR(100),
-    IN _Company_Size_Id INT,
-    IN _Company_Size_Name VARCHAR(100),
-    IN _Source INT,
-    IN _Source_Name VARCHAR(100),
-    
-    IN _POC_Full_Name VARCHAR(255),
-    IN _POC_Designation_Id INT,
-    IN _POC_Designation VARCHAR(255),
-    IN _POC_Direct_Mobile VARCHAR(50),
-    IN _POC_Email VARCHAR(255),
-    IN _POC_State_Id INT,
-    IN _POC_State VARCHAR(100),
-    IN _POC_Location_Id INT,
-    IN _POC_Loc VARCHAR(100),
-    IN _POC_Work_Phone VARCHAR(50),
-    IN _POC_Office_Type VARCHAR(100),
-    IN _Name_Captured TINYINT(1),
-    IN _Number_Captured TINYINT(1),
-    IN _Email_Captured TINYINT(1),
-    
-    IN _Enquiry_For VARCHAR(500),
-    IN _Remark VARCHAR(1000),
-    IN _Lead_Priority VARCHAR(50),
-    IN _Current_Pipeline_Stage VARCHAR(100),
-    IN _Pulse VARCHAR(100),
-    IN _Status_Id INT,
-    IN _Status_Name VARCHAR(100),
-    IN _Branch_Id INT,
-    IN _Branch_Name VARCHAR(100),
-    IN _Department_Id INT,
-    IN _Department_Name VARCHAR(100),
-    IN _Staff_Id INT,
-    IN _Staff_Name VARCHAR(100),
-    IN _Workflow VARCHAR(100),
-    IN _Workflow_Start_Status TINYINT(1),
-    
-    -- Follow-up specific fields
-    IN _Is_FollowUp BIT,
-    IN _FollowUp_Branch_Id INT,
-    IN _FollowUp_Branch_Name VARCHAR(100),
-    IN _FollowUp_Department_Id INT,
-    IN _FollowUp_Dept_Name VARCHAR(100),
-    IN _FollowUp_Status_Id INT,
-    IN _FollowUp_Status_Name VARCHAR(100),
-    IN _FollowUp_Staff_Id INT,
-    IN _FollowUp_Staff_Name VARCHAR(100),
-    IN _FollowUp_Remark VARCHAR(1000),
-    IN _FollowUp_Date DATETIME,
-    IN _FollowUp_Market_Study VARCHAR(1000),
-    IN _Login_User_Id INT,
-    
-    -- New bulk JSON parameter
-    IN _Contact_Person_Details_JSON TEXT
-)
-BEGIN
-    DECLARE _Generated_Lead_Id INT;
-
-    -- Declare rollback handler for any SQL errors
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
-    BEGIN
-        ROLLBACK;
-        RESIGNAL;
-    END;
-
-    -- Start the transaction
-    START TRANSACTION;
-
-    IF _Lead_Id = 0 THEN
-        -- 1. INSERT INTO LEAD
-        INSERT INTO `lead` (
-            Lead_Name, Lead_Type, Vertical, Vertical_Name, Address, State, State_Name, District, District_Name,
-            Company_Size_Id, Company_Size_Name, Source, Source_Name, 
-            POC_Full_Name, POC_Designation_Id, POC_Designation, POC_Direct_Mobile, POC_Email, 
-            POC_State_Id, POC_State, POC_Location_Id, POC_Loc, POC_Work_Phone, POC_Office_Type,
-            Name_Captured, Number_Captured, Email_Captured, Enquiry_For, Remark,
-            Lead_Priority, Current_Pipeline_Stage, Pulse, Status_Id, Status_Name, Branch_Id, Branch_Name,
-            Department_Id, Department_Name, Staff_Id, Staff_Name, Workflow, Workflow_Start_Status
-        ) VALUES (
-            _Lead_Name, _Lead_Type, _Vertical, _Vertical_Name, _Address, _State, _State_Name, _District, _District_Name,
-            _Company_Size_Id, _Company_Size_Name, _Source, _Source_Name, 
-            _POC_Full_Name, _POC_Designation_Id, _POC_Designation, _POC_Direct_Mobile, _POC_Email,
-            _POC_State_Id, _POC_State, _POC_Location_Id, _POC_Loc, _POC_Work_Phone, _POC_Office_Type,
-            _Name_Captured, _Number_Captured, _Email_Captured, _Enquiry_For, _Remark,
-            _Lead_Priority, _Current_Pipeline_Stage, _Pulse, _Status_Id, _Status_Name, NULLIF(_Branch_Id, 0), _Branch_Name,
-            NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name, _Workflow, _Workflow_Start_Status
-        );
-        SET _Generated_Lead_Id = LAST_INSERT_ID();
-        
-        -- 2. INSERT PIPELINE HISTORY
-        INSERT INTO `lead_pipeline_pulse_history` (
-            Lead_Id, Pipeline_Stage, Pulse, Current_Status, Login_User_Id
-        ) VALUES (
-            _Generated_Lead_Id, _Current_Pipeline_Stage, _Pulse, _Status_Name, _Login_User_Id
-        );
-        
-    ELSE
-        -- 1. UPDATE LEAD
-        UPDATE `lead`
-        SET 
-            Lead_Name = _Lead_Name, Lead_Type = _Lead_Type, Vertical = _Vertical, Vertical_Name = _Vertical_Name,
-            Address = _Address, State = _State, State_Name = _State_Name, District = _District, District_Name = _District_Name,
-            Company_Size_Id = _Company_Size_Id, Company_Size_Name = _Company_Size_Name, Source = _Source, Source_Name = _Source_Name, 
-            POC_Full_Name = _POC_Full_Name, POC_Designation_Id = _POC_Designation_Id, POC_Designation = _POC_Designation,
-            POC_Direct_Mobile = _POC_Direct_Mobile, POC_Email = _POC_Email, POC_State_Id = _POC_State_Id, POC_State = _POC_State,
-            POC_Location_Id = _POC_Location_Id, POC_Loc = _POC_Loc, POC_Work_Phone = _POC_Work_Phone, POC_Office_Type = _POC_Office_Type,
-            Name_Captured = _Name_Captured, Number_Captured = _Number_Captured, Email_Captured = _Email_Captured, 
-            Enquiry_For = _Enquiry_For, Remark = _Remark, Lead_Priority = _Lead_Priority,
-            Current_Pipeline_Stage = _Current_Pipeline_Stage, Pulse = _Pulse, Status_Id = _Status_Id, Status_Name = _Status_Name,
-            Branch_Id = NULLIF(_Branch_Id, 0), Branch_Name = _Branch_Name, Department_Id = NULLIF(_Department_Id, 0), Department_Name = _Department_Name,
-            Staff_Id = NULLIF(_Staff_Id, 0), Staff_Name = _Staff_Name, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
-        WHERE Lead_Id = _Lead_Id;
-        
-        SET _Generated_Lead_Id = _Lead_Id;
-
-        -- 2. INSERT PIPELINE HISTORY
-        INSERT INTO `lead_pipeline_pulse_history` (
-            Lead_Id, Pipeline_Stage, Pulse, Current_Status, Login_User_Id
-        ) VALUES (
-            _Generated_Lead_Id, _Current_Pipeline_Stage, _Pulse, _Status_Name, _Login_User_Id
-        );
-
-        -- Delete existing contacts for complete replace from JSON
-        DELETE FROM `lead_contact` WHERE Lead_Id = _Generated_Lead_Id;
-    END IF;
-
-    -- 3. BULK INSERT CONTACTS FROM JSON
-    IF _Contact_Person_Details_JSON IS NOT NULL AND _Contact_Person_Details_JSON != '' AND _Contact_Person_Details_JSON != '[]' THEN
-        INSERT INTO `lead_contact` (
-            Lead_Id, Full_Name, Designation_Id, Designation_Name, Direct_Mobile, Email_Address, Work_Phone,
-            State_Id, State_Name, Sitting_Location, Office_Type, Name_Captured, Number_Captured, Email_Captured,
-            Is_Primary, Login_User_Id
-        )
-        SELECT 
-            _Generated_Lead_Id, Full_Name, Designation_Id, Designation_Name, Direct_Mobile, Email_Address, Work_Phone,
-            State_Id, State_Name, Sitting_Location, Office_Type, Name_Captured, Number_Captured, Email_Captured,
-            Is_Primary, _Login_User_Id
-        FROM JSON_TABLE(_Contact_Person_Details_JSON, '$[*]' COLUMNS (
-            Full_Name VARCHAR(150) PATH '$.Full_Name',
-            Designation_Id INT PATH '$.Designation_Id',
-            Designation_Name VARCHAR(100) PATH '$.Designation_Name',
-            Direct_Mobile VARCHAR(100) PATH '$.Direct_Mobile',
-            Email_Address VARCHAR(200) PATH '$.Email_Address',
-            Work_Phone VARCHAR(100) PATH '$.Work_Phone',
-            State_Id INT PATH '$.State_Id',
-            State_Name VARCHAR(100) PATH '$.State_Name',
-            Sitting_Location INT PATH '$.Sitting_Location',
-            Office_Type VARCHAR(50) PATH '$.Office_Type',
-            Name_Captured TINYINT(1) PATH '$.Name_Captured',
-            Number_Captured TINYINT(1) PATH '$.Number_Captured',
-            Email_Captured TINYINT(1) PATH '$.Email_Captured',
-            Is_Primary TINYINT(1) PATH '$.Is_Primary'
-        )) AS jt;
-    END IF;
-
-    -- 4. INSERT FOLLOW-UP (If checked)
-    IF _Is_FollowUp = 1 THEN
-        -- Removed Next_FollowUp_Date from this insert because it was removed from params
-        INSERT INTO `Follow_up` (
-            Lead_Id, Lead_Type, Status_Id, Status_Name, Branch_Id, Branch_Name, 
-            Department_Id, Department_Name, Staff_Id, Staff_Name, Remark, FollowUp_Date, 
-            Pipeline_Stage, Pulse, Market_Study, Login_User_Id
-        ) VALUES (
-            _Generated_Lead_Id, _Lead_Type, _FollowUp_Status_Id, _FollowUp_Status_Name, _FollowUp_Branch_Id, _FollowUp_Branch_Name, 
-            _FollowUp_Department_Id, _FollowUp_Dept_Name, _FollowUp_Staff_Id, _FollowUp_Staff_Name, _FollowUp_Remark, _FollowUp_Date, 
-            _Current_Pipeline_Stage, _Pulse, _FollowUp_Market_Study, _Login_User_Id
-        );
-    END IF;
-    
-    -- Commit the transaction if everything succeeded
-    COMMIT;
-    
-    SELECT _Generated_Lead_Id AS Key_Id;
-END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -14022,6 +14376,17 @@ SELECT Petty_Cash_Id_;
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Pipeline_Stage`(IN _Id INT, IN _Name VARCHAR(255), IN _Desc TEXT)
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE pipeline_stage SET Pipeline_Stage_Name = _Name, Description = _Desc, DeleteStatus = 0 WHERE Pipeline_Stage_Id = _Id;
+    ELSE
+        INSERT INTO pipeline_stage (Pipeline_Stage_Name, Description, DeleteStatus) VALUES (_Name, _Desc, 0);
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Price_Request`(In price_request_master_Id_ int,Account_Party_Id_ int, EntryDate_ varchar(45), 
 POnumber_ varchar(100), CurrencyId_ int, PaymentTerms_ varchar(500),AttendEmployee_ varchar(200), TotalAmount_ decimal(18,3),TotalDiscount_ decimal(18,3), 
 Roundoff_Amt_ decimal(18,3),Total_Amount_ decimal(18,3), Basic_Discount_ decimal(18,3), NetTotal_ decimal(18,3),Brand_ varchar(4000),PriceBasis_ varchar(4000),
@@ -14435,6 +14800,17 @@ end if;
 select Prodution_Master_Id_;
 COMMIT;
 End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Pulse`(IN _Id INT, IN _Name VARCHAR(255), IN _Desc TEXT)
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE pulse SET Pulse_Name = _Name, Description = _Desc, DeleteStatus = 0 WHERE Pulse_Id = _Id;
+    ELSE
+        INSERT INTO pulse (Pulse_Name, Description, DeleteStatus) VALUES (_Name, _Desc, 0);
+    END IF;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -19425,6 +19801,17 @@ values (Service_Id_ ,Service_Type_Id_,Service_Type_Name_,Hsn_Id_,Hsn_Name_,Unit_
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Service_Product`(IN _Id INT, IN _Name VARCHAR(255), IN _Desc TEXT)
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE service_product SET Service_Product_Name = _Name, Description = _Desc, DeleteStatus = 0 WHERE Service_Product_Id = _Id;
+    ELSE
+        INSERT INTO service_product (Service_Product_Name, Description, DeleteStatus) VALUES (_Name, _Desc, 0);
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Service_Type`( In Service_Type_Id_ int,Service_Type_Name_ varchar(1000),
 Hsn_Id_ int,Hsn_Name_ varchar(100),CGST_ decimal(18,2),SGST_ decimal(18,2),IGST_ decimal(18,2),GST_ decimal(18,2))
 Begin 
@@ -19442,6 +19829,32 @@ IGST_ ,GST_,false);
  End If ;
  select Service_Type_Id_;
  End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Source`(IN _Id INT, IN _Name VARCHAR(255))
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE enquiry_source SET Source_Name = _Name, DeleteStatus = 0 WHERE Source_Id = _Id;
+        SELECT _Id AS Source_Id_;
+    ELSE
+        INSERT INTO enquiry_source (Source_Name, DeleteStatus) VALUES (_Name, 0);
+        SELECT LAST_INSERT_ID() AS Source_Id_;
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_State`(IN _Id INT, IN _Name VARCHAR(255))
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE state SET State_Name = _Name, DeleteStatus = 0 WHERE State_Id = _Id;
+        SELECT _Id AS State_Id_;
+    ELSE
+        INSERT INTO state (State_Name, DeleteStatus) VALUES (_Name, 0);
+        SELECT LAST_INSERT_ID() AS State_Id_;
+    END IF;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -20030,6 +20443,17 @@ End If ;
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Target_Stage`(IN _Id INT, IN _Name VARCHAR(255), IN _Desc TEXT)
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE target_stage SET Target_Stage_Name = _Name, Description = _Desc, DeleteStatus = 0 WHERE Target_Stage_Id = _Id;
+    ELSE
+        INSERT INTO target_stage (Target_Stage_Name, Description, DeleteStatus) VALUES (_Name, _Desc, 0);
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_User_Details`(
   IN User_Details_Id_ DECIMAL,
   IN User_Details_Name_ VARCHAR(250),
@@ -20151,6 +20575,19 @@ false);
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Vertical`(IN _Id INT, IN _Name VARCHAR(255), IN _Desc TEXT)
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE vertical SET Vertical_Name = _Name, Description = _Desc, DeleteStatus = 0 WHERE Vertical_Id = _Id;
+        SELECT _Id AS Vertical_Id_;
+    ELSE
+        INSERT INTO vertical (Vertical_Name, Description, DeleteStatus) VALUES (_Name, _Desc, 0);
+        SELECT LAST_INSERT_ID() AS Vertical_Id_;
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Waste_Management`(In Waste_Management_ json,Value_ int)
 BEGIN
 declare Document_Id_ int; 
@@ -20206,6 +20643,17 @@ else
 end if; 
     end if;
 select Waste_Management_Id_;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_Workflow`(IN _Id INT, IN _Name VARCHAR(255), IN _Desc TEXT)
+BEGIN
+    IF _Id > 0 THEN
+        UPDATE workflow SET Workflow_Name = _Name, Description = _Desc, DeleteStatus = 0 WHERE Workflow_Id = _Id;
+    ELSE
+        INSERT INTO workflow (Workflow_Name, Description, DeleteStatus) VALUES (_Name, _Desc, 0);
+    END IF;
 END$$
 DELIMITER ;
 
@@ -20400,6 +20848,15 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Branch`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Branch_Id, Branch_Name, Description FROM branch
+    WHERE (IFNULL(_Name, '') = '' OR Branch_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Branch_Name;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Branch_Typeahead`( In Branch_Name_ varchar(100))
 Begin 
  set Branch_Name_ = Concat( '%',Branch_Name_ ,'%');
@@ -20546,6 +21003,15 @@ From Company_info where  DeleteStatus=false
 order by Company_Name asc;
 
  End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Company_Size`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Company_Size_Id, Company_Size_Name, Description FROM company_size
+    WHERE (IFNULL(_Name, '') = '' OR Company_Size_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Company_Size_Id;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -21833,6 +22299,35 @@ Delivery_Order_No From delivery_salesmaster where delivery_salesmaster_Name like
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Department`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Department_Id, Department_Name, Description FROM department
+    WHERE (IFNULL(_Name, '') = '' OR Department_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Department_Name;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Designation`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Designation_Id, Designation_Name, Description FROM designation
+    WHERE (IFNULL(_Name, '') = '' OR Designation_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Designation_Name;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_District`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT d.District_Id, d.District_Name, d.State_Id, s.State_Name
+    FROM district d
+    LEFT JOIN state s ON d.State_Id = s.State_Id
+    WHERE (IFNULL(_Name, '') = '' OR d.District_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(d.DeleteStatus, 0) = 0
+    ORDER BY d.District_Name;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Document`( In From_Date_ datetime,
 To_Date_ datetime,
  
@@ -22307,12 +22802,117 @@ Begin
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Lead_Config_Company_Size`(
+      IN _Company_Size_Name VARCHAR(100)
+  )
+BEGIN
+      IF _Company_Size_Name IS NULL OR _Company_Size_Name = '' THEN
+          SELECT Company_Size_Id, Company_Size_Name, Description, DeleteStatus 
+          FROM company_size 
+          WHERE IFNULL(DeleteStatus, 0) = 0 
+          ORDER BY Company_Size_Name;
+      ELSE
+          SELECT Company_Size_Id, Company_Size_Name, Description, DeleteStatus 
+          FROM company_size 
+          WHERE Company_Size_Name LIKE CONCAT('%', _Company_Size_Name, '%') 
+            AND IFNULL(DeleteStatus, 0) = 0 
+          ORDER BY Company_Size_Name;
+      END IF;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Lead_Config_District`(
+      IN _District_Name VARCHAR(100)
+  )
+BEGIN
+      IF _District_Name IS NULL OR _District_Name = '' THEN
+          SELECT d.District_Id, d.District_Name, d.State_Id, s.State_Name 
+          FROM district d
+          LEFT JOIN state s ON d.State_Id = s.State_Id
+          ORDER BY d.District_Name;
+      ELSE
+          SELECT d.District_Id, d.District_Name, d.State_Id, s.State_Name 
+          FROM district d
+          LEFT JOIN state s ON d.State_Id = s.State_Id
+          WHERE d.District_Name LIKE CONCAT('%', _District_Name, '%') 
+          ORDER BY d.District_Name;
+      END IF;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Lead_Config_Source`(
+      IN _Source_Name VARCHAR(100)
+  )
+BEGIN
+      IF _Source_Name IS NULL OR _Source_Name = '' THEN
+          SELECT Source_Id, Source_Name 
+          FROM enquiry_source 
+          ORDER BY Source_Name;
+      ELSE
+          SELECT Source_Id, Source_Name 
+          FROM enquiry_source 
+          WHERE Source_Name LIKE CONCAT('%', _Source_Name, '%') 
+          ORDER BY Source_Name;
+      END IF;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Lead_Config_State`(
+      IN _State_Name VARCHAR(100)
+  )
+BEGIN
+      IF _State_Name IS NULL OR _State_Name = '' THEN
+          SELECT State_Id, State_Name 
+          FROM state 
+          ORDER BY State_Name;
+      ELSE
+          SELECT State_Id, State_Name 
+          FROM state 
+          WHERE State_Name LIKE CONCAT('%', _State_Name, '%') 
+          ORDER BY State_Name;
+      END IF;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Lead_Config_Vertical`(
+      IN _Vertical_Name VARCHAR(100)
+  )
+BEGIN
+      IF _Vertical_Name IS NULL OR _Vertical_Name = '' THEN
+          SELECT Vertical_Id, Vertical_Name, Description, DeleteStatus 
+          FROM vertical 
+          WHERE IFNULL(DeleteStatus, 0) = 0 
+          ORDER BY Vertical_Name;
+      ELSE
+          SELECT Vertical_Id, Vertical_Name, Description, DeleteStatus 
+          FROM vertical 
+          WHERE Vertical_Name LIKE CONCAT('%', _Vertical_Name, '%') 
+            AND IFNULL(DeleteStatus, 0) = 0 
+          ORDER BY Vertical_Name;
+      END IF;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Location`( In Location_Name_ varchar(100))
 Begin 
  set Location_Name_ = Concat( '%',Location_Name_ ,'%');
  SELECT Location_Id,
 Location_Name From Location where Location_Name like Location_Name_ and DeleteStatus=false ;
  End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Market_System`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Market_System_Id, Market_System_Name, Description FROM market_system
+    WHERE (IFNULL(_Name, '') = '' OR Market_System_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Market_System_Name;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -23312,6 +23912,15 @@ End$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Pipeline_Stage`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Pipeline_Stage_Id, Pipeline_Stage_Name, Description FROM pipeline_stage
+    WHERE (IFNULL(_Name, '') = '' OR Pipeline_Stage_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Pipeline_Stage_Name;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Price_Request`(
     IN Is_Date_Check_ TINYINT,
     IN From_Date_ DATETIME,
@@ -23544,6 +24153,15 @@ BEGIN
     SELECT 3 AS tp, 'Profit' AS Caption1, Profit AS Data1, 'Loss' AS Caption2, Loss AS Data2
     ORDER BY tp;
     
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Pulse`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Pulse_Id, Pulse_Name, Description FROM pulse
+    WHERE (IFNULL(_Name, '') = '' OR Pulse_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Pulse_Name;
 END$$
 DELIMITER ;
 
@@ -25834,6 +26452,15 @@ where Service.DeleteStatus=false ", Search_Date_ ,SearchbyName_Value,"");
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Service_Product`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Service_Product_Id, Service_Product_Name, Description FROM service_product
+    WHERE (IFNULL(_Name, '') = '' OR Service_Product_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Service_Product_Name;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Service_Type`( In Service_Type_Name_ varchar(100))
 Begin 
  set Service_Type_Name_ = Concat( '%',Service_Type_Name_ ,'%');
@@ -25853,6 +26480,24 @@ CGST,SGST,IGST,GST
     where Service_Type_Name like Service_Type_Name_ and DeleteStatus=false 
 	ORDER BY Service_Type_Name Asc Limit 5 ;
  End$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Source`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Source_Id, Source_Name FROM enquiry_source
+    WHERE (IFNULL(_Name, '') = '' OR Source_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Source_Name;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_State`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT State_Id, State_Name FROM state
+    WHERE (IFNULL(_Name, '') = '' OR State_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY State_Name;
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -26162,6 +26807,15 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Target_Stage`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Target_Stage_Id, Target_Stage_Name, Description FROM target_stage
+    WHERE (IFNULL(_Name, '') = '' OR Target_Stage_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Target_Stage_Name;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Under_Brand`()
 BEGIN
 SELECT 
@@ -26172,59 +26826,49 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_User_Details`(
-    User_Type_In INT, 
-    Login_User_Id INT, 
-    IN User_Details_Name_ VARCHAR(100)
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_User_Details`(User_Type_In INT, Login_User_Id INT, In User_Details_Name_ VARCHAR(100))
 BEGIN
-    DECLARE SearchbyName_Value VARCHAR(2000);
-    
-    IF User_Details_Name_ IS NULL OR User_Details_Name_ = 'undefined' THEN
-        SET User_Details_Name_ = '';
-    END IF;
+            DECLARE SearchbyName_Value VARCHAR(2000);
+            
+            IF User_Details_Name_ IS NULL OR User_Details_Name_ = 'undefined' THEN
+                SET User_Details_Name_ = '';
+            END IF;
 
-    SET SearchbyName_Value = CONCAT(" AND UD.User_Details_Name LIKE '%", User_Details_Name_, "%' ");
-    
-    IF User_Type_In = 2 THEN
-        SET SearchbyName_Value = CONCAT(" AND UD.User_Details_Id = ", Login_User_Id);
-    END IF;
-    
-    SET @query = CONCAT("
-        SELECT 
-            UD.User_Details_Id, 
-            UD.User_Details_Name, 
-            UD.Password, 
-            UD.Working_Status, 
-            UD.User_Type, 
-            UD.Role_Id, 
-            UD.Address1, 
-            UD.Address2, 
-            UD.Address3, 
-            UD.Address4, 
-            UD.Pincode, 
-            UD.Mobile, 
-            UD.Email, 
-            UD.Employee_Id, 
-            UD.Working_Status_Id,
-            UD.Department_Id,
-            D.Department_Name,
-            UD.Branch_Id,
-            BM.Branch_Name,
-            UT.User_Type_Name,
-            UR.User_Role_Name
-        FROM User_Details UD
-        LEFT JOIN Department D ON UD.Department_Id = D.Department_Id
-        LEFT JOIN branch_master BM ON UD.Branch_Id = BM.Branch_Id
-        LEFT JOIN User_Type UT ON UD.User_Type = UT.User_Type_Id
-        LEFT JOIN User_Role UR ON UD.Role_Id = UR.User_Role_Id
-        WHERE IFNULL(UD.DeleteStatus, 0) = 0
-        ", SearchbyName_Value);
-        
-    PREPARE QUERY FROM @query;
-    EXECUTE QUERY;
-    DEALLOCATE PREPARE QUERY;
-END$$
+            SET SearchbyName_Value = CONCAT(" AND UD.User_Details_Name like '%", User_Details_Name_, "%' ");
+            
+            IF User_Type_In = 2 THEN
+                SET SearchbyName_Value = CONCAT(" AND UD.User_Details_Id = ", Login_User_Id);
+            END IF;
+            
+            SET @query = CONCAT("
+                SELECT 
+                    UD.User_Details_Id, 
+                    UD.User_Details_Name, 
+                    UD.Password, 
+                    UD.Working_Status, 
+                    UD.User_Type, 
+                    UD.Role_Id, 
+                    UD.Address1, 
+                    UD.Address2, 
+                    UD.Address3, 
+                    UD.Address4, 
+                    UD.Pincode, 
+                    UD.Mobile, 
+                    UD.Email, 
+                    UD.Employee_Id, 
+                    UD.Working_Status_Id,
+                    UT.User_Type_Name,
+                    UR.User_Role_Name
+                FROM User_Details UD
+                LEFT JOIN User_Type UT ON UD.User_Type = UT.User_Type_Id
+                LEFT JOIN User_Role UR ON UD.Role_Id = UR.User_Role_Id
+                WHERE UD.DeleteStatus = false
+                ", SearchbyName_Value);
+                
+            PREPARE QUERY FROM @query;
+            EXECUTE QUERY;
+            DEALLOCATE PREPARE QUERY;
+        END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -26295,6 +26939,15 @@ BEGIN
 delete from db_logs;
 insert into db_logs values(0,@query,'Search_Registration_Report',1);
     EXECUTE QUERY;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Vertical`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Vertical_Id, Vertical_Name, Description, DeleteStatus FROM vertical
+    WHERE (IFNULL(_Name, '') = '' OR Vertical_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Vertical_Name;
 END$$
 DELIMITER ;
 
@@ -26443,6 +27096,15 @@ End$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Search_Workflow`(IN _Name VARCHAR(255))
+BEGIN
+    SELECT Workflow_Id, Workflow_Name, Description FROM workflow
+    WHERE (IFNULL(_Name, '') = '' OR Workflow_Name LIKE CONCAT('%', _Name, '%')) AND IFNULL(DeleteStatus, 0) = 0
+    ORDER BY Workflow_Name;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SelectSettledBills`(in Account_Party_Id_ decimal(18,0))
 Begin
 Select distinct 1 as Voucher_Type_Id,'Purchase' as Voucher_Type_Name,purchase_master.Purchase_Master_Id,
@@ -26475,17 +27137,20 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Search_Lead_Dropdowns`(
     IN p_Page INT
 )
 BEGIN
-    -- Changed default limit from 50 to 20!
+    -- Declare pagination variables
     DECLARE v_Limit INT DEFAULT 20;
     DECLARE v_Offset INT;
     
-    SET p_Search = CONCAT(COALESCE(p_Search, ''), '%');
+    -- Format search parameter for LIKE query
+    SET p_Search = CONCAT('%', COALESCE(p_Search, ''), '%');
     
+    -- Calculate offset
     IF p_Page < 1 OR p_Page IS NULL THEN 
         SET p_Page = 1; 
     END IF;
     SET v_Offset = (p_Page - 1) * v_Limit;
 
+    -- Map based on type
     IF p_Type = 'State' THEN
         SELECT State_Id AS id, State_Name AS name FROM State 
         WHERE State_Name LIKE p_Search 
@@ -26511,9 +27176,9 @@ BEGIN
         LIMIT v_Limit OFFSET v_Offset;
         
     ELSEIF p_Type = 'Source' THEN
-        SELECT id AS id, sourceName AS name FROM source 
-        WHERE sourceName LIKE p_Search 
-        ORDER BY sourceName 
+        SELECT Source_Id AS id, Source_Name AS name FROM Source 
+        WHERE Source_Name LIKE p_Search 
+        ORDER BY Source_Name 
         LIMIT v_Limit OFFSET v_Offset;
         
     ELSEIF p_Type = 'Designation' THEN
@@ -26521,38 +27186,9 @@ BEGIN
         WHERE Designation_Name LIKE p_Search 
         ORDER BY Designation_Name 
         LIMIT v_Limit OFFSET v_Offset;
-
-    ELSEIF p_Type = 'ServiceInterest' THEN
-        SELECT ServiceInterest_Id AS id, ServiceInterest_Name AS name FROM serviceinterest_master 
-        WHERE ServiceInterest_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
-        ORDER BY ServiceInterest_Name 
-        LIMIT v_Limit OFFSET v_Offset;
-
-    ELSEIF p_Type = 'LeadPriority' THEN
-        SELECT LeadPriority_Id AS id, LeadPriority_Name AS name FROM lead_priority_master 
-        WHERE LeadPriority_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
-        ORDER BY LeadPriority_Id 
-        LIMIT v_Limit OFFSET v_Offset;
-
-    ELSEIF p_Type = 'PipelineStage' THEN
-        SELECT PipelineStage_Id AS id, PipelineStage_Name AS name FROM pipeline_stage_master 
-        WHERE PipelineStage_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
-        ORDER BY PipelineStage_Id 
-        LIMIT v_Limit OFFSET v_Offset;
-
-    ELSEIF p_Type = 'Pulse' THEN
-        SELECT Pulse_Id AS id, Pulse_Name AS name FROM pulse_master 
-        WHERE Pulse_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
-        ORDER BY Pulse_Id 
-        LIMIT v_Limit OFFSET v_Offset;
-
-    ELSEIF p_Type = 'TargetStage' THEN
-        SELECT TargetStage_Id AS id, TargetStage_Name AS name FROM target_stage_master 
-        WHERE TargetStage_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
-        ORDER BY TargetStage_Id 
-        LIMIT v_Limit OFFSET v_Offset;
         
     END IF;
+
 END$$
 DELIMITER ;
 
