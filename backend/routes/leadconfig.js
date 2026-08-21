@@ -1,12 +1,12 @@
 var express = require('express');
 var router  = express.Router();
 
-// ── Company Details Models ───────────────────────────────────────────────────
-var Vertical    = require('../models/company_details/vertical/vertical');
-var State       = require('../models/company_details/state/state');
-var District    = require('../models/company_details/district/district');
-var CompanySize = require('../models/company_details/company_size/company_size');
-var Source      = require('../models/company_details/source/source');
+// ── Lead Config Models ───────────────────────────────────────────────────────
+var Vertical    = require('../models/Lead_Config/company_details/vertical');
+var State       = require('../models/Lead_Config/company_details/state');
+var District    = require('../models/Lead_Config/company_details/district');
+var CompanySize = require('../models/Lead_Config/company_details/company_size');
+var Source      = require('../models/Lead_Config/company_details/source');
 
 // ============================================================
 // COMPANY DETAILS — VERTICAL
