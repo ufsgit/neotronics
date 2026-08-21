@@ -97,6 +97,31 @@ router.get('/Get_Leads/', function (req, res, next) {
     }
 });
 
+router.get('/Get_NewLeads/', function (req, res, next) {
+    try {
+        const search = req.query.search || '';
+        const industry = Number(req.query.industry) || 0;
+        const designation = Number(req.query.designation) || 0;
+        const district = Number(req.query.district) || 0;
+        const priority = req.query.priority || '';
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 20;
+
+        Lead.Get_NewLeads(search, industry, designation, district, priority, page, limit, function (err, rows) {
+            if (err) {
+                res.json(err);
+            }
+            else {
+                res.json(rows);
+            }
+        });
+    }
+    catch (e) {
+        console.error("Exception in Get_NewLeads:", e);
+        res.status(500).json({ error: e.message || String(e) });
+    }
+});
+
 router.get('/Get_Lead/:Lead_Id', function (req, res, next) {
     try {
         Lead.Get_Lead(req.params.Lead_Id, function (err, rows) {
@@ -110,6 +135,23 @@ router.get('/Get_Lead/:Lead_Id', function (req, res, next) {
     }
     catch (e) {
         console.error("Exception in Get_Lead:", e);
+        res.status(500).json({ error: e.message || String(e) });
+    }
+});
+
+router.get('/Get_NewLead/:Lead_Id', function (req, res, next) {
+    try {
+        Lead.Get_NewLeadByID(req.params.Lead_Id, function (err, rows) {
+            if (err) {
+                res.json(err);
+            }
+            else {
+                res.json(rows);
+            }
+        });
+    }
+    catch (e) {
+        console.error("Exception in Get_NewLeadByID:", e);
         res.status(500).json({ error: e.message || String(e) });
     }
 });

@@ -251,10 +251,35 @@ export class Register_LeadComponent implements OnInit {
     if (id) {
       this.Load_Column_Preferences();
       this.issLoading = true;
-      this.Lead_Service_.Get_Lead(id).subscribe(data => {
+      this.Lead_Service_.Get_NewLeadByID(id).subscribe(data => {
         this.issLoading = false;
         if (data && data.length > 0 && data[0].length > 0) {
-           this.Edit_Lead(data[0][0]);
+           let leadData = data[0][0];
+           if (data[1] && Array.isArray(data[1])) {
+             // Sort so that Is_Primary == 1 is first
+             const sortedContacts = data[1].sort((a: any, b: any) => {
+               if (a.Is_Primary == 1 && b.Is_Primary != 1) return -1;
+               if (b.Is_Primary == 1 && a.Is_Primary != 1) return 1;
+               return 0;
+             });
+             leadData.Contact_Person_Details = sortedContacts.map((c: any) => ({
+                POC_Full_Name: c.Full_Name,
+                POC_Designation_Id: c.Designation_Id,
+                Designation_Name: c.Designation_Name, // Keep name for dropdown init
+                POC_Direct_Mobile: c.Direct_Mobile,
+                POC_Email: c.Email_Address,
+                POC_Work_Phone: c.Work_Phone,
+                POC_State_Id: c.State_Id,
+                State_Name: c.State_Name, // Keep name for dropdown init
+                POC_Location_Id: c.Sitting_Location,
+                POC_Office_Type: c.Office_Type,
+                Name_Captured: c.Name_Captured,
+                Number_Captured: c.Number_Captured,
+                Email_Captured: c.Email_Captured,
+                Next_Call_Action: false
+             }));
+           }
+           this.Edit_Lead(leadData);
         } else {
            this.snackBar.open("Record Not Found", "Close", { duration: 3000 });
            this.router.navigate(['/LeadDashboard']);
@@ -284,12 +309,14 @@ export class Register_LeadComponent implements OnInit {
 
     this.Entry_View = true;
 
-    ['Vertical', 'State', 'District', 'CompanySize', 'Source', 'Designation', 'ServiceInterest', 'LeadPriority', 'PipelineStage', 'Pulse', 'TargetStage'].forEach(type => {
-      this.DropdownPage[type] = 1;
-      this.DropdownSearch[type] = '';
-      this.DropdownEnd[type] = false;
-      this.loadDropdownData(type);
-    });
+    if (!id) {
+      ['Vertical', 'State', 'District', 'CompanySize', 'Source', 'Designation', 'ServiceInterest', 'LeadPriority', 'PipelineStage', 'Pulse', 'TargetStage'].forEach(type => {
+        this.DropdownPage[type] = 1;
+        this.DropdownSearch[type] = '';
+        this.DropdownEnd[type] = false;
+        this.loadDropdownData(type);
+      });
+    }
 
   }  loadDropdownData(type: string, append: boolean = false) {
     if (this.DropdownLoading[type]) return;
@@ -780,7 +807,7 @@ export class Register_LeadComponent implements OnInit {
       Next_Call_Action: [contact ? !!contact.Next_Call_Action : false],
       POC_State_Id: [contact ? contact.POC_State_Id : 0],
       POC_Location_Id: [contact ? contact.POC_Location_Id : 0],
-      POC_Office_Type: [contact ? contact.POC_Office_Type : 'Head office'],
+      POC_Office_Type: [contact && contact.POC_Office_Type ? contact.POC_Office_Type : 'Head office'],
       Name_Captured: [contact ? !!contact.Name_Captured : false],
       Number_Captured: [contact ? !!contact.Number_Captured : false],
       Email_Captured: [contact ? !!contact.Email_Captured : false]
@@ -1037,11 +1064,38 @@ export class Register_LeadComponent implements OnInit {
         Next_Call_Action: this.Lead_.Next_Call_Action
       }));
     }
-    this.Get_Lead_FollowUp_History(this.Lead_.Lead_Id);
-    this.Get_Lead_Activity_Log(this.Lead_.Lead_Id);
-    this.Get_Lead_Meetings(this.Lead_.Lead_Id);
-    this.Get_Lead_Quote_Tracking(this.Lead_.Lead_Id);
-    this.Get_Lead_Dynamic_Fields(this.Lead_.Lead_Id);
+    // The following API calls have been removed as per user request to optimize the edit page load:
+    // this.Get_Lead_FollowUp_History(this.Lead_.Lead_Id);
+    // this.Get_Lead_Activity_Log(this.Lead_.Lead_Id);
+    // this.Get_Lead_Meetings(this.Lead_.Lead_Id);
+    // this.Get_Lead_Quote_Tracking(this.Lead_.Lead_Id);
+    // this.Get_Lead_Dynamic_Fields(this.Lead_.Lead_Id); // this triggers Get_Lead_Custom_Values
+    
+    // Pre-populate dropdown data so they can display the selected text without an API call
+    this.DropdownData['Vertical'] = this.Lead_.Vertical ? [{ id: this.Lead_.Vertical, name: this.Lead_.Vertical_Name }] : [];
+    this.DropdownData['State'] = this.Lead_.State ? [{ id: this.Lead_.State, name: this.Lead_.State_Name }] : [];
+    this.DropdownData['District'] = this.Lead_.District ? [{ id: this.Lead_.District, name: this.Lead_.District_Name }] : [];
+    this.DropdownData['CompanySize'] = this.Lead_.Company_Size_Id ? [{ id: this.Lead_.Company_Size_Id, name: this.Lead_.Company_Size_Name }] : [];
+    this.DropdownData['Source'] = this.Lead_.Source ? [{ id: this.Lead_.Source, name: this.Lead_.Source_Name }] : [];
+    
+    // Bind the remark to the text area model
+    this.Requirement_Note = this.Lead_.Remark || '';
+    
+    let designations = [];
+    let states = [...(this.DropdownData['State'] || [])];
+    if (contacts && Array.isArray(contacts)) {
+       contacts.forEach((c: any) => {
+          if (c.POC_Designation_Id && !designations.find(d => d.id === c.POC_Designation_Id)) {
+             designations.push({ id: c.POC_Designation_Id, name: c.Designation_Name || c.POC_Designation || '' });
+          }
+          if (c.POC_State_Id && !states.find(s => s.id === c.POC_State_Id)) {
+             states.push({ id: c.POC_State_Id, name: c.State_Name || c.POC_State || '' });
+          }
+       });
+    }
+    this.DropdownData['Designation'] = designations;
+    this.DropdownData['State'] = states;
+
     this.Entry_View = true;
   }
 

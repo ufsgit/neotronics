@@ -43,7 +43,7 @@
       <div class="ig-search-container">
         <div class="ig-search-input-wrap">
           <input type="text" placeholder="Search here..." [(ngModel)]="Search_Text"
-            (keyup.enter)="Apply_Lead_Filters()">
+            (keyup.enter)="Get_Leads()">
           <i class="material-icons">search</i>
         </div>
 
@@ -74,10 +74,11 @@
           (selectionChange)="Lead_Filter.Industry = $event ? $event.id : null"></app-lead-filter-dropdown>
         <app-lead-filter-dropdown style="flex: 1; min-width: 140px;" placeholder="All designations" type="Designation"
           (selectionChange)="Lead_Filter.Designation = $event ? $event.id : null"></app-lead-filter-dropdown>
-        <!-- <app-lead-filter-dropdown style="flex: 1; min-width: 140px;" placeholder="All status" type="Status" (selectionChange)="Lead_Filter.Stage = $event ? $event.id : null"></app-lead-filter-dropdown> -->
         <app-lead-filter-dropdown style="flex: 1; min-width: 140px;" placeholder="All districts" type="District"
           (selectionChange)="Lead_Filter.District = $event ? $event.id : null"></app-lead-filter-dropdown>
-        <!-- <app-lead-filter-dropdown style="flex: 1; min-width: 140px;" placeholder="All partners" type="Partner" (selectionChange)="Lead_Filter.Partner = $event ? $event.id : null"></app-lead-filter-dropdown> -->
+        
+        <app-lead-filter-dropdown style="flex: 1; min-width: 140px;" placeholder="All Priorities" type="LeadPriority"
+          (selectionChange)="Lead_Filter.Priority = $event ? $event.name : null"></app-lead-filter-dropdown>
       </div>
 
       <hr style="border: 0; border-top: 1px solid #2d3239; margin: 15px 0;">
@@ -107,7 +108,7 @@
               <th class="ig-th" *ngIf="Is_Column_Visible('Address')">Address</th>
               <th class="ig-th" *ngIf="Is_Column_Visible('Contact')">Contact</th>
               <th class="ig-th" *ngIf="Is_Column_Visible('Enquiry_for')">Enquiry for</th>
-              <th class="ig-th" *ngIf="Is_Column_Visible('Status')">Status</th>
+              <th class="ig-th" *ngIf="Is_Column_Visible('Lead Priority')">Lead Priority</th>
               <th class="ig-th" *ngIf="Is_Column_Visible('Remark')">Remark</th>
               <th class="ig-th ig-th-actions" *ngIf="Is_Column_Visible('Action')">Action</th>
             </tr>
@@ -124,16 +125,21 @@
               </td>
               <td class="ig-td" *ngIf="Is_Column_Visible('Contact')">{{lead.Contact_Number || lead.Phone}}</td>
               <td class="ig-td" *ngIf="Is_Column_Visible('Enquiry_for')">
-                <!-- Only show if this lead has custom field values saved -->
-                <span *ngIf="lead.CF_Count > 0" class="ig-cf-badge" (click)="Open_Custom_Fields_Popup(lead)"
-                  title="{{lead.CF_Summary}}">
-                  <i class="material-icons" style="font-size:13px;vertical-align:middle;">extension</i>
-                  View Fields
-                </span>
-                <span *ngIf="!lead.CF_Count || lead.CF_Count == 0" class="ig-td-muted">—</span>
+                <button mat-button class="ig-cf-badge" *ngIf="lead.Enquiry_For" [matMenuTriggerFor]="enquiryMenu"
+                  style="border: 1px solid #ccc; border-radius: 4px; padding: 2px 8px; font-size: 12px;">
+                  View Enquiries
+                </button>
+                <mat-menu #enquiryMenu="matMenu">
+                  <div style="padding: 8px 16px; max-width: 300px; max-height: 200px; overflow-y: auto;">
+                    <div *ngFor="let eq of splitEnquiry(lead.Enquiry_For)" style="margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 2px;">
+                      {{ eq }}
+                    </div>
+                  </div>
+                </mat-menu>
+                <span *ngIf="!lead.Enquiry_For" class="ig-td-muted">—</span>
               </td>
-              <td class="ig-td" *ngIf="Is_Column_Visible('Status')">
-                <span class="ig-status-pill text-test">{{lead.Status_Name || 'test'}}</span>
+              <td class="ig-td" *ngIf="Is_Column_Visible('Lead Priority')">
+                <span class="ig-status-pill text-test">{{lead.Lead_Priority || 'Medium'}}</span>
               </td>
               <td class="ig-td" *ngIf="Is_Column_Visible('Remark')">
                 <div class="ig-td-muted" title="{{lead.Remark}}">{{lead.Remark | slice:0:20}}{{lead.Remark?.length > 20

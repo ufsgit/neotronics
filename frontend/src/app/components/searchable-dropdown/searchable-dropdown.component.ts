@@ -59,6 +59,10 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
     this.isOpen = !this.isOpen;
     if (this.isOpen) {
       this.onTouched();
+      // If data is empty or only contains the pre-populated selected item, trigger a fetch
+      if (!this.data || this.data.length <= 1) {
+         this.search.emit(this.searchText);
+      }
     } else {
       this.clearSearch();
     }

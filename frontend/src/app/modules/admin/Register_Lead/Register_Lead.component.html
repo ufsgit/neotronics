@@ -166,10 +166,15 @@
                 </div>
                 <div class="ig-field">
                   <label class="ig-label">Sitting location</label>
-                  <select class="ig-select" formControlName="POC_Location_Id">
-                    <option [value]="0">Select Sitting location</option>
-                    <option *ngFor="let d of District_Data" [value]="d.District_Id">{{d.District_Name}}</option>
-                  </select>
+                  <app-searchable-dropdown
+                    formControlName="POC_Location_Id"
+                    [data]="DropdownData['District']"
+                    bindLabel="name"
+                    bindValue="id"
+                    placeholder="Select Sitting location"
+                    (search)="onSearchDropdown('District', $event)"
+                    (loadMore)="onLoadMoreDropdown('District')">
+                  </app-searchable-dropdown>
                 </div>
 
                 <!-- Row 3 -->

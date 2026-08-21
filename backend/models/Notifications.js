@@ -91,7 +91,7 @@ const Notifications = {
 
         const [rows] = await pool.query(
             "SELECT n.id, n.staff_id, n.lead_id, n.message, n.is_read, n.created_at, n.assigned_by_name, " +
-            "l.Lead_Name, l.Contact_Person, l.Contact_Number, l.Phone " +
+            "l.Lead_Name, l.POC_Full_Name, l.POC_Direct_Mobile AS Contact_Number, l.POC_Work_Phone AS Phone " +
             "FROM notifications n " +
             "LEFT JOIN `Lead` l ON l.Lead_Id = n.lead_id " +
             "WHERE n.staff_id = ? AND IFNULL(n.is_read, 0) = 0 " +

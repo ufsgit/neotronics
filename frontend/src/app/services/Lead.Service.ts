@@ -25,8 +25,27 @@ export class Lead_Service {
     return this.http.get(environment.BasePath + 'Lead/Get_Leads/', { params: { _t: Date.now().toString() } });
   }
 
+  Get_NewLeads(search: string = '', industry: number = 0, designation: number = 0, district: number = 0, priority: string = '', page: number = 1, limit: number = 20): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_NewLeads/', { 
+      params: { 
+        search, 
+        industry: industry.toString(), 
+        designation: designation.toString(), 
+        district: district.toString(), 
+        priority, 
+        page: page.toString(), 
+        limit: limit.toString(),
+        _t: Date.now().toString() 
+      } 
+    });
+  }
+
   Get_Lead(Lead_Id): Observable<any> {
     return this.http.get(environment.BasePath + 'Lead/Get_Lead/' + Lead_Id);
+  }
+
+  Get_NewLeadByID(Lead_Id): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_NewLead/' + Lead_Id);
   }
 
   Get_Dropdowns_Lead(): Observable<any> {

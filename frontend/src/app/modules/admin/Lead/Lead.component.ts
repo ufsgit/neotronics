@@ -162,7 +162,7 @@ export class LeadComponent implements OnInit {
     { key: 'Address', label: 'Address', visible: true },
     { key: 'Contact', label: 'Contact', visible: true },
     { key: 'Enquiry_for', label: 'Enquiry for', visible: true },
-    { key: 'Status', label: 'Status', visible: true },
+    { key: 'Lead Priority', label: 'Lead Priority', visible: true },
     { key: 'Remark', label: 'Remark', visible: true },
     { key: 'Action', label: 'Action', visible: true }
   ];
@@ -225,14 +225,12 @@ export class LeadComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.Load_Column_Preferences();
-      this.Get_Dropdowns_Lead();
-      this.Get_Company_Sizes();
-      this.Get_Custom_Fields();
       this.issLoading = true;
-      this.Lead_Service_.Get_Lead(id).subscribe(data => {
+      this.Lead_Service_.Get_NewLeadByID(id).subscribe(data => {
         this.issLoading = false;
         if (data && data.length > 0 && data[0].length > 0) {
+           // data[0] is main lead, data[1] is contacts, data[2] is pipeline history
+           // Note: Edit_Lead and contact populating logic may need to be updated to use data[1] and data[2]
            this.Edit_Lead(data[0][0]);
         } else {
            this.snackBar.open("Record Not Found", "Close", { duration: 3000 });
@@ -255,31 +253,17 @@ export class LeadComponent implements OnInit {
       }
     });
 
-    // Subscribe to master data updates
-    this.Master_Refresh_Service_.masterUpdated$.subscribe(masterName => {
-      if (masterName === 'Vertical' || masterName === 'Industry' || masterName === 'Designation') {
-        this.Get_Dropdowns_Lead();
-      }
-      if (masterName === 'Company_Size') {
-        this.Get_Company_Sizes();
-      }
-    });
+    // Subscriptions to master data updates removed as they triggered unwanted API calls on the list page
+  }
+
+  splitEnquiry(enquiry: string): string[] {
+    if (!enquiry) return [];
+    return enquiry.split('*').map(s => s.trim()).filter(s => s.length > 0);
   }
 
   Page_Load() {
     this.Load_Column_Preferences();
     this.Get_Leads();
-    this.Get_Dropdowns_Lead();
-    this.Get_Company_Sizes();
-    this.Get_Custom_Fields();
-    
-    // Initial fetch for all dropdowns
-    ['State', 'District', 'Vertical', 'CompanySize', 'Source', 'Designation'].forEach(type => {
-      this.DropdownPage[type] = 1;
-      this.DropdownSearch[type] = '';
-      this.DropdownEnd[type] = false;
-      this.loadDropdownData(type);
-    });
   }
 
   loadDropdownData(type: string, append: boolean = false) {
@@ -443,10 +427,20 @@ export class LeadComponent implements OnInit {
 
   Get_Leads() {
     this.issLoading = true;
-    this.Lead_Service_.Get_Leads().subscribe(Rows => {
-      const leadRows =
-        (Rows && Array.isArray(Rows) && Rows.length > 0 && Array.isArray(Rows[0])) ? Rows[0]
-        : (Array.isArray(Rows) ? Rows : []);
+    this.Lead_Service_.Get_NewLeads(
+      this.Search_Text || '',
+      this.Lead_Filter.Industry || 0,
+      this.Lead_Filter.Designation || 0,
+      this.Lead_Filter.District || 0,
+      this.Lead_Filter.Priority || '',
+      this.Page_Index,
+      this.Page_Size
+    ).subscribe(Rows => {
+      const leadRows = (Rows && Array.isArray(Rows) && Rows.length > 0 && Array.isArray(Rows[0])) ? Rows[0] : (Array.isArray(Rows) ? Rows : []);
+      const countRows = (Rows && Array.isArray(Rows) && Rows.length > 1 && Array.isArray(Rows[1])) ? Rows[1] : [];
+      let totalCount = countRows.length > 0 && countRows[0].Total_Count !== undefined ? countRows[0].Total_Count : leadRows.length;
+      
+      this.Total_Pages = Math.max(1, Math.ceil(totalCount / this.Page_Size));
 
       if (Array.isArray(leadRows)) {
         this.Lead_Data = leadRows as any;
@@ -457,14 +451,18 @@ export class LeadComponent implements OnInit {
           }
         });
         this.Map_Staff_Names();
-        this.Apply_Lead_Filters();
-      } else {
+        this.Paged_Lead_Data = this.Lead_Data;
         this.Filtered_Lead_Data = this.Lead_Data;
-        this.Apply_Lead_Filters();
+      } else {
+        this.Lead_Data = [];
+        this.Paged_Lead_Data = [];
+        this.Filtered_Lead_Data = [];
       }
       this.issLoading = false;
     }, err => {
       this.Lead_Data = [];
+      this.Paged_Lead_Data = [];
+      this.Filtered_Lead_Data = [];
       this.issLoading = false;
     });
   }
@@ -507,69 +505,8 @@ export class LeadComponent implements OnInit {
   }
 
   Apply_Lead_Filters() {
-    const filters = this.Lead_Filter;
-    const searchText = (this.Search_Text || '').toLowerCase();
-
-    this.Filtered_Lead_Data = (this.Lead_Data || []).filter((lead: any) => {
-      const entryDate = lead.Entry_Date ? this.New_Date(new Date(lead.Entry_Date)) : '';
-      const industry = this.Vertical_Data.find(v => Number(v.Vertical_Id) === Number(filters.Industry));
-      
-      const searchMatch = !searchText || 
-        (lead.Lead_Name || '').toLowerCase().includes(searchText) ||
-        (lead.POC_Full_Name || '').toLowerCase().includes(searchText) ||
-        (lead.Contact_Number || lead.Phone || '').toLowerCase().includes(searchText) ||
-        (lead.Address || '').toLowerCase().includes(searchText) ||
-        (lead.Status_Name || '').toLowerCase().includes(searchText) ||
-        (lead.Lead_Id || '').toString().includes(searchText);
-
-      let statusMatch = true;
-      if (this.Query_Status) {
-        const sName = (lead.Status_Name || '').toLowerCase();
-        const qStatus = this.Query_Status.toLowerCase();
-        if (qStatus === 'in progress') {
-          statusMatch = !sName.includes('new') && !sName.includes('lost') && !sName.includes('close') && !sName.includes('reject');
-        } else if (qStatus === 'converted') {
-          statusMatch = sName.includes('won') || sName.includes('converted');
-        } else {
-          statusMatch = sName.includes(qStatus);
-        }
-      }
-
-      let assignedMatch = true;
-      if (this.Query_Assigned === 'true') assignedMatch = lead.Staff_Id > 0;
-      if (this.Query_Assigned === 'false') assignedMatch = !lead.Staff_Id || lead.Staff_Id == 0;
-
-      let followupMatch = true;
-      if (this.Query_Followup) {
-         if (this.Query_Followup === 'Today') {
-            followupMatch = lead.Next_FollowUp_Date && (new Date(lead.Next_FollowUp_Date).setHours(0,0,0,0) === new Date().setHours(0,0,0,0));
-         } else if (this.Query_Followup === 'Pending') {
-            followupMatch = lead.Next_FollowUp_Date && (new Date(lead.Next_FollowUp_Date).setHours(0,0,0,0) < new Date().setHours(0,0,0,0));
-         }
-      }
-
-      let typeMatch = true;
-      if (this.Selected_Lead_Type && this.Selected_Lead_Type !== 'All') {
-        const typeL = this.Selected_Lead_Type.toLowerCase();
-        const statusStr = (lead.Status_Name || '').toLowerCase();
-        const priorityStr = (lead.Lead_Priority || '').toLowerCase();
-        typeMatch = statusStr.includes(typeL) || priorityStr.includes(typeL);
-      }
-
-      return searchMatch
-        && statusMatch
-        && assignedMatch
-        && followupMatch
-        && typeMatch
-        && (!filters.Industry || Number(lead.Vertical) === Number(filters.Industry) || Number(lead.Vertical_Id) === Number(filters.Industry) || (industry && lead.Vertical_Name === industry.Vertical_Name))
-        && (!filters.Designation || Number(lead.Designation) === Number(filters.Designation))
-        && (!filters.Stage || Number(lead.Status_Id) === Number(filters.Stage))
-        && (!filters.District || Number(lead.District) === Number(filters.District))
-        && (!filters.Priority || lead.Lead_Priority === filters.Priority)
-        && (!filters.Date || entryDate === filters.Date);
-    });
     this.Page_Index = 1;
-    this.Update_Paged_Leads();
+    this.Get_Leads();
   }
 
   Clear_Lead_Filters() {
@@ -578,22 +515,19 @@ export class LeadComponent implements OnInit {
   }
 
   Update_Paged_Leads() {
-    this.Total_Pages = Math.max(1, Math.ceil((this.Filtered_Lead_Data || []).length / this.Page_Size));
-    if (this.Page_Index > this.Total_Pages) this.Page_Index = this.Total_Pages;
-    const start = (this.Page_Index - 1) * this.Page_Size;
-    this.Paged_Lead_Data = (this.Filtered_Lead_Data || []).slice(start, start + this.Page_Size);
+    // Pagination is now handled by the backend
   }
 
   Change_Page(delta: number) {
     const nextPage = this.Page_Index + delta;
     if (nextPage < 1 || nextPage > this.Total_Pages) return;
     this.Page_Index = nextPage;
-    this.Update_Paged_Leads();
+    this.Get_Leads();
   }
 
   Change_Page_Size() {
     this.Page_Index = 1;
-    this.Update_Paged_Leads();
+    this.Get_Leads();
   }
 
   Get_Export_Rows() {

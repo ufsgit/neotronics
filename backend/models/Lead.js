@@ -409,6 +409,20 @@ var Lead = {
             enrichLeadsWithLatestFollowUp(rows, callback);
         });
     },
+    Get_NewLeads: function (search, industry, designation, district, priority, page, limit, callback) {
+        if (!search) search = '';
+        if (!industry) industry = 0;
+        if (!designation) designation = 0;
+        if (!district) district = 0;
+        if (!priority) priority = '';
+        if (!page) page = 1;
+        if (!limit) limit = 20;
+
+        return db.query("CALL Get_NewLeads(?, ?, ?, ?, ?, ?, ?)", [search, industry, designation, district, priority, page, limit], (err, rows) => {
+            if (err) return callback(err, rows);
+            enrichLeadsWithLatestFollowUp(rows, callback);
+        });
+    },
     Get_Lead: function (Lead_Id, callback) {
         return db.query("CALL Get_Leads()", [], (err, rows) => {
             if (err) return callback(err, null);
@@ -424,6 +438,13 @@ var Lead = {
             const newRows = lead ? [[lead]] : [[]];
 
             enrichLeadsWithLatestFollowUp(newRows, callback);
+        });
+    },
+    Get_NewLeadByID: function (Lead_Id, callback) {
+        return db.query("CALL Get_NewLeadByID(?)", [Lead_Id], (err, rows) => {
+            if (err) return callback(err, rows);
+            // rows[0] is main lead, rows[1] contacts, rows[2] pipeline history
+            callback(null, rows);
         });
     },
     Get_Dropdowns_Lead: function (callback) {
