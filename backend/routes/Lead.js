@@ -331,12 +331,13 @@ router.get('/Search_Lead_Dropdowns/', function (req, res, next) {
         const type = req.query.type;
         const search = req.query.search;
         const page = parseInt(req.query.page) || 1;
+        const filterId = parseInt(req.query.filterId) || 0;
 
         if (!type) {
             return res.status(400).json({ error: "type is required" });
         }
 
-        Lead.Search_Lead_Dropdowns(type, search, page, function (err, rows) {
+        Lead.Search_Lead_Dropdowns(type, search, page, filterId, function (err, rows) {
             if (err) {
                 res.json(err);
             } else {

@@ -211,6 +211,8 @@ export class Register_LeadComponent implements OnInit {
   DropdownLoading: { [key: string]: boolean } = {};
   DropdownEnd: { [key: string]: boolean } = {};
 
+  PreselectedDistrictNames: { [id: number]: string } = {};
+
   constructor(
     public Lead_Service_: Lead_Service,
     public User_Details_Service_: User_Details_Service,
@@ -271,7 +273,8 @@ export class Register_LeadComponent implements OnInit {
                 POC_Work_Phone: c.Work_Phone,
                 POC_State_Id: c.State_Id,
                 State_Name: c.State_Name, // Keep name for dropdown init
-                POC_Location_Id: c.Sitting_Location,
+                POC_Location_Id: c.Sitting_Location_Id,
+                Location_Name: c.Sitting_Location, // Keep name for dropdown init
                 POC_Office_Type: c.Office_Type,
                 Name_Captured: c.Name_Captured,
                 Number_Captured: c.Number_Captured,
@@ -310,7 +313,7 @@ export class Register_LeadComponent implements OnInit {
     this.Entry_View = true;
 
     if (!id) {
-      ['Vertical', 'State', 'District', 'CompanySize', 'Source', 'Designation', 'ServiceInterest', 'LeadPriority', 'PipelineStage', 'Pulse', 'TargetStage'].forEach(type => {
+      ['Vertical', 'State', 'CompanySize', 'Source', 'Designation', 'ServiceInterest', 'LeadPriority', 'PipelineStage', 'Pulse', 'TargetStage'].forEach(type => {
         this.DropdownPage[type] = 1;
         this.DropdownSearch[type] = '';
         this.DropdownEnd[type] = false;
@@ -318,61 +321,88 @@ export class Register_LeadComponent implements OnInit {
       });
     }
 
-  }  loadDropdownData(type: string, append: boolean = false) {
-    if (this.DropdownLoading[type]) return;
-    if (append && this.DropdownEnd[type]) return;
+  }
+  
+  onStateSelected(stateItem: any) {
+    if (stateItem && stateItem.id) {
+      this.loadDropdownData('District', false, stateItem.id);
+    }
+  }
+  
+  getDistrictData(stateId: number): any[] {
+    if (!stateId) return [];
+    const data = this.DropdownData[`District_${stateId}`] || [];
+    console.log(`getDistrictData called for state ${stateId}, returning array of length:`, data.length, data);
+    return data;
+  }
+
+  loadDropdownData(type: string, append: boolean = false, filterId: number = 0) {
+    const cacheKey = (type === 'District' && filterId) ? `${type}_${filterId}` : type;
     
-    this.DropdownLoading[type] = true;
-    const search = this.DropdownSearch[type] || '';
-    const page = this.DropdownPage[type] || 1;
+    if (this.DropdownLoading[cacheKey]) return;
+    if (append && this.DropdownEnd[cacheKey]) return;
     
-    this.Lead_Service_.Search_Lead_Dropdowns(type, search, page).subscribe(Rows => {
-      this.DropdownLoading[type] = false;
+    const search = this.DropdownSearch[cacheKey] || '';
+    
+    // Check if we already have the initial data cached
+    if (!append && search === '' && this.DropdownOriginalData[cacheKey]) {
+      this.DropdownData[cacheKey] = [...this.DropdownOriginalData[cacheKey]];
+      return;
+    }
+
+    this.DropdownLoading[cacheKey] = true;
+    const page = this.DropdownPage[cacheKey] || 1;
+    
+    this.Lead_Service_.Search_Lead_Dropdowns(type, search, page, filterId).subscribe(Rows => {
+      this.DropdownLoading[cacheKey] = false;
       const data = Array.isArray(Rows) ? Rows : [];
       if (data.length < 20) {
-        this.DropdownEnd[type] = true;
+        this.DropdownEnd[cacheKey] = true;
       }
       if (append) {
-        this.DropdownData[type] = [...(this.DropdownData[type] || []), ...data];
+        this.DropdownData[cacheKey] = [...(this.DropdownData[cacheKey] || []), ...data];
         if (search === '') {
-          this.DropdownOriginalData[type] = [...this.DropdownData[type]];
-          this.DropdownOriginalPage[type] = this.DropdownPage[type] || 1;
-          this.DropdownOriginalEnd[type] = this.DropdownEnd[type] || false;
+          this.DropdownOriginalData[cacheKey] = [...this.DropdownData[cacheKey]];
+          this.DropdownOriginalPage[cacheKey] = this.DropdownPage[cacheKey] || 1;
+          this.DropdownOriginalEnd[cacheKey] = this.DropdownEnd[cacheKey] || false;
         }
       } else {
-        this.DropdownData[type] = data;
+        this.DropdownData[cacheKey] = data;
         if (search === '') {
-          this.DropdownOriginalData[type] = [...data];
-          this.DropdownOriginalPage[type] = this.DropdownPage[type] || 1;
-          this.DropdownOriginalEnd[type] = this.DropdownEnd[type] || false;
+          this.DropdownOriginalData[cacheKey] = [...data];
+          this.DropdownOriginalPage[cacheKey] = this.DropdownPage[cacheKey] || 1;
+          this.DropdownOriginalEnd[cacheKey] = this.DropdownEnd[cacheKey] || false;
         }
       }
     }, err => {
       console.error(`Error loading dropdown for ${type}`, err);
-      this.DropdownLoading[type] = false;
+      this.DropdownLoading[cacheKey] = false;
     });
   }
 
-  onSearchDropdown(type: string, searchText: string) {
-    this.DropdownSearch[type] = searchText;
-    this.DropdownEnd[type] = false;
+  onSearchDropdown(type: string, searchText: string, filterId: number = 0) {
+    const cacheKey = (type === 'District' && filterId) ? `${type}_${filterId}` : type;
+    
+    this.DropdownSearch[cacheKey] = searchText;
+    this.DropdownEnd[cacheKey] = false;
 
-    if (searchText === '' && this.DropdownOriginalData[type]) {
-      this.DropdownData[type] = [...this.DropdownOriginalData[type]];
-      this.DropdownPage[type] = this.DropdownOriginalPage[type] || 1;
-      this.DropdownEnd[type] = this.DropdownOriginalEnd[type] || false;
+    if (searchText === '' && this.DropdownOriginalData[cacheKey]) {
+      this.DropdownData[cacheKey] = [...this.DropdownOriginalData[cacheKey]];
+      this.DropdownPage[cacheKey] = this.DropdownOriginalPage[cacheKey] || 1;
+      this.DropdownEnd[cacheKey] = this.DropdownOriginalEnd[cacheKey] || false;
       return;
     }
 
-    this.DropdownPage[type] = 1;
+    this.DropdownPage[cacheKey] = 1;
 
-    this.loadDropdownData(type, false);
+    this.loadDropdownData(type, false, filterId);
   }
 
-  onLoadMoreDropdown(type: string) {
-    if (this.DropdownLoading[type] || this.DropdownEnd[type]) return;
-    this.DropdownPage[type] = (this.DropdownPage[type] || 1) + 1;
-    this.loadDropdownData(type, true);
+  onLoadMoreDropdown(type: string, filterId: number = 0) {
+    const cacheKey = (type === 'District' && filterId) ? `${type}_${filterId}` : type;
+    if (this.DropdownLoading[cacheKey] || this.DropdownEnd[cacheKey]) return;
+    this.DropdownPage[cacheKey] = (this.DropdownPage[cacheKey] || 1) + 1;
+    this.loadDropdownData(type, true, filterId);
   }
 
   onCompanyNameChange(value: string) {
@@ -948,7 +978,8 @@ export class Register_LeadComponent implements OnInit {
       Work_Phone: c.POC_Work_Phone,
       State_Id: c.POC_State_Id,
       State_Name: this.DropdownData['State'] ? (this.DropdownData['State'].find(s => s.id == c.POC_State_Id) || {}).name || '' : '',
-      Sitting_Location: c.POC_Location_Id,
+      Sitting_Location_Id: c.POC_Location_Id,
+      Sitting_Location: this.DropdownData['District'] ? (this.DropdownData['District'].find(d => d.id == c.POC_Location_Id) || {}).name || '' : '',
       Office_Type: c.POC_Office_Type,
       Name_Captured: c.Name_Captured ? 1 : 0,
       Number_Captured: c.Number_Captured ? 1 : 0,
@@ -972,7 +1003,7 @@ export class Register_LeadComponent implements OnInit {
       Lead_Copy.POC_State_Id = firstContact.POC_State_Id;
       Lead_Copy.POC_State = this.DropdownData['State'] ? (this.DropdownData['State'].find(s => s.id == firstContact.POC_State_Id) || {}).name || '' : '';
       Lead_Copy.POC_Location_Id = firstContact.POC_Location_Id;
-      Lead_Copy.POC_Loc = this.DropdownData['Location'] ? (this.DropdownData['Location'].find(l => l.id == firstContact.POC_Location_Id) || {}).name || '' : '';
+      Lead_Copy.POC_Loc = this.DropdownData['District'] ? (this.DropdownData['District'].find(l => l.id == firstContact.POC_Location_Id) || {}).name || '' : '';
       Lead_Copy.POC_Office_Type = firstContact.POC_Office_Type;
       Lead_Copy.Name_Captured = firstContact.Name_Captured;
       Lead_Copy.Number_Captured = firstContact.Number_Captured;
@@ -1071,10 +1102,27 @@ export class Register_LeadComponent implements OnInit {
     // this.Get_Lead_Quote_Tracking(this.Lead_.Lead_Id);
     // this.Get_Lead_Dynamic_Fields(this.Lead_.Lead_Id); // this triggers Get_Lead_Custom_Values
     
+    if (this.Lead_.State) {
+      this.loadDropdownData('District', false, this.Lead_.State);
+    }
+    if (contacts && Array.isArray(contacts)) {
+      contacts.forEach(c => {
+        if (c.POC_State_Id) {
+          this.loadDropdownData('District', false, c.POC_State_Id);
+          if (c.POC_Location_Id) {
+            this.PreselectedDistrictNames[c.POC_Location_Id] = c.Location_Name || c.Sitting_Location || '';
+          }
+        }
+      });
+    }
     // Pre-populate dropdown data so they can display the selected text without an API call
     this.DropdownData['Vertical'] = this.Lead_.Vertical ? [{ id: this.Lead_.Vertical, name: this.Lead_.Vertical_Name }] : [];
     this.DropdownData['State'] = this.Lead_.State ? [{ id: this.Lead_.State, name: this.Lead_.State_Name }] : [];
-    this.DropdownData['District'] = this.Lead_.District ? [{ id: this.Lead_.District, name: this.Lead_.District_Name }] : [];
+    if (this.Lead_.State) {
+      if (this.Lead_.District) {
+        this.PreselectedDistrictNames[this.Lead_.District] = this.Lead_.District_Name || '';
+      }
+    }
     this.DropdownData['CompanySize'] = this.Lead_.Company_Size_Id ? [{ id: this.Lead_.Company_Size_Id, name: this.Lead_.Company_Size_Name }] : [];
     this.DropdownData['Source'] = this.Lead_.Source ? [{ id: this.Lead_.Source, name: this.Lead_.Source_Name }] : [];
     
@@ -1083,6 +1131,7 @@ export class Register_LeadComponent implements OnInit {
     
     let designations = [];
     let states = [...(this.DropdownData['State'] || [])];
+    let districts = [...(this.DropdownData['District'] || [])];
     if (contacts && Array.isArray(contacts)) {
        contacts.forEach((c: any) => {
           if (c.POC_Designation_Id && !designations.find(d => d.id === c.POC_Designation_Id)) {
@@ -1091,10 +1140,14 @@ export class Register_LeadComponent implements OnInit {
           if (c.POC_State_Id && !states.find(s => s.id === c.POC_State_Id)) {
              states.push({ id: c.POC_State_Id, name: c.State_Name || c.POC_State || '' });
           }
+          if (c.POC_Location_Id && !districts.find(d => d.id === c.POC_Location_Id)) {
+             districts.push({ id: c.POC_Location_Id, name: c.Location_Name || '' });
+          }
        });
     }
     this.DropdownData['Designation'] = designations;
     this.DropdownData['State'] = states;
+    this.DropdownData['District'] = districts;
 
     this.Entry_View = true;
   }

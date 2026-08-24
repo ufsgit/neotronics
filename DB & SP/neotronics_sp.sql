@@ -3472,6 +3472,7 @@ BEGIN
         Work_Phone,
         State_Id,
         State_Name,
+        Sitting_Location_Id,
         Sitting_Location,
         Office_Type,
         Name_Captured,
@@ -13156,12 +13157,14 @@ BEGIN
         );
         SET _Generated_Lead_Id = LAST_INSERT_ID();
         
-        -- 2. INSERT PIPELINE HISTORY
-        INSERT INTO `lead_pipeline_pulse_history` (
-            Lead_Id, Pipeline_Stage, Pulse, Current_Status, Login_User_Id
-        ) VALUES (
-            _Generated_Lead_Id, _Current_Pipeline_Stage, _Pulse, _Status_Name, _Login_User_Id
-        );
+        -- 2. INSERT PIPELINE HISTORY (Only if values exist)
+        IF (_Current_Pipeline_Stage IS NOT NULL AND _Current_Pipeline_Stage != '') OR (_Pulse IS NOT NULL AND _Pulse != '') THEN
+            INSERT INTO `lead_pipeline_pulse_history` (
+                Lead_Id, Pipeline_Stage, Pulse, Current_Status, Login_User_Id
+            ) VALUES (
+                _Generated_Lead_Id, _Current_Pipeline_Stage, _Pulse, _Status_Name, _Login_User_Id
+            );
+        END IF;
         
     ELSE
         -- 1. UPDATE LEAD
@@ -13182,12 +13185,14 @@ BEGIN
         
         SET _Generated_Lead_Id = _Lead_Id;
 
-        -- 2. INSERT PIPELINE HISTORY
-        INSERT INTO `lead_pipeline_pulse_history` (
-            Lead_Id, Pipeline_Stage, Pulse, Current_Status, Login_User_Id
-        ) VALUES (
-            _Generated_Lead_Id, _Current_Pipeline_Stage, _Pulse, _Status_Name, _Login_User_Id
-        );
+        -- 2. INSERT PIPELINE HISTORY (Only if values exist)
+        IF (_Current_Pipeline_Stage IS NOT NULL AND _Current_Pipeline_Stage != '') OR (_Pulse IS NOT NULL AND _Pulse != '') THEN
+            INSERT INTO `lead_pipeline_pulse_history` (
+                Lead_Id, Pipeline_Stage, Pulse, Current_Status, Login_User_Id
+            ) VALUES (
+                _Generated_Lead_Id, _Current_Pipeline_Stage, _Pulse, _Status_Name, _Login_User_Id
+            );
+        END IF;
 
         -- Delete existing contacts for complete replace from JSON
         DELETE FROM `lead_contact` WHERE Lead_Id = _Generated_Lead_Id;
@@ -13197,12 +13202,12 @@ BEGIN
     IF _Contact_Person_Details_JSON IS NOT NULL AND _Contact_Person_Details_JSON != '' AND _Contact_Person_Details_JSON != '[]' THEN
         INSERT INTO `lead_contact` (
             Lead_Id, Full_Name, Designation_Id, Designation_Name, Direct_Mobile, Email_Address, Work_Phone,
-            State_Id, State_Name, Sitting_Location, Office_Type, Name_Captured, Number_Captured, Email_Captured,
+            State_Id, State_Name, Sitting_Location_Id, Sitting_Location, Office_Type, Name_Captured, Number_Captured, Email_Captured,
             Is_Primary, Login_User_Id
         )
         SELECT 
             _Generated_Lead_Id, Full_Name, Designation_Id, Designation_Name, Direct_Mobile, Email_Address, Work_Phone,
-            State_Id, State_Name, Sitting_Location, Office_Type, Name_Captured, Number_Captured, Email_Captured,
+            State_Id, State_Name, Sitting_Location_Id, Sitting_Location, Office_Type, Name_Captured, Number_Captured, Email_Captured,
             Is_Primary, _Login_User_Id
         FROM JSON_TABLE(_Contact_Person_Details_JSON, '$[*]' COLUMNS (
             Full_Name VARCHAR(150) PATH '$.Full_Name',
@@ -13213,7 +13218,8 @@ BEGIN
             Work_Phone VARCHAR(100) PATH '$.Work_Phone',
             State_Id INT PATH '$.State_Id',
             State_Name VARCHAR(100) PATH '$.State_Name',
-            Sitting_Location INT PATH '$.Sitting_Location',
+            Sitting_Location_Id INT PATH '$.Sitting_Location_Id',
+            Sitting_Location VARCHAR(100) PATH '$.Sitting_Location',
             Office_Type VARCHAR(50) PATH '$.Office_Type',
             Name_Captured TINYINT(1) PATH '$.Name_Captured',
             Number_Captured TINYINT(1) PATH '$.Number_Captured',
@@ -13224,7 +13230,6 @@ BEGIN
 
     -- 4. INSERT FOLLOW-UP (If checked)
     IF _Is_FollowUp = 1 THEN
-        -- Removed Next_FollowUp_Date from this insert because it was removed from params
         INSERT INTO `Follow_up` (
             Lead_Id, Lead_Type, Status_Id, Status_Name, Branch_Id, Branch_Name, 
             Department_Id, Department_Name, Staff_Id, Staff_Name, Remark, FollowUp_Date, 
@@ -26690,10 +26695,10 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Search_Lead_Dropdowns`(
     IN p_Type VARCHAR(100),
     IN p_Search VARCHAR(255),
-    IN p_Page INT
+    IN p_Page INT,
+    IN p_Filter_Id INT -- 1. ADD THIS 4TH PARAMETER
 )
 BEGIN
-    -- Changed default limit from 50 to 20!
     DECLARE v_Limit INT DEFAULT 20;
     DECLARE v_Offset INT;
     
@@ -26711,8 +26716,10 @@ BEGIN
         LIMIT v_Limit OFFSET v_Offset;
         
     ELSEIF p_Type = 'District' THEN
+        -- 2. FILTER BY p_Filter_Id
         SELECT District_Id AS id, District_Name AS name FROM District 
         WHERE District_Name LIKE p_Search 
+        AND (p_Filter_Id = 0 OR p_Filter_Id IS NULL OR State_Id = p_Filter_Id)
         ORDER BY District_Name 
         LIMIT v_Limit OFFSET v_Offset;
         

@@ -21,9 +21,12 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
   @Input() bindValue: string = 'id';
   @Input() placeholder: string = 'Select...';
   @Input() loading: boolean = false;
+  @Input() disabled: boolean = false;
+  @Input() fallbackName: string = '';
   
   @Output() search = new EventEmitter<string>();
   @Output() loadMore = new EventEmitter<void>();
+  @Output() itemSelected = new EventEmitter<any>();
 
   isOpen: boolean = false;
   value: any = null;
@@ -56,6 +59,7 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
   }
 
   toggleDropdown() {
+    if (this.disabled) return;
     this.isOpen = !this.isOpen;
     if (this.isOpen) {
       this.onTouched();
@@ -77,6 +81,7 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
     event.stopPropagation();
     this.value = item[this.bindValue];
     this.onChange(this.value);
+    this.itemSelected.emit(item);
     this.isOpen = false;
     this.clearSearch();
   }
@@ -110,11 +115,15 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
     this.onTouched = fn;
   }
   
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+  
   getDisplayValue(): string {
     if (this.value != null && Array.isArray(this.data)) {
-      const selectedItem = this.data.find(item => item[this.bindValue] === this.value);
-      return selectedItem ? selectedItem[this.bindLabel] : '';
+      const selectedItem = this.data.find(item => item[this.bindValue] == this.value);
+      if (selectedItem) return selectedItem[this.bindLabel];
     }
-    return '';
+    return this.fallbackName || '';
   }
 }

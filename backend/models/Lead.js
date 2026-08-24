@@ -630,10 +630,10 @@ var Lead = {
 
         return db.query("CALL Get_Lead_Filter_Dropdown(?, ?, ?)", [type, search, page], callback);
     },
-    Search_Lead_Dropdowns: function (type, search, page, callback) {
+    Search_Lead_Dropdowns: function (type, search, page, filterId, callback) {
         if (!search) search = '';
         if (!page || isNaN(page)) page = 1;
-        return db.query("CALL sp_Search_Lead_Dropdowns(?, ?, ?)", [type, search, page], callback);
+        return db.query("CALL sp_Search_Lead_Dropdowns(?, ?, ?, ?)", [type, search, page, filterId], callback);
     }
 };
 

@@ -1,4 +1,4 @@
-<div class="ig-dropdown-container">
+<div class="ig-dropdown-container" [class.ig-disabled]="disabled">
   <div class="ig-dropdown-toggle ig-input" (click)="toggleDropdown()" [class.open]="isOpen">
     <span class="ig-dropdown-value" *ngIf="value != null && value !== 0 && getDisplayValue()">{{ getDisplayValue() }}</span>
     <span class="ig-dropdown-placeholder" *ngIf="value == null || value === 0 || !getDisplayValue()">{{ placeholder }}</span>

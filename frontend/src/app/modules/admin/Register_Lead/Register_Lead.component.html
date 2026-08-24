@@ -61,7 +61,8 @@
               bindValue="id"
               placeholder="Select State"
               (search)="onSearchDropdown('State', $event)"
-              (loadMore)="onLoadMoreDropdown('State')">
+              (loadMore)="onLoadMoreDropdown('State')"
+              (itemSelected)="onStateSelected($event)">
             </app-searchable-dropdown>
           </div>
           <div class="ig-field">
@@ -69,12 +70,14 @@
             <app-searchable-dropdown
               name="District"
               [(ngModel)]="Lead_.District"
-              [data]="DropdownData['District']"
+              [data]="getDistrictData(Lead_.State)"
+              [fallbackName]="PreselectedDistrictNames[Lead_.District]"
               bindLabel="name"
               bindValue="id"
               placeholder="Select District"
-              (search)="onSearchDropdown('District', $event)"
-              (loadMore)="onLoadMoreDropdown('District')">
+              [disabled]="!Lead_.State"
+              (search)="onSearchDropdown('District', $event, Lead_.State)"
+              (loadMore)="onLoadMoreDropdown('District', Lead_.State)">
             </app-searchable-dropdown>
           </div>
           <div class="ig-field">
@@ -161,19 +164,22 @@
                     bindValue="id"
                     placeholder="Select State"
                     (search)="onSearchDropdown('State', $event)"
-                    (loadMore)="onLoadMoreDropdown('State')">
+                    (loadMore)="onLoadMoreDropdown('State')"
+                    (itemSelected)="onStateSelected($event)">
                   </app-searchable-dropdown>
                 </div>
                 <div class="ig-field">
                   <label class="ig-label">Sitting location</label>
                   <app-searchable-dropdown
                     formControlName="POC_Location_Id"
-                    [data]="DropdownData['District']"
+                    [data]="getDistrictData(contact.get('POC_State_Id').value)"
+                    [fallbackName]="PreselectedDistrictNames[contact.get('POC_Location_Id').value]"
                     bindLabel="name"
                     bindValue="id"
                     placeholder="Select Sitting location"
-                    (search)="onSearchDropdown('District', $event)"
-                    (loadMore)="onLoadMoreDropdown('District')">
+                    [disabled]="!contact.get('POC_State_Id').value"
+                    (search)="onSearchDropdown('District', $event, contact.get('POC_State_Id').value)"
+                    (loadMore)="onLoadMoreDropdown('District', contact.get('POC_State_Id').value)">
                   </app-searchable-dropdown>
                 </div>
 

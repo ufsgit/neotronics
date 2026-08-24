@@ -63,12 +63,13 @@ export class Lead_Service {
     });
   }
 
-  Search_Lead_Dropdowns(type: string, search: string, page: number): Observable<any> {
+  Search_Lead_Dropdowns(type: string, search: string, page: number, filterId: number = 0): Observable<any> {
     return this.http.get(environment.BasePath + 'Lead/Search_Lead_Dropdowns/', {
       params: {
         type: type,
         search: search,
         page: page.toString(),
+        filterId: filterId.toString(),
         _t: Date.now().toString()
       }
     });
