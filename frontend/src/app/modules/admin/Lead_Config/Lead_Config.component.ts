@@ -54,7 +54,7 @@ export class Lead_ConfigComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.Load_Data();
+    this.selectSubTab(this.activeSubTab);
   }
 
   getRoutePathForSubTab(tab: string): string {
@@ -70,9 +70,9 @@ export class Lead_ConfigComponent implements OnInit {
       'Pipeline Stage': 'Lead_Config/pipeline_stage_pulse/pipeline_stage',
       'Pulse': 'Lead_Config/pipeline_stage_pulse/pulse',
       'Target Stage': 'Lead_Config/pipeline_stage_pulse/target_stage',
-      'Branch': 'Lead_Config/assignment/assignment',
-      'Department': 'Lead_Config/assignment/assignment',
-      'Workflow': 'Lead_Config/followup_automation/followup_automation'
+      'Branch': 'Lead_Config/assignment/branch',
+      'Department': 'Lead_Config/assignment/department',
+      'Workflow': 'Lead_Config/followup_automation/workflow'
     };
     return map[tab] || '';
   }
@@ -263,8 +263,7 @@ export class Lead_ConfigComponent implements OnInit {
     if (this.activeSection !== section) {
       this.activeSection = section;
       if (this.subTabs[section] && this.subTabs[section].length > 0) {
-        this.activeSubTab = this.subTabs[section][0];
-        this.Load_Data();
+        this.selectSubTab(this.subTabs[section][0]);
       } else {
         this.activeSubTab = '';
         this.Dropdown_Data = [];
@@ -272,11 +271,26 @@ export class Lead_ConfigComponent implements OnInit {
     }
   }
 
+  hasDescription(tab: string): boolean {
+    const tabsWithDesc = ['Vertical', 'Company Size', 'Source', 'Designation', 'Department'];
+    return tabsWithDesc.includes(tab);
+  }
+
   selectSubTab(tab: string) {
-    if (this.activeSubTab !== tab) {
-      this.activeSubTab = tab;
-      this.Load_Data();
+    this.activeSubTab = tab;
+    
+    if (this.hasDescription(tab)) {
+      this.columns = [
+        { key: 'name', label: 'Name' },
+        { key: 'Description', label: 'Description' }
+      ];
+    } else {
+      this.columns = [
+        { key: 'name', label: 'Name' }
+      ];
     }
+    
+    this.Load_Data();
   }
 
   toggleSidebar() {

@@ -263,6 +263,9 @@ app.use('/Lead_Config/pipeline_stage_pulse/target_stage', require('./routes/Lead
 app.use('/Lead_Config/assignment/assignment', require('./routes/Lead_Config/assignment/assignment'));
 app.use('/Lead_Config/followup_automation/followup_automation', require('./routes/Lead_Config/followup_automation/followup_automation'));
 
+  app.use('/Lead_Config/assignment/branch', require('./routes/Lead_Config/assignment/branch'));
+  app.use('/Lead_Config/assignment/department', require('./routes/Lead_Config/assignment/department'));
+  app.use('/Lead_Config/followup_automation/workflow', require('./routes/Lead_Config/followup_automation/workflow'));
 app.use(errorHandler);
 
 app.use(function(req, res, next) {
