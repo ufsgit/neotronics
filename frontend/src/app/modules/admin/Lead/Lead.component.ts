@@ -59,6 +59,10 @@ export class LeadComponent implements OnInit {
   readonly Raw_Lead_Stage_Name: string = 'RAW Lead';
   readonly Lost_Stage_Name: string = 'Lost';
 
+  Remark_Popup_Open: boolean = false;
+  Remark_Popup_Text: string = '';
+  Remark_Popup_LeadName: string = '';
+
   Selected_Lead_Type: string = 'All';
 
   Requirement_Note: string = '';
@@ -512,6 +516,14 @@ export class LeadComponent implements OnInit {
   Clear_Lead_Filters() {
     this.Lead_Filter = { Industry: 0, Stage: 0, Priority: '', Date: '', Assigned_Staff: 0, District: 0, State: 0 };
     this.Apply_Lead_Filters();
+  }
+
+  Open_Remark_Popup(lead: Lead) {
+    if (lead.Remark && lead.Remark.length > 20) {
+      this.Remark_Popup_Open = true;
+      this.Remark_Popup_Text = lead.Remark;
+      this.Remark_Popup_LeadName = lead.Lead_Name;
+    }
   }
 
   Update_Paged_Leads() {

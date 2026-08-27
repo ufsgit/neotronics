@@ -142,8 +142,12 @@
                 <span class="ig-status-pill text-test">{{lead.Lead_Priority || 'Medium'}}</span>
               </td>
               <td class="ig-td" *ngIf="Is_Column_Visible('Remark')">
-                <div class="ig-td-muted" title="{{lead.Remark}}">{{lead.Remark | slice:0:20}}{{lead.Remark?.length > 20
-                  ? '...' : ''}}</div>
+                <div class="ig-td-muted" title="{{lead.Remark}}" 
+                     (click)="Open_Remark_Popup(lead)" 
+                     [style.cursor]="(lead.Remark?.length > 20) ? 'pointer' : 'default'"
+                     [style.color]="(lead.Remark?.length > 20) ? '#3b82f6' : 'inherit'">
+                  {{lead.Remark | slice:0:20}}{{lead.Remark?.length > 20 ? '...' : ''}}
+                </div>
               </td>
               <td class="ig-td ig-td-actions" *ngIf="Is_Column_Visible('Action')">
                 <div class="ig-action-buttons">
@@ -276,6 +280,29 @@
             style="background-color: #ef4444; border-color: #ef4444; color: white;"
             (click)="Clear_All_Interests()">Clear All</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       REMARK POPUP
+  ══════════════════════════════════════════ -->
+  <div class="ig-cf-overlay" *ngIf="Remark_Popup_Open" (click)="Remark_Popup_Open = false">
+    <div class="ig-cf-popup" style="max-width: 500px;" (click)="$event.stopPropagation()">
+      <div class="ig-cf-popup-header">
+        <div>
+          <p class="ig-cf-popup-lead">{{ Remark_Popup_LeadName }}</p>
+          <p class="ig-cf-popup-sub">Full Remark</p>
+        </div>
+        <button class="ig-cf-close" (click)="Remark_Popup_Open = false">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+
+      <div class="ig-cf-popup-body" style="padding: 20px;">
+        <p style="font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; margin: 0; color: #333;">
+          {{ Remark_Popup_Text }}
+        </p>
       </div>
     </div>
   </div>
