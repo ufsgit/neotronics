@@ -20,7 +20,7 @@ export class Lead {
     Email_Captured: boolean;
     Vertical: string;        // comma-separated Vertical IDs e.g. "1,3"
     Vertical_Name: string;
-    Enquiry_For: string;     // comma-separated selected enquiry IDs
+    Enquiry_For: string;     // *-separated selected enquiry IDs
     Project_Name: string;
     Company_Size_Id: number;
     Company_Size_Name: string;
@@ -37,8 +37,14 @@ export class Lead {
     Staff_Id: number;
     Staff_Name: string;
     Remark: string;
+    Enquiry_For_Note: string;
+    Next_FollowUp_Date: any;
+    Remarks: string;
     Location_Id: number;
     Location_Name: string;
+    Branch_Id: number;
+    Branch_Name: string;
+    Lead_Type: number;
     Is_FollowUp: boolean;
     FollowUp_Department_Id: number;
     FollowUp_Status_Id: number;
@@ -47,6 +53,10 @@ export class Lead {
     FollowUp_Remark: string;
     FollowUp_Location_Id: number;
     FollowUp_Location_Name: string;
+    FollowUp_Branch_Id: number;
+    FollowUp_Branch_Name: string;
+    FollowUp_Dept_Name: string;
+    FollowUp_Status_Name: string;
     FollowUp_Date: string; // New Field for Date & Time
     Login_User_Id: number; // New Field for User ID
     FollowUp_Next_Date: any;
@@ -87,6 +97,9 @@ export class Lead {
         this.Staff_Id = 0;
         this.Remark = "";
         this.Location_Id = 0;
+        this.Branch_Id = 0;
+        this.Branch_Name = "";
+        this.Lead_Type = 0;
         this.Is_FollowUp = false;
         this.FollowUp_Department_Id = 0;
         this.FollowUp_Status_Id = 0;

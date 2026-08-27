@@ -3424,7 +3424,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_NewLeadByID`(
     IN p_LeadId INT
 )
 BEGIN
-    -- 1. Main Lead Details (Removed redundant POC fields)
+    -- 1. Main Lead Details
     SELECT 
         Lead_Id,
         Lead_Name,
@@ -3444,7 +3444,9 @@ BEGIN
         Number_Captured,
         Email_Captured,
         Enquiry_For,
-        Remark,
+        Enquiry_For_Note,
+        Next_FollowUp_Date,
+        Remarks,
         Lead_Priority,
         Current_Pipeline_Stage,
         Pulse,
@@ -3519,15 +3521,15 @@ BEGIN
         l.POC_Direct_Mobile AS Contact_Number,
         l.Enquiry_For,
         l.Lead_Priority,
-        l.Remark,
+        l.Remarks AS Remark, -- CHANGED THIS LINE TO PULL `Remarks`
         l.Vertical,
         l.Vertical_Name,
         l.POC_Designation AS Designation,
         l.District,
         l.Entry_Date,
         l.POC_Work_Phone AS Phone,
-        (SELECT User_Details_Name FROM User_Details ud WHERE ud.User_Details_Id = l.Staff_Id LIMIT 1) AS Staff_Name
-    FROM `Lead` l
+        (SELECT User_Details_Name FROM user_details ud WHERE ud.User_Details_Id = l.Staff_Id LIMIT 1) AS Staff_Name
+    FROM `lead` l
     WHERE (p_SearchText IS NULL OR p_SearchText = '' OR l.Lead_Name LIKE CONCAT(p_SearchText, '%'))
       AND (p_IndustryId IS NULL OR p_IndustryId = 0 OR l.Vertical = p_IndustryId)
       AND (p_DesignationId IS NULL OR p_DesignationId = 0 OR l.POC_Designation_Id = p_DesignationId)
@@ -3538,7 +3540,7 @@ BEGIN
     
     -- 2. Return the total count
     SELECT COUNT(l.Lead_Id) AS Total_Count
-    FROM `Lead` l
+    FROM `lead` l
     WHERE (p_SearchText IS NULL OR p_SearchText = '' OR l.Lead_Name LIKE CONCAT(p_SearchText, '%'))
       AND (p_IndustryId IS NULL OR p_IndustryId = 0 OR l.Vertical = p_IndustryId)
       AND (p_DesignationId IS NULL OR p_DesignationId = 0 OR l.POC_Designation_Id = p_DesignationId)
@@ -13090,10 +13092,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     IN _Email_Captured TINYINT(1),
     
     IN _Enquiry_For VARCHAR(500),
-    IN _Remark VARCHAR(1000),
+    IN _Enquiry_For_Note VARCHAR(1000),
+    IN _Next_FollowUp_Date DATE,
+    IN _Remarks VARCHAR(1000),
     IN _Lead_Priority VARCHAR(50),
+    
+    IN _Current_PipelineStage_Id INT,
     IN _Current_Pipeline_Stage VARCHAR(100),
+    IN _Pulse_Id INT,
     IN _Pulse VARCHAR(100),
+    
     IN _Status_Id INT,
     IN _Status_Name VARCHAR(100),
     IN _Branch_Id INT,
@@ -13102,10 +13110,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     IN _Department_Name VARCHAR(100),
     IN _Staff_Id INT,
     IN _Staff_Name VARCHAR(100),
+    IN _Workflow_Id INT,
     IN _Workflow VARCHAR(100),
     IN _Workflow_Start_Status TINYINT(1),
     
-    -- Follow-up specific fields
     IN _Is_FollowUp BIT,
     IN _FollowUp_Branch_Id INT,
     IN _FollowUp_Branch_Name VARCHAR(100),
@@ -13116,26 +13124,18 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     IN _FollowUp_Staff_Id INT,
     IN _FollowUp_Staff_Name VARCHAR(100),
     IN _FollowUp_Remark VARCHAR(1000),
-    IN _FollowUp_Date DATETIME,
-    IN _FollowUp_Market_Study VARCHAR(1000),
     IN _Login_User_Id INT,
     
-    -- New bulk JSON parameter
     IN _Contact_Person_Details_JSON TEXT
 )
 BEGIN
     DECLARE _Generated_Lead_Id INT;
-
-    -- Declare rollback handler for any SQL errors
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
         ROLLBACK;
         RESIGNAL;
     END;
-
-    -- Start the transaction
     START TRANSACTION;
-
     IF _Lead_Id = 0 THEN
         -- 1. INSERT INTO LEAD
         INSERT INTO `lead` (
@@ -13143,26 +13143,39 @@ BEGIN
             Company_Size_Id, Company_Size_Name, Source, Source_Name, 
             POC_Full_Name, POC_Designation_Id, POC_Designation, POC_Direct_Mobile, POC_Email, 
             POC_State_Id, POC_State, POC_Location_Id, POC_Loc, POC_Work_Phone, POC_Office_Type,
-            Name_Captured, Number_Captured, Email_Captured, Enquiry_For, Remark,
-            Lead_Priority, Current_Pipeline_Stage, Pulse, Status_Id, Status_Name, Branch_Id, Branch_Name,
-            Department_Id, Department_Name, Staff_Id, Staff_Name, Workflow, Workflow_Start_Status
+            Name_Captured, Number_Captured, Email_Captured, Enquiry_For, Enquiry_For_Note, Next_FollowUp_Date, Remarks,
+            Lead_Priority, PipelineStage_Id, Current_Pipeline_Stage, Pulse_Id, Pulse, Status_Id, Status_Name, Branch_Id, Branch_Name,
+            Department_Id, Department_Name, Staff_Id, Staff_Name, Workflow_Id, Workflow, Workflow_Start_Status
         ) VALUES (
             _Lead_Name, _Lead_Type, _Vertical, _Vertical_Name, _Address, _State, _State_Name, _District, _District_Name,
             _Company_Size_Id, _Company_Size_Name, _Source, _Source_Name, 
             _POC_Full_Name, _POC_Designation_Id, _POC_Designation, _POC_Direct_Mobile, _POC_Email,
             _POC_State_Id, _POC_State, _POC_Location_Id, _POC_Loc, _POC_Work_Phone, _POC_Office_Type,
-            _Name_Captured, _Number_Captured, _Email_Captured, _Enquiry_For, _Remark,
-            _Lead_Priority, _Current_Pipeline_Stage, _Pulse, _Status_Id, _Status_Name, NULLIF(_Branch_Id, 0), _Branch_Name,
-            NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name, _Workflow, _Workflow_Start_Status
+            _Name_Captured, _Number_Captured, _Email_Captured, _Enquiry_For, _Enquiry_For_Note, _Next_FollowUp_Date, _Remarks,
+            _Lead_Priority, _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, _Status_Id, _Status_Name, NULLIF(_Branch_Id, 0), _Branch_Name,
+            NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name, _Workflow_Id, _Workflow, _Workflow_Start_Status
         );
         SET _Generated_Lead_Id = LAST_INSERT_ID();
         
-        -- 2. INSERT PIPELINE HISTORY (Only if values exist)
+        -- 2. INSERT PIPELINE HISTORY
         IF (_Current_Pipeline_Stage IS NOT NULL AND _Current_Pipeline_Stage != '') OR (_Pulse IS NOT NULL AND _Pulse != '') THEN
             INSERT INTO `lead_pipeline_pulse_history` (
-                Lead_Id, Pipeline_Stage, Pulse, Current_Status, Login_User_Id
+                Lead_Id, PipelineStage_Id, Pipeline_Stage, Pulse_Id, Pulse, Current_Status, Login_User_Id
             ) VALUES (
-                _Generated_Lead_Id, _Current_Pipeline_Stage, _Pulse, _Status_Name, _Login_User_Id
+                _Generated_Lead_Id, _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, _Status_Name, _Login_User_Id
+            );
+        END IF;
+        
+         -- 4. INSERT FOLLOW-UP 
+        IF _Is_FollowUp = 1 THEN
+            INSERT INTO `follow_up` (
+                Lead_Id, Lead_Type, Status_Id, Status_Name, Branch_Id, Branch_Name, 
+                Department_Id, Department_Name, Staff_Id, Staff_Name, Remark, 
+                PipelineStage_Id, Pipeline_Stage, Pulse_Id, Pulse, Login_User_Id, Next_FollowUp_Date
+            ) VALUES (
+                _Generated_Lead_Id, _Lead_Type, _FollowUp_Status_Id, _FollowUp_Status_Name, _FollowUp_Branch_Id, _FollowUp_Branch_Name, 
+                _FollowUp_Department_Id, _FollowUp_Dept_Name, _FollowUp_Staff_Id, _FollowUp_Staff_Name, _FollowUp_Remark, 
+                _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, _Login_User_Id, _Next_FollowUp_Date
             );
         END IF;
         
@@ -13177,27 +13190,25 @@ BEGIN
             POC_Direct_Mobile = _POC_Direct_Mobile, POC_Email = _POC_Email, POC_State_Id = _POC_State_Id, POC_State = _POC_State,
             POC_Location_Id = _POC_Location_Id, POC_Loc = _POC_Loc, POC_Work_Phone = _POC_Work_Phone, POC_Office_Type = _POC_Office_Type,
             Name_Captured = _Name_Captured, Number_Captured = _Number_Captured, Email_Captured = _Email_Captured, 
-            Enquiry_For = _Enquiry_For, Remark = _Remark, Lead_Priority = _Lead_Priority,
-            Current_Pipeline_Stage = _Current_Pipeline_Stage, Pulse = _Pulse, Status_Id = _Status_Id, Status_Name = _Status_Name,
-            Branch_Id = NULLIF(_Branch_Id, 0), Branch_Name = _Branch_Name, Department_Id = NULLIF(_Department_Id, 0), Department_Name = _Department_Name,
-            Staff_Id = NULLIF(_Staff_Id, 0), Staff_Name = _Staff_Name, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
+            Enquiry_For = _Enquiry_For, Enquiry_For_Note = _Enquiry_For_Note, Lead_Priority = _Lead_Priority,
+            PipelineStage_Id = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', PipelineStage_Id, _Current_PipelineStage_Id), 
+            Current_Pipeline_Stage = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', Current_Pipeline_Stage, _Current_Pipeline_Stage), 
+            Pulse_Id = IF(_Pulse IS NULL OR _Pulse = '', Pulse_Id, _Pulse_Id), 
+            Pulse = IF(_Pulse IS NULL OR _Pulse = '', Pulse, _Pulse), 
+            Workflow_Id = _Workflow_Id, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
         WHERE Lead_Id = _Lead_Id;
         
         SET _Generated_Lead_Id = _Lead_Id;
-
-        -- 2. INSERT PIPELINE HISTORY (Only if values exist)
+        -- 2. INSERT PIPELINE HISTORY
         IF (_Current_Pipeline_Stage IS NOT NULL AND _Current_Pipeline_Stage != '') OR (_Pulse IS NOT NULL AND _Pulse != '') THEN
             INSERT INTO `lead_pipeline_pulse_history` (
-                Lead_Id, Pipeline_Stage, Pulse, Current_Status, Login_User_Id
+                Lead_Id, PipelineStage_Id, Pipeline_Stage, Pulse_Id, Pulse, Current_Status, Login_User_Id
             ) VALUES (
-                _Generated_Lead_Id, _Current_Pipeline_Stage, _Pulse, _Status_Name, _Login_User_Id
+                _Generated_Lead_Id, _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, _Status_Name, _Login_User_Id
             );
         END IF;
-
-        -- Delete existing contacts for complete replace from JSON
         DELETE FROM `lead_contact` WHERE Lead_Id = _Generated_Lead_Id;
     END IF;
-
     -- 3. BULK INSERT CONTACTS FROM JSON
     IF _Contact_Person_Details_JSON IS NOT NULL AND _Contact_Person_Details_JSON != '' AND _Contact_Person_Details_JSON != '[]' THEN
         INSERT INTO `lead_contact` (
@@ -13227,21 +13238,7 @@ BEGIN
             Is_Primary TINYINT(1) PATH '$.Is_Primary'
         )) AS jt;
     END IF;
-
-    -- 4. INSERT FOLLOW-UP (If checked)
-    IF _Is_FollowUp = 1 THEN
-        INSERT INTO `Follow_up` (
-            Lead_Id, Lead_Type, Status_Id, Status_Name, Branch_Id, Branch_Name, 
-            Department_Id, Department_Name, Staff_Id, Staff_Name, Remark, FollowUp_Date, 
-            Pipeline_Stage, Pulse, Market_Study, Login_User_Id
-        ) VALUES (
-            _Generated_Lead_Id, _Lead_Type, _FollowUp_Status_Id, _FollowUp_Status_Name, _FollowUp_Branch_Id, _FollowUp_Branch_Name, 
-            _FollowUp_Department_Id, _FollowUp_Dept_Name, _FollowUp_Staff_Id, _FollowUp_Staff_Name, _FollowUp_Remark, _FollowUp_Date, 
-            _Current_Pipeline_Stage, _Pulse, _FollowUp_Market_Study, _Login_User_Id
-        );
-    END IF;
     
-    -- Commit the transaction if everything succeeded
     COMMIT;
     
     SELECT _Generated_Lead_Id AS Key_Id;
@@ -26696,7 +26693,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Search_Lead_Dropdowns`(
     IN p_Type VARCHAR(100),
     IN p_Search VARCHAR(255),
     IN p_Page INT,
-    IN p_Filter_Id INT -- 1. ADD THIS 4TH PARAMETER
+    IN p_Filter_Id INT
 )
 BEGIN
     DECLARE v_Limit INT DEFAULT 20;
@@ -26716,7 +26713,6 @@ BEGIN
         LIMIT v_Limit OFFSET v_Offset;
         
     ELSEIF p_Type = 'District' THEN
-        -- 2. FILTER BY p_Filter_Id
         SELECT District_Id AS id, District_Name AS name FROM District 
         WHERE District_Name LIKE p_Search 
         AND (p_Filter_Id = 0 OR p_Filter_Id IS NULL OR State_Id = p_Filter_Id)
@@ -26776,6 +26772,36 @@ BEGIN
         WHERE TargetStage_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
         ORDER BY TargetStage_Id 
         LIMIT v_Limit OFFSET v_Offset;
+
+    -- NEW: Workflow query from workflow_master
+    ELSEIF p_Type = 'Workflow' THEN
+        SELECT workflow_id AS id, workflow_name AS name FROM workflow_master 
+        WHERE workflow_name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
+        ORDER BY workflow_name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+	    ELSEIF p_Type = 'Branch' THEN
+        SELECT Branch_Id AS id, Branch_Name AS name FROM branch_master 
+        WHERE Branch_Name LIKE p_Search 
+        AND DeleteStatus = 0
+        ORDER BY Branch_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+    ELSEIF p_Type = 'Department' THEN
+        SELECT Department_Id AS id, Department_Name AS name FROM department 
+        WHERE Department_Name LIKE p_Search 
+        AND (p_Filter_Id = 0 OR p_Filter_Id IS NULL OR Branch_Id = p_Filter_Id)
+        ORDER BY Department_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+    ELSEIF p_Type = 'Staff' THEN
+        SELECT User_Details_Id AS id, User_Details_Name AS name FROM user_details 
+        WHERE User_Details_Name LIKE p_Search 
+        AND (DeleteStatus = 0 OR DeleteStatus IS NULL)
+        AND (p_Filter_Id = 0 OR p_Filter_Id IS NULL OR Department_Id = p_Filter_Id)
+        ORDER BY User_Details_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+
         
     END IF;
 END$$

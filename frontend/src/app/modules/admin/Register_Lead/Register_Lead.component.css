@@ -79,6 +79,10 @@
   max-width: 360px;
 }
 
+.ig-entry-view ::ng-deep app-searchable-dropdown.ig-full-width-dropdown .ig-dropdown-toggle {
+  max-width: none !important;
+}
+
 .ig-entry-view .ig-mat-field {
   max-width: 360px;
 }

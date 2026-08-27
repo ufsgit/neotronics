@@ -117,7 +117,7 @@
             <tr *ngFor="let lead of Paged_Lead_Data; let i = index" class="ig-tr">
               <td class="ig-td" *ngIf="Is_Column_Visible('SL')">{{ (Page_Index - 1) * Page_Size + i + 1 }}</td>
               <td class="ig-td" *ngIf="Is_Column_Visible('Name')">
-                <div class="ig-td-name" (click)="Edit_Lead(lead)">{{lead.Lead_Name}}</div>
+                <div class="ig-td-name" (click)="View_Lead(lead)" style="cursor: pointer; color: #3b82f6;">{{lead.Lead_Name}}</div>
               </td>
               <td class="ig-td" *ngIf="Is_Column_Visible('Address')">
                 <div class="ig-td-muted" title="{{lead.Address}}">{{lead.Address | slice:0:30}}{{lead.Address?.length >

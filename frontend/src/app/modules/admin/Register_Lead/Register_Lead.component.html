@@ -1,17 +1,17 @@
 <div class="ig-page">
-<div class="ig-entry-view">
+  <div class="ig-entry-view">
 
     <!-- Entry Header -->
     <div class="ig-header">
       <div>
-        <h1 class="ig-title">{{ Lead_.Lead_Id > 0 ? 'Update Lead Profile' : 'Register New Lead' }}</h1>
-        <p class="ig-subtitle">{{ Lead_.Lead_Id > 0 ? 'Modify information for ' + Lead_.Lead_Name : ' ' }}</p>
+        <h1 class="ig-title">{{ Is_View_Mode ? 'View Lead Profile' : (Lead_.Lead_Id > 0 ? 'Update Lead Profile' : 'Register New Lead') }}</h1>
+        <p class="ig-subtitle">{{ Lead_.Lead_Id > 0 ? (Is_View_Mode ? 'Viewing information for ' : 'Modify information for ') + Lead_.Lead_Name : ' ' }}</p>
       </div>
       <div class="ig-header-actions">
         <button mat-button type="button" class="ig-btn-cancel" (click)="Close_Click()">
-          <i class="material-icons">close</i> Cancel
+          <i class="material-icons">close</i> {{ Is_View_Mode ? 'Close' : 'Cancel' }}
         </button>
-        <button mat-button type="button" class="ig-btn-save" (click)="Save_Lead()">
+        <button mat-button type="button" class="ig-btn-save" (click)="Save_Lead()" *ngIf="!Is_View_Mode">
           <i class="material-icons">save</i> Save Profile
         </button>
       </div>
@@ -35,15 +35,9 @@
           </div>
           <div class="ig-field">
             <label class="ig-label">Vertical <span class="ig-req">*</span></label>
-            <app-searchable-dropdown
-              name="Vertical"
-              [(ngModel)]="Lead_.Vertical"
-              [data]="DropdownData['Vertical']"
-              bindLabel="name"
-              bindValue="id"
-              placeholder="Select Vertical"
-              (search)="onSearchDropdown('Vertical', $event)"
-              (loadMore)="onLoadMoreDropdown('Vertical')">
+            <app-searchable-dropdown name="Vertical" [(ngModel)]="Lead_.Vertical" [data]="DropdownData['Vertical']"
+              bindLabel="name" bindValue="id" placeholder="Select Vertical"
+              (search)="onSearchDropdown('Vertical', $event)" (loadMore)="onLoadMoreDropdown('Vertical')">
             </app-searchable-dropdown>
           </div>
           <div class="ig-field">
@@ -53,56 +47,31 @@
           </div>
           <div class="ig-field">
             <label class="ig-label">State <span class="ig-req">*</span></label>
-            <app-searchable-dropdown
-              name="State"
-              [(ngModel)]="Lead_.State"
-              [data]="DropdownData['State']"
-              bindLabel="name"
-              bindValue="id"
-              placeholder="Select State"
-              (search)="onSearchDropdown('State', $event)"
-              (loadMore)="onLoadMoreDropdown('State')"
-              (itemSelected)="onStateSelected($event)">
+            <app-searchable-dropdown name="State" [(ngModel)]="Lead_.State" [data]="DropdownData['State']"
+              bindLabel="name" bindValue="id" placeholder="Select State" (search)="onSearchDropdown('State', $event)"
+              (loadMore)="onLoadMoreDropdown('State')" (itemSelected)="onStateSelected($event)">
             </app-searchable-dropdown>
           </div>
           <div class="ig-field">
             <label class="ig-label">District <span class="ig-req">*</span></label>
-            <app-searchable-dropdown
-              name="District"
-              [(ngModel)]="Lead_.District"
-              [data]="getDistrictData(Lead_.State)"
-              [fallbackName]="PreselectedDistrictNames[Lead_.District]"
-              bindLabel="name"
-              bindValue="id"
-              placeholder="Select District"
-              [disabled]="!Lead_.State"
+            <app-searchable-dropdown name="District" [(ngModel)]="Lead_.District" [data]="getDistrictData(Lead_.State)"
+              [fallbackName]="PreselectedDistrictNames[Lead_.District]" bindLabel="name" bindValue="id"
+              placeholder="Select District" [disabled]="!Lead_.State"
               (search)="onSearchDropdown('District', $event, Lead_.State)"
               (loadMore)="onLoadMoreDropdown('District', Lead_.State)">
             </app-searchable-dropdown>
           </div>
           <div class="ig-field">
             <label class="ig-label">Company size</label>
-            <app-searchable-dropdown
-              name="Company_Size"
-              [(ngModel)]="Lead_.Company_Size_Id"
-              [data]="DropdownData['CompanySize']"
-              bindLabel="name"
-              bindValue="id"
-              placeholder="Select Company Size"
-              (search)="onSearchDropdown('CompanySize', $event)"
-              (loadMore)="onLoadMoreDropdown('CompanySize')">
+            <app-searchable-dropdown name="Company_Size" [(ngModel)]="Lead_.Company_Size_Id"
+              [data]="DropdownData['CompanySize']" bindLabel="name" bindValue="id" placeholder="Select Company Size"
+              (search)="onSearchDropdown('CompanySize', $event)" (loadMore)="onLoadMoreDropdown('CompanySize')">
             </app-searchable-dropdown>
           </div>
           <div class="ig-field">
             <label class="ig-label">Source</label>
-            <app-searchable-dropdown
-              name="Source"
-              [(ngModel)]="Lead_.Source"
-              [data]="DropdownData['Source']"
-              bindLabel="name"
-              bindValue="id"
-              placeholder="Select Source"
-              (search)="onSearchDropdown('Source', $event)"
+            <app-searchable-dropdown name="Source" [(ngModel)]="Lead_.Source" [data]="DropdownData['Source']"
+              bindLabel="name" bindValue="id" placeholder="Select Source" (search)="onSearchDropdown('Source', $event)"
               (loadMore)="onLoadMoreDropdown('Source')">
             </app-searchable-dropdown>
           </div>
@@ -134,14 +103,9 @@
                 </div>
                 <div class="ig-field">
                   <label class="ig-label">Designation <span class="ig-req">*</span></label>
-                  <app-searchable-dropdown
-                    formControlName="POC_Designation_Id"
-                    [data]="DropdownData['Designation']"
-                    bindLabel="name"
-                    bindValue="id"
-                    placeholder="Select Designation"
-                    (search)="onSearchDropdown('Designation', $event)"
-                    (loadMore)="onLoadMoreDropdown('Designation')">
+                  <app-searchable-dropdown formControlName="POC_Designation_Id" [data]="DropdownData['Designation']"
+                    bindLabel="name" bindValue="id" placeholder="Select Designation"
+                    (search)="onSearchDropdown('Designation', $event)" (loadMore)="onLoadMoreDropdown('Designation')">
                   </app-searchable-dropdown>
                 </div>
                 <div class="ig-field">
@@ -157,27 +121,18 @@
                 </div>
                 <div class="ig-field">
                   <label class="ig-label">State</label>
-                  <app-searchable-dropdown
-                    formControlName="POC_State_Id"
-                    [data]="DropdownData['State']"
-                    bindLabel="name"
-                    bindValue="id"
-                    placeholder="Select State"
-                    (search)="onSearchDropdown('State', $event)"
-                    (loadMore)="onLoadMoreDropdown('State')"
+                  <app-searchable-dropdown formControlName="POC_State_Id" [data]="DropdownData['State']"
+                    bindLabel="name" bindValue="id" placeholder="Select State"
+                    (search)="onSearchDropdown('State', $event)" (loadMore)="onLoadMoreDropdown('State')"
                     (itemSelected)="onStateSelected($event)">
                   </app-searchable-dropdown>
                 </div>
                 <div class="ig-field">
                   <label class="ig-label">Sitting location</label>
-                  <app-searchable-dropdown
-                    formControlName="POC_Location_Id"
+                  <app-searchable-dropdown formControlName="POC_Location_Id"
                     [data]="getDistrictData(contact.get('POC_State_Id').value)"
-                    [fallbackName]="PreselectedDistrictNames[contact.get('POC_Location_Id').value]"
-                    bindLabel="name"
-                    bindValue="id"
-                    placeholder="Select Sitting location"
-                    [disabled]="!contact.get('POC_State_Id').value"
+                    [fallbackName]="PreselectedDistrictNames[contact.get('POC_Location_Id').value]" bindLabel="name"
+                    bindValue="id" placeholder="Select Sitting location" [disabled]="!contact.get('POC_State_Id').value"
                     (search)="onSearchDropdown('District', $event, contact.get('POC_State_Id').value)"
                     (loadMore)="onLoadMoreDropdown('District', contact.get('POC_State_Id').value)">
                   </app-searchable-dropdown>
@@ -196,12 +151,16 @@
                 <div style="display: flex; align-items: center; gap: 15px;">
                   <span class="ig-label" style="margin-bottom: 0;">Office type</span>
                   <div style="display: flex; gap: 8px;">
-                    <label class="ig-toggle-btn" [class.active]="contact.get('POC_Office_Type').value === 'Head office'">
-                      <input type="radio" formControlName="POC_Office_Type" value="Head office" style="display: none;"> Head
+                    <label class="ig-toggle-btn"
+                      [class.active]="contact.get('POC_Office_Type').value === 'Head office'">
+                      <input type="radio" formControlName="POC_Office_Type" value="Head office" style="display: none;">
+                      Head
                       office
                     </label>
-                    <label class="ig-toggle-btn" [class.active]="contact.get('POC_Office_Type').value === 'Branch office'">
-                      <input type="radio" formControlName="POC_Office_Type" value="Branch office" style="display: none;">
+                    <label class="ig-toggle-btn"
+                      [class.active]="contact.get('POC_Office_Type').value === 'Branch office'">
+                      <input type="radio" formControlName="POC_Office_Type" value="Branch office"
+                        style="display: none;">
                       Branch office
                     </label>
                   </div>
@@ -260,16 +219,10 @@
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start;">
-              <app-searchable-dropdown
-                name="Selected_Interest"
-                [(ngModel)]="Selected_Interest"
-                [data]="DropdownData['ServiceInterest']"
-                bindLabel="name"
-                bindValue="name"
-                placeholder="Select an interest..."
-                (search)="onSearchDropdown('ServiceInterest', $event)"
-                (loadMore)="onLoadMoreDropdown('ServiceInterest')"
-                (ngModelChange)="Interest_Already_Exists = false">
+              <app-searchable-dropdown name="Selected_Interest" [(ngModel)]="Selected_Interest"
+                [data]="DropdownData['ServiceInterest']" bindLabel="name" bindValue="name"
+                placeholder="Select an interest..." (search)="onSearchDropdown('ServiceInterest', $event)"
+                (loadMore)="onLoadMoreDropdown('ServiceInterest')" (ngModelChange)="Interest_Already_Exists = false">
               </app-searchable-dropdown>
               <div style="display: flex; align-items: center; gap: 10px;">
                 <button mat-button type="button" class="ig-btn-outline" style="white-space: nowrap;"
@@ -337,15 +290,9 @@
           <div style="max-width: 300px;">
             <label class="ig-label" style="margin-bottom: 5px; display: block; text-transform: uppercase;">Lead
               Priority Level</label>
-            <app-searchable-dropdown
-              name="Lead_Priority"
-              [(ngModel)]="Lead_.Lead_Priority"
-              [data]="DropdownData['LeadPriority']"
-              bindLabel="name"
-              bindValue="name"
-              placeholder="Select Priority"
-              (search)="onSearchDropdown('LeadPriority', $event)"
-              (loadMore)="onLoadMoreDropdown('LeadPriority')">
+            <app-searchable-dropdown name="Lead_Priority" [(ngModel)]="Lead_.Lead_Priority"
+              [data]="DropdownData['LeadPriority']" bindLabel="name" bindValue="name" placeholder="Select Priority"
+              (search)="onSearchDropdown('LeadPriority', $event)" (loadMore)="onLoadMoreDropdown('LeadPriority')">
             </app-searchable-dropdown>
           </div>
         </div>
@@ -361,15 +308,9 @@
           <!-- Stage -->
           <div style="border-right: 1px solid #e2e8f0; padding-right: 20px;">
             <label class="ig-label" style="margin-bottom: 5px; display: block; text-transform: uppercase;">Stage</label>
-            <app-searchable-dropdown
-              name="Selected_Pipeline_Stage"
-              [(ngModel)]="Selected_Pipeline_Stage"
-              [data]="DropdownData['PipelineStage']"
-              bindLabel="name"
-              bindValue="name"
-              placeholder="Select Stage..."
-              (search)="onSearchDropdown('PipelineStage', $event)"
-              (loadMore)="onLoadMoreDropdown('PipelineStage')">
+            <app-searchable-dropdown name="Selected_Pipeline_Stage" [(ngModel)]="Selected_Pipeline_Stage"
+              [data]="DropdownData['PipelineStage']" bindLabel="name" bindValue="name" [placeholder]="Lead_.Current_Pipeline_Stage || 'Select Stage...'"
+              (search)="onSearchDropdown('PipelineStage', $event)" (loadMore)="onLoadMoreDropdown('PipelineStage')">
             </app-searchable-dropdown>
           </div>
 
@@ -378,15 +319,9 @@
             <div>
               <label class="ig-label"
                 style="margin-bottom: 5px; display: block; text-transform: uppercase;">Pulse</label>
-              <app-searchable-dropdown
-                name="Selected_Pulse"
-                [(ngModel)]="Selected_Pulse"
-                [data]="DropdownData['Pulse']"
-                bindLabel="name"
-                bindValue="name"
-                placeholder="Select Pulse..."
-                (search)="onSearchDropdown('Pulse', $event)"
-                (loadMore)="onLoadMoreDropdown('Pulse')">
+              <app-searchable-dropdown name="Selected_Pulse" [(ngModel)]="Selected_Pulse" [data]="DropdownData['Pulse']"
+                bindLabel="name" bindValue="name" [placeholder]="Lead_.Pulse || 'Select Pulse...'"
+                (search)="onSearchDropdown('Pulse', $event)" (loadMore)="onLoadMoreDropdown('Pulse')">
               </app-searchable-dropdown>
             </div>
           </div>
@@ -394,80 +329,102 @@
 
         <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
           <div style="margin-bottom: 10px;">
-            <button mat-button type="button" class="ig-btn-outline" style="height: 30px; padding: 0 12px; font-size: 12px;" (click)="Show_Pipeline_History = !Show_Pipeline_History">
+            <button mat-button type="button" class="ig-btn-outline"
+              style="height: 30px; padding: 0 12px; font-size: 12px;"
+              (click)="Show_Pipeline_History = !Show_Pipeline_History">
               {{ Show_Pipeline_History ? 'Hide History' : 'Show History' }}
             </button>
           </div>
-          
+
           <div *ngIf="Show_Pipeline_History" style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="display: flex; align-items: center; gap: 15px; font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 4px;">
+            <div
+              style="display: flex; align-items: center; gap: 15px; font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 4px;">
               <div style="flex: 1;">Stage</div>
               <div style="width: 150px;">Pulse</div>
               <div style="width: 100px; text-align: right;">Date</div>
             </div>
-            
-            <div *ngIf="FollowUp_History?.length === 0" style="display: flex; align-items: center; gap: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; margin-bottom: 4px;">
-              <div style="flex: 1;">Need immediate follow up — update on quote</div>
-              <div style="width: 150px; font-weight: 500;">Not interested</div>
-              <div style="width: 100px; text-align: right; color: #64748b;">8/17/2026</div>
+
+            <div *ngIf="FollowUp_History?.length === 0"
+              style="display: flex; align-items: center; justify-content: center; padding: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; margin-bottom: 4px; font-style: italic;">
+              No history found
             </div>
 
-            <div *ngFor="let h of FollowUp_History" style="display: flex; align-items: center; gap: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; margin-bottom: 4px;">
-              <div style="flex: 1;">{{ h.Pipeline_Stage || 'Need immediate follow up' }} <span *ngIf="h.Remark">— {{ h.Remark }}</span></div>
+            <div *ngFor="let h of FollowUp_History"
+              style="display: flex; align-items: center; gap: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; margin-bottom: 4px;">
+              <div style="flex: 1;">{{ h.Pipeline_Stage || 'Need immediate follow up' }} <span *ngIf="h.Remark">— {{
+                  h.Remark }}</span></div>
               <div style="width: 150px; font-weight: 500;">{{ h.Pulse || 'Not interested' }}</div>
-              <div style="width: 100px; text-align: right; color: #64748b;">{{ (h.Entry_Date | date:'M/d/yyyy') || '8/17/2026' }}</div>
+              <div style="width: 100px; text-align: right; color: #64748b;">{{ (h.Entry_Date | date:'M/d/yyyy') ||
+                '8/17/2026' }}</div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- ── Assignment ── -->
-      <div class="ig-section-card">
-        <div class="ig-section-header" style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">
-          <label for="chk_Is_FollowUp" class="ig-section-title" style="margin: 0; display: flex; align-items: center; gap: 5px; cursor: pointer;"><i class="material-icons">event_available</i> {{ Lead_.Is_FollowUp ? 'Assignment' : 'Add Assignment' }}</label>
-          <input type="checkbox" name="Is_FollowUp" [(ngModel)]="Lead_.Is_FollowUp" style="width: 16px; height: 16px; margin: 0; cursor: pointer;" id="chk_Is_FollowUp" />
+      <div class="ig-section-card" *ngIf="!Lead_.Lead_Id || Is_View_Mode">
+        <fieldset [disabled]="Is_View_Mode" style="border: none; padding: 0; margin: 0;">
+        <div class="ig-section-header"
+          style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">
+          <label for="chk_Is_FollowUp" class="ig-section-title"
+            style="margin: 0; display: flex; align-items: center; gap: 5px; cursor: pointer;"><i
+              class="material-icons">event_available</i> {{ Lead_.Is_FollowUp ? 'Assignment' : 'Add Assignment'
+            }}</label>
+          <input type="checkbox" name="Is_FollowUp" [(ngModel)]="Lead_.Is_FollowUp"
+            style="width: 16px; height: 16px; margin: 0; cursor: pointer;" id="chk_Is_FollowUp" />
         </div>
-        <div class="ig-grid ig-grid-4" style="margin-top: 15px;" *ngIf="Lead_.Is_FollowUp">
-          <div class="ig-field">
+        <div style="margin-top: 15px;" *ngIf="Lead_.Is_FollowUp">
+          <div class="ig-grid ig-grid-4">
+            <div class="ig-field">
             <label class="ig-label" style="text-transform: uppercase;">Branch <span class="ig-req">*</span></label>
-            <select class="ig-select" name="FollowUp_Location_Id" [(ngModel)]="Lead_.FollowUp_Location_Id" (change)="Location_Change()">
-              <option value="0">Select Branch</option>
-              <option *ngFor="let loc of Location_Data" [value]="loc.Location_Id">{{loc.Location_Name}}</option>
-            </select>
+            <app-searchable-dropdown name="FollowUp_Location_Id" [(ngModel)]="Lead_.FollowUp_Location_Id"
+              [data]="DropdownData['Branch']" bindLabel="name" bindValue="id" placeholder="Select Branch"
+              (search)="onSearchDropdown('Branch', $event)" (loadMore)="onLoadMoreDropdown('Branch')"
+              (itemSelected)="Location_Change()">
+            </app-searchable-dropdown>
           </div>
           <div class="ig-field">
             <label class="ig-label" style="text-transform: uppercase;">Department Responsibility <span
                 class="ig-req">*</span></label>
-            <select class="ig-select" name="FollowUp_Department_Id" [(ngModel)]="Lead_.FollowUp_Department_Id" (change)="Department_Change()">
-              <option value="0">Select Department</option>
-              <option *ngFor="let dept of Filtered_Department_Data" [value]="dept.Department_Id">{{dept.Department_Name}}
-              </option>
-            </select>
+            <app-searchable-dropdown name="FollowUp_Department_Id" [(ngModel)]="Lead_.FollowUp_Department_Id"
+              [data]="DropdownData['Department_' + Lead_.FollowUp_Location_Id]" bindLabel="name" bindValue="id" placeholder="Select Department"
+              (search)="onSearchDropdown('Department', $event, Lead_.FollowUp_Location_Id)" (loadMore)="onLoadMoreDropdown('Department', Lead_.FollowUp_Location_Id)"
+              (itemSelected)="Department_Change()"
+              [disabled]="!Lead_.FollowUp_Location_Id || Lead_.FollowUp_Location_Id == 0">
+            </app-searchable-dropdown>
           </div>
           <div class="ig-field">
             <label class="ig-label" style="text-transform: uppercase;">Assigned Owner <span
                 class="ig-req">*</span></label>
-            <select class="ig-select" name="FollowUp_Staff_Id" [(ngModel)]="Lead_.FollowUp_Staff_Id">
-              <option value="0">Select Staff</option>
-              <option *ngFor="let staff of Filtered_Staff_Data" [value]="staff.User_Details_Id">{{staff.User_Details_Name}}
-              </option>
-            </select>
+            <app-searchable-dropdown name="FollowUp_Staff_Id" [(ngModel)]="Lead_.FollowUp_Staff_Id"
+              [data]="DropdownData['Staff_' + Lead_.FollowUp_Department_Id]" bindLabel="name" bindValue="id" placeholder="Select Staff"
+              (search)="onSearchDropdown('Staff', $event, Lead_.FollowUp_Department_Id)" (loadMore)="onLoadMoreDropdown('Staff', Lead_.FollowUp_Department_Id)"
+              [disabled]="!Lead_.FollowUp_Location_Id || Lead_.FollowUp_Location_Id == 0 || !Lead_.FollowUp_Department_Id || Lead_.FollowUp_Department_Id == 0">
+            </app-searchable-dropdown>
           </div>
           <div class="ig-field">
             <label class="ig-label" style="text-transform: uppercase;">Target Stage <span
                 class="ig-req">*</span></label>
-            <app-searchable-dropdown
-              name="FollowUp_Status_Id"
-              [(ngModel)]="Lead_.FollowUp_Status_Id"
-              [data]="DropdownData['TargetStage']"
-              bindLabel="name"
-              bindValue="id"
-              placeholder="Select Stage"
-              (search)="onSearchDropdown('TargetStage', $event)"
-              (loadMore)="onLoadMoreDropdown('TargetStage')">
+            <app-searchable-dropdown name="FollowUp_Status_Id" [(ngModel)]="Lead_.FollowUp_Status_Id"
+              [data]="DropdownData['TargetStage']" bindLabel="name" bindValue="id" placeholder="Select Stage"
+              (search)="onSearchDropdown('TargetStage', $event)" (loadMore)="onLoadMoreDropdown('TargetStage')"
+              [disabled]="!Lead_.FollowUp_Location_Id || Lead_.FollowUp_Location_Id == 0 || !Lead_.FollowUp_Department_Id || Lead_.FollowUp_Department_Id == 0 || !Lead_.FollowUp_Staff_Id || Lead_.FollowUp_Staff_Id == 0">
             </app-searchable-dropdown>
           </div>
         </div>
+          <div class="ig-grid ig-grid-4" style="margin-top: 15px;">
+
+            <div class="ig-field">
+              <label class="ig-label" style="text-transform: uppercase;">Next Follow-up Date</label>
+              <input type="date" class="ig-input" name="FollowUp_Next_Date" [(ngModel)]="Lead_.FollowUp_Next_Date" />
+            </div>
+            <div class="ig-field" style="grid-column: span 2;">
+              <label class="ig-label" style="text-transform: uppercase;">Remark</label>
+              <textarea class="ig-input" name="FollowUp_Remark" [(ngModel)]="Lead_.FollowUp_Remark" rows="1"></textarea>
+            </div>
+          </div>
+        </div>
+        </fieldset>
       </div>
 
       <!-- ── Follow-up Automation ── -->
@@ -478,15 +435,21 @@
         <div style="margin-top: 15px; display: flex; align-items: flex-end; gap: 15px;">
           <div style="flex: 1;">
             <label class="ig-label" style="margin-bottom: 5px; display: block;">Start workflow</label>
-            <select class="ig-input" style="width: 100%; max-width: 100% !important;" [(ngModel)]="Selected_Workflow"
-              name="Selected_Workflow">
-              <option value="" disabled selected>Select a workflow...</option>
-              <option *ngFor="let wf of Available_Workflows" [value]="wf">{{wf}}</option>
-            </select>
+            <app-searchable-dropdown class="ig-full-width-dropdown" name="Selected_Workflow" [(ngModel)]="Selected_Workflow"
+              [data]="DropdownData['Workflow']" bindLabel="name" bindValue="name" placeholder="Select a workflow..."
+              (search)="onSearchDropdown('Workflow', $event)" (loadMore)="onLoadMoreDropdown('Workflow')"
+              style="display: block; width: 100%;">
+            </app-searchable-dropdown>
           </div>
           <div>
-            <button mat-button type="button" class="ig-btn-outline" style="height: 34px; padding: 0 16px;">
-              Start
+            <button type="button" 
+              class="ig-btn-outline" 
+              [style.border-color]="Selected_Workflow && !Lead_.Workflow_Start_Status ? '#22c55e' : ''"
+              [style.color]="Selected_Workflow && !Lead_.Workflow_Start_Status ? '#22c55e' : (Lead_.Workflow_Start_Status ? '#fff' : '')"
+              [style.background-color]="Lead_.Workflow_Start_Status ? '#22c55e' : ''"
+              style="height: 34px; padding: 0 16px;"
+              (click)="Toggle_Workflow_Start()">
+              {{ Lead_.Workflow_Start_Status ? 'Started' : 'Start' }}
             </button>
           </div>
         </div>
@@ -542,10 +505,15 @@
           <i class="material-icons" style="vertical-align: middle; margin-right: 5px;">history</i>
           {{ Show_History ? 'Hide History' : 'View History' }}
         </button>
-        <button mat-button type="button" class="ig-btn-cancel" (click)="Close_Click()">Discard Changes</button>
-        <button mat-button type="button" class="ig-btn-save" (click)="Save_Lead()">
-          <i class="material-icons">check_circle</i> Finalize &amp; Save
-        </button>
+        <ng-container *ngIf="!Is_View_Mode">
+          <button mat-button type="button" class="ig-btn-cancel" (click)="Close_Click()">Discard Changes</button>
+          <button mat-button type="button" class="ig-btn-save" (click)="Save_Lead()">
+            <i class="material-icons">check_circle</i> Finalize &amp; Save
+          </button>
+        </ng-container>
+        <ng-container *ngIf="Is_View_Mode">
+          <button mat-button type="button" class="ig-btn-cancel" (click)="Close_Click()">Close</button>
+        </ng-container>
       </div>
     </form>
   </div>
@@ -553,5 +521,5 @@
   <!-- ══════════════════════════════════════════
        LIST VIEW
   ══════════════════════════════════════════ -->
-  
+
 </div>

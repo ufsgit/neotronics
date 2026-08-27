@@ -384,19 +384,19 @@ var Lead = {
             strOrNull(Lead_.POC_Email), intOrNull(Lead_.POC_State_Id), strOrNull(Lead_.POC_State), intOrNull(Lead_.POC_Location_Id), strOrNull(Lead_.POC_Loc),
             strOrNull(Lead_.POC_Work_Phone), strOrNull(Lead_.POC_Office_Type), boolOrNull(Lead_.Name_Captured), boolOrNull(Lead_.Number_Captured), boolOrNull(Lead_.Email_Captured),
             
-            strOrNull(Lead_.Enquiry_For), strOrNull(Lead_.Remark), 
-            strOrNull(Lead_.Lead_Priority), strOrNull(Lead_.Current_Pipeline_Stage), strOrNull(Lead_.Pulse), intOrNull(Lead_.Status_Id), strOrNull(Lead_.Status_Name),
+            strOrNull(Lead_.Enquiry_For), strOrNull(Lead_.Enquiry_For_Note), strOrNull(Lead_.Next_FollowUp_Date), strOrNull(Lead_.Remarks),
+            strOrNull(Lead_.Lead_Priority), intOrNull(Lead_.Current_PipelineStage_Id), strOrNull(Lead_.Current_Pipeline_Stage), intOrNull(Lead_.Pulse_Id), strOrNull(Lead_.Pulse), intOrNull(Lead_.Status_Id), strOrNull(Lead_.Status_Name),
             intOrNull(Lead_.Branch_Id), strOrNull(Lead_.Branch_Name), intOrNull(Lead_.Department_Id), strOrNull(Lead_.Department_Name), intOrNull(Lead_.Staff_Id),
-            strOrNull(Lead_.Staff_Name), strOrNull(Lead_.Workflow), boolOrNull(Lead_.Workflow_Start_Status),
+            strOrNull(Lead_.Staff_Name), intOrNull(Lead_.Workflow_Id), strOrNull(Lead_.Workflow), boolOrNull(Lead_.Workflow_Start_Status),
             
             boolOrNull(Lead_.Is_FollowUp), intOrNull(Lead_.FollowUp_Branch_Id), strOrNull(Lead_.FollowUp_Branch_Name), intOrNull(Lead_.FollowUp_Department_Id), strOrNull(Lead_.FollowUp_Dept_Name),
             intOrNull(Lead_.FollowUp_Status_Id), strOrNull(Lead_.FollowUp_Status_Name), intOrNull(Lead_.FollowUp_Staff_Id), strOrNull(Lead_.FollowUp_Staff_Name),
-            strOrNull(Lead_.FollowUp_Remark), strOrNull(Lead_.FollowUp_Date), strOrNull(Lead_.FollowUp_Market_Study), intOrNull(Lead_.Login_User_Id),
+            strOrNull(Lead_.FollowUp_Remark), intOrNull(Lead_.Login_User_Id),
             
             strOrNull(Lead_.Contact_Person_Details)
         ];
         
-        const placeholders = new Array(57).fill('?').join(',');
+        const placeholders = new Array(60).fill('?').join(',');
         
         return db.query(`CALL Save_NewLead(${placeholders})`, params, (err, rows) => {
             if (err) return callback(err, rows);

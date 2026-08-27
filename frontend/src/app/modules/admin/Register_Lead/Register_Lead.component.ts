@@ -83,14 +83,16 @@ export class Register_LeadComponent implements OnInit {
 
   Available_Target_Stages: string[] = [];
 
-  Available_Workflows: string[] = [
-    'Asked us to send data via Email/WABA → no reply',
-    'Meeting completed → no response',
-    'Proposal sent → no response'
-  ];
+
   Selected_Workflow: string = '';
   Show_History: boolean = false;
   Show_Pipeline_History: boolean = false;
+
+  Toggle_Workflow_Start() {
+    if (this.Selected_Workflow) {
+      (this.Lead_ as any).Workflow_Start_Status = (this.Lead_ as any).Workflow_Start_Status ? 0 : 1;
+    }
+  }
 
   Toggle_Market_System(system: string) {
     const index = this.Added_Market_Systems.indexOf(system);
@@ -200,6 +202,7 @@ export class Register_LeadComponent implements OnInit {
 
   Reprocess_Drawer_Visible: boolean = false;
   Requirement_Details_Input: string = '';
+  Is_View_Mode: boolean = false;
 
   // Dropdown state tracking
   DropdownOriginalData: { [key: string]: any[] } = {};
@@ -249,6 +252,7 @@ export class Register_LeadComponent implements OnInit {
       });
     });
 
+    this.Is_View_Mode = this.route.snapshot.url.some(segment => segment.path === 'View');
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.Load_Column_Preferences();
@@ -282,6 +286,7 @@ export class Register_LeadComponent implements OnInit {
                 Next_Call_Action: false
              }));
            }
+           this.FollowUp_History = (data[2] && Array.isArray(data[2])) ? data[2] : [];
            this.Edit_Lead(leadData);
         } else {
            this.snackBar.open("Record Not Found", "Close", { duration: 3000 });
@@ -337,7 +342,7 @@ export class Register_LeadComponent implements OnInit {
   }
 
   loadDropdownData(type: string, append: boolean = false, filterId: number = 0) {
-    const cacheKey = (type === 'District' && filterId) ? `${type}_${filterId}` : type;
+    const cacheKey = ((type === 'District' || type === 'Department' || type === 'Staff') && filterId) ? `${type}_${filterId}` : type;
     
     if (this.DropdownLoading[cacheKey]) return;
     if (append && this.DropdownEnd[cacheKey]) return;
@@ -381,7 +386,7 @@ export class Register_LeadComponent implements OnInit {
   }
 
   onSearchDropdown(type: string, searchText: string, filterId: number = 0) {
-    const cacheKey = (type === 'District' && filterId) ? `${type}_${filterId}` : type;
+    const cacheKey = ((type === 'District' || type === 'Department' || type === 'Staff') && filterId) ? `${type}_${filterId}` : type;
     
     this.DropdownSearch[cacheKey] = searchText;
     this.DropdownEnd[cacheKey] = false;
@@ -399,7 +404,7 @@ export class Register_LeadComponent implements OnInit {
   }
 
   onLoadMoreDropdown(type: string, filterId: number = 0) {
-    const cacheKey = (type === 'District' && filterId) ? `${type}_${filterId}` : type;
+    const cacheKey = ((type === 'District' || type === 'Department' || type === 'Staff') && filterId) ? `${type}_${filterId}` : type;
     if (this.DropdownLoading[cacheKey] || this.DropdownEnd[cacheKey]) return;
     this.DropdownPage[cacheKey] = (this.DropdownPage[cacheKey] || 1) + 1;
     this.loadDropdownData(type, true, filterId);
@@ -807,6 +812,8 @@ export class Register_LeadComponent implements OnInit {
     this.Activity_Log = [];
     this.Meeting_Data = [];
     this.Quote_Tracking_Data = [];
+    this.Selected_Pipeline_Stage = '';
+    this.Selected_Pulse = '';
     this.Initialize_Contact_Form();
     this.addContact();
     
@@ -876,6 +883,8 @@ export class Register_LeadComponent implements OnInit {
     this.Activity_Log = [];
     this.Meeting_Data = [];
     this.Quote_Tracking_Data = [];
+    this.Selected_Pipeline_Stage = '';
+    this.Selected_Pulse = '';
   }
 
   Open_Requirement(lead: Lead) {
@@ -957,9 +966,25 @@ export class Register_LeadComponent implements OnInit {
 
     let Lead_Copy = Object.assign({}, this.Lead_);
 
-    // Map Enquiry_For and Remark
+    // Map Enquiry_For and Enquiry_For_Note
     Lead_Copy.Enquiry_For = this.Added_Interests.join('*');
-    Lead_Copy.Remark = this.Requirement_Note;
+    Lead_Copy.Enquiry_For_Note = this.Requirement_Note;
+    
+    Lead_Copy.Next_FollowUp_Date = this.Lead_.FollowUp_Next_Date;
+    Lead_Copy.Remarks = this.Lead_.FollowUp_Remark;
+    (Lead_Copy as any).Current_Pipeline_Stage = this.Selected_Pipeline_Stage || null;
+    (Lead_Copy as any).Pulse = this.Selected_Pulse || null;
+    
+    const pipelineStageObj = (this.DropdownData['PipelineStage'] || []).find(x => x.name === this.Selected_Pipeline_Stage);
+    (Lead_Copy as any).Current_PipelineStage_Id = pipelineStageObj ? pipelineStageObj.id : 0;
+    
+    const pulseObj = (this.DropdownData['Pulse'] || []).find(x => x.name === this.Selected_Pulse);
+    (Lead_Copy as any).Pulse_Id = pulseObj ? pulseObj.id : 0;
+    
+    const workflowObj = (this.DropdownData['Workflow'] || []).find(x => x.name === this.Selected_Workflow);
+    (Lead_Copy as any).Workflow_Id = workflowObj ? workflowObj.id : 0;
+    (Lead_Copy as any).Workflow = this.Selected_Workflow;
+    (Lead_Copy as any).Workflow_Start_Status = (this.Lead_ as any).Workflow_Start_Status ? 1 : 0;
 
     // Map Name fields from IDs
     Lead_Copy.Vertical_Name = this.DropdownData['Vertical'] ? (this.DropdownData['Vertical'].find(x => x.id == Lead_Copy.Vertical) || {}).name || '' : '';
@@ -1013,22 +1038,40 @@ export class Register_LeadComponent implements OnInit {
     (Lead_Copy as any).Is_FollowUp = Lead_Copy.Is_FollowUp ? 1 : 0;
     if (this.Lead_.Is_FollowUp) {
       Lead_Copy.Department_Id = this.Lead_.FollowUp_Department_Id;
+      Lead_Copy.Department_Name = this.DropdownData['Department_' + this.Lead_.FollowUp_Location_Id] ? (this.DropdownData['Department_' + this.Lead_.FollowUp_Location_Id].find(x => x.id === this.Lead_.FollowUp_Department_Id) || {}).name || '' : '';
       Lead_Copy.Status_Id = this.Lead_.FollowUp_Status_Id;
+      Lead_Copy.Status_Name = this.DropdownData['TargetStage'] ? (this.DropdownData['TargetStage'].find(x => x.id === this.Lead_.FollowUp_Status_Id) || {}).name || '' : '';
       Lead_Copy.Staff_Id = this.Lead_.FollowUp_Staff_Id;
-      Lead_Copy.Location_Id = this.Lead_.FollowUp_Location_Id;
+      Lead_Copy.Staff_Name = this.DropdownData['Staff_' + this.Lead_.FollowUp_Department_Id] ? (this.DropdownData['Staff_' + this.Lead_.FollowUp_Department_Id].find(x => x.id === this.Lead_.FollowUp_Staff_Id) || {}).name || '' : '';
+      Lead_Copy.Branch_Id = this.Lead_.FollowUp_Location_Id;
+      Lead_Copy.Branch_Name = this.DropdownData['Branch'] ? (this.DropdownData['Branch'].find(x => x.id === this.Lead_.FollowUp_Location_Id) || {}).name || '' : '';
+
+      // Also set the FollowUp specific fields for the follow_up table
+      Lead_Copy.FollowUp_Branch_Id = Lead_Copy.Branch_Id;
+      Lead_Copy.FollowUp_Branch_Name = Lead_Copy.Branch_Name;
+      Lead_Copy.FollowUp_Dept_Name = Lead_Copy.Department_Name;
+      Lead_Copy.FollowUp_Status_Name = Lead_Copy.Status_Name;
+      Lead_Copy.FollowUp_Staff_Name = Lead_Copy.Staff_Name;
+
     } else {
       Lead_Copy.Department_Id = 0;
+      Lead_Copy.Department_Name = '';
       Lead_Copy.Status_Id = this.Lead_.Status_Id;
+      Lead_Copy.Status_Name = this.Lead_.Status_Name;
       Lead_Copy.Staff_Id = 0;
-      Lead_Copy.Location_Id = 0;
+      Lead_Copy.Staff_Name = '';
+      Lead_Copy.Branch_Id = 0;
+      Lead_Copy.Branch_Name = '';
     }
+    
+    Lead_Copy.Next_FollowUp_Date = this.Lead_.FollowUp_Next_Date;
+    Lead_Copy.Remarks = this.Lead_.FollowUp_Remark;
 
     if (Lead_Copy.Entry_Date) Lead_Copy.Entry_Date = this.New_Date(new Date(Lead_Copy.Entry_Date));
-    if (Lead_Copy.FollowUp_Next_Date) Lead_Copy.FollowUp_Next_Date = this.New_Date(new Date(Lead_Copy.FollowUp_Next_Date));
+    if (Lead_Copy.Next_FollowUp_Date) Lead_Copy.Next_FollowUp_Date = this.New_Date(new Date(Lead_Copy.Next_FollowUp_Date));
     
     const loginUser = localStorage.getItem('Login_User');
     if (loginUser) Lead_Copy.Login_User_Id = Number(loginUser);
-    if (Lead_Copy.FollowUp_Date) Lead_Copy.FollowUp_Date = Lead_Copy.FollowUp_Date.replace('T', ' ');
 
     this.issLoading = true;
     this.Lead_Service_.Save_NewLead(Lead_Copy).pipe(finalize(() => this.issLoading = false)).subscribe({
@@ -1063,7 +1106,11 @@ export class Register_LeadComponent implements OnInit {
 
   Edit_Lead(lead_e: Lead) {
     this.Lead_ = Object.assign({}, lead_e);
-    this.Lead_.Is_FollowUp = (this.Lead_.Is_FollowUp as any) == 1 ? true : false;
+    if (this.Is_View_Mode) {
+      this.Lead_.Is_FollowUp = true;
+    } else {
+      this.Lead_.Is_FollowUp = (this.Lead_.Is_FollowUp as any) == 1 ? true : false;
+    }
     this.Lead_.Next_Call_Action = (this.Lead_.Next_Call_Action as any) == 1 ? true : false;
     if (this.Lead_.Vertical && String(this.Lead_.Vertical).trim() !== '') {
       this.Lead_.Vertical = String(this.Lead_.Vertical).split(',')[0].trim();
@@ -1073,10 +1120,25 @@ export class Register_LeadComponent implements OnInit {
     } else {
       this.Added_Interests = [];
     }
-    if (this.Lead_.Staff_Id > 0) this.Lead_.FollowUp_Staff_Id = this.Lead_.Staff_Id;
-    if (this.Lead_.Department_Id > 0) this.Lead_.FollowUp_Department_Id = this.Lead_.Department_Id;
-    if (this.Lead_.Status_Id > 0) this.Lead_.FollowUp_Status_Id = this.Lead_.Status_Id;
-    if (this.Lead_.Location_Id > 0) this.Lead_.FollowUp_Location_Id = this.Lead_.Location_Id;
+    if (this.Lead_.Branch_Id > 0) {
+      this.Lead_.FollowUp_Location_Id = this.Lead_.Branch_Id;
+      this.DropdownData['Branch'] = [{ id: this.Lead_.Branch_Id, name: this.Lead_.Branch_Name }];
+    }
+    if (this.Lead_.Department_Id > 0) {
+      this.Lead_.FollowUp_Department_Id = this.Lead_.Department_Id;
+      this.DropdownData['Department_' + this.Lead_.Branch_Id] = [{ id: this.Lead_.Department_Id, name: this.Lead_.Department_Name }];
+    }
+    if (this.Lead_.Staff_Id > 0) {
+      this.Lead_.FollowUp_Staff_Id = this.Lead_.Staff_Id;
+      this.DropdownData['Staff_' + this.Lead_.Department_Id] = [{ id: this.Lead_.Staff_Id, name: this.Lead_.Staff_Name }];
+    }
+    if (this.Lead_.Status_Id > 0) {
+      this.Lead_.FollowUp_Status_Id = this.Lead_.Status_Id;
+      this.DropdownData['TargetStage'] = [{ id: this.Lead_.Status_Id, name: this.Lead_.Status_Name }];
+    }
+
+    this.Lead_.FollowUp_Next_Date = this.Lead_.Next_FollowUp_Date ? this.New_Date(this.Lead_.Next_FollowUp_Date) : null;
+    this.Lead_.FollowUp_Remark = this.Lead_.Remarks || '';
     this.Initialize_Contact_Form();
     let contacts = (this.Lead_ as any).Contact_Person_Details;
     if (typeof contacts === 'string' && contacts.trim() !== '') {
@@ -1125,9 +1187,18 @@ export class Register_LeadComponent implements OnInit {
     }
     this.DropdownData['CompanySize'] = this.Lead_.Company_Size_Id ? [{ id: this.Lead_.Company_Size_Id, name: this.Lead_.Company_Size_Name }] : [];
     this.DropdownData['Source'] = this.Lead_.Source ? [{ id: this.Lead_.Source, name: this.Lead_.Source_Name }] : [];
+    this.DropdownData['LeadPriority'] = this.Lead_.Lead_Priority ? [{ name: this.Lead_.Lead_Priority }] : [];
+    
+    this.Selected_Pipeline_Stage = '';
+    this.DropdownData['PipelineStage'] = [];
+    this.Selected_Pulse = '';
+    this.DropdownData['Pulse'] = [];
+    
+    this.Selected_Workflow = (this.Lead_ as any).Workflow || '';
+    this.DropdownData['Workflow'] = (this.Lead_ as any).Workflow ? [{ name: (this.Lead_ as any).Workflow }] : [];
     
     // Bind the remark to the text area model
-    this.Requirement_Note = this.Lead_.Remark || '';
+    this.Requirement_Note = this.Lead_.Enquiry_For_Note || '';
     
     let designations = [];
     let states = [...(this.DropdownData['State'] || [])];

@@ -162,6 +162,7 @@ export const AdminRoutes: Routes = [
 			{ path: 'Lead', component: LeadComponent },
 			{ path: 'Lead/New', component: Register_LeadComponent },
 			{ path: 'Lead/Edit/:id', component: Register_LeadComponent },
+			{ path: 'Lead/View/:id', component: Register_LeadComponent },
 			{ path: 'Lead/:id', component: LeadComponent },
 			{ path: 'LeadRequirement', component: LeadRequirementComponent },
 			{ path: 'LeadRequirementTransaction/:id', component: LeadRequirementTransactionComponent },

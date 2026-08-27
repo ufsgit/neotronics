@@ -848,6 +848,10 @@ export class LeadComponent implements OnInit {
     this.router.navigate(['/Lead/Edit', lead_e.Lead_Id]);
   }
 
+  View_Lead(lead_e: Lead) {
+    this.router.navigate(['/Lead/View', lead_e.Lead_Id]);
+  }
+
   Get_Lead_Dynamic_Fields(Lead_Id: number) {
     this.Lead_Custom_Value_Service_.Get_Lead_Custom_Values(Lead_Id).subscribe(Rows => {
         const values = (Rows && Rows[0]) ? Rows[0] : [];
