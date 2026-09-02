@@ -87,10 +87,78 @@ export class Register_LeadComponent implements OnInit {
   Selected_Workflow: string = '';
   Show_History: boolean = false;
   Show_Pipeline_History: boolean = false;
+  History_Loaded: boolean = false;
+  History_Page_Index: number = 1;
+  History_Loading: boolean = false;
+  History_Has_More: boolean = true;
+  Remark_Popup_Open: boolean = false;
+  Remark_Popup_Text: string = '';
 
   Toggle_Workflow_Start() {
     if (this.Selected_Workflow) {
       (this.Lead_ as any).Workflow_Start_Status = (this.Lead_ as any).Workflow_Start_Status ? 0 : 1;
+    }
+  }
+
+  Toggle_History() {
+    this.Show_History = !this.Show_History;
+    if (this.Show_History && this.Lead_.Lead_Id) {
+      // Caching: don't load again if already loaded
+      if (this.History_Loaded) {
+        return;
+      }
+      this.History_Loaded = true;
+      this.FollowUp_History = []; // Clear old pre-loaded data
+      this.History_Page_Index = 1;
+      this.History_Has_More = true;
+      this.Load_History_Page();
+    }
+  }
+
+  Load_History_Page() {
+    if (this.History_Loading || !this.History_Has_More) return;
+    this.History_Loading = true;
+    this.Lead_Service_.Get_Lead_Interaction_History(this.Lead_.Lead_Id, this.History_Page_Index, 10).subscribe(
+      (data: any) => {
+        this.History_Loading = false;
+        let newRecords = [];
+        if (data && data.length > 0 && Array.isArray(data[0])) {
+          newRecords = data[0];
+        } else if (Array.isArray(data)) {
+          newRecords = data;
+        }
+
+        if (this.History_Page_Index === 1) {
+          this.FollowUp_History = newRecords;
+        } else {
+          this.FollowUp_History = [...this.FollowUp_History, ...newRecords];
+        }
+
+        if (newRecords.length < 10) {
+          this.History_Has_More = false;
+        }
+      },
+      (error: any) => {
+        this.History_Loading = false;
+        console.error("Error fetching interaction history", error);
+      }
+    );
+  }
+
+  On_History_Scroll(event: any) {
+    const target = event.target;
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 50) {
+      if (!this.History_Loading && this.History_Has_More) {
+        this.History_Page_Index++;
+        this.Load_History_Page();
+      }
+    }
+  }
+
+  Open_Remark_Popup(remark: string) {
+    if (remark && remark.length > 10) {
+      this.Remark_Popup_Open = true;
+      this.Remark_Popup_Text = remark;
     }
   }
 
@@ -959,10 +1027,6 @@ export class Register_LeadComponent implements OnInit {
     const contactPersonValues = this.contactForm && this.contactForm.value && this.contactForm.value.contactPersons ? this.contactForm.value.contactPersons : [];
     const selectedContactValue = contactPersonValues.find(c => !!c.Next_Call_Action) || contactPersonValues[0] || null;
     if (!this.Lead_.Phone && selectedContactValue && selectedContactValue.POC_Direct_Mobile) this.Lead_.Phone = selectedContactValue.POC_Direct_Mobile;
-    if (!this.Lead_.Phone) {
-      this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter Phone Number', Type: "3" } });
-      return;
-    }
 
     let Lead_Copy = Object.assign({}, this.Lead_);
 
@@ -1006,9 +1070,9 @@ export class Register_LeadComponent implements OnInit {
       Sitting_Location_Id: c.POC_Location_Id,
       Sitting_Location: this.DropdownData['District'] ? (this.DropdownData['District'].find(d => d.id == c.POC_Location_Id) || {}).name || '' : '',
       Office_Type: c.POC_Office_Type,
-      Name_Captured: c.Name_Captured ? 1 : 0,
-      Number_Captured: c.Number_Captured ? 1 : 0,
-      Email_Captured: c.Email_Captured ? 1 : 0,
+      Name_Captured: (c.POC_Full_Name && c.POC_Full_Name.trim() !== '') ? 1 : 0,
+      Number_Captured: (c.POC_Direct_Mobile && String(c.POC_Direct_Mobile).trim() !== '') ? 1 : 0,
+      Email_Captured: (c.POC_Email && c.POC_Email.trim() !== '') ? 1 : 0,
       Is_Primary: (!!c.Next_Call_Action || (i === 0 && !contactPersonValues.some(cp => cp.Next_Call_Action))) ? 1 : 0
     }));
 

@@ -25,7 +25,7 @@ export class Lead_Service {
     return this.http.get(environment.BasePath + 'Lead/Get_Leads/', { params: { _t: Date.now().toString() } });
   }
 
-  Get_NewLeads(search: string = '', industry: number = 0, designation: number = 0, district: number = 0, priority: string = '', page: number = 1, limit: number = 20): Observable<any> {
+  Get_NewLeads(search: string = '', industry: number = 0, designation: number = 0, district: number = 0, priority: string = '', page: number = 1, limit: number = 20, lead_type: number = 0): Observable<any> {
     return this.http.get(environment.BasePath + 'Lead/Get_NewLeads/', { 
       params: { 
         search, 
@@ -35,6 +35,7 @@ export class Lead_Service {
         priority, 
         page: page.toString(), 
         limit: limit.toString(),
+        lead_type: lead_type.toString(),
         _t: Date.now().toString() 
       } 
     });
@@ -81,6 +82,16 @@ export class Lead_Service {
 
   Get_Lead_FollowUp_History(Lead_Id): Observable<any> {
     return this.http.get(environment.BasePath + 'Lead/Get_Lead_FollowUp_History/' + Lead_Id);
+  }
+
+  Get_Lead_Interaction_History(Lead_Id, page: number = 1, limit: number = 10): Observable<any> {
+    return this.http.get(environment.BasePath + 'FollowUp/GetLeadInteractionHistory/' + Lead_Id, {
+      params: {
+        page: page.toString(),
+        limit: limit.toString(),
+        _t: Date.now().toString()
+      }
+    });
   }
 
   Get_Lead_Activity_Log(Lead_Id): Observable<any> {

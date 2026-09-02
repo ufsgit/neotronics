@@ -117,6 +117,7 @@ var Price_Response = require('./routes/Price_Response');
 var Notifications = require('./routes/Notifications');
 var OperationsDashboard = require('./routes/OperationsDashboard');
 var leadconfig = require('./routes/leadconfig');
+var FollowUp = require('./routes/FollowUp');
 
 
 var app = express();
@@ -246,6 +247,7 @@ app.use('/Notification', Notifications);
 app.use('/api/Notification', Notifications);
 app.use('/OperationsDashboard', OperationsDashboard);
 app.use('/leadconfig', leadconfig);
+app.use('/FollowUp', FollowUp);
 
 // ── Lead Config Modular Routes ──────────────────────────────────────────
 app.use('/Lead_Config/company_details/vertical', require('./routes/Lead_Config/company_details/vertical'));
@@ -274,9 +276,9 @@ app.use(function(req, res, next) {
   next(err); 
 });
 
-// app.listen(port, () => {
-// 	console.log(`started on port: ${port}`);
-//   });
+app.listen(port, () => {
+	console.log(`started on port: ${port}`);
+  });
 
 app.get('Edabraod/', (req, res) => {
   res.send('Hello World!')

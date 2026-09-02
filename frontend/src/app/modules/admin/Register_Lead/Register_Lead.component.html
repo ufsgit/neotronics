@@ -170,16 +170,16 @@
 
                 <div style="display: flex; align-items: center; gap: 20px;">
                   <label
-                    style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569; cursor: pointer; margin: 0;">
-                    <input type="checkbox" formControlName="Name_Captured"> Name captured
+                    style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569; cursor: default; margin: 0;">
+                    <input type="checkbox" [checked]="!!contact.get('POC_Full_Name').value" onclick="return false;"> Name captured
                   </label>
                   <label
-                    style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569; cursor: pointer; margin: 0;">
-                    <input type="checkbox" formControlName="Number_Captured"> Number captured
+                    style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569; cursor: default; margin: 0;">
+                    <input type="checkbox" [checked]="!!contact.get('POC_Direct_Mobile').value" onclick="return false;"> Number captured
                   </label>
                   <label
-                    style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569; cursor: pointer; margin: 0;">
-                    <input type="checkbox" formControlName="Email_Captured"> Email captured
+                    style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569; cursor: default; margin: 0;">
+                    <input type="checkbox" [checked]="!!contact.get('POC_Email').value" onclick="return false;"> Email captured
                   </label>
                 </div>
               </div>
@@ -462,36 +462,42 @@
       <!-- ── Interaction History ── -->
       <div class="ig-section-card" *ngIf="Show_History">
         <p class="ig-section-title"><i class="material-icons">history</i> Interaction History</p>
-        <div class="ig-table-wrap">
+        <div class="ig-table-wrap" (scroll)="On_History_Scroll($event)" style="max-height: 400px; overflow-y: auto;">
           <table class="ig-table">
             <thead>
               <tr>
                 <th class="ig-th">No.</th>
-                <th class="ig-th">Company</th>
-                <th class="ig-th">Vertical</th>
-                <th class="ig-th">District</th>
-                <th class="ig-th">Source</th>
-                <th class="ig-th">Lead type</th>
-                <th class="ig-th">Contacts</th>
-                <th class="ig-th">Data stage</th>
-                <th class="ig-th">Pipeline stage</th>
+                <th class="ig-th">Date</th>
+                <th class="ig-th">Lead Type</th>
+                <th class="ig-th">Branch</th>
+                <th class="ig-th">Department</th>
+                <th class="ig-th">Staff Member</th>
+                <th class="ig-th">Pipeline Stage</th>
                 <th class="ig-th">Pulse</th>
-                <th class="ig-th">Market study</th>
+                <th class="ig-th">Next Follow-up</th>
+                <th class="ig-th">Remarks</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let h of FollowUp_History; let i = index" class="ig-tr">
                 <td class="ig-td">{{ i + 1 }}</td>
-                <td class="ig-td ig-td-name">{{ Lead_.Lead_Name || '—' }}</td>
-                <td class="ig-td">{{ Lead_.Industry_Name || '—' }}</td>
-                <td class="ig-td">{{ Lead_.District_Name || '—' }}</td>
-                <td class="ig-td">{{ Lead_.Source_Name || '—' }}</td>
-                <td class="ig-td"><span class="ig-badge">{{ h.Lead_Type || Lead_.Lead_Type || '—' }}</span></td>
-                <td class="ig-td">{{ Lead_.Contact_Number || Lead_.Phone || '—' }}</td>
-                <td class="ig-td"><span class="ig-badge">{{ h.Status_Name || '—' }}</span></td>
+                <td class="ig-td">{{ h.FollowUp_Date | date:'medium' || '—' }}</td>
+                <td class="ig-td"><span class="ig-badge">{{ h.Lead_Type || '—' }}</span></td>
+                <td class="ig-td">{{ h.Branch_Name || '—' }}</td>
+                <td class="ig-td">{{ h.Department_Name || '—' }}</td>
+                <td class="ig-td">{{ h.Staff_Name || '—' }}</td>
                 <td class="ig-td">{{ h.Pipeline_Stage || '—' }}</td>
                 <td class="ig-td">{{ h.Pulse || '—' }}</td>
-                <td class="ig-td">{{ h.Market_Study || '—' }}</td>
+                <td class="ig-td">{{ h.Next_FollowUp_Date | date:'mediumDate' || '—' }}</td>
+                <td class="ig-td">
+                  <div class="ig-td-muted" title="{{h.Remark}}" 
+                       (click)="Open_Remark_Popup(h.Remark)" 
+                       [style.cursor]="(h.Remark?.length > 10) ? 'pointer' : 'default'"
+                       [style.color]="(h.Remark?.length > 10) ? '#3b82f6' : 'inherit'"
+                       style="word-break: break-all; max-width: 100px;">
+                    {{ (h.Remark | slice:0:10) || '—' }}{{ h.Remark?.length > 10 ? '...' : '' }}
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -501,7 +507,7 @@
       <!-- Form Footer -->
       <div class="ig-form-footer" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
         <button mat-button type="button" class="ig-btn-outline"
-          style="margin-right: auto; height: 40px; padding: 0 20px;" (click)="Show_History = !Show_History">
+          style="margin-right: auto; height: 40px; padding: 0 20px;" (click)="Toggle_History()">
           <i class="material-icons" style="vertical-align: middle; margin-right: 5px;">history</i>
           {{ Show_History ? 'Hide History' : 'View History' }}
         </button>
@@ -521,5 +527,26 @@
   <!-- ══════════════════════════════════════════
        LIST VIEW
   ══════════════════════════════════════════ -->
+
+  <!-- REMARK POPUP -->
+  <div class="ig-cf-overlay" *ngIf="Remark_Popup_Open" (click)="Remark_Popup_Open = false">
+    <div class="ig-cf-popup" style="max-width: 500px;" (click)="$event.stopPropagation()">
+      <div class="ig-cf-popup-header">
+        <div>
+          <p class="ig-cf-popup-lead">Interaction Remark</p>
+          <p class="ig-cf-popup-sub">Full Remark</p>
+        </div>
+        <button class="ig-cf-close" (click)="Remark_Popup_Open = false">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+
+      <div class="ig-cf-popup-body" style="padding: 20px;">
+        <p style="font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; margin: 0; color: #333;">
+          {{ Remark_Popup_Text }}
+        </p>
+      </div>
+    </div>
+  </div>
 
 </div>

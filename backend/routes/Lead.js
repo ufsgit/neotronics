@@ -106,8 +106,9 @@ router.get('/Get_NewLeads/', function (req, res, next) {
         const priority = req.query.priority || '';
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 20;
+        const lead_type = Number(req.query.lead_type) || 0;
 
-        Lead.Get_NewLeads(search, industry, designation, district, priority, page, limit, function (err, rows) {
+        Lead.Get_NewLeads(search, industry, designation, district, priority, page, limit, lead_type, function (err, rows) {
             if (err) {
                 res.json(err);
             }

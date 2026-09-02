@@ -431,6 +431,14 @@ export class LeadComponent implements OnInit {
 
   Get_Leads() {
     this.issLoading = true;
+    
+    let leadTypeId = 0;
+    if (this.Selected_Lead_Type === 'Quick Lead') leadTypeId = 1;
+    else if (this.Selected_Lead_Type === 'Raw lead') leadTypeId = 2;
+    else if (this.Selected_Lead_Type === 'Processed') leadTypeId = 3;
+    else if (this.Selected_Lead_Type === 'Lead') leadTypeId = 4;
+    else if (this.Selected_Lead_Type === 'Market study') leadTypeId = 5;
+
     this.Lead_Service_.Get_NewLeads(
       this.Search_Text || '',
       this.Lead_Filter.Industry || 0,
@@ -438,7 +446,8 @@ export class LeadComponent implements OnInit {
       this.Lead_Filter.District || 0,
       this.Lead_Filter.Priority || '',
       this.Page_Index,
-      this.Page_Size
+      this.Page_Size,
+      leadTypeId
     ).subscribe(Rows => {
       const leadRows = (Rows && Array.isArray(Rows) && Rows.length > 0 && Array.isArray(Rows[0])) ? Rows[0] : (Array.isArray(Rows) ? Rows : []);
       const countRows = (Rows && Array.isArray(Rows) && Rows.length > 1 && Array.isArray(Rows[1])) ? Rows[1] : [];
@@ -791,10 +800,6 @@ export class LeadComponent implements OnInit {
     const contactPersonValues = this.contactForm && this.contactForm.value && this.contactForm.value.contactPersons ? this.contactForm.value.contactPersons : [];
     const selectedContactValue = contactPersonValues.find(c => !!c.Next_Call_Action) || contactPersonValues[0] || null;
     if (!this.Lead_.Phone && selectedContactValue && selectedContactValue.Contact_Number) this.Lead_.Phone = selectedContactValue.Contact_Number;
-    if (!this.Lead_.Phone) {
-      this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter Phone Number', Type: "3" } });
-      return;
-    }
     let Lead_Copy = Object.assign({}, this.Lead_);
     (Lead_Copy as any).Contact_Person_Details = contactPersonValues;
     Lead_Copy.Next_Call_Action = contactPersonValues.some(c => !!c.Next_Call_Action);
