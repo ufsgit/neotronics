@@ -409,7 +409,7 @@ var Lead = {
             enrichLeadsWithLatestFollowUp(rows, callback);
         });
     },
-    Get_NewLeads: function (search, industry, designation, district, priority, page, limit, lead_type, callback) {
+    Get_NewLeads: function (search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage, callback) {
         if (!search) search = '';
         if (!industry) industry = 0;
         if (!designation) designation = 0;
@@ -418,8 +418,9 @@ var Lead = {
         if (!page) page = 1;
         if (!limit) limit = 20;
         if (!lead_type) lead_type = 0;
+        if (!pipeline_stage) pipeline_stage = 0;
 
-        return db.query("CALL Get_NewLeads(?, ?, ?, ?, ?, ?, ?, ?)", [search, industry, designation, district, priority, page, limit, lead_type], (err, rows) => {
+        return db.query("CALL Get_NewLeads(?, ?, ?, ?, ?, ?, ?, ?, ?)", [search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage], (err, rows) => {
             if (err) return callback(err, rows);
             enrichLeadsWithLatestFollowUp(rows, callback);
         });

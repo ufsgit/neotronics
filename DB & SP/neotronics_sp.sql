@@ -1911,6 +1911,34 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetLeadInteractionHistory`(
+    IN p_Lead_Id INT,
+    IN p_Offset INT,
+    IN p_Limit INT
+)
+BEGIN
+    SELECT 
+        FollowUp_Id,
+        FollowUp_Date,
+        Lead_Type,
+        Branch_Name,
+        Department_Name,
+        Staff_Name,
+        Pipeline_Stage,
+        Pulse,
+        Next_FollowUp_Date,
+        Remark
+    FROM 
+        follow_up
+    WHERE 
+        Lead_Id = p_Lead_Id
+    ORDER BY 
+        FollowUp_Date DESC
+    LIMIT p_Limit OFFSET p_Offset;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_accountgroup`( In accountgroup_Id_ Int)
 Begin 
  SELECT AccountGroup_Id,
@@ -3325,6 +3353,12 @@ BEGIN
         ORDER BY LeadPriority_Name 
         LIMIT v_Limit OFFSET v_Offset;
         
+	ELSEIF p_Type = 'PipelineStage' THEN
+        SELECT PipelineStage_Id AS id, PipelineStage_Name AS name FROM pipeline_stage_master 
+        WHERE PipelineStage_Name LIKE p_Search AND DeleteStatus = 0
+        ORDER BY PipelineStage_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
     END IF;
 
 END$$
@@ -3504,7 +3538,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_NewLeads`(
     IN p_DistrictId INT,
     IN p_Priority VARCHAR(50),
     IN p_Page INT,
-    IN p_Limit INT
+    IN p_Limit INT,
+    IN p_Lead_Type INT,
+    IN p_PipelineStageId INT
 )
 BEGIN
     DECLARE v_Offset INT;
@@ -3535,6 +3571,8 @@ BEGIN
       AND (p_DesignationId IS NULL OR p_DesignationId = 0 OR l.POC_Designation_Id = p_DesignationId)
       AND (p_DistrictId IS NULL OR p_DistrictId = 0 OR l.District = p_DistrictId)
       AND (p_Priority IS NULL OR p_Priority = '' OR l.Lead_Priority = p_Priority)
+      AND (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
+      AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId)
     ORDER BY l.Lead_Id DESC
     LIMIT p_Limit OFFSET v_Offset;
     
@@ -3545,7 +3583,9 @@ BEGIN
       AND (p_IndustryId IS NULL OR p_IndustryId = 0 OR l.Vertical = p_IndustryId)
       AND (p_DesignationId IS NULL OR p_DesignationId = 0 OR l.POC_Designation_Id = p_DesignationId)
       AND (p_DistrictId IS NULL OR p_DistrictId = 0 OR l.District = p_DistrictId)
-      AND (p_Priority IS NULL OR p_Priority = '' OR l.Lead_Priority = p_Priority);
+      AND (p_Priority IS NULL OR p_Priority = '' OR l.Lead_Priority = p_Priority)
+      AND (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
+      AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId);
 END$$
 DELIMITER ;
 
@@ -14333,13 +14373,62 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     IN _Contact_Person_Details_JSON TEXT
 )
 BEGIN
+    -- 1. ALL DECLARATIONS GO FIRST
     DECLARE _Generated_Lead_Id INT;
+    DECLARE _Calculated_Lead_Type INT DEFAULT 0;
+
+    -- 2. ERROR HANDLER
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
         ROLLBACK;
         RESIGNAL;
     END;
+
+    -- 3. EXECUTABLE LOGIC GOES HERE (Right above START TRANSACTION)
+    -- ==========================================
+    -- LEAD TYPE FILTRATION LOGIC
+    -- ==========================================
+    IF (_POC_Full_Name IS NOT NULL AND _POC_Full_Name != '' AND 
+        _POC_Designation_Id > 0 AND 
+        _POC_Direct_Mobile IS NOT NULL AND _POC_Direct_Mobile != '' AND
+        _Enquiry_For IS NOT NULL AND _Enquiry_For != '') THEN
+        
+        SET _Calculated_Lead_Type = 4; -- REPLACE WITH 'LEAD' ID
+
+    ELSEIF (_Lead_Name IS NOT NULL AND _Lead_Name != '' AND 
+            _Vertical > 0 AND 
+            _Address IS NOT NULL AND _Address != '' AND 
+            _State > 0 AND 
+            _Source > 0 AND 
+            _Company_Size_Id > 0 AND
+            _POC_Full_Name IS NOT NULL AND _POC_Full_Name != '' AND 
+            _POC_Designation_Id > 0 AND 
+            _POC_Direct_Mobile IS NOT NULL AND _POC_Direct_Mobile != '') THEN
+            
+        SET _Calculated_Lead_Type = 3; -- REPLACE WITH 'PROCESSED' ID
+
+    ELSEIF (_Lead_Name IS NOT NULL AND _Lead_Name != '' AND 
+            _Vertical > 0 AND 
+            _Address IS NOT NULL AND _Address != '' AND 
+            _State > 0 AND 
+            _Source > 0 AND 
+            _Company_Size_Id > 0) THEN
+            
+        SET _Calculated_Lead_Type = 2; -- REPLACE WITH 'RAW LEAD' ID
+
+    ELSEIF (_Lead_Name IS NOT NULL AND _Lead_Name != '' AND 
+            _Vertical > 0) THEN
+            
+        SET _Calculated_Lead_Type = 1; -- REPLACE WITH 'QUICK LEAD' ID
+
+    ELSE
+        SET _Calculated_Lead_Type = _Lead_Type; 
+    END IF;
+    -- ==========================================
+
+    -- 4. START TRANSACTION
     START TRANSACTION;
+
     IF _Lead_Id = 0 THEN
         -- 1. INSERT INTO LEAD
         INSERT INTO `lead` (
@@ -14351,7 +14440,7 @@ BEGIN
             Lead_Priority, PipelineStage_Id, Current_Pipeline_Stage, Pulse_Id, Pulse, Status_Id, Status_Name, Branch_Id, Branch_Name,
             Department_Id, Department_Name, Staff_Id, Staff_Name, Workflow_Id, Workflow, Workflow_Start_Status
         ) VALUES (
-            _Lead_Name, _Lead_Type, _Vertical, _Vertical_Name, _Address, _State, _State_Name, _District, _District_Name,
+            _Lead_Name, _Calculated_Lead_Type, _Vertical, _Vertical_Name, _Address, _State, _State_Name, _District, _District_Name,
             _Company_Size_Id, _Company_Size_Name, _Source, _Source_Name, 
             _POC_Full_Name, _POC_Designation_Id, _POC_Designation, _POC_Direct_Mobile, _POC_Email,
             _POC_State_Id, _POC_State, _POC_Location_Id, _POC_Loc, _POC_Work_Phone, _POC_Office_Type,
@@ -14377,7 +14466,7 @@ BEGIN
                 Department_Id, Department_Name, Staff_Id, Staff_Name, Remark, 
                 PipelineStage_Id, Pipeline_Stage, Pulse_Id, Pulse, Login_User_Id, Next_FollowUp_Date
             ) VALUES (
-                _Generated_Lead_Id, _Lead_Type, _FollowUp_Status_Id, _FollowUp_Status_Name, _FollowUp_Branch_Id, _FollowUp_Branch_Name, 
+                _Generated_Lead_Id, _Calculated_Lead_Type, _FollowUp_Status_Id, _FollowUp_Status_Name, _FollowUp_Branch_Id, _FollowUp_Branch_Name, 
                 _FollowUp_Department_Id, _FollowUp_Dept_Name, _FollowUp_Staff_Id, _FollowUp_Staff_Name, _FollowUp_Remark, 
                 _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, _Login_User_Id, _Next_FollowUp_Date
             );
@@ -14387,7 +14476,7 @@ BEGIN
         -- 1. UPDATE LEAD
         UPDATE `lead`
         SET 
-            Lead_Name = _Lead_Name, Lead_Type = _Lead_Type, Vertical = _Vertical, Vertical_Name = _Vertical_Name,
+            Lead_Name = _Lead_Name, Lead_Type = _Calculated_Lead_Type, Vertical = _Vertical, Vertical_Name = _Vertical_Name,
             Address = _Address, State = _State, State_Name = _State_Name, District = _District, District_Name = _District_Name,
             Company_Size_Id = _Company_Size_Id, Company_Size_Name = _Company_Size_Name, Source = _Source, Source_Name = _Source_Name, 
             POC_Full_Name = _POC_Full_Name, POC_Designation_Id = _POC_Designation_Id, POC_Designation = _POC_Designation,
@@ -28353,5 +28442,67 @@ Client_Accounts_Name as Employee_Name
 from User_Details
 inner join Client_Accounts on Client_Accounts.Client_Accounts_Id=User_Details.Employee_Id
 where User_Details_Id=User_Details_Id_ and Client_Accounts.DeleteStatus=false;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `video_delete`(
+    IN p_video_id INT
+)
+BEGIN
+    DELETE FROM videos WHERE id = p_video_id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `video_edit`(
+    IN p_video_id INT,
+    IN p_title VARCHAR(255),
+    IN p_description TEXT,
+    IN p_video_url VARCHAR(255),
+    IN p_video_source ENUM('local', 'youtube', 'vimeo', 'external'),
+    IN p_thumbnail_url VARCHAR(255),
+    IN p_category ENUM('pre-op', 'post-op')
+)
+BEGIN
+    UPDATE videos 
+    SET 
+        title = COALESCE(p_title, title),
+        description = p_description,
+        video_url = COALESCE(p_video_url, video_url),
+        video_source = COALESCE(p_video_source, video_source),
+        thumbnail_url = COALESCE(p_thumbnail_url, thumbnail_url),
+        category = COALESCE(p_category, category)
+    WHERE id = p_video_id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `video_getbyid`(
+    IN p_video_id INT
+)
+BEGIN
+    SELECT * FROM videos WHERE id = p_video_id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `video_lists`(
+    IN p_admin_id INT,
+    IN p_limit INT,
+    IN p_offset INT,
+    IN p_category VARCHAR(50),
+    IN p_source VARCHAR(50),
+    IN p_search VARCHAR(255)
+)
+BEGIN
+    SELECT 
+        id, title, description, video_url, video_source, thumbnail_url, category, created_at 
+    FROM videos
+    WHERE (p_category = 'all' OR category = p_category)
+      AND (p_source = 'all' OR (p_source = 'local' AND video_source = 'local') OR (p_source = 'others' AND video_source != 'local'))
+      AND (p_search IS NULL OR p_search = '' OR title LIKE CONCAT(p_search, '%'))
+    ORDER BY created_at DESC
+    LIMIT p_limit OFFSET p_offset;
 END$$
 DELIMITER ;

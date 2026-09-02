@@ -79,6 +79,8 @@
         
         <app-lead-filter-dropdown style="flex: 1; min-width: 140px;" placeholder="All Priorities" type="LeadPriority"
           (selectionChange)="Lead_Filter.Priority = $event ? $event.name : null"></app-lead-filter-dropdown>
+        <app-lead-filter-dropdown style="flex: 1; min-width: 140px;" placeholder="All Pipeline Stages" type="PipelineStage"
+          (selectionChange)="Lead_Filter.PipelineStage = $event ? $event.id : null"></app-lead-filter-dropdown>
       </div>
 
       <hr style="border: 0; border-top: 1px solid #2d3239; margin: 15px 0;">

@@ -25,7 +25,7 @@ export class Lead_Service {
     return this.http.get(environment.BasePath + 'Lead/Get_Leads/', { params: { _t: Date.now().toString() } });
   }
 
-  Get_NewLeads(search: string = '', industry: number = 0, designation: number = 0, district: number = 0, priority: string = '', page: number = 1, limit: number = 20, lead_type: number = 0): Observable<any> {
+  Get_NewLeads(search: string = '', industry: number = 0, designation: number = 0, district: number = 0, priority: string = '', page: number = 1, limit: number = 20, lead_type: number = 0, pipeline_stage: number = 0): Observable<any> {
     return this.http.get(environment.BasePath + 'Lead/Get_NewLeads/', { 
       params: { 
         search, 
@@ -36,6 +36,7 @@ export class Lead_Service {
         page: page.toString(), 
         limit: limit.toString(),
         lead_type: lead_type.toString(),
+        pipeline_stage: pipeline_stage.toString(),
         _t: Date.now().toString() 
       } 
     });

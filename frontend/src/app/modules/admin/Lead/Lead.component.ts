@@ -176,6 +176,7 @@ export class LeadComponent implements OnInit {
   Lead_Filter: any = {
     Industry: 0,
     Stage: 0,
+    PipelineStage: 0,
     Priority: '',
     Date: '',
     Assigned_Staff: 0,
@@ -447,7 +448,8 @@ export class LeadComponent implements OnInit {
       this.Lead_Filter.Priority || '',
       this.Page_Index,
       this.Page_Size,
-      leadTypeId
+      leadTypeId,
+      this.Lead_Filter.PipelineStage || 0
     ).subscribe(Rows => {
       const leadRows = (Rows && Array.isArray(Rows) && Rows.length > 0 && Array.isArray(Rows[0])) ? Rows[0] : (Array.isArray(Rows) ? Rows : []);
       const countRows = (Rows && Array.isArray(Rows) && Rows.length > 1 && Array.isArray(Rows[1])) ? Rows[1] : [];
