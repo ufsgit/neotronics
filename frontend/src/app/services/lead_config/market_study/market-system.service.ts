@@ -12,6 +12,18 @@ export class LeadMarketSystemService {
   constructor(private http: HttpClient) { }
 
   getLeadMarketSystems(search: string = '', page: number = 1): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/search`, { search, page });
+    return this.http.get<any>(`${this.apiUrl}/Search`, { params: { search: search, page: page.toString(), _t: Date.now().toString() } });
+  }
+
+  getMarketSystem(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/Get/${id}`);
+  }
+
+  saveMarketSystem(data: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/Save`, data);
+  }
+
+  deleteMarketSystem(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/Delete/${id}`);
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -8,9 +9,9 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./Lead_Config.component.css']
 })
 export class Lead_ConfigComponent implements OnInit {
-  activeSection: string = 'Company Details';
-  activeSubTab: string = 'Vertical';
-  expandedSection: string = 'Company Details';
+  activeSection: string = sessionStorage.getItem('leadConfigSection') || 'Company Details';
+  activeSubTab: string = sessionStorage.getItem('leadConfigSubTab') || 'Vertical';
+  expandedSection: string = sessionStorage.getItem('leadConfigSection') || 'Company Details';
   isSidebarOpen: boolean = true;
   issLoading: boolean = false;
   Dropdown_Data: any[] = [];
@@ -24,7 +25,7 @@ export class Lead_ConfigComponent implements OnInit {
   isModalOpen: boolean = false;
   isEditMode: boolean = false;
   isSaving: boolean = false;
-  formData: { id: number; name: string; description: string } = { id: 0, name: '', description: '' };
+  formData: { id: number; name: string; description: string; IsActive?: any } = { id: 0, name: '', description: '', IsActive: 1 };
   
   columns = [
     { key: 'name', label: 'Name' },
@@ -51,7 +52,7 @@ export class Lead_ConfigComponent implements OnInit {
     'Follow-up Automation': ['Workflow']
   };
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
     this.selectSubTab(this.activeSubTab);
@@ -155,7 +156,8 @@ export class Lead_ConfigComponent implements OnInit {
           ...item,
           id: item[pk] || item.id || 0,
           name: item[nameField] || item.name || item.Vertical_Name || item.Name || '',
-          Description: item.Description || item.description || ''
+          Description: item.Description || item.description || '',
+          IsActive: item.IsActive
         }));
         
         this.totalCount = this.Dropdown_Data.length;
@@ -182,7 +184,7 @@ export class Lead_ConfigComponent implements OnInit {
 
   onAdd() {
     this.isEditMode = false;
-    this.formData = { id: 0, name: '', description: '' };
+    this.formData = { id: 0, name: '', description: '', IsActive: 1 };
     this.isModalOpen = true;
   }
 
@@ -193,7 +195,8 @@ export class Lead_ConfigComponent implements OnInit {
     this.formData = {
       id: item[pk] || item.id || 0,
       name: item[nameField] || item.name || '',
-      description: item.Description || item.description || ''
+      description: item.Description || item.description || '',
+      IsActive: item.IsActive
     };
     this.isModalOpen = true;
   }
@@ -214,6 +217,10 @@ export class Lead_ConfigComponent implements OnInit {
     body[pk] = this.formData.id;
     body[nameField] = this.formData.name.trim();
     body.Description = this.formData.description;
+    
+    if (this.activeSubTab === 'Market System') {
+      body.IsActive = this.formData.IsActive ? 1 : 0;
+    }
 
     const url = environment.BasePath + route + '/Save';
     this.http.post(url, body, this.getAuthHeaders()).subscribe(
@@ -253,6 +260,12 @@ export class Lead_ConfigComponent implements OnInit {
     }
   }
 
+  onSubItems(item: any) {
+    const pk = this.getPrimaryKeyField(this.activeSubTab);
+    const id = item[pk] || item.id;
+    this.router.navigate(['/Lead_Config/Market_Study/MarketSystem', id, 'Fields']);
+  }
+
   selectSection(section: string) {
     if (this.expandedSection === section) {
       this.expandedSection = '';
@@ -262,10 +275,13 @@ export class Lead_ConfigComponent implements OnInit {
 
     if (this.activeSection !== section) {
       this.activeSection = section;
+      sessionStorage.setItem('leadConfigSection', section);
+      
       if (this.subTabs[section] && this.subTabs[section].length > 0) {
         this.selectSubTab(this.subTabs[section][0]);
       } else {
         this.activeSubTab = '';
+        sessionStorage.removeItem('leadConfigSubTab');
         this.Dropdown_Data = [];
       }
     }
@@ -278,8 +294,14 @@ export class Lead_ConfigComponent implements OnInit {
 
   selectSubTab(tab: string) {
     this.activeSubTab = tab;
+    sessionStorage.setItem('leadConfigSubTab', tab);
     
-    if (this.hasDescription(tab)) {
+    if (tab === 'Market System') {
+      this.columns = [
+        { key: 'name', label: 'Name' },
+        { key: 'IsActive', label: 'Status' }
+      ];
+    } else if (this.hasDescription(tab)) {
       this.columns = [
         { key: 'name', label: 'Name' },
         { key: 'Description', label: 'Description' }

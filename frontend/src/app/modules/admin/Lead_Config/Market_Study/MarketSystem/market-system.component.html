@@ -1,14 +1,111 @@
-<app-common-table 
-  [title]="'Manage Market System'"
-  [data]="data" 
-  [columns]="columns" 
-  [isLoading]="isLoading"
-  [pageIndex]="pageIndex"
-  [pageSize]="pageSize"
-  [totalCount]="totalCount"
-  (search)="onSearch($event)"
-  (pageChange)="onPageChange($event)"
-  (add)="onAdd()"
-  (edit)="onEdit($event)"
-  (delete)="onDelete($event)">
-</app-common-table>
+<div class="common-table-container">
+  <div class="table-toolbar">
+    <div class="toolbar-title">
+      <h2>Manage Market System</h2>
+    </div>
+    <div class="toolbar-actions">
+      <div class="search-box">
+        <svg class="search-icon-svg" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          placeholder="Search..." 
+          [(ngModel)]="searchText" 
+          (input)="onSearchChange()">
+      </div>
+      <button type="button" class="add-btn" (click)="onAdd()">
+        <i class="material-icons">add</i> Add New
+      </button>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <div *ngIf="isLoading" class="loading-state">
+      Loading...
+    </div>
+    
+    <table *ngIf="!isLoading" class="custom-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th class="action-column">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data; let i = index">
+          <td>{{ (pageIndex - 1) * pageSize + (i + 1) }}</td>
+          <td>{{ item.Market_System_Name }}</td>
+          <td>
+            <span *ngIf="item.IsActive == 1" style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Active</span>
+            <span *ngIf="item.IsActive == 0" style="background: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Inactive</span>
+          </td>
+          <td class="action-column">
+            <!-- New Sub-Items Button -->
+            <button type="button" class="action-btn" style="color: #8b5cf6;" (click)="viewSubItems(item)" title="Edit Sub-fields">
+              <i class="material-icons">format_list_bulleted</i>
+            </button>
+            <button type="button" class="action-btn edit-btn" (click)="onEdit(item)" title="Edit">
+              <i class="material-icons">edit</i>
+            </button>
+            <button type="button" class="action-btn delete-btn" (click)="onDelete(item)" title="Delete">
+              <i class="material-icons">delete_outline</i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="data.length === 0">
+          <td colspan="4" class="empty-state">
+            No records found
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-container" *ngIf="totalCount > 0 && !isLoading">
+    <div class="pagination-info">
+      Showing {{ ((pageIndex - 1) * pageSize) + 1 }} to {{ min(pageIndex * pageSize, totalCount) }} of {{ totalCount }} entries
+    </div>
+    <div class="pagination-controls">
+      <button type="button" [disabled]="pageIndex === 1" (click)="prevPage()" class="page-btn">
+        <i class="material-icons">chevron_left</i>
+      </button>
+      <span class="page-current">Page {{ pageIndex }} of {{ totalPages }}</span>
+      <button type="button" [disabled]="pageIndex === totalPages" (click)="nextPage()" class="page-btn">
+        <i class="material-icons">chevron_right</i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal (Inline fallback if they don't have a standard modal class) -->
+<div *ngIf="showModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+  <div style="background: #fff; width: 400px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
+    <div style="padding: 16px 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #1e293b;">{{ isEditing ? 'Edit' : 'Add' }} Market System</h3>
+      <button type="button" (click)="closeModal()" style="background: none; border: none; cursor: pointer; color: #64748b;">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+    <div style="padding: 20px;">
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 14px; font-weight: 500; color: #334155; margin-bottom: 8px;">Category Name <span style="color: #ef4444;">*</span></label>
+        <input type="text" [(ngModel)]="currentSystem.Market_System_Name" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; box-sizing: border-box;">
+      </div>
+      <div style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="isActiveCheck" [(ngModel)]="currentSystem.IsActive" [checked]="currentSystem.IsActive == 1">
+        <label for="isActiveCheck" style="font-size: 14px; color: #334155; cursor: pointer;">Active Status</label>
+      </div>
+    </div>
+    <div style="padding: 16px 20px; border-top: 1px solid #e2e8f0; background: #f8fafc; display: flex; justify-content: flex-end; gap: 10px;">
+      <button type="button" (click)="closeModal()" style="background: #fff; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 6px; cursor: pointer; color: #475569; font-weight: 500;">Cancel</button>
+      <button type="button" (click)="saveSystem()" [disabled]="isSaving || !currentSystem.Market_System_Name" style="background: #3b82f6; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; color: #fff; font-weight: 500;" [style.opacity]="(isSaving || !currentSystem.Market_System_Name) ? '0.5' : '1'">
+        {{ isSaving ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -123,8 +123,10 @@
 }
 
 .action-column {
-  width: 100px;
+  width: 140px;
+  min-width: 140px;
   text-align: center !important;
+  white-space: nowrap;
 }
 
 .action-btn {

@@ -86,6 +86,7 @@ import { DashboardComponent } from './Dashboard/Dashboard.component';
 import { LeadDashboardComponent } from './lead-dashboard/lead-dashboard.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
+import { MarketStudyFieldsComponent } from './Lead_Config/Market_Study/MarketStudyFields/market-study-fields.component';
 import { Register_LeadComponent } from "./Register_Lead/Register_Lead.component";
 
 export const AdminRoutes: Routes = [
@@ -181,6 +182,7 @@ export const AdminRoutes: Routes = [
 			{ path: "LeadDashboard", component: LeadDashboardComponent },
 			{ path: "OperationsDashboard", component: OperationsDashboardComponent },
 			{ path: "Lead_Config", component: Lead_ConfigComponent },
+			{ path: "Lead_Config/Market_Study/MarketSystem/:id/Fields", component: MarketStudyFieldsComponent },
 
 
 			{ path: "**", redirectTo: "/auth/login" },

@@ -37,8 +37,19 @@
       <tbody>
         <tr *ngFor="let item of pagedData; let i = index">
           <td>{{ (pageIndex - 1) * pageSize + (i + 1) }}</td>
-          <td *ngFor="let col of columns">{{ item[col.key] }}</td>
+          <td *ngFor="let col of columns">
+            <ng-container *ngIf="col.key === 'IsActive'; else textBlock">
+              <span *ngIf="item[col.key] == 1" style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Active</span>
+              <span *ngIf="item[col.key] == 0" style="background: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Inactive</span>
+            </ng-container>
+            <ng-template #textBlock>
+              {{ item[col.key] }}
+            </ng-template>
+          </td>
           <td class="action-column">
+            <button *ngIf="showSubItems" type="button" class="action-btn" style="color: #8b5cf6;" (click)="onSubItems(item, $event)" title="Edit Sub-fields">
+              <i class="material-icons">format_list_bulleted</i>
+            </button>
             <button type="button" class="action-btn edit-btn" (click)="onEdit(item, $event)" title="Edit">
               <i class="material-icons">edit</i>
             </button>

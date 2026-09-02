@@ -146,6 +146,7 @@ import { LeadSourceComponent } from './Lead_Config/Company_Details/Source/source
 import { LeadDesignationComponent } from './Lead_Config/Contacts/Designation/designation.component';
 import { LeadServiceProductComponent } from './Lead_Config/Requirement_Profile/ServiceProduct/service-product.component';
 import { LeadMarketSystemComponent } from './Lead_Config/Market_Study/MarketSystem/market-system.component';
+import { MarketStudyFieldsComponent } from './Lead_Config/Market_Study/MarketStudyFields/market-study-fields.component';
 import { LeadPipelineStageComponent } from './Lead_Config/Pipeline_Stage_Pulse/PipelineStage/pipeline-stage.component';
 import { LeadPulseComponent } from './Lead_Config/Pipeline_Stage_Pulse/Pulse/pulse.component';
 import { LeadTargetStageComponent } from './Lead_Config/Pipeline_Stage_Pulse/TargetStage/target-stage.component';
@@ -289,6 +290,7 @@ import { DepartmentComponent } from './Department/Department.component';
 		LeadDesignationComponent,
 		LeadServiceProductComponent,
 		LeadMarketSystemComponent,
+		MarketStudyFieldsComponent,
 		LeadPipelineStageComponent,
 		LeadPulseComponent,
 		LeadTargetStageComponent,

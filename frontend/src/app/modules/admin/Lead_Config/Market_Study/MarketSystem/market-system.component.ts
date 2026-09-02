@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { LeadMarketSystemService } from '../../../../../services/lead_config/market_study/market-system.service';
 
 @Component({
@@ -14,11 +15,20 @@ export class LeadMarketSystemComponent implements OnInit {
   totalCount: number = 0;
   searchText: string = '';
 
-  columns = [
-    { key: 'name', label: 'Name' }
-  ];
+  // Modal State
+  showModal: boolean = false;
+  isEditing: boolean = false;
+  isSaving: boolean = false;
+  currentSystem: any = {
+    Market_System_Id: 0,
+    Market_System_Name: '',
+    IsActive: 1
+  };
 
-  constructor(private leadmarketsystemService: LeadMarketSystemService) { }
+  constructor(
+    private leadmarketsystemService: LeadMarketSystemService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.loadData();
@@ -48,26 +58,98 @@ export class LeadMarketSystemComponent implements OnInit {
     );
   }
 
-  onSearch(term: string) {
-    this.searchText = term;
+  onSearchChange() {
     this.pageIndex = 1;
     this.loadData();
   }
 
-  onPageChange(page: number) {
-    this.pageIndex = page;
-    this.loadData();
+  prevPage() {
+    if (this.pageIndex > 1) {
+      this.pageIndex--;
+      this.loadData();
+    }
+  }
+
+  nextPage() {
+    if (this.pageIndex < this.totalPages) {
+      this.pageIndex++;
+      this.loadData();
+    }
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalCount / this.pageSize) || 1;
+  }
+
+  min(a: number, b: number): number {
+    return Math.min(a, b);
+  }
+
+  // Action Methods
+  viewSubItems(item: any) {
+    this.router.navigate(['/Lead_Config/Market_Study/MarketSystem', item.Market_System_Id, 'Fields']);
   }
 
   onAdd() {
-    console.log('Add new MarketSystem');
+    this.isEditing = false;
+    this.currentSystem = {
+      Market_System_Id: 0,
+      Market_System_Name: '',
+      IsActive: true // Using true for ngModel binding with checkbox
+    };
+    this.showModal = true;
   }
 
   onEdit(item: any) {
-    console.log('Edit MarketSystem:', item);
+    this.isEditing = true;
+    this.currentSystem = {
+      Market_System_Id: item.Market_System_Id,
+      Market_System_Name: item.Market_System_Name,
+      IsActive: item.IsActive == 1
+    };
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.currentSystem = { Market_System_Id: 0, Market_System_Name: '', IsActive: true };
+  }
+
+  saveSystem() {
+    if (!this.currentSystem.Market_System_Name) return;
+
+    this.isSaving = true;
+    const payload = {
+      Market_System_Id: this.currentSystem.Market_System_Id,
+      Market_System_Name: this.currentSystem.Market_System_Name,
+      IsActive: this.currentSystem.IsActive ? 1 : 0
+    };
+
+    this.leadmarketsystemService.saveMarketSystem(payload).subscribe(
+      (res: any) => {
+        this.isSaving = false;
+        this.closeModal();
+        this.loadData();
+      },
+      (error) => {
+        this.isSaving = false;
+        console.error('Error saving data:', error);
+        alert('Failed to save. Please try again.');
+      }
+    );
   }
 
   onDelete(item: any) {
-    console.log('Delete MarketSystem:', item);
+    if (confirm(`Are you sure you want to delete "${item.Market_System_Name}"?`)) {
+      this.leadmarketsystemService.deleteMarketSystem(item.Market_System_Id).subscribe(
+        (res: any) => {
+          this.loadData();
+        },
+        (error) => {
+          console.error('Error deleting data:', error);
+          alert('Failed to delete. Please try again.');
+        }
+      );
+    }
   }
 }

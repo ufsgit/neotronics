@@ -24,11 +24,13 @@
           [pageSize]="pageSize"
           [totalCount]="totalCount"
           [searchText]="searchText"
+          [showSubItems]="activeSubTab === 'Market System'"
           (search)="onSearch($event)"
           (pageChange)="onPageChange($event)"
           (add)="onAdd()"
           (edit)="onEdit($event)"
-          (delete)="onDelete($event)">
+          (delete)="onDelete($event)"
+          (subItems)="onSubItems($event)">
         </app-common-table>
       </div>
     </div>
@@ -50,6 +52,10 @@
       <div class="form-group" style="margin-top: 15px;" *ngIf="hasDescription(activeSubTab)">
         <label>Description</label>
         <textarea class="form-control" [(ngModel)]="formData.description" placeholder="Enter description..." rows="3"></textarea>
+      </div>
+      <div class="form-group" style="margin-top: 15px; display: flex; align-items: center; gap: 8px;" *ngIf="activeSubTab === 'Market System'">
+        <input type="checkbox" id="isActiveCheck" [(ngModel)]="formData.IsActive" [checked]="formData.IsActive == 1">
+        <label for="isActiveCheck" style="margin: 0; cursor: pointer;">Active Status</label>
       </div>
     </div>
     <div class="modal-footer">
