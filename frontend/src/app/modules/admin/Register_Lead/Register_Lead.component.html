@@ -267,16 +267,46 @@
           </p>
 
           <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-            <button type="button" *ngFor="let sys of Available_Market_Systems" (click)="Toggle_Market_System(sys)"
-              [ngStyle]="{
-                      'background-color': Added_Market_Systems.includes(sys) ? '#6366f1' : 'transparent',
-                      'color': Added_Market_Systems.includes(sys) ? '#ffffff' : '#475569',
-                      'border': Added_Market_Systems.includes(sys) ? '1px solid #6366f1' : '1px solid #cbd5e1'
-                    }"
-              style="padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s;">
-              {{sys}}
+            <button type="button" *ngFor="let sys of Available_Market_Systems" (click)="Add_Market_System(sys)"
+              style="background: #ffffff; color: #64748b; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s;"
+              onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#ffffff'">
+              {{sys.name}}
             </button>
           </div>
+
+          <div *ngIf="Added_Market_Systems.length > 0" style="margin-top: 25px;">
+            <div *ngFor="let sys of Added_Market_Systems; let i = index" style="margin-bottom: 20px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc;">
+               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                 <h4 style="margin-top: 0; font-size: 14px; font-weight: 600; color: #1e293b; margin-bottom: 0;">{{ sys.name }} Details</h4>
+                 <button type="button" (click)="Remove_Market_System(i)" style="background: none; border: none; color: #ef4444; font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">
+                   Remove &times;
+                 </button>
+               </div>
+               
+               <div *ngIf="!sys.fields || sys.fields.length === 0" style="font-size: 13px; color: #64748b;">
+                 No fields configured for this system.
+               </div>
+               
+               <div *ngIf="sys.fields && sys.fields.length > 0" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
+                 <div *ngFor="let field of sys.fields">
+                    <label style="display:block; font-size: 12px; font-weight: 500; color: #334155; margin-bottom: 5px;">
+                       {{ field.Field_Name }} <span *ngIf="field.IsRequired" style="color: red;">*</span>
+                    </label>
+                    <input *ngIf="field.Field_Type === 'Text'" type="text" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}" class="form-control" style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;" placeholder="Enter {{field.Field_Name}}">
+                    <input *ngIf="field.Field_Type === 'Number'" type="number" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}" class="form-control" style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;" placeholder="0">
+                    <input *ngIf="field.Field_Type === 'Date'" type="date" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}" class="form-control" style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;">
+                    <select *ngIf="field.Field_Type === 'Dropdown'" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}" class="form-control" style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;">
+                       <option value="">Select option...</option>
+                    </select>
+                    <div *ngIf="field.Field_Type === 'Boolean' || field.Field_Type === 'Checkbox'" style="display: flex; align-items: center; gap: 8px; padding-top: 5px;">
+                      <input type="checkbox" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}" style="cursor: pointer;">
+                      <span style="font-size: 13px; color: #475569;">Yes</span>
+                    </div>
+                 </div>
+               </div>
+            </div>
+          </div>
+
         </div>
       </div>
 

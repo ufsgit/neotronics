@@ -3479,6 +3479,7 @@ BEGIN
         Email_Captured,
         Enquiry_For,
         Enquiry_For_Note,
+        Market_Study_Systems,
         Next_FollowUp_Date,
         Remarks,
         Lead_Priority,
@@ -3527,6 +3528,19 @@ BEGIN
     FROM `lead_pipeline_pulse_history` 
     WHERE Lead_Id = p_LeadId 
     ORDER BY Entry_Date DESC;
+    
+        -- 4. Market Study Fields
+    SELECT 
+        Category_Id,
+        Category_Name,
+        Field_Id,
+        Field_Name,
+        Field_Type,
+        Field_Value,
+        IsRequired
+    FROM `lead_market_study_data`
+    WHERE Lead_Id = p_LeadId;
+
 END$$
 DELIMITER ;
 
@@ -6526,37 +6540,33 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketStudyField_Get_By_Category
 )
 BEGIN
     DECLARE v_Offset INT;
-
-    -- Defaults
     SET p_Page = IFNULL(p_Page, 1);
     IF p_Page < 1 THEN
         SET p_Page = 1;
     END IF;
     SET p_Limit = IFNULL(p_Limit, 10);
     SET p_Search = IFNULL(p_Search, '');
-
     SET v_Offset = (p_Page - 1) * p_Limit;
-
     -- 1. Data Query
     SELECT 
         Field_Id,
         Category_Id,
         Category_Name,
         Field_Name,
-        Field_Type
+        Field_Type,
+        IsRequired
     FROM market_study_field
     WHERE Category_Id = p_Category_Id
       AND IFNULL(DeleteStatus, 0) = 0
-      AND (p_Search = '' OR Field_Name LIKE CONCAT('%', p_Search, '%'))
-    ORDER BY Field_Name ASC
+      AND (p_Search = '' OR Field_Name LIKE CONCAT(p_Search, '%'))
+    ORDER BY Field_Id ASC
     LIMIT p_Limit OFFSET v_Offset;
-
     -- 2. Total Count Query
     SELECT COUNT(*) AS TotalCount
     FROM market_study_field
     WHERE Category_Id = p_Category_Id
       AND IFNULL(DeleteStatus, 0) = 0
-      AND (p_Search = '' OR Field_Name LIKE CONCAT('%', p_Search, '%'));
+      AND (p_Search = '' OR Field_Name LIKE CONCAT(p_Search, '%'));
 END$$
 DELIMITER ;
 
@@ -6565,10 +6575,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketStudyField_Save`(
     IN p_Field_Id INT,
     IN p_Category_Id INT,
     IN p_Field_Name VARCHAR(150),
-    IN p_Field_Type VARCHAR(50)
+    IN p_Field_Type VARCHAR(50),
+    IN p_IsRequired TINYINT(1)
 )
 BEGIN
-    -- OPTIMAL NAME CHECK: Stops searching instantly if a match is found
+    -- OPTIMAL NAME CHECK
     IF EXISTS (
         SELECT 1 
         FROM market_study_field 
@@ -6577,31 +6588,31 @@ BEGIN
           AND IFNULL(DeleteStatus, 0) = 0 
           AND Field_Id != IFNULL(p_Field_Id, 0)
     ) THEN
-        -- Validation failed: Name already exists in this category
         SELECT 0 AS Field_Id_, 'Name already exists' AS Message;
         
     ELSE
-        -- ID Check: If ID is 0 or NULL, we are creating a NEW record (Add)
+        -- NEW RECORD
         IF p_Field_Id IS NULL OR p_Field_Id = 0 THEN
             INSERT INTO market_study_field (
                 Category_Id, 
                 Category_Name, 
                 Field_Name, 
                 Field_Type, 
+                IsRequired,
                 DeleteStatus
             )
-            -- We automatically fetch the Category_Name from the parent table
-            SELECT p_Category_Id, Category_Name, p_Field_Name, p_Field_Type, 0 
+            SELECT p_Category_Id, Category_Name, p_Field_Name, p_Field_Type, p_IsRequired, 0 
             FROM market_study_category 
             WHERE Category_Id = p_Category_Id;
             
             SELECT LAST_INSERT_ID() AS Field_Id_, 'Saved Successfully' AS Message;
             
-        -- ID Check: If ID is > 0, we are UPDATING an existing record (Edit)
+        -- EXISTING RECORD
         ELSE
             UPDATE market_study_field
             SET Field_Name = p_Field_Name,
-                Field_Type = p_Field_Type
+                Field_Type = p_Field_Type,
+                IsRequired = p_IsRequired
             WHERE Field_Id = p_Field_Id;
             
             SELECT p_Field_Id AS Field_Id_, 'Updated Successfully' AS Message;
@@ -14475,7 +14486,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     IN _FollowUp_Remark VARCHAR(1000),
     IN _Login_User_Id INT,
     
-    IN _Contact_Person_Details_JSON TEXT
+    IN _Contact_Person_Details_JSON TEXT,
+    
+        -- PARAMETERS FOR MARKET STUDY --
+    IN _Market_Study_Systems TEXT,
+    IN _Market_Study_Fields_JSON TEXT
 )
 BEGIN
     -- 1. ALL DECLARATIONS GO FIRST
@@ -14541,7 +14556,8 @@ BEGIN
             Company_Size_Id, Company_Size_Name, Source, Source_Name, 
             POC_Full_Name, POC_Designation_Id, POC_Designation, POC_Direct_Mobile, POC_Email, 
             POC_State_Id, POC_State, POC_Location_Id, POC_Loc, POC_Work_Phone, POC_Office_Type,
-            Name_Captured, Number_Captured, Email_Captured, Enquiry_For, Enquiry_For_Note, Next_FollowUp_Date, Remarks,
+            Name_Captured, Number_Captured, Email_Captured, Enquiry_For, Enquiry_For_Note, 
+            Market_Study_Systems, Next_FollowUp_Date, Remarks,
             Lead_Priority, PipelineStage_Id, Current_Pipeline_Stage, Pulse_Id, Pulse, Status_Id, Status_Name, Branch_Id, Branch_Name,
             Department_Id, Department_Name, Staff_Id, Staff_Name, Workflow_Id, Workflow, Workflow_Start_Status
         ) VALUES (
@@ -14549,7 +14565,8 @@ BEGIN
             _Company_Size_Id, _Company_Size_Name, _Source, _Source_Name, 
             _POC_Full_Name, _POC_Designation_Id, _POC_Designation, _POC_Direct_Mobile, _POC_Email,
             _POC_State_Id, _POC_State, _POC_Location_Id, _POC_Loc, _POC_Work_Phone, _POC_Office_Type,
-            _Name_Captured, _Number_Captured, _Email_Captured, _Enquiry_For, _Enquiry_For_Note, _Next_FollowUp_Date, _Remarks,
+            _Name_Captured, _Number_Captured, _Email_Captured, _Enquiry_For, _Enquiry_For_Note, 
+            _Market_Study_Systems, _Next_FollowUp_Date, _Remarks,
             _Lead_Priority, _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, _Status_Id, _Status_Name, NULLIF(_Branch_Id, 0), _Branch_Name,
             NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name, _Workflow_Id, _Workflow, _Workflow_Start_Status
         );
@@ -14588,7 +14605,8 @@ BEGIN
             POC_Direct_Mobile = _POC_Direct_Mobile, POC_Email = _POC_Email, POC_State_Id = _POC_State_Id, POC_State = _POC_State,
             POC_Location_Id = _POC_Location_Id, POC_Loc = _POC_Loc, POC_Work_Phone = _POC_Work_Phone, POC_Office_Type = _POC_Office_Type,
             Name_Captured = _Name_Captured, Number_Captured = _Number_Captured, Email_Captured = _Email_Captured, 
-            Enquiry_For = _Enquiry_For, Enquiry_For_Note = _Enquiry_For_Note, Lead_Priority = _Lead_Priority,
+            Enquiry_For = _Enquiry_For, Enquiry_For_Note = _Enquiry_For_Note, Market_Study_Systems = _Market_Study_Systems, 
+            Lead_Priority = _Lead_Priority,
             PipelineStage_Id = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', PipelineStage_Id, _Current_PipelineStage_Id), 
             Current_Pipeline_Stage = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', Current_Pipeline_Stage, _Current_Pipeline_Stage), 
             Pulse_Id = IF(_Pulse IS NULL OR _Pulse = '', Pulse_Id, _Pulse_Id), 
@@ -14635,6 +14653,27 @@ BEGIN
             Email_Captured TINYINT(1) PATH '$.Email_Captured',
             Is_Primary TINYINT(1) PATH '$.Is_Primary'
         )) AS jt;
+    END IF;
+    
+        -- 4. BULK INSERT MARKET STUDY FIELDS FROM JSON
+    IF _Market_Study_Fields_JSON IS NOT NULL AND _Market_Study_Fields_JSON != '' AND _Market_Study_Fields_JSON != '[]' THEN
+        -- Clear old data if doing an update
+        DELETE FROM `lead_market_study_data` WHERE Lead_Id = _Generated_Lead_Id;
+        
+        INSERT INTO `lead_market_study_data` (
+            Lead_Id, Lead_Name, Category_Id, Category_Name, Field_Id, Field_Name, Field_Type, Field_Value, IsRequired, Entry_By
+        )
+        SELECT 
+            _Generated_Lead_Id, _Lead_Name, Category_Id, Category_Name, Field_Id, Field_Name, Field_Type, Field_Value, IsRequired, _Login_User_Id
+        FROM JSON_TABLE(_Market_Study_Fields_JSON, '$[*]' COLUMNS (
+            Category_Id INT PATH '$.Category_Id',
+            Category_Name VARCHAR(100) PATH '$.Category_Name',
+            Field_Id INT PATH '$.Field_Id',
+            Field_Name VARCHAR(150) PATH '$.Field_Name',
+            Field_Type VARCHAR(50) PATH '$.Field_Type',
+            Field_Value TEXT PATH '$.Field_Value',
+            IsRequired TINYINT(1) PATH '$.IsRequired'
+        )) AS msjt;
     END IF;
     
     COMMIT;
@@ -28198,6 +28237,24 @@ BEGIN
         AND (DeleteStatus = 0 OR DeleteStatus IS NULL)
         AND (p_Filter_Id = 0 OR p_Filter_Id IS NULL OR Department_Id = p_Filter_Id)
         ORDER BY User_Details_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+	    -- Market Study Category
+    ELSEIF p_Type = 'MarketStudyCategory' THEN
+        SELECT Category_Id AS id, Category_Name AS name FROM market_study_category 
+        WHERE Category_Name LIKE p_Search 
+        AND IsActive = 1 
+        AND IFNULL(DeleteStatus, 0) = 0 
+        ORDER BY Category_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+        
+	    -- Market Study Fields
+    ELSEIF p_Type = 'MarketStudyFields' THEN
+        SELECT Field_Id AS id, Field_Name, Field_Type, IsRequired 
+        FROM market_study_field 
+        WHERE Category_Id = p_Filter_Id 
+        AND IFNULL(DeleteStatus, 0) = 0 
+        ORDER BY Field_Id ASC 
         LIMIT v_Limit OFFSET v_Offset;
 
         

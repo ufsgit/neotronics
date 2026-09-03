@@ -21,13 +21,14 @@ export class MarketStudyFieldsComponent implements OnInit {
 
   columns = [
     { key: 'Field_Name', label: 'Field Name' },
-    { key: 'Field_Type', label: 'Field Type' }
+    { key: 'Field_Type', label: 'Field Type' },
+    { key: 'IsRequired', label: 'Required' }
   ];
 
   isModalOpen: boolean = false;
   isEditMode: boolean = false;
   isSaving: boolean = false;
-  formData: { id: number; name: string; type: string } = { id: 0, name: '', type: 'Text' };
+  formData: { id: number; name: string; type: string; isRequired: number } = { id: 0, name: '', type: 'Text', isRequired: 0 };
 
   isDeleteModalOpen: boolean = false;
   isDeleting: boolean = false;
@@ -94,7 +95,7 @@ export class MarketStudyFieldsComponent implements OnInit {
 
   onAdd() {
     this.isEditMode = false;
-    this.formData = { id: 0, name: '', type: 'Text' };
+    this.formData = { id: 0, name: '', type: 'Text', isRequired: 0 };
     this.isModalOpen = true;
   }
 
@@ -103,7 +104,8 @@ export class MarketStudyFieldsComponent implements OnInit {
     this.formData = {
       id: item.Field_Id,
       name: item.Field_Name || '',
-      type: item.Field_Type || 'Text'
+      type: item.Field_Type || 'Text',
+      isRequired: item.IsRequired ? 1 : 0
     };
     this.isModalOpen = true;
   }
@@ -120,7 +122,8 @@ export class MarketStudyFieldsComponent implements OnInit {
       Field_Id: this.formData.id,
       Category_Id: this.categoryId,
       Field_Name: this.formData.name.trim(),
-      Field_Type: this.formData.type
+      Field_Type: this.formData.type,
+      IsRequired: this.formData.isRequired ? 1 : 0
     };
 
     const url = `${environment.BasePath}Lead_Config/market_study/market_study_field/Save`;

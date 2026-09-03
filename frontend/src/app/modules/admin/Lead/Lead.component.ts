@@ -979,9 +979,14 @@ export class LeadComponent implements OnInit {
   }
 
   Delete_Lead(Lead_Id: number, index: number) {
-    this.Lead_Service_.Delete_Lead(Lead_Id).subscribe((res: any) => {
-      if (res && res.success) {
-        this.Get_Leads();
+    const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Do you want to delete this lead?', Type: "true", Heading: 'Confirm' } });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == 'Yes') {
+        this.Lead_Service_.Delete_Lead(Lead_Id).subscribe((res: any) => {
+          if (res && res.success) {
+            this.Get_Leads();
+          }
+        });
       }
     });
   }

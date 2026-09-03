@@ -72,8 +72,8 @@ export class Register_LeadComponent implements OnInit {
   Interest_Already_Exists: boolean = false;
   Clear_Interests_Popup_Open: boolean = false;
 
-  Available_Market_Systems: string[] = ['CRM', 'MCRS', 'WhatsApp (WA)', 'Mail box', 'Cloud services', 'PBX', 'Call center'];
-  Added_Market_Systems: string[] = [];
+  Available_Market_Systems: any[] = [];
+  Added_Market_Systems: any[] = [];
 
   Available_Pipeline_Stages: string[] = [];
   Selected_Pipeline_Stage: string = '';
@@ -162,13 +162,28 @@ export class Register_LeadComponent implements OnInit {
     }
   }
 
-  Toggle_Market_System(system: string) {
-    const index = this.Added_Market_Systems.indexOf(system);
-    if (index > -1) {
-      this.Added_Market_Systems.splice(index, 1);
+  Add_Market_System(sys: any) {
+    let newSys = JSON.parse(JSON.stringify(sys)); // Deep clone so duplicates have independent fields
+    
+    if (!newSys.fields) {
+      this.Lead_Service_.Search_Lead_Dropdowns('MarketStudyFields', '', 1, newSys.id).subscribe(Rows => {
+        const data = Array.isArray(Rows) ? Rows : (Rows && Rows.data ? Rows.data : []);
+        newSys.fields = data;
+        this.Added_Market_Systems.push(newSys);
+        // Cache on the original so next time it's instant
+        sys.fields = JSON.parse(JSON.stringify(data));
+      });
     } else {
-      this.Added_Market_Systems.push(system);
+      this.Added_Market_Systems.push(newSys);
     }
+  }
+
+  Remove_Market_System(index: number) {
+    this.Added_Market_Systems.splice(index, 1);
+  }
+
+  isSystemAdded(sys: any): boolean {
+    return this.Added_Market_Systems.some(a => a.id === sys.id);
   }
 
   Clear_All_Interests() {
@@ -355,8 +370,12 @@ export class Register_LeadComponent implements OnInit {
              }));
            }
            this.FollowUp_History = (data[2] && Array.isArray(data[2])) ? data[2] : [];
+           if (data[3] && Array.isArray(data[3])) {
+             leadData.Market_Study_Fields_Data = data[3];
+           }
            this.Edit_Lead(leadData);
         } else {
+
            this.snackBar.open("Record Not Found", "Close", { duration: 3000 });
            this.router.navigate(['/LeadDashboard']);
         }
@@ -393,6 +412,12 @@ export class Register_LeadComponent implements OnInit {
         this.loadDropdownData(type);
       });
     }
+
+    // Universally fetch Market Study Categories (for both create and edit)
+    this.Lead_Service_.Search_Lead_Dropdowns('MarketStudyCategory', '', 1, 0).subscribe(Rows => {
+      const data = Array.isArray(Rows) ? Rows : (Rows && Rows.data ? Rows.data : []);
+      this.Available_Market_Systems = data; // Keep full object {id, name}
+    });
 
   }
   
@@ -1024,6 +1049,19 @@ export class Register_LeadComponent implements OnInit {
       this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter Lead Name', Type: "3" } });
       return;
     }
+    
+    // Validate Market Study Required Fields
+    for (const sys of this.Added_Market_Systems) {
+      if (sys.fields && sys.fields.length > 0) {
+        for (const field of sys.fields) {
+          // Check if IsRequired is true or 1, and the value is completely empty
+          if ((field.IsRequired === true || field.IsRequired == 1) && (!field.Field_Value || String(field.Field_Value).trim() === '')) {
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: `Please enter a value for "${field.Field_Name}" in ${sys.name}`, Type: "3" } });
+            return;
+          }
+        }
+      }
+    }
     const contactPersonValues = this.contactForm && this.contactForm.value && this.contactForm.value.contactPersons ? this.contactForm.value.contactPersons : [];
     const selectedContactValue = contactPersonValues.find(c => !!c.Next_Call_Action) || contactPersonValues[0] || null;
     if (!this.Lead_.Phone && selectedContactValue && selectedContactValue.POC_Direct_Mobile) this.Lead_.Phone = selectedContactValue.POC_Direct_Mobile;
@@ -1033,6 +1071,26 @@ export class Register_LeadComponent implements OnInit {
     // Map Enquiry_For and Enquiry_For_Note
     Lead_Copy.Enquiry_For = this.Added_Interests.join('*');
     Lead_Copy.Enquiry_For_Note = this.Requirement_Note;
+    
+    // Map Market Study Fields
+    (Lead_Copy as any).Market_Study_Systems = this.Added_Market_Systems.map(sys => sys.name).join('*');
+    let allMarketFields = [];
+    for (const sys of this.Added_Market_Systems) {
+      if (sys.fields && sys.fields.length > 0) {
+        for (const field of sys.fields) {
+           allMarketFields.push({
+              Category_Id: sys.id,
+              Category_Name: sys.name,
+              Field_Id: field.Field_Id || field.id,
+              Field_Name: field.Field_Name,
+              Field_Type: field.Field_Type,
+              Field_Value: field.Field_Value ? String(field.Field_Value) : '',
+              IsRequired: field.IsRequired ? 1 : 0
+           });
+        }
+      }
+    }
+    (Lead_Copy as any).Market_Study_Fields_JSON = JSON.stringify(allMarketFields);
     
     Lead_Copy.Next_FollowUp_Date = this.Lead_.FollowUp_Next_Date;
     Lead_Copy.Remarks = this.Lead_.FollowUp_Remark;
@@ -1184,6 +1242,34 @@ export class Register_LeadComponent implements OnInit {
     } else {
       this.Added_Interests = [];
     }
+
+    if ((this.Lead_ as any).Market_Study_Systems && String((this.Lead_ as any).Market_Study_Systems).trim() !== '') {
+      const savedSystems = String((this.Lead_ as any).Market_Study_Systems).split('*').map(v => v.trim()).filter(v => v !== '');
+      this.Added_Market_Systems = [];
+      const fieldsData = (this.Lead_ as any).Market_Study_Fields_Data || [];
+      
+      for (const sysName of savedSystems) {
+        const matchingFields = fieldsData.filter(f => f.Category_Name === sysName);
+        const sysFields = matchingFields.map(f => ({
+           id: f.Field_Id,
+           Field_Id: f.Field_Id,
+           Field_Name: f.Field_Name,
+           Field_Type: f.Field_Type,
+           Field_Value: f.Field_Value,
+           IsRequired: f.IsRequired == 1
+        }));
+        
+        const firstField = matchingFields[0];
+        this.Added_Market_Systems.push({
+           id: firstField ? firstField.Category_Id : 0,
+           name: sysName,
+           fields: sysFields
+        });
+      }
+    } else {
+      this.Added_Market_Systems = [];
+    }
+
     if (this.Lead_.Branch_Id > 0) {
       this.Lead_.FollowUp_Location_Id = this.Lead_.Branch_Id;
       this.DropdownData['Branch'] = [{ id: this.Lead_.Branch_Id, name: this.Lead_.Branch_Name }];

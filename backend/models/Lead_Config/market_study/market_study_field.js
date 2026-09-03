@@ -18,7 +18,8 @@ var MarketStudyField = {
                             Category_Id: item.Category_Id,
                             Category_Name: item.Category_Name,
                             Field_Name: item.Field_Name,
-                            Field_Type: item.Field_Type
+                            Field_Type: item.Field_Type,
+                            IsRequired: item.IsRequired
                         };
                     });
                 }
@@ -37,10 +38,11 @@ var MarketStudyField = {
         var categoryId  = Number(body.Category_Id || 0);
         var fieldName   = (body.Field_Name || '').trim();
         var fieldType   = (body.Field_Type || 'Text').trim();
+        var isRequired  = Number(body.IsRequired || 0);
 
         return db.query(
-            'CALL LC_MarketStudyField_Save(?, ?, ?, ?)',
-            [fieldId || null, categoryId || null, fieldName, fieldType],
+            'CALL LC_MarketStudyField_Save(?, ?, ?, ?, ?)',
+            [fieldId || null, categoryId || null, fieldName, fieldType, isRequired],
             callback
         );
     },
