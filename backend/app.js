@@ -259,6 +259,7 @@ app.use('/Lead_Config/company_details/source', require('./routes/Lead_Config/com
 app.use('/Lead_Config/contacts/designation', require('./routes/Lead_Config/contacts/designation'));
 app.use('/Lead_Config/requirement_profile/service_product', require('./routes/Lead_Config/requirement_profile/service_product'));
 app.use('/Lead_Config/market_study/market_system', require('./routes/Lead_Config/market_study/market_system'));
+app.use('/Lead_Config/market_study/market_study_field', require('./routes/Lead_Config/market_study/market_study_field'));
 app.use('/Lead_Config/pipeline_stage_pulse/pipeline_stage', require('./routes/Lead_Config/pipeline_stage_pulse/pipeline_stage'));
 app.use('/Lead_Config/pipeline_stage_pulse/pulse', require('./routes/Lead_Config/pipeline_stage_pulse/pulse'));
 app.use('/Lead_Config/pipeline_stage_pulse/target_stage', require('./routes/Lead_Config/pipeline_stage_pulse/target_stage'));

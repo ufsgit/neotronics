@@ -25,6 +25,16 @@ export class Lead_ConfigComponent implements OnInit {
   isModalOpen: boolean = false;
   isEditMode: boolean = false;
   isSaving: boolean = false;
+  
+  // Delete Modal state
+  isDeleteModalOpen: boolean = false;
+  isDeleting: boolean = false;
+  itemToDelete: any = null;
+  itemToDeleteName: string = '';
+
+  isErrorModalOpen: boolean = false;
+  errorMessage: string = '';
+
   formData: { id: number; name: string; description: string; IsActive?: any } = { id: 0, name: '', description: '', IsActive: 1 };
   
   columns = [
@@ -157,7 +167,7 @@ export class Lead_ConfigComponent implements OnInit {
           id: item[pk] || item.id || 0,
           name: item[nameField] || item.name || item.Vertical_Name || item.Name || '',
           Description: item.Description || item.description || '',
-          IsActive: item.IsActive
+          IsActive: item.IsActive && typeof item.IsActive === 'object' && item.IsActive.data ? item.IsActive.data[0] : (item.IsActive ? 1 : 0)
         }));
         
         this.totalCount = this.Dropdown_Data.length;
@@ -226,6 +236,17 @@ export class Lead_ConfigComponent implements OnInit {
     this.http.post(url, body, this.getAuthHeaders()).subscribe(
       (res: any) => {
         this.isSaving = false;
+
+        // Extract the actual database row from the auto-response wrapper
+        let spData = res.data ? (Array.isArray(res.data) ? res.data[0] : res.data) : (Array.isArray(res) ? res[0] : res);
+        
+        // Check if the Stored Procedure returned ID 0 (which means duplicate)
+        if (spData && (spData.Market_System_Id_ === 0 || spData.Id === 0 || (spData.Message && spData.Message.includes('already exists')))) {
+          this.errorMessage = spData.Message || 'Name already exists';
+          this.isErrorModalOpen = true;
+          return;
+        }
+
         this.closeModal();
         this.searchText = '';
         this.pageIndex = 1;
@@ -240,30 +261,54 @@ export class Lead_ConfigComponent implements OnInit {
   }
 
   onDelete(item: any) {
-    const pk = this.getPrimaryKeyField(this.activeSubTab);
     const nameField = this.getNameField(this.activeSubTab);
-    const id = item[pk] || item.id;
-    const itemName = item[nameField] || item.name || 'this item';
+    this.itemToDelete = item;
+    this.itemToDeleteName = item[nameField] || item.name || 'this item';
+    this.isDeleteModalOpen = true;
+  }
 
-    if (confirm(`Are you sure you want to delete "${itemName}"?`)) {
-      const route = this.getRoutePathForSubTab(this.activeSubTab);
-      const url = environment.BasePath + route + '/Delete/' + id;
-      this.http.get(url, this.getAuthHeaders()).subscribe(
-        (res: any) => {
-          this.Load_Data();
-        },
-        (error) => {
-          console.error('Error deleting item:', error);
-          alert('Error deleting record');
-        }
-      );
-    }
+  closeDeleteModal() {
+    this.isDeleteModalOpen = false;
+    this.itemToDelete = null;
+    this.itemToDeleteName = '';
+    this.isDeleting = false;
+  }
+
+  closeErrorModal() {
+    this.isErrorModalOpen = false;
+    this.errorMessage = '';
+  }
+
+  confirmDelete() {
+    if (!this.itemToDelete) return;
+    
+    this.isDeleting = true;
+    const pk = this.getPrimaryKeyField(this.activeSubTab);
+    const id = this.itemToDelete[pk] || this.itemToDelete.id;
+    
+    const route = this.getRoutePathForSubTab(this.activeSubTab);
+    const url = environment.BasePath + route + '/Delete/' + id;
+    
+    this.http.get(url, this.getAuthHeaders()).subscribe(
+      (res: any) => {
+        this.isDeleting = false;
+        this.closeDeleteModal();
+        this.Load_Data();
+      },
+      (error) => {
+        this.isDeleting = false;
+        console.error('Error deleting item:', error);
+        alert('Error deleting record');
+      }
+    );
   }
 
   onSubItems(item: any) {
     const pk = this.getPrimaryKeyField(this.activeSubTab);
     const id = item[pk] || item.id;
-    this.router.navigate(['/Lead_Config/Market_Study/MarketSystem', id, 'Fields']);
+    const nameField = this.getNameField(this.activeSubTab);
+    const name = item[nameField] || item.name;
+    this.router.navigate(['/Lead_Config/Market_Study/MarketSystem', id, 'Fields'], { queryParams: { categoryName: name } });
   }
 
   selectSection(section: string) {

@@ -6426,81 +6426,186 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketSystem_Delete`(
-    IN p_Market_System_Id INT
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketStudyCategory_Delete`(
+    IN p_Category_Id INT
 )
 BEGIN
-    UPDATE marketsystem_master
+    UPDATE market_study_category
     SET DeleteStatus = 1
-    WHERE MarketSystem_Id = p_Market_System_Id;
-
-    SELECT p_Market_System_Id AS Market_System_Id_, 'Deleted Successfully' AS Message;
+    WHERE Category_Id = p_Category_Id;
+    SELECT p_Category_Id AS Market_System_Id_, 'Deleted Successfully' AS Message;
 END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketSystem_Get`(
-    IN p_Market_System_Id INT
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketStudyCategory_Get`(
+    IN p_Search VARCHAR(255),
+    IN p_Page INT
 )
 BEGIN
-    SELECT MarketSystem_Id AS Market_System_Id, MarketSystem_Name AS Market_System_Name, NULL AS Description
-    FROM marketsystem_master
-    WHERE MarketSystem_Id = p_Market_System_Id
-      AND IFNULL(DeleteStatus, 0) = 0;
+    -- Declare the fixed limit of 10
+    DECLARE v_Limit INT DEFAULT 10;
+    DECLARE v_Offset INT;
+    
+    -- Default to page 1 if p_Page is null or less than 1
+    IF p_Page IS NULL OR p_Page < 1 THEN
+        SET p_Page = 1;
+    END IF;
+    
+    -- Calculate the offset (e.g., Page 1 = offset 0, Page 2 = offset 10)
+    SET v_Offset = (p_Page - 1) * v_Limit;
+    SELECT 
+        Category_Id, 
+        Category_Name, 
+        IsActive
+    FROM market_study_category
+    WHERE IFNULL(DeleteStatus, 0) = 0
+      AND (p_Search IS NULL OR p_Search = '' OR Category_Name LIKE CONCAT('%', p_Search, '%'))
+    ORDER BY Category_Name ASC
+    LIMIT v_Limit OFFSET v_Offset;
+    
 END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketSystem_Save`(
-    IN p_Market_System_Id INT,
-    IN p_Market_System_Name VARCHAR(255),
-    IN p_Description TEXT
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketStudyCategory_Save`(
+    IN p_Category_Id INT,
+    IN p_Category_Name VARCHAR(255),
+    IN p_IsActive TINYINT(1)
 )
 BEGIN
-    DECLARE v_Exists INT DEFAULT 0;
-
-    SELECT COUNT(*) INTO v_Exists
-    FROM marketsystem_master
-    WHERE MarketSystem_Name = p_Market_System_Name
-      AND IFNULL(DeleteStatus, 0) = 0
-      AND (p_Market_System_Id IS NULL OR p_Market_System_Id = 0 OR MarketSystem_Id <> p_Market_System_Id);
-
-    IF v_Exists > 0 THEN
+    -- OPTIMAL NAME CHECK: Stops searching instantly if a match is found
+    IF EXISTS (
+        SELECT 1 
+        FROM market_study_category 
+        WHERE Category_Name = p_Category_Name 
+          AND IFNULL(DeleteStatus, 0) = 0 
+          AND Category_Id != IFNULL(p_Category_Id, 0)
+    ) THEN
+        -- Validation failed: Name already exists
         SELECT 0 AS Market_System_Id_, 'Name already exists' AS Message;
+        
     ELSE
-        IF p_Market_System_Id IS NULL OR p_Market_System_Id = 0 THEN
-            INSERT INTO marketsystem_master (MarketSystem_Name, DeleteStatus)
-            VALUES (p_Market_System_Name, 0);
-
+        -- ID Check: If ID is 0 or NULL, we are creating a NEW record
+        IF p_Category_Id IS NULL OR p_Category_Id = 0 THEN
+            INSERT INTO market_study_category (Category_Name, IsActive, DeleteStatus)
+            VALUES (p_Category_Name, p_IsActive, 0);
             SELECT LAST_INSERT_ID() AS Market_System_Id_, 'Saved Successfully' AS Message;
+            
+        -- ID Check: If ID is > 0, we are modifying an EXISTING record
         ELSE
-            UPDATE marketsystem_master
-            SET MarketSystem_Name = p_Market_System_Name
-            WHERE MarketSystem_Id = p_Market_System_Id;
-
-            SELECT p_Market_System_Id AS Market_System_Id_, 'Updated Successfully' AS Message;
+            UPDATE market_study_category
+            SET Category_Name = p_Category_Name,
+                IsActive = p_IsActive
+            WHERE Category_Id = p_Category_Id;
+            SELECT p_Category_Id AS Market_System_Id_, 'Updated Successfully' AS Message;
         END IF;
     END IF;
 END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketSystem_Search`(
-    IN p_Search VARCHAR(255)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketStudyField_Delete`(
+    IN p_Field_Id INT
 )
 BEGIN
-    IF p_Search IS NULL OR p_Search = '' THEN
-        SELECT MarketSystem_Id AS Market_System_Id, MarketSystem_Name AS Market_System_Name, NULL AS Description
-        FROM marketsystem_master
-        WHERE IFNULL(DeleteStatus, 0) = 0
-        ORDER BY MarketSystem_Name ASC
-        LIMIT 20;
+    UPDATE market_study_field
+    SET DeleteStatus = 1
+    WHERE Field_Id = p_Field_Id;
+
+    SELECT p_Field_Id AS Field_Id_, 'Deleted Successfully' AS Message;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketStudyField_Get_By_Category`(
+    IN p_Category_Id INT,
+    IN p_Search VARCHAR(255),
+    IN p_Page INT,
+    IN p_Limit INT
+)
+BEGIN
+    DECLARE v_Offset INT;
+
+    -- Defaults
+    SET p_Page = IFNULL(p_Page, 1);
+    IF p_Page < 1 THEN
+        SET p_Page = 1;
+    END IF;
+    SET p_Limit = IFNULL(p_Limit, 10);
+    SET p_Search = IFNULL(p_Search, '');
+
+    SET v_Offset = (p_Page - 1) * p_Limit;
+
+    -- 1. Data Query
+    SELECT 
+        Field_Id,
+        Category_Id,
+        Category_Name,
+        Field_Name,
+        Field_Type
+    FROM market_study_field
+    WHERE Category_Id = p_Category_Id
+      AND IFNULL(DeleteStatus, 0) = 0
+      AND (p_Search = '' OR Field_Name LIKE CONCAT('%', p_Search, '%'))
+    ORDER BY Field_Name ASC
+    LIMIT p_Limit OFFSET v_Offset;
+
+    -- 2. Total Count Query
+    SELECT COUNT(*) AS TotalCount
+    FROM market_study_field
+    WHERE Category_Id = p_Category_Id
+      AND IFNULL(DeleteStatus, 0) = 0
+      AND (p_Search = '' OR Field_Name LIKE CONCAT('%', p_Search, '%'));
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketStudyField_Save`(
+    IN p_Field_Id INT,
+    IN p_Category_Id INT,
+    IN p_Field_Name VARCHAR(150),
+    IN p_Field_Type VARCHAR(50)
+)
+BEGIN
+    -- OPTIMAL NAME CHECK: Stops searching instantly if a match is found
+    IF EXISTS (
+        SELECT 1 
+        FROM market_study_field 
+        WHERE Category_Id = p_Category_Id 
+          AND Field_Name = p_Field_Name 
+          AND IFNULL(DeleteStatus, 0) = 0 
+          AND Field_Id != IFNULL(p_Field_Id, 0)
+    ) THEN
+        -- Validation failed: Name already exists in this category
+        SELECT 0 AS Field_Id_, 'Name already exists' AS Message;
+        
     ELSE
-        SELECT MarketSystem_Id AS Market_System_Id, MarketSystem_Name AS Market_System_Name, NULL AS Description
-        FROM marketsystem_master
-        WHERE MarketSystem_Name LIKE CONCAT('%', p_Search, '%')
-          AND IFNULL(DeleteStatus, 0) = 0
-        ORDER BY MarketSystem_Name ASC;
+        -- ID Check: If ID is 0 or NULL, we are creating a NEW record (Add)
+        IF p_Field_Id IS NULL OR p_Field_Id = 0 THEN
+            INSERT INTO market_study_field (
+                Category_Id, 
+                Category_Name, 
+                Field_Name, 
+                Field_Type, 
+                DeleteStatus
+            )
+            -- We automatically fetch the Category_Name from the parent table
+            SELECT p_Category_Id, Category_Name, p_Field_Name, p_Field_Type, 0 
+            FROM market_study_category 
+            WHERE Category_Id = p_Category_Id;
+            
+            SELECT LAST_INSERT_ID() AS Field_Id_, 'Saved Successfully' AS Message;
+            
+        -- ID Check: If ID is > 0, we are UPDATING an existing record (Edit)
+        ELSE
+            UPDATE market_study_field
+            SET Field_Name = p_Field_Name,
+                Field_Type = p_Field_Type
+            WHERE Field_Id = p_Field_Id;
+            
+            SELECT p_Field_Id AS Field_Id_, 'Updated Successfully' AS Message;
+        END IF;
     END IF;
 END$$
 DELIMITER ;
@@ -28442,67 +28547,5 @@ Client_Accounts_Name as Employee_Name
 from User_Details
 inner join Client_Accounts on Client_Accounts.Client_Accounts_Id=User_Details.Employee_Id
 where User_Details_Id=User_Details_Id_ and Client_Accounts.DeleteStatus=false;
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `video_delete`(
-    IN p_video_id INT
-)
-BEGIN
-    DELETE FROM videos WHERE id = p_video_id;
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `video_edit`(
-    IN p_video_id INT,
-    IN p_title VARCHAR(255),
-    IN p_description TEXT,
-    IN p_video_url VARCHAR(255),
-    IN p_video_source ENUM('local', 'youtube', 'vimeo', 'external'),
-    IN p_thumbnail_url VARCHAR(255),
-    IN p_category ENUM('pre-op', 'post-op')
-)
-BEGIN
-    UPDATE videos 
-    SET 
-        title = COALESCE(p_title, title),
-        description = p_description,
-        video_url = COALESCE(p_video_url, video_url),
-        video_source = COALESCE(p_video_source, video_source),
-        thumbnail_url = COALESCE(p_thumbnail_url, thumbnail_url),
-        category = COALESCE(p_category, category)
-    WHERE id = p_video_id;
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `video_getbyid`(
-    IN p_video_id INT
-)
-BEGIN
-    SELECT * FROM videos WHERE id = p_video_id;
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `video_lists`(
-    IN p_admin_id INT,
-    IN p_limit INT,
-    IN p_offset INT,
-    IN p_category VARCHAR(50),
-    IN p_source VARCHAR(50),
-    IN p_search VARCHAR(255)
-)
-BEGIN
-    SELECT 
-        id, title, description, video_url, video_source, thumbnail_url, category, created_at 
-    FROM videos
-    WHERE (p_category = 'all' OR category = p_category)
-      AND (p_source = 'all' OR (p_source = 'local' AND video_source = 'local') OR (p_source = 'others' AND video_source != 'local'))
-      AND (p_search IS NULL OR p_search = '' OR title LIKE CONCAT(p_search, '%'))
-    ORDER BY created_at DESC
-    LIMIT p_limit OFFSET p_offset;
 END$$
 DELIMITER ;
