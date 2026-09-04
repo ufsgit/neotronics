@@ -65,6 +65,7 @@ import { Sales_ReturnComponent } from "./Sales_Return/Sales_Return.component";
 import{Stock_AdjustComponent}from "./Stock_Adjust/Stock_Adjust.component";
 import { StockTakeComponent } from "./StockTake/StockTake.component";
 import{StockTakeNameComponent}from "./StockTakeName/StockTakeName.component";
+import { Ghosting_Lead_ReportComponent } from "./Ghosting_Lead_Report/Ghosting_Lead_Report.component";
 import{Credit_NoteComponent} from "./Credit_Note/Credit_Note.component";
 import{Debit_NoteComponent} from "./Debit_Note/Debit_Note.component";
 import { LeadComponent } from './Lead/Lead.component';
@@ -144,6 +145,7 @@ export const AdminRoutes: Routes = [
 			{ path: "Performa_Invoice", component: Performa_InvoiceComponent },
 			{ path: "Invoice", component: InvoiceComponent },
 			{ path: "GRN", component: GRNComponent },
+			{ path: "Ghosting_Lead_Report", component: Ghosting_Lead_ReportComponent },
 			{ path: "Packing_List", component: Packing_ListComponent },
 			{path: "Credit_Note", component: Credit_NoteComponent},
 			{path: "Debit_Note", component: Debit_NoteComponent},

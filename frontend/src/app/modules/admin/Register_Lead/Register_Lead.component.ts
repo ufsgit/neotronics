@@ -457,7 +457,7 @@ export class Register_LeadComponent implements OnInit {
   getDistrictData(stateId: number): any[] {
     if (!stateId) return [];
     const data = this.DropdownData[`District_${stateId}`] || [];
-    console.log(`getDistrictData called for state ${stateId}, returning array of length:`, data.length, data);
+    // console.log(`getDistrictData called for state ${stateId}, returning array of length:`, data.length, data);
     return data;
   }
 

@@ -1,0 +1,108 @@
+<div class="main-content">
+    <div class="container-fluid px-0">
+
+        <div>
+            <!-- PAGE HEADER -->
+            <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="page-title-main">Ghosting Lead Report</h4>
+                </div>
+            </div>
+
+            <!-- SUMMARY CARDS -->
+            <div class="row mb-4">
+                <div class="col-md-3 col-sm-6 mb-3" *ngFor="let sum of (showAllCards ? Stage_Summary : Stage_Summary.slice(0, 4))">
+                    <div class="card shadow-sm" [ngStyle]="{'background': sum.bgColor, 'border': '1px solid #eef2f6', 'border-radius': '12px', 'height': '100%'}">
+                        <div class="card-body">
+                            <h6 class="text-uppercase fw-bold mb-2" [ngStyle]="{'color': sum.titleColor, 'font-size': '11px', 'letter-spacing': '0.5px'}">{{ sum.stage }}</h6>
+                            <h2 class="mb-0" [ngStyle]="{'color': sum.textColor, 'font-weight': '700'}">{{ sum.count }}</h2>
+                            <small [ngStyle]="{'color': sum.titleColor}">Ghost Pulse</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SHOW MORE / LESS TOGGLE -->
+            <div class="mb-4" *ngIf="Stage_Summary.length > 4" style="text-align: right; margin-top: -8px; padding-right: 12px;">
+                <button class="btn btn-link" (click)="showAllCards = !showAllCards" style="text-decoration: none; font-weight: 600; font-size: 11px; color: #64748b; padding: 0;">
+                    {{ showAllCards ? 'Show Less' : 'Show More (' + (Stage_Summary.length - 4) + ')' }}
+                    <i class="fa" [ngClass]="showAllCards ? 'fa-chevron-up' : 'fa-chevron-down'" style="margin-left: 4px; font-size: 10px;"></i>
+                </button>
+            </div>
+
+            <!-- Filter Panel -->
+            <div class="lead-filter-panel mb-3">
+                <!-- ROW 1: Primary Filters -->
+                <div class="soa-filter-row">
+                    <div class="soa-field-group">
+                        <label class="soa-label">Date Option</label>
+                        <select [(ngModel)]="Date_Option" (change)="onDateOptionChange()" class="soa-input">
+                            <option value="This Month">This Month</option>
+                            <option value="This Year">This Year</option>
+                            <option value="Previous Year">Previous Year</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                    </div>
+
+                    <div class="soa-field-group">
+                        <label class="soa-label">From</label>
+                        <div class="soa-input-wrap">
+                            <input matInput [matDatepicker]="picker1" [(ngModel)]="Search_FromDate" placeholder="DD/MM/YYYY" class="soa-input" [disabled]="Date_Option !== 'Custom'">
+                            <mat-datepicker-toggle matSuffix [for]="picker1" class="soa-datepicker-toggle" [disabled]="Date_Option !== 'Custom'"></mat-datepicker-toggle>
+                            <mat-datepicker #picker1></mat-datepicker>
+                        </div>
+                    </div>
+
+                    <div class="soa-field-group">
+                        <label class="soa-label">To</label>
+                        <div class="soa-input-wrap">
+                            <input matInput [matDatepicker]="picker2" [(ngModel)]="Search_ToDate" placeholder="DD/MM/YYYY" class="soa-input" [disabled]="Date_Option !== 'Custom'">
+                            <mat-datepicker-toggle matSuffix [for]="picker2" class="soa-datepicker-toggle" [disabled]="Date_Option !== 'Custom'"></mat-datepicker-toggle>
+                            <mat-datepicker #picker2></mat-datepicker>
+                        </div>
+                    </div>
+
+                    <div class="soa-field-group soa-btn-cell">
+                        <button class="soa-search-btn" (click)="Search_Leads()">
+                            <i class="fa fa-search me-2"></i> SEARCH
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLE CONTAINER -->
+            <div class="lead-table-container">
+                <div class="table-scroll-area" [style.height.px]="myInnerHeight">
+                    <table class="lead-data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">No</th>
+                                <th>Lead Name</th>
+                                <th>Ghosting Stage</th>
+                                <th>Pulse</th>
+                                <th>Assigned User</th>
+                                <th>Entry Date</th>
+                                <th style="text-align: right;">Current Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of Ghosting_Data; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td style="font-weight: 600;">{{ data.Lead_Name }}</td>
+                                <td>{{ data.Pipeline_Stage }}</td>
+                                <td><span style="background-color: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 12px;">{{ data.Pulse }}</span></td>
+                                <td>{{ data.login_user_name }}</td>
+                                <td>{{ data.Entry_Date }}</td>
+                                <td style="text-align: right; color: #10b981; font-weight: 600;">{{ data.Current_Status }}</td>
+                            </tr>
+                            <tr *ngIf="Ghosting_Data?.length === 0">
+                                <td colspan="7" class="text-center py-5 text-muted">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
