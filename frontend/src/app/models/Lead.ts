@@ -106,8 +106,10 @@ export class Lead {
         this.FollowUp_Staff_Id = 0;
         this.FollowUp_Remark = "";
         this.FollowUp_Location_Id = 0;
-        this.Entry_Date = new Date();
-        this.FollowUp_Next_Date = new Date();
+        const d = new Date();
+        const formattedDate = `${d.getFullYear()}-${('0' + (d.getMonth() + 1)).slice(-2)}-${('0' + d.getDate()).slice(-2)}`;
+        this.Entry_Date = formattedDate;
+        this.FollowUp_Next_Date = formattedDate;
         this.Lead_Priority = "Medium";
     }
 }

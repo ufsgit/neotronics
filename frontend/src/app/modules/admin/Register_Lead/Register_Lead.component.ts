@@ -25,6 +25,33 @@ import { NotificationService } from '../../../services/notification.service';
 })
 export class Register_LeadComponent implements OnInit {
   companyNameSubject: Subject<string> = new Subject<string>();
+  Expanded_Sections: { [key: string]: boolean } = {
+    'Company Details': true,
+    'Decision Makers & Contacts': true,
+    'Requirement Profile': true,
+    'Market Study': true,
+    'Lead Priority': true,
+    'Pipeline Stage & Pulse': true,
+    'Assignment': true,
+    'Follow-up Automation': true,
+    'Interaction History': true
+  };
+
+  Toggle_Section(section: string) {
+    this.Expanded_Sections[section] = !this.Expanded_Sections[section];
+  }
+
+  get Are_All_Expanded(): boolean {
+    return Object.values(this.Expanded_Sections).every(val => val === true);
+  }
+
+  Toggle_All_Sections() {
+    const expand = !this.Are_All_Expanded;
+    for (let key in this.Expanded_Sections) {
+      this.Expanded_Sections[key] = expand;
+    }
+  }
+
   Lead_: Lead = new Lead();
   Lead_Data: Lead[] = [];
   Filtered_Lead_Data: Lead[] = [];
@@ -928,20 +955,33 @@ export class Register_LeadComponent implements OnInit {
   }
 
   createContactRow(contact?: any): FormGroup {
-    return this.fb.group({
+    const stateId = contact ? contact.POC_State_Id : 0;
+    const group = this.fb.group({
       POC_Full_Name: [contact ? contact.POC_Full_Name : '', Validators.required],
       POC_Direct_Mobile: [contact ? contact.POC_Direct_Mobile : '', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(10)]],
       POC_Work_Phone: [contact ? contact.POC_Work_Phone : '', [Validators.pattern('^[0-9]*$')]],
       POC_Designation_Id: [contact ? contact.POC_Designation_Id : 0],
       POC_Email: [contact ? contact.POC_Email : '', [Validators.email]],
       Next_Call_Action: [contact ? !!contact.Next_Call_Action : false],
-      POC_State_Id: [contact ? contact.POC_State_Id : 0],
-      POC_Location_Id: [contact ? contact.POC_Location_Id : 0],
+      POC_State_Id: [stateId],
+      POC_Location_Id: [{ value: contact ? contact.POC_Location_Id : 0, disabled: !stateId }],
       POC_Office_Type: [contact && contact.POC_Office_Type ? contact.POC_Office_Type : 'Head office'],
       Name_Captured: [contact ? !!contact.Name_Captured : false],
       Number_Captured: [contact ? !!contact.Number_Captured : false],
       Email_Captured: [contact ? !!contact.Email_Captured : false]
     });
+
+    group.get('POC_State_Id').valueChanges.subscribe(val => {
+      const locationControl = group.get('POC_Location_Id');
+      if (val && val !== 0) {
+        locationControl.enable({ emitEvent: false });
+      } else {
+        locationControl.disable({ emitEvent: false });
+        locationControl.setValue(0, { emitEvent: false });
+      }
+    });
+
+    return group;
   }
 
   addContact() {

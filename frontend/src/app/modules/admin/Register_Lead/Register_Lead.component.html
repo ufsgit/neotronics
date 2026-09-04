@@ -8,6 +8,10 @@
         <p class="ig-subtitle">{{ Lead_.Lead_Id > 0 ? (Is_View_Mode ? 'Viewing information for ' : 'Modify information for ') + Lead_.Lead_Name : ' ' }}</p>
       </div>
       <div class="ig-header-actions">
+        <button mat-button type="button" class="ig-btn-outline" (click)="Toggle_All_Sections()" style="margin-right: 8px; border-color: #cbd5e1; color: #475569; background: white;">
+          <i class="material-icons" style="vertical-align: middle;">{{ Are_All_Expanded ? 'unfold_less' : 'unfold_more' }}</i> 
+          {{ Are_All_Expanded ? 'Collapse All' : 'Expand All' }}
+        </button>
         <button mat-button type="button" class="ig-btn-cancel" (click)="Close_Click()">
           <i class="material-icons">close</i> {{ Is_View_Mode ? 'Close' : 'Cancel' }}
         </button>
@@ -20,8 +24,11 @@
     <form>
       <!-- ── Company Details ── -->
       <div class="ig-section-card">
-        <p class="ig-section-title"><i class="material-icons">business</i> Company Details</p>
-        <div class="ig-grid ig-grid-4">
+        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Company Details')">
+          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">business</i> Company Details</p>
+          <i class="material-icons">{{ Expanded_Sections['Company Details'] ? 'expand_less' : 'expand_more' }}</i>
+        </div>
+        <div class="ig-grid ig-grid-4" *ngIf="Expanded_Sections['Company Details']" style="margin-top: 15px;">
           <div class="ig-field">
             <label class="ig-label">Company name <span class="ig-req">*</span></label>
             <input type="text" class="ig-input" placeholder="e.g. Acme Corp" name="Lead_Name"
@@ -80,10 +87,11 @@
 
       <!-- ── Decision Makers & Contacts ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header">
-          <p class="ig-section-title"><i class="material-icons">people</i> Decision Makers &amp; Contacts</p>
+        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Decision Makers & Contacts')">
+          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">people</i> Decision Makers &amp; Contacts</p>
+          <i class="material-icons">{{ Expanded_Sections['Decision Makers & Contacts'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
-        <div [formGroup]="contactForm">
+        <div [formGroup]="contactForm" *ngIf="Expanded_Sections['Decision Makers & Contacts']" style="margin-top: 15px;">
           <div formArrayName="contactPersons">
             <div *ngFor="let contact of contactPersons.controls; let i=index" [formGroupName]="i"
               class="ig-contact-card">
@@ -132,7 +140,7 @@
                   <app-searchable-dropdown formControlName="POC_Location_Id"
                     [data]="getDistrictData(contact.get('POC_State_Id').value)"
                     [fallbackName]="PreselectedDistrictNames[contact.get('POC_Location_Id').value]" bindLabel="name"
-                    bindValue="id" placeholder="Select Sitting location" [disabled]="!contact.get('POC_State_Id').value"
+                    bindValue="id" placeholder="Select Sitting location"
                     (search)="onSearchDropdown('District', $event, contact.get('POC_State_Id').value)"
                     (loadMore)="onLoadMoreDropdown('District', contact.get('POC_State_Id').value)">
                   </app-searchable-dropdown>
@@ -196,10 +204,11 @@
 
       <!-- ── Requirement Profile ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header">
-          <p class="ig-section-title"><i class="material-icons">assignment</i> Requirement Profile</p>
+        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Requirement Profile')">
+          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">assignment</i> Requirement Profile</p>
+          <i class="material-icons">{{ Expanded_Sections['Requirement Profile'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
-        <div style="margin-top: 15px;" class="ig-grid ig-grid-2">
+        <div style="margin-top: 15px;" class="ig-grid ig-grid-2" *ngIf="Expanded_Sections['Requirement Profile']">
           <!-- Column 1: Interests -->
           <div style="border-right: 1px solid #e2e8f0; padding-right: 20px;">
             <label class="ig-label" style="margin-bottom: 5px; display: block; text-transform: uppercase;">Service /
@@ -256,12 +265,13 @@
 
       <!-- ── Market Study ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header">
-          <p class="ig-section-title"><i class="material-icons">storefront</i> Market Study — Ask these while meeting
+        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Market Study')">
+          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">storefront</i> Market Study — Ask these while meeting
             the customer</p>
+          <i class="material-icons">{{ Expanded_Sections['Market Study'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
 
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 15px;" *ngIf="Expanded_Sections['Market Study']">
           <p style="font-size: 13px; color: #64748b; margin-top: 0; margin-bottom: 15px;">
             No systems added yet. Use the picker below to add one as you learn about it.
           </p>
@@ -312,11 +322,12 @@
 
       <!-- ── Lead Priority ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header">
-          <p class="ig-section-title"><i class="material-icons">flag</i> Lead Priority</p>
+        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Lead Priority')">
+          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">flag</i> Lead Priority</p>
+          <i class="material-icons">{{ Expanded_Sections['Lead Priority'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
 
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 15px;" *ngIf="Expanded_Sections['Lead Priority']">
           <div style="max-width: 300px;">
             <label class="ig-label" style="margin-bottom: 5px; display: block; text-transform: uppercase;">Lead
               Priority Level</label>
@@ -330,10 +341,12 @@
 
       <!-- ── Pipeline Stage & Pulse ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header">
-          <p class="ig-section-title"><i class="material-icons">timeline</i> Pipeline Stage & Pulse</p>
+        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Pipeline Stage & Pulse')">
+          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">timeline</i> Pipeline Stage & Pulse</p>
+          <i class="material-icons">{{ Expanded_Sections['Pipeline Stage & Pulse'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
 
+        <div *ngIf="Expanded_Sections['Pipeline Stage & Pulse']">
         <div style="margin-top: 15px;" class="ig-grid ig-grid-2">
           <!-- Stage -->
           <div style="border-right: 1px solid #e2e8f0; padding-right: 20px;">
@@ -389,20 +402,24 @@
             </div>
           </div>
         </div>
+        </div>
       </div>
 
       <!-- ── Assignment ── -->
       <div class="ig-section-card" *ngIf="!Lead_.Lead_Id || Is_View_Mode">
         <fieldset [disabled]="Is_View_Mode" style="border: none; padding: 0; margin: 0;">
-        <div class="ig-section-header"
-          style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">
-          <label for="chk_Is_FollowUp" class="ig-section-title"
-            style="margin: 0; display: flex; align-items: center; gap: 5px; cursor: pointer;"><i
-              class="material-icons">event_available</i> {{ Lead_.Is_FollowUp ? 'Assignment' : 'Add Assignment'
-            }}</label>
-          <input type="checkbox" name="Is_FollowUp" [(ngModel)]="Lead_.Is_FollowUp"
-            style="width: 16px; height: 16px; margin: 0; cursor: pointer;" id="chk_Is_FollowUp" />
+        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Assignment')">
+          <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">
+            <label for="chk_Is_FollowUp" class="ig-section-title"
+              style="margin: 0; display: flex; align-items: center; gap: 5px; cursor: pointer;" (click)="$event.stopPropagation()"><i
+                class="material-icons">event_available</i> {{ Lead_.Is_FollowUp ? 'Assignment' : 'Add Assignment'
+              }}</label>
+            <input type="checkbox" name="Is_FollowUp" [(ngModel)]="Lead_.Is_FollowUp"
+              style="width: 16px; height: 16px; margin: 0; cursor: pointer;" id="chk_Is_FollowUp" (click)="$event.stopPropagation()" />
+          </div>
+          <i class="material-icons">{{ Expanded_Sections['Assignment'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
+        <div *ngIf="Expanded_Sections['Assignment']">
         <div style="margin-top: 15px;" *ngIf="Lead_.Is_FollowUp">
           <div class="ig-grid ig-grid-4">
             <div class="ig-field">
@@ -454,15 +471,17 @@
             </div>
           </div>
         </div>
+        </div>
         </fieldset>
       </div>
 
       <!-- ── Follow-up Automation ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header">
-          <p class="ig-section-title"> Follow-up Automation (Ghosting Workflows)</p>
+        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Follow-up Automation')">
+          <p class="ig-section-title" style="margin: 0;"> Follow-up Automation (Ghosting Workflows)</p>
+          <i class="material-icons">{{ Expanded_Sections['Follow-up Automation'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
-        <div style="margin-top: 15px; display: flex; align-items: flex-end; gap: 15px;">
+        <div style="margin-top: 15px; display: flex; align-items: flex-end; gap: 15px;" *ngIf="Expanded_Sections['Follow-up Automation']">
           <div style="flex: 1;">
             <label class="ig-label" style="margin-bottom: 5px; display: block;">Start workflow</label>
             <app-searchable-dropdown class="ig-full-width-dropdown" name="Selected_Workflow" [(ngModel)]="Selected_Workflow"
@@ -491,8 +510,11 @@
 
       <!-- ── Interaction History ── -->
       <div class="ig-section-card" *ngIf="Show_History">
-        <p class="ig-section-title"><i class="material-icons">history</i> Interaction History</p>
-        <div class="ig-table-wrap" (scroll)="On_History_Scroll($event)" style="max-height: 400px; overflow-y: auto;">
+        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Interaction History')">
+          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">history</i> Interaction History</p>
+          <i class="material-icons">{{ Expanded_Sections['Interaction History'] ? 'expand_less' : 'expand_more' }}</i>
+        </div>
+        <div class="ig-table-wrap" (scroll)="On_History_Scroll($event)" style="max-height: 400px; overflow-y: auto;" *ngIf="Expanded_Sections['Interaction History']">
           <table class="ig-table">
             <thead>
               <tr>
