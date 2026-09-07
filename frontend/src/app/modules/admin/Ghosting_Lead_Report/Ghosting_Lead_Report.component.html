@@ -1,108 +1,639 @@
-<div class="main-content">
-    <div class="container-fluid px-0">
+<div class="main-content ghosting-report-page pb-5">
+  <div class="container-fluid px-3 px-md-4">
 
-        <div>
-            <!-- PAGE HEADER -->
-            <div class="lead-list-header d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h4 class="page-title-main">Ghosting Lead Report</h4>
-                </div>
-            </div>
+    <!-- Top Right Action Controls (LeadDashboard Style) -->
+    <div class="d-flex justify-content-between align-items-center mb-3 pt-1">
+      <div class="d-flex align-items-center">
+        <h5 class="font-weight-800 text-gray-900 mb-0">Ghosting Lead Report</h5>
+        <span class="badge badge-subtle-danger ml-2 font-weight-bold">{{ totalGhosted }} Ghosted Leads</span>
+      </div>
+      <div class="d-flex align-items-center">
+        <!-- Toggle Filter Button -->
+        <button class="btn btn-sm shadow-sm mr-2" 
+                [ngClass]="showFilters ? 'btn-primary' : 'btn-outline-primary'" 
+                (click)="showFilters = !showFilters">
+          <i class="fa fa-filter mr-1"></i> {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+          <span class="badge badge-light text-primary ml-1" *ngIf="activeFilterCount > 0">{{ activeFilterCount }}</span>
+        </button>
 
-            <!-- SUMMARY CARDS -->
-            <div class="row mb-4">
-                <div class="col-md-3 col-sm-6 mb-3" *ngFor="let sum of (showAllCards ? Stage_Summary : Stage_Summary.slice(0, 4))">
-                    <div class="card shadow-sm" [ngStyle]="{'background': sum.bgColor, 'border': '1px solid #eef2f6', 'border-radius': '12px', 'height': '100%'}">
-                        <div class="card-body">
-                            <h6 class="text-uppercase fw-bold mb-2" [ngStyle]="{'color': sum.titleColor, 'font-size': '11px', 'letter-spacing': '0.5px'}">{{ sum.stage }}</h6>
-                            <h2 class="mb-0" [ngStyle]="{'color': sum.textColor, 'font-weight': '700'}">{{ sum.count }}</h2>
-                            <small [ngStyle]="{'color': sum.titleColor}">Ghost Pulse</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SHOW MORE / LESS TOGGLE -->
-            <div class="mb-4" *ngIf="Stage_Summary.length > 4" style="text-align: right; margin-top: -8px; padding-right: 12px;">
-                <button class="btn btn-link" (click)="showAllCards = !showAllCards" style="text-decoration: none; font-weight: 600; font-size: 11px; color: #64748b; padding: 0;">
-                    {{ showAllCards ? 'Show Less' : 'Show More (' + (Stage_Summary.length - 4) + ')' }}
-                    <i class="fa" [ngClass]="showAllCards ? 'fa-chevron-up' : 'fa-chevron-down'" style="margin-left: 4px; font-size: 10px;"></i>
-                </button>
-            </div>
-
-            <!-- Filter Panel -->
-            <div class="lead-filter-panel mb-3">
-                <!-- ROW 1: Primary Filters -->
-                <div class="soa-filter-row">
-                    <div class="soa-field-group">
-                        <label class="soa-label">Date Option</label>
-                        <select [(ngModel)]="Date_Option" (change)="onDateOptionChange()" class="soa-input">
-                            <option value="This Month">This Month</option>
-                            <option value="This Year">This Year</option>
-                            <option value="Previous Year">Previous Year</option>
-                            <option value="Custom">Custom</option>
-                        </select>
-                    </div>
-
-                    <div class="soa-field-group">
-                        <label class="soa-label">From</label>
-                        <div class="soa-input-wrap">
-                            <input matInput [matDatepicker]="picker1" [(ngModel)]="Search_FromDate" placeholder="DD/MM/YYYY" class="soa-input" [disabled]="Date_Option !== 'Custom'">
-                            <mat-datepicker-toggle matSuffix [for]="picker1" class="soa-datepicker-toggle" [disabled]="Date_Option !== 'Custom'"></mat-datepicker-toggle>
-                            <mat-datepicker #picker1></mat-datepicker>
-                        </div>
-                    </div>
-
-                    <div class="soa-field-group">
-                        <label class="soa-label">To</label>
-                        <div class="soa-input-wrap">
-                            <input matInput [matDatepicker]="picker2" [(ngModel)]="Search_ToDate" placeholder="DD/MM/YYYY" class="soa-input" [disabled]="Date_Option !== 'Custom'">
-                            <mat-datepicker-toggle matSuffix [for]="picker2" class="soa-datepicker-toggle" [disabled]="Date_Option !== 'Custom'"></mat-datepicker-toggle>
-                            <mat-datepicker #picker2></mat-datepicker>
-                        </div>
-                    </div>
-
-                    <div class="soa-field-group soa-btn-cell">
-                        <button class="soa-search-btn" (click)="Search_Leads()">
-                            <i class="fa fa-search me-2"></i> SEARCH
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TABLE CONTAINER -->
-            <div class="lead-table-container">
-                <div class="table-scroll-area" [style.height.px]="myInnerHeight">
-                    <table class="lead-data-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 60px;">No</th>
-                                <th>Lead Name</th>
-                                <th>Ghosting Stage</th>
-                                <th>Pulse</th>
-                                <th>Assigned User</th>
-                                <th>Entry Date</th>
-                                <th style="text-align: right;">Current Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let data of Ghosting_Data; let i = index">
-                                <td>{{ i + 1 }}</td>
-                                <td style="font-weight: 600;">{{ data.Lead_Name }}</td>
-                                <td>{{ data.Pipeline_Stage }}</td>
-                                <td><span style="background-color: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 12px;">{{ data.Pulse }}</span></td>
-                                <td>{{ data.login_user_name }}</td>
-                                <td>{{ data.Entry_Date }}</td>
-                                <td style="text-align: right; color: #10b981; font-weight: 600;">{{ data.Current_Status }}</td>
-                            </tr>
-                            <tr *ngIf="Ghosting_Data?.length === 0">
-                                <td colspan="7" class="text-center py-5 text-muted">No records found</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
+      </div>
     </div>
+
+    <!-- =========================================================================
+         ADVANCED FILTER PANEL (Appears Up Side Right Below Buttons)
+         ========================================================================= -->
+    <div class="card shadow-sm mb-4 filter-card-container border-0 rounded-xl" *ngIf="showFilters">
+      <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <i class="fa fa-sliders text-primary mr-2 font-weight-bold"></i>
+          <h6 class="m-0 font-weight-bold text-gray-900">Multi-Dimension Drilldown Filters</h6>
+          <span class="badge badge-subtle-secondary ml-2">{{ filteredData.length }} results found</span>
+        </div>
+        <div class="d-flex align-items-center">
+          <button class="btn btn-primary btn-sm font-weight-bold p-1 px-3 mr-3 shadow-sm rounded-pill" (click)="applyFilters()">
+            <i class="fa fa-filter mr-1"></i> Apply Filters
+          </button>
+          <button class="btn btn-link btn-sm text-danger font-weight-bold text-decoration-none p-0" (click)="resetFilters()">
+            <i class="fa fa-undo mr-1"></i> Reset All Filters
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body p-3 bg-light-panel">
+        <div class="row">
+          <!-- Date Range Dropdown -->
+          <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <label class="filter-field-label">Date Range</label>
+            <div class="input-with-icon">
+              <i class="fa fa-calendar-o input-prefix-icon"></i>
+              <select class="form-control form-control-sm pl-4" [(ngModel)]="Date_Option" (change)="onDateOptionChange()">
+                <option value="All">All Time</option>
+                <option value="Today">Today</option>
+                <option value="Last 7 Days">Last 7 Days</option>
+                <option value="This Month">This Month</option>
+                <option value="This Year">This Year</option>
+                <option value="Custom">Custom Date Range</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Custom From Date -->
+          <div class="col-lg-2 col-md-4 col-sm-6 mb-3" *ngIf="Date_Option === 'Custom'">
+            <label class="filter-field-label">From Date</label>
+            <div class="input-group input-group-sm">
+              <input matInput [matDatepicker]="pickerFrom" [(ngModel)]="Search_FromDate" placeholder="DD/MM/YYYY" class="form-control form-control-sm">
+              <div class="input-group-append">
+                <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                <mat-datepicker #pickerFrom></mat-datepicker>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom To Date -->
+          <div class="col-lg-2 col-md-4 col-sm-6 mb-3" *ngIf="Date_Option === 'Custom'">
+            <label class="filter-field-label">To Date</label>
+            <div class="input-group input-group-sm">
+              <input matInput [matDatepicker]="pickerTo" [(ngModel)]="Search_ToDate" placeholder="DD/MM/YYYY" class="form-control form-control-sm">
+              <div class="input-group-append">
+                <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                <mat-datepicker #pickerTo></mat-datepicker>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pipeline Stage Filter -->
+          <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <label class="filter-field-label">Pipeline Stage</label>
+            <div class="input-with-icon">
+              <i class="fa fa-cubes input-prefix-icon"></i>
+              <select class="form-control form-control-sm pl-4" [(ngModel)]="filterStage" (change)="activeStageCard = (filterStage === 'All' ? '' : filterStage)">
+                <option value="All">All Stages</option>
+                <option *ngFor="let s of stageList" [value]="s">{{ s }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Branch Filter -->
+          <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <label class="filter-field-label">Branch</label>
+            <div class="input-with-icon">
+              <i class="fa fa-building-o input-prefix-icon"></i>
+              <select class="form-control form-control-sm pl-4" [(ngModel)]="filterBranch">
+                <option value="All">All Branches</option>
+                <option *ngFor="let b of branchList" [value]="b">{{ b }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Department Filter -->
+          <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <label class="filter-field-label">Department</label>
+            <div class="input-with-icon">
+              <i class="fa fa-briefcase input-prefix-icon"></i>
+              <select class="form-control form-control-sm pl-4" [(ngModel)]="filterDepartment">
+                <option value="All">All Departments</option>
+                <option *ngFor="let d of departmentList" [value]="d">{{ d }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Staff / Assigned Rep Filter -->
+          <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <label class="filter-field-label">Assigned Executive</label>
+            <div class="input-with-icon">
+              <i class="fa fa-user-o input-prefix-icon"></i>
+              <select class="form-control form-control-sm pl-4" [(ngModel)]="filterStaff">
+                <option value="All">All Staff</option>
+                <option *ngFor="let st of staffList" [value]="st">{{ st }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Ghosting State (isCurrent: 1 vs 0) -->
+          <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <label class="filter-field-label">Ghosting State</label>
+            <div class="input-with-icon">
+              <i class="fa fa-heartbeat input-prefix-icon"></i>
+              <select class="form-control form-control-sm pl-4" [(ngModel)]="filterGhostState" (change)="activeStateCard = filterGhostState">
+                <option value="All">All Records</option>
+                <option value="1">Active Ghosting Only</option>
+                <option value="0">Historical / Resolved</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Current Status Filter -->
+          <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+            <label class="filter-field-label">Lead Status</label>
+            <div class="input-with-icon">
+              <i class="fa fa-tag input-prefix-icon"></i>
+              <select class="form-control form-control-sm pl-4" [(ngModel)]="filterStatus">
+                <option value="All">All Statuses</option>
+                <option *ngFor="let st of statusList" [value]="st">{{ st }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Search Keyword -->
+          <div class="col-lg-4 col-md-8 col-sm-12 mb-3">
+            <label class="filter-field-label">Instant Keyword Search</label>
+            <div class="input-group input-group-sm search-group-styled">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-white border-right-0"><i class="fa fa-search text-muted"></i></span>
+              </div>
+              <input type="text" class="form-control form-control-sm border-left-0" 
+                     [(ngModel)]="searchKeyword" 
+                     placeholder="Search lead name, ID, staff, branch...">
+              <div class="input-group-append" *ngIf="searchKeyword">
+                <button class="btn btn-outline-secondary" (click)="searchKeyword = ''" type="button">
+                  <i class="fa fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         2. PRIMARY EXECUTIVE KPI METRICS (Ultra-Polished LeadDashboard Style)
+         ========================================================================= -->
+    <div class="row mb-4">
+      <!-- Card 1: Total Ghosted -->
+      <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card premium-kpi-card border-top-danger shadow-sm h-100" 
+             [class.card-selected-glow]="activeStateCard === '' && filterStage === 'All' && filterGhostState === 'All'"
+             (click)="resetFilters()" 
+             title="Click to reset filters and view all">
+          <div class="card-body p-3 d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="kpi-label text-danger font-weight-bold text-uppercase">Total Ghosted Leads</span>
+                <div class="kpi-number font-weight-800 text-gray-900 mt-1">{{ totalGhosted }}</div>
+              </div>
+              <div class="kpi-icon-glow bg-gradient-danger">
+                <i class="fa fa-users text-white"></i>
+              </div>
+            </div>
+            <div class="kpi-footer d-flex align-items-center justify-content-between pt-2 border-top">
+              <span class="text-xs text-muted">Pipeline Scope: 100%</span>
+              <span class="badge badge-pill badge-danger-light">High Attention</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Active Ghosting -->
+      <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card premium-kpi-card border-top-warning shadow-sm h-100" 
+             [class.card-selected-glow]="filterGhostState === '1'"
+             (click)="filterByStateCard('1')" 
+             title="Click to filter by Currently Active Ghosting">
+          <div class="card-body p-3 d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="kpi-label text-warning font-weight-bold text-uppercase">Active Ghosting</span>
+                <div class="kpi-number font-weight-800 text-gray-900 mt-1">{{ activeGhosting }}</div>
+              </div>
+              <div class="kpi-icon-glow bg-gradient-warning">
+                <i class="fa fa-hourglass-half text-white"></i>
+              </div>
+            </div>
+            <div class="kpi-footer d-flex align-items-center justify-content-between pt-2 border-top">
+              <span class="text-xs text-muted">Immediate action needed</span>
+              <span class="badge badge-pill badge-warning-light">
+                <span class="mini-pulse-dot bg-warning"></span> Silent
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Resolved / Historical -->
+      <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card premium-kpi-card border-top-success shadow-sm h-100" 
+             [class.card-selected-glow]="filterGhostState === '0'"
+             (click)="filterByStateCard('0')" 
+             title="Click to filter by Resolved / Historic Leads">
+          <div class="card-body p-3 d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="kpi-label text-success font-weight-bold text-uppercase">Resolved / Recovered</span>
+                <div class="kpi-number font-weight-800 text-gray-900 mt-1">{{ resolvedGhosting }}</div>
+              </div>
+              <div class="kpi-icon-glow bg-gradient-success">
+                <i class="fa fa-check-circle text-white"></i>
+              </div>
+            </div>
+            <div class="kpi-footer d-flex align-items-center justify-content-between pt-2 border-top">
+              <span class="text-xs text-muted">Recovery Rate: <strong>{{ recoveryRate }}%</strong></span>
+              <span class="badge badge-pill badge-success-light">Re-engaged</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Top Ghosting Stage -->
+      <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card premium-kpi-card border-top-info shadow-sm h-100" 
+             [class.card-selected-glow]="activeStageCard === topStageName"
+             (click)="filterByStageCard(topStageName)" 
+             title="Click to filter by top drop-off stage">
+          <div class="card-body p-3 d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div style="max-width: 75%;">
+                <span class="kpi-label text-info font-weight-bold text-uppercase">Top Drop-off Stage</span>
+                <div class="kpi-stage-title font-weight-800 text-gray-900 mt-1 text-truncate" [title]="topStageName">
+                  {{ topStageName }}
+                </div>
+              </div>
+              <div class="kpi-icon-glow bg-gradient-info">
+                <i class="fa fa-exclamation-triangle text-white"></i>
+              </div>
+            </div>
+            <div class="kpi-footer d-flex align-items-center justify-content-between pt-2 border-top">
+              <span class="text-xs text-muted">Leakage: <strong>{{ topStageCount }} leads</strong></span>
+              <span class="badge badge-pill badge-info-light">
+                {{ totalGhosted > 0 ? (topStageCount * 100 / totalGhosted | number:'1.0-0') : 0 }}% of Total
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         3. PIPELINE STAGE BREAKDOWN SECTION ("the count of the stage. like now and do others")
+         ========================================================================= -->
+    <div class="stage-analytics-card p-3 p-md-4 mb-4 shadow-sm rounded-xl">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <div>
+          <h5 class="font-weight-800 text-gray-900 mb-1 d-flex align-items-center">
+            <i class="fa fa-cubes text-primary mr-2"></i>
+            Pipeline Stage Ghosting Counts
+          </h5>
+          <p class="text-muted small mb-0">
+            Real-time count of leads stalling at each sales pipeline milestone. Click any card to drill down.
+          </p>
+        </div>
+
+        <div class="d-flex align-items-center mt-2 mt-md-0">
+          <span class="badge badge-pill badge-light-primary mr-2" *ngIf="activeStageCard">
+            Active Filter: <strong>{{ activeStageCard }}</strong>
+            <i class="fa fa-times ml-1 cursor-pointer text-danger" (click)="filterByStageCard(activeStageCard)" title="Clear filter"></i>
+          </span>
+          <button *ngIf="stageSummaryData.length >= 4 || showAllCards" 
+                  class="btn btn-outline-primary btn-sm rounded-pill font-weight-bold px-3" 
+                  (click)="toggleStageCards()">
+            {{ showAllCards ? 'Show Top 4' : (allStagesLoaded ? 'View All (' + stageSummaryData.length + ' Stages)' : 'View All Stages') }}
+            <i class="fa ml-1" [ngClass]="showAllCards ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stage Cards Grid -->
+      <div class="row">
+        <div class="col-xl-3 col-lg-4 col-md-6 mb-3" 
+             *ngFor="let sum of (showAllCards ? stageSummaryData : stageSummaryData.slice(0, 4)); let sIdx = index">
+          <div class="card stage-showcase-card shadow-sm h-100" 
+               [class.stage-card-active]="activeStageCard === sum.stage"
+               (click)="filterByStageCard(sum.stage)"
+               title="Filter by {{ sum.stage }}">
+            <div class="card-body p-3 d-flex flex-column justify-content-between">
+              <!-- Top Header: Rank and Icon -->
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="stage-rank-pill">#{{ sIdx + 1 }} Stage</span>
+                <span class="stage-icon-circle" [style.background]="sum.gradient">
+                  <i class="fa text-white" [ngClass]="sum.icon"></i>
+                </span>
+              </div>
+
+              <!-- Stage Name -->
+              <div class="stage-card-name font-weight-700 text-truncate my-1" [title]="sum.stage">
+                {{ sum.stage }}
+              </div>
+
+              <!-- Count & Ghost Pulse Badge -->
+              <div class="d-flex align-items-baseline justify-content-between my-2">
+                <span class="stage-card-count font-weight-800 text-gray-900">{{ sum.count }}</span>
+                <span class="badge stage-ghost-pulse-badge">
+                  <i class="fa fa-bell-slash mr-1"></i>Ghost Pulse
+                </span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         5. VIEW SELECTION TOGGLE (Graph vs Table)
+         ========================================================================= -->
+    <div class="d-flex justify-content-between align-items-center mb-3 pt-1">
+      <div class="view-selection-group shadow-sm">
+        <button type="button" 
+                class="btn btn-view-toggle" 
+                [class.active]="viewSelection === 'Graph'" 
+                (click)="viewSelection = 'Graph'">
+          <i class="fa fa-pie-chart mr-1"></i> Graph
+        </button>
+        <button type="button" 
+                class="btn btn-view-toggle" 
+                [class.active]="viewSelection === 'Table'" 
+                (click)="viewSelection = 'Table'">
+          <i class="fa fa-table mr-1"></i> Table
+        </button>
+      </div>
+
+      <div class="text-muted small">
+        <span *ngIf="viewSelection === 'Graph'">
+          <i class="fa fa-bar-chart text-primary mr-1"></i> Visual Analytics & Stage Distributions
+        </span>
+        <span *ngIf="viewSelection === 'Table'">
+          <i class="fa fa-list-alt text-primary mr-1"></i> Detailed Leads Register ({{ filteredData.length }} records)
+        </span>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         VISUAL ANALYTICS CHARTS SECTION (Display when Graph selected)
+         ========================================================================= -->
+    <div class="row mb-4" *ngIf="viewSelection === 'Graph'">
+      <!-- Chart 1: Stage Distribution Donut -->
+      <div class="col-lg-4 col-md-6 mb-3">
+        <div class="card shadow-sm h-100 border-0 rounded-xl chart-showcase-card">
+          <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between border-bottom">
+            <div class="d-flex align-items-center">
+              <span class="chart-header-dot bg-danger mr-2"></span>
+              <h6 class="m-0 font-weight-bold text-gray-900">Stage Leakage Distribution</h6>
+            </div>
+            <span class="badge badge-subtle-danger">{{ chartStageData.length }} Stages</span>
+          </div>
+          <div class="card-body p-2 chart-container" style="min-height: 250px;">
+            <google-chart [title]="''" [type]="chartStageType" [data]="chartStageData" [columnNames]="chartStageColumns" [options]="chartPieOptions" style="width: 100%; height: 240px;"></google-chart>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart 2: Department Breakdown Donut -->
+      <div class="col-lg-4 col-md-6 mb-3">
+        <div class="card shadow-sm h-100 border-0 rounded-xl chart-showcase-card">
+          <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between border-bottom">
+            <div class="d-flex align-items-center">
+              <span class="chart-header-dot bg-warning mr-2"></span>
+              <h6 class="m-0 font-weight-bold text-gray-900">Departmental Breakdown</h6>
+            </div>
+            <span class="badge badge-subtle-warning">{{ chartDeptData.length }} Depts</span>
+          </div>
+          <div class="card-body p-2 chart-container" style="min-height: 250px;">
+            <google-chart [title]="''" [type]="chartDeptType" [data]="chartDeptData" [columnNames]="chartDeptColumns" [options]="chartPieOptions" style="width: 100%; height: 240px;"></google-chart>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart 3: Staff Ghosting Leaderboard -->
+      <div class="col-lg-4 col-md-12 mb-3">
+        <div class="card shadow-sm h-100 border-0 rounded-xl chart-showcase-card">
+          <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between border-bottom">
+            <div class="d-flex align-items-center">
+              <span class="chart-header-dot bg-primary mr-2"></span>
+              <h6 class="m-0 font-weight-bold text-gray-900">Executive Workload & Ghosting</h6>
+            </div>
+            <span class="badge badge-subtle-primary">By Rep</span>
+          </div>
+          <div class="card-body p-2 chart-container" style="min-height: 250px;">
+            <google-chart [title]="''" [type]="chartStaffType" [data]="chartStaffData" [columnNames]="chartStaffColumns" [options]="chartBarOptions" style="width: 100%; height: 240px;"></google-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         6. COMPREHENSIVE DATA TABLE (Display when Table selected)
+         ========================================================================= -->
+    <div class="card shadow-sm border-0 rounded-xl report-table-card" *ngIf="viewSelection === 'Table'">
+      <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center border-bottom">
+        <div class="d-flex align-items-center mb-2 mb-md-0">
+          <div class="table-title-icon-box mr-2">
+            <i class="fa fa-table text-primary"></i>
+          </div>
+          <div>
+            <h6 class="m-0 font-weight-bold text-gray-900">Detailed Ghosting Leads Register</h6>
+            <div class="text-xs text-muted">
+              Showing <strong>{{ filteredData.length }}</strong> matching records
+              <span *ngIf="filteredData.length !== allGhostingData.length">(filtered from {{ allGhostingData.length }})</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center flex-wrap">
+          <!-- Page size selector -->
+          <div class="d-flex align-items-center mr-3 my-1">
+            <span class="small text-muted mr-2 font-weight-bold">Rows:</span>
+            <select class="form-control form-control-sm select-page-size" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+              <option *ngFor="let opt of pageSizeOptions" [value]="opt">{{ opt }}</option>
+            </select>
+          </div>
+
+          <!-- Table Search Box -->
+          <div class="table-search-box my-1">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-light border-right-0"><i class="fa fa-search text-muted"></i></span>
+              </div>
+              <input type="text" class="form-control form-control-sm border-left-0" 
+                     [(ngModel)]="searchKeyword" (input)="applyFilters()" 
+                     placeholder="Filter in table...">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 ghosting-table">
+            <thead class="thead-light">
+              <tr>
+                <th style="width: 40px;" class="text-center">#</th>
+                <th>Lead Name & ID</th>
+                <th>Ghosting Stage</th>
+                <th>Pulse</th>
+                <th>Current Status</th>
+                <th>Assigned Rep</th>
+                <th>Branch</th>
+                <th>Department</th>
+                <th class="text-center">Ghosting State</th>
+                <th class="text-right">Entry Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of paginatedData; let i = index" class="ghosting-row">
+                <!-- Row # -->
+                <td class="text-center text-muted font-weight-bold">
+                  {{ (currentPage - 1) * pageSize + i + 1 }}
+                </td>
+
+                <!-- Lead Name & ID -->
+                <td>
+                  <div class="d-flex align-items-center" (click)="navigateToLead(row.Lead_Id)" style="cursor: pointer;">
+                    <div class="lead-avatar-circle mr-2">
+                      {{ getInitials(row.Lead_Name) }}
+                    </div>
+                    <div>
+                      <div class="lead-name font-weight-bold text-primary" style="text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+                        {{ row.Lead_Name }}
+                      </div>
+                      <div class="d-flex align-items-center mt-1">
+                        <span class="lead-id-tag" (click)="copyLeadId(row.Lead_Id); $event.stopPropagation()" title="Click to copy Lead ID">
+                          #{{ row.Lead_Id }}
+                          <i class="fa fa-clone ml-1 text-muted" *ngIf="copiedId !== row.Lead_Id"></i>
+                          <i class="fa fa-check ml-1 text-success" *ngIf="copiedId === row.Lead_Id"></i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Ghosting Stage -->
+                <td>
+                  <span class="badge stage-badge-pill">
+                    <span class="stage-dot mr-1"></span>
+                    {{ row.Pipeline_Stage }}
+                  </span>
+                </td>
+
+                <!-- Pulse -->
+                <td>
+                  <span class="badge pulse-badge-ghosting">
+                    <i class="fa fa-bell-slash mr-1"></i>{{ row.Pulse }}
+                  </span>
+                </td>
+
+                <!-- Current Status -->
+                <td>
+                  <span class="badge" 
+                        [ngClass]="{
+                          'badge-status-active': row.Current_Status === 'Active',
+                          'badge-status-won': row.Current_Status === 'Closed Won',
+                          'badge-status-lost': row.Current_Status === 'Closed Lost',
+                          'badge-status-default': row.Current_Status !== 'Active' && row.Current_Status !== 'Closed Won' && row.Current_Status !== 'Closed Lost'
+                        }">
+                    {{ row.Current_Status }}
+                  </span>
+                </td>
+
+                <!-- Assigned Rep (login_user_name) -->
+                <td>
+                  <div class="d-flex align-items-center">
+                    <i class="fa fa-user-circle text-muted mr-2" style="font-size: 16px;"></i>
+                    <span class="font-weight-600 text-gray-800">{{ row.login_user_name || 'Unassigned' }}</span>
+                  </div>
+                </td>
+
+                <!-- Branch Name -->
+                <td>
+                  <span class="text-gray-700 small">
+                    <i class="fa fa-building-o text-muted mr-1"></i>{{ row.Branch_Name || '-' }}
+                  </span>
+                </td>
+
+                <!-- Department Name -->
+                <td>
+                  <span class="text-gray-700 small">
+                    <i class="fa fa-briefcase text-muted mr-1"></i>{{ row.Department_Name || '-' }}
+                  </span>
+                </td>
+
+                <!-- isCurrent (Active Ghosting vs Historical) -->
+                <td class="text-center">
+                  <span *ngIf="row.isCurrent === 1" class="badge badge-state-active font-weight-bold px-2 py-1">
+                    <span class="pulse-dot-mini mr-1"></span>Active
+                  </span>
+                  <span *ngIf="row.isCurrent === 0" class="badge badge-state-historical px-2 py-1">
+                    <i class="fa fa-history mr-1"></i>Historical
+                  </span>
+                </td>
+
+                <!-- Entry Date -->
+                <td class="text-right">
+                  <div class="font-weight-600 text-gray-900 small">{{ formatDate(row.Entry_Date) }}</div>
+                  <small class="text-muted">{{ formatTimeAgo(row.Entry_Date) }}</small>
+                </td>
+              </tr>
+
+              <!-- Empty State -->
+              <tr *ngIf="filteredData.length === 0">
+                <td colspan="10" class="text-center py-5">
+                  <div class="py-4">
+                    <div class="empty-icon-circle mx-auto mb-3">
+                      <i class="fa fa-search text-muted fa-2x"></i>
+                    </div>
+                    <h6 class="font-weight-bold text-gray-900 mb-1">No Matching Ghosting Leads</h6>
+                    <p class="text-muted small mb-3">Try adjusting your filters or search keywords.</p>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3" (click)="resetFilters()">
+                      <i class="fa fa-undo mr-1"></i> Reset All Filters
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TABLE FOOTER WITH MODERN PAGINATION -->
+      <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 border-top" *ngIf="filteredData.length > 0">
+        <div class="text-muted small mb-2 mb-md-0">
+          Showing <span class="font-weight-bold text-gray-900">{{ (currentPage - 1) * pageSize + 1 }}</span> to 
+          <span class="font-weight-bold text-gray-900">{{ (currentPage * pageSize > filteredData.length) ? filteredData.length : currentPage * pageSize }}</span> of 
+          <span class="font-weight-bold text-gray-900">{{ filteredData.length }}</span> entries
+        </div>
+
+        <nav aria-label="Table navigation" *ngIf="totalPages > 1">
+          <ul class="pagination pagination-sm mb-0 custom-pagination">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <a class="page-link" href="javascript:void(0)" (click)="prevPage()" aria-label="Previous">
+                <i class="fa fa-chevron-left"></i>
+              </a>
+            </li>
+
+            <li class="page-item" *ngFor="let p of [].constructor(totalPages); let pIndex = index" 
+                [class.active]="currentPage === (pIndex + 1)">
+              <a class="page-link" href="javascript:void(0)" (click)="goToPage(pIndex + 1)">
+                {{ pIndex + 1 }}
+              </a>
+            </li>
+
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <a class="page-link" href="javascript:void(0)" (click)="nextPage()" aria-label="Next">
+                <i class="fa fa-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </div>
 </div>

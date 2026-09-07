@@ -49,6 +49,7 @@ export class LeadDashboardComponent implements OnInit, OnDestroy, AfterViewInit 
   public lostLeads: number = 0;
   public closedLeads: number = 0;
   public rejectedLeads: number = 0;
+  public ghostingLeads: number = 0;
 
   // Charts
   public chartStatusType = 'PieChart';
@@ -240,6 +241,7 @@ export class LeadDashboardComponent implements OnInit, OnDestroy, AfterViewInit 
     this.animateValue('followUpToday', 0, this.filteredLeads.filter(l => moment(l.Next_FollowUp_Date).isSame(moment(), 'day')).length, 1000);
     this.animateValue('followUpPending', 0, this.filteredLeads.filter(l => l.Next_FollowUp_Date && moment(l.Next_FollowUp_Date).isBefore(moment(), 'day')).length, 1000);
     this.animateValue('quotationSent', 0, this.filteredLeads.filter(l => (l.Status_Name || '').toLowerCase().includes('quotation')).length, 1000);
+    this.animateValue('ghostingLeads', 0, this.filteredLeads.filter(l => (l.Pulse || '').toLowerCase().includes('ghost') || l.isGhosting == 1).length, 1000);
   }
 
   prepareCharts() {
@@ -362,6 +364,10 @@ export class LeadDashboardComponent implements OnInit, OnDestroy, AfterViewInit 
         break;
       case 'Rejected Leads':
         queryParams = { status: 'Rejected' };
+        break;
+      case 'Ghosting Leads':
+        route = '/Ghosting_Lead_Report';
+        queryParams = {};
         break;
     }
     

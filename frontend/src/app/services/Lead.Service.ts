@@ -118,4 +118,43 @@ export class Lead_Service {
   Search_Company_Name(query: string): Observable<any> {
     return this.http.get(environment.BasePath + 'Lead/Search_Company_Name/' + encodeURIComponent(query));
   }
+
+  Get_Ghosting_Lead_Report(filters: any = {}): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_Ghosting_Lead_Report/', {
+      params: {
+        ...filters,
+        _t: Date.now().toString()
+      }
+    });
+  }
+
+  Get_Ghosting_Total(filters: any = {}): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_Ghosting_Total/', {
+      params: { ...filters, _t: Date.now().toString() }
+    });
+  }
+
+  Get_Ghosting_Active(filters: any = {}): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_Ghosting_Active/', {
+      params: { ...filters, _t: Date.now().toString() }
+    });
+  }
+
+  Get_Ghosting_Resolved(filters: any = {}): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_Ghosting_Resolved/', {
+      params: { ...filters, _t: Date.now().toString() }
+    });
+  }
+
+  Get_Ghosting_Top_Stage(filters: any = {}): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_Ghosting_Top_Stage/', {
+      params: { ...filters, _t: Date.now().toString() }
+    });
+  }
+
+  Get_Ghosting_Stage_Summary(filters: any = {}, limit: number = 4, offset: number = 0): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_Ghosting_Stage_Summary/', {
+      params: { ...filters, limit: limit.toString(), offset: offset.toString(), _t: Date.now().toString() }
+    });
+  }
 }
