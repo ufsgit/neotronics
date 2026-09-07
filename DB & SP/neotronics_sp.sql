@@ -14461,6 +14461,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     IN _Current_Pipeline_Stage VARCHAR(100),
     IN _Pulse_Id INT,
     IN _Pulse VARCHAR(100),
+	IN _isGhosting TINYINT(1),
+    IN _was_Previously_Ghosting TINYINT(1),
+    IN _previous_Pulse_Id INT,
+
     
     IN _Status_Id INT,
     IN _Status_Name VARCHAR(100),
@@ -14556,19 +14560,28 @@ BEGIN
             Company_Size_Id, Company_Size_Name, Source, Source_Name, 
             POC_Full_Name, POC_Designation_Id, POC_Designation, POC_Direct_Mobile, POC_Email, 
             POC_State_Id, POC_State, POC_Location_Id, POC_Loc, POC_Work_Phone, POC_Office_Type,
-            Name_Captured, Number_Captured, Email_Captured, Enquiry_For, Enquiry_For_Note, 
-            Market_Study_Systems, Next_FollowUp_Date, Remarks,
-            Lead_Priority, PipelineStage_Id, Current_Pipeline_Stage, Pulse_Id, Pulse, Status_Id, Status_Name, Branch_Id, Branch_Name,
-            Department_Id, Department_Name, Staff_Id, Staff_Name, Workflow_Id, Workflow, Workflow_Start_Status
+            Name_Captured, Number_Captured, Email_Captured, 
+            Enquiry_For, Enquiry_For_Note, 
+            Market_Study_Systems, 
+            Next_FollowUp_Date, Remarks,
+            Lead_Priority, 
+            PipelineStage_Id, Current_Pipeline_Stage, Pulse_Id, Pulse, isGhosting,
+            Status_Id, Status_Name, 
+            Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name, 
+            Workflow_Id, Workflow, Workflow_Start_Status
         ) VALUES (
             _Lead_Name, _Calculated_Lead_Type, _Vertical, _Vertical_Name, _Address, _State, _State_Name, _District, _District_Name,
             _Company_Size_Id, _Company_Size_Name, _Source, _Source_Name, 
             _POC_Full_Name, _POC_Designation_Id, _POC_Designation, _POC_Direct_Mobile, _POC_Email,
             _POC_State_Id, _POC_State, _POC_Location_Id, _POC_Loc, _POC_Work_Phone, _POC_Office_Type,
-            _Name_Captured, _Number_Captured, _Email_Captured, _Enquiry_For, _Enquiry_For_Note, 
-            _Market_Study_Systems, _Next_FollowUp_Date, _Remarks,
-            _Lead_Priority, _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, _Status_Id, _Status_Name, NULLIF(_Branch_Id, 0), _Branch_Name,
-            NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name, _Workflow_Id, _Workflow, _Workflow_Start_Status
+            _Name_Captured, _Number_Captured, _Email_Captured, 
+            _Enquiry_For, _Enquiry_For_Note, 
+            _Market_Study_Systems, 
+            _Next_FollowUp_Date, _Remarks,
+            _Lead_Priority, _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, IFNULL(_isGhosting, 0),
+            _Status_Id, _Status_Name, 
+            NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name, 
+            _Workflow_Id, _Workflow, _Workflow_Start_Status
         );
         SET _Generated_Lead_Id = LAST_INSERT_ID();
         
@@ -14578,6 +14591,21 @@ BEGIN
                 Lead_Id, PipelineStage_Id, Pipeline_Stage, Pulse_Id, Pulse, Current_Status, Login_User_Id
             ) VALUES (
                 _Generated_Lead_Id, _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, _Status_Name, _Login_User_Id
+            );
+        END IF;
+        
+                -- 3. INSERT GHOSTING HISTORY FOR NEW LEAD
+        IF _isGhosting = 1 THEN
+            INSERT INTO `lead_ghosting_history` (
+                Lead_Id, Lead_Name, Lead_Type, PipelineStage_Id, Pipeline_Stage, 
+                Pulse_Id, Pulse, Current_Status, Login_User_Id, 
+                Branch_Id, Branch_Name, Department_Id, Department_Name, 
+                Source_Id, Source_Name, isCurrent
+            ) VALUES (
+                _Generated_Lead_Id, _Lead_Name, _Calculated_Lead_Type, _Current_PipelineStage_Id, _Current_Pipeline_Stage, 
+                _Pulse_Id, _Pulse, '1', _Login_User_Id, 
+                NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, 
+                NULLIF(_Source, 0), _Source_Name, 1
             );
         END IF;
         
@@ -14605,12 +14633,13 @@ BEGIN
             POC_Direct_Mobile = _POC_Direct_Mobile, POC_Email = _POC_Email, POC_State_Id = _POC_State_Id, POC_State = _POC_State,
             POC_Location_Id = _POC_Location_Id, POC_Loc = _POC_Loc, POC_Work_Phone = _POC_Work_Phone, POC_Office_Type = _POC_Office_Type,
             Name_Captured = _Name_Captured, Number_Captured = _Number_Captured, Email_Captured = _Email_Captured, 
-            Enquiry_For = _Enquiry_For, Enquiry_For_Note = _Enquiry_For_Note, Market_Study_Systems = _Market_Study_Systems, 
+            Enquiry_For = _Enquiry_For, Enquiry_For_Note = _Enquiry_For_Note, 
+            Market_Study_Systems = _Market_Study_Systems, 
             Lead_Priority = _Lead_Priority,
             PipelineStage_Id = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', PipelineStage_Id, _Current_PipelineStage_Id), 
             Current_Pipeline_Stage = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', Current_Pipeline_Stage, _Current_Pipeline_Stage), 
             Pulse_Id = IF(_Pulse IS NULL OR _Pulse = '', Pulse_Id, _Pulse_Id), 
-            Pulse = IF(_Pulse IS NULL OR _Pulse = '', Pulse, _Pulse), 
+            Pulse = IF(_Pulse IS NULL OR _Pulse = '', Pulse, _Pulse), isGhosting = IFNULL(_isGhosting, 0),
             Workflow_Id = _Workflow_Id, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
         WHERE Lead_Id = _Lead_Id;
         
@@ -14624,7 +14653,64 @@ BEGIN
             );
         END IF;
         DELETE FROM `lead_contact` WHERE Lead_Id = _Generated_Lead_Id;
+        
+                    -- 3. UPDATE GHOSTING HISTORY IF PULSE WAS CHANGED
+        IF _previous_Pulse_Id != _Pulse_Id THEN
+        
+            -- IF PREVIOUSLY GHOSTING (Closes active record)
+            IF _was_Previously_Ghosting = 1 THEN
+                UPDATE `lead_ghosting_history`
+                SET isCurrent = 0, Current_Status = '0' 
+                WHERE Lead_Id = _Lead_Id AND isCurrent = 1;
+            END IF;
+            
+            -- IF NEW PULSE IS GHOSTING (Opens new record)
+            IF _isGhosting = 1 THEN
+                INSERT INTO `lead_ghosting_history` (
+                    Lead_Id, 
+                    Lead_Name, 
+                    Lead_Type, 
+                    PipelineStage_Id, 
+                    Pipeline_Stage, 
+                    Pulse_Id, 
+                    Pulse, 
+                    Current_Status, 
+                    Login_User_Id, 
+                    login_user_name, 
+                    Branch_Id, 
+                    Branch_Name, 
+                    Department_Id, 
+                    Department_Name, 
+                    Source_Id, 
+                    Source_Name, 
+                    isCurrent
+                ) VALUES (
+                    _Lead_Id, 
+                    _Lead_Name, 
+                    _Calculated_Lead_Type, 
+                    _Current_PipelineStage_Id, 
+                    _Current_Pipeline_Stage, 
+                    _Pulse_Id, 
+                    _Pulse, 
+                    '1', 
+                    _Login_User_Id, 
+                    NULL, 
+                    NULLIF(_Branch_Id, 0), 
+                    _Branch_Name, 
+                    NULLIF(_Department_Id, 0), 
+                    _Department_Name, 
+                    NULLIF(_Source, 0), 
+                    _Source_Name, 
+                    1
+                );
+            END IF;
+            
+        END IF;
+
+        
     END IF;
+    
+    
     -- 3. BULK INSERT CONTACTS FROM JSON
     IF _Contact_Person_Details_JSON IS NOT NULL AND _Contact_Person_Details_JSON != '' AND _Contact_Person_Details_JSON != '[]' THEN
         INSERT INTO `lead_contact` (
@@ -14654,6 +14740,7 @@ BEGIN
             Is_Primary TINYINT(1) PATH '$.Is_Primary'
         )) AS jt;
     END IF;
+    
     
         -- 4. BULK INSERT MARKET STUDY FIELDS FROM JSON
     IF _Market_Study_Fields_JSON IS NOT NULL AND _Market_Study_Fields_JSON != '' AND _Market_Study_Fields_JSON != '[]' THEN
