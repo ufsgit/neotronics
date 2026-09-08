@@ -85,6 +85,16 @@ export class Lead_Service {
     return this.http.get(environment.BasePath + 'Lead/Get_Lead_FollowUp_History/' + Lead_Id);
   }
 
+  Get_Pipeline_Pulse_History(Lead_Id, page: number = 1, limit: number = 20): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_Pipeline_Pulse_History/' + Lead_Id, {
+      params: {
+        page: page.toString(),
+        limit: limit.toString(),
+        _t: Date.now().toString()
+      }
+    });
+  }
+
   Get_Lead_Interaction_History(Lead_Id, page: number = 1, limit: number = 10): Observable<any> {
     return this.http.get(environment.BasePath + 'FollowUp/GetLeadInteractionHistory/' + Lead_Id, {
       params: {
@@ -125,6 +135,12 @@ export class Lead_Service {
         ...filters,
         _t: Date.now().toString()
       }
+    });
+  }
+
+  Get_Ghosting_KPI(filters: any = {}): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_Ghosting_KPI/', {
+      params: { ...filters, _t: Date.now().toString() }
     });
   }
 

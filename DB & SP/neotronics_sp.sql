@@ -201,6 +201,86 @@ End$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DashboardV2_PipelineAll`()
+BEGIN
+    SELECT 
+        p.PipelineStage_Name AS Stage_Name,
+        COUNT(l.Lead_Id) AS Count
+    FROM pipeline_stage_master p
+    LEFT JOIN neotronics_19_08.`lead` l 
+        ON l.PipelineStage_Id = p.PipelineStage_Id
+    WHERE IFNULL(p.DeleteStatus, 0) = 0
+    GROUP BY p.PipelineStage_Id, p.PipelineStage_Name
+    ORDER BY Count DESC;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DashboardV2_PipelineMetrics`()
+BEGIN
+    SELECT 
+        IFNULL(p.PipelineStage_Name, 'Unassigned') AS Stage_Name,
+        COUNT(l.Lead_Id) AS Count
+    FROM pipeline_stage_master p
+    LEFT JOIN neotronics_19_08.`lead` l 
+        ON l.PipelineStage_Id = p.PipelineStage_Id
+    WHERE IFNULL(p.DeleteStatus, 0) = 0
+    GROUP BY p.PipelineStage_Id, p.PipelineStage_Name
+    ORDER BY Count DESC;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DashboardV2_PipelineTop3`()
+BEGIN
+    -- Total leads count
+    SELECT COUNT(*) AS TotalLeads FROM neotronics_19_08.`lead`;
+    -- Top 3 pipeline stages by lead count (only stages with leads)
+    SELECT 
+        p.PipelineStage_Name AS Stage_Name,
+        COUNT(l.Lead_Id) AS Count
+    FROM pipeline_stage_master p
+    LEFT JOIN neotronics_19_08.`lead` l 
+        ON l.PipelineStage_Id = p.PipelineStage_Id
+    WHERE IFNULL(p.DeleteStatus, 0) = 0
+    GROUP BY p.PipelineStage_Id, p.PipelineStage_Name
+    HAVING COUNT(l.Lead_Id) > 0
+    ORDER BY Count DESC
+    LIMIT 3;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DashboardV2_PulseMetrics`()
+BEGIN
+    SELECT 
+        IFNULL(p.Pulse_Name, 'Unassigned') AS Pulse_Name,
+        COUNT(l.Lead_Id) AS Count
+    FROM pulse_master p
+    LEFT JOIN neotronics_19_08.`lead` l 
+        ON l.Pulse_Id = p.Pulse_Id
+    WHERE IFNULL(p.DeleteStatus, 0) = 0
+    GROUP BY p.Pulse_Id, p.Pulse_Name
+    ORDER BY Count DESC;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DashboardV2_SourceMetrics`()
+BEGIN
+    SELECT 
+        IFNULL(s.sourceName, 'Unknown') AS Source_Name,
+        COUNT(l.Lead_Id) AS Count
+    FROM `source` s
+    LEFT JOIN neotronics_19_08.`lead` l 
+        ON l.Source = s.id
+    WHERE IFNULL(s.DeleteStatus, 0) = 0
+    GROUP BY s.id, s.sourceName
+    ORDER BY Count DESC;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Delete_accountgroup`( In accountgroup_Id_ Int)
 Begin 
  update accountgroup set DeleteStatus=true where accountgroup_Id =accountgroup_Id_ ;
@@ -2798,6 +2878,60 @@ Payment_Voucher_No From General_Settings where General_Settings_Id =General_Sett
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Ghosting_KPI`()
+BEGIN
+    DECLARE v_total_ghosted INT DEFAULT 0;
+    DECLARE v_resolved INT DEFAULT 0;
+    DECLARE v_active INT DEFAULT 0;
+
+    -- Get Totals
+    SELECT COUNT(*) INTO v_total_ghosted FROM lead_ghosting_history;
+	SELECT COUNT(*) INTO v_active FROM lead_ghosting_history WHERE Current_Status = '1';
+	SELECT COUNT(*) INTO v_resolved FROM lead_ghosting_history WHERE Current_Status = '0';
+
+    -- Result 1: Total Ghosted Leads with Pipeline Scope
+    -- Assuming Pipeline Scope is 100% of the ghosted table for this global query
+    SELECT v_total_ghosted AS count,
+           IF(v_total_ghosted > 0, 100, 0) AS Pipeline_Scope;
+
+    -- Result 2: Active Ghosting
+    SELECT v_active AS count;
+
+    -- Result 3: Resolved Ghosting with Recovery Rate
+    SELECT v_resolved AS count, 
+           IF(v_total_ghosted > 0, ROUND((v_resolved / v_total_ghosted) * 100), 0) AS Recovery_Rate;
+
+    -- Result 4: Top Stage with Leakage Percentage
+    SELECT Pipeline_Stage, 
+           COUNT(*) AS count,
+           IF(v_total_ghosted > 0, ROUND((COUNT(*) / v_total_ghosted) * 100), 0) AS Leakage_Percentage
+    FROM lead_ghosting_history
+    GROUP BY Pipeline_Stage
+    ORDER BY count DESC
+    LIMIT 1;
+
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Ghosting_Stage_Summary`(
+    IN p_limit INT,
+    IN p_offset INT
+)
+BEGIN
+    -- If p_limit is NULL or 0, we can provide a default, but assuming they are passed correctly.
+    SELECT 
+        Pipeline_Stage AS stage, 
+        COUNT(*) AS count
+    FROM lead_ghosting_history
+    GROUP BY Pipeline_Stage
+    HAVING count >= 1
+    ORDER BY count DESC
+    LIMIT p_limit OFFSET p_offset;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_HSN`( In HSN_Id_ Int)
 Begin
  SELECT HSN_Id,
@@ -3518,18 +3652,8 @@ BEGIN
         Is_Primary
     FROM `lead_contact` 
     WHERE Lead_Id = p_LeadId;
-
-    -- 3. Pipeline History
-    SELECT 
-        Pipeline_Stage,
-        Pulse,
-        Current_Status,
-        Entry_Date
-    FROM `lead_pipeline_pulse_history` 
-    WHERE Lead_Id = p_LeadId 
-    ORDER BY Entry_Date DESC;
     
-        -- 4. Market Study Fields
+    -- 3. Market Study Fields (Formerly 4)
     SELECT 
         Category_Id,
         Category_Name,
@@ -3960,6 +4084,27 @@ Begin
 	petty_cash_details.Petty_Cash_Id=Petty_Cash_Id_
     and petty_cash_details.account_name in ('Salary','Management','Ho','Expense','Bank'); 
  
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Pipeline_Pulse_History`(
+    IN _Lead_Id INT,
+    IN _Limit INT,
+    IN _Offset INT
+)
+BEGIN
+    SELECT 
+        PipelineStage_Id, 
+        Pipeline_Stage, 
+        Pulse_Id, 
+        Pulse, 
+        Current_Status, 
+        Entry_Date
+    FROM `lead_pipeline_pulse_history` 
+    WHERE Lead_Id = _Lead_Id 
+    ORDER BY Entry_Date DESC
+    LIMIT _Limit OFFSET _Offset;
 END$$
 DELIMITER ;
 
@@ -6730,7 +6875,8 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Pulse_Save`(
     IN p_Pulse_Id INT,
     IN p_Pulse_Name VARCHAR(255),
-    IN p_Description TEXT
+    IN p_Description TEXT,
+    IN p_isGhosting TINYINT(1)
 )
 BEGIN
     DECLARE v_Exists INT DEFAULT 0;
@@ -6745,13 +6891,14 @@ BEGIN
         SELECT 0 AS Pulse_Id_, 'Name already exists' AS Message;
     ELSE
         IF p_Pulse_Id IS NULL OR p_Pulse_Id = 0 THEN
-            INSERT INTO pulse_master (Pulse_Name, DeleteStatus)
-            VALUES (p_Pulse_Name, 0);
+            INSERT INTO pulse_master (Pulse_Name, isGhosting, DeleteStatus)
+            VALUES (p_Pulse_Name, IFNULL(p_isGhosting, 0), 0);
 
             SELECT LAST_INSERT_ID() AS Pulse_Id_, 'Saved Successfully' AS Message;
         ELSE
             UPDATE pulse_master
-            SET Pulse_Name = p_Pulse_Name
+            SET Pulse_Name = p_Pulse_Name,
+                isGhosting = IFNULL(p_isGhosting, 0)
             WHERE Pulse_Id = p_Pulse_Id;
 
             SELECT p_Pulse_Id AS Pulse_Id_, 'Updated Successfully' AS Message;
@@ -6761,18 +6908,16 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Pulse_Search`(
-    IN p_Search VARCHAR(255)
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Pulse_Search`(IN p_Search VARCHAR(255))
 BEGIN
     IF p_Search IS NULL OR p_Search = '' THEN
-        SELECT Pulse_Id AS Pulse_Id, Pulse_Name AS Pulse_Name, NULL AS Description
+        SELECT Pulse_Id AS Pulse_Id, Pulse_Name AS Pulse_Name, NULL AS Description, isGhosting AS isGhosting
         FROM pulse_master
         WHERE IFNULL(DeleteStatus, 0) = 0
         ORDER BY Pulse_Name ASC
         LIMIT 20;
     ELSE
-        SELECT Pulse_Id AS Pulse_Id, Pulse_Name AS Pulse_Name, NULL AS Description
+        SELECT Pulse_Id AS Pulse_Id, Pulse_Name AS Pulse_Name, NULL AS Description, isGhosting AS isGhosting
         FROM pulse_master
         WHERE Pulse_Name LIKE CONCAT('%', p_Search, '%')
           AND IFNULL(DeleteStatus, 0) = 0
@@ -14594,20 +14739,21 @@ BEGIN
             );
         END IF;
         
-                -- 3. INSERT GHOSTING HISTORY FOR NEW LEAD
+        -- 3. INSERT GHOSTING HISTORY FOR NEW LEAD
         IF _isGhosting = 1 THEN
             INSERT INTO `lead_ghosting_history` (
                 Lead_Id, Lead_Name, Lead_Type, PipelineStage_Id, Pipeline_Stage, 
-                Pulse_Id, Pulse, Current_Status, Login_User_Id, 
-                Branch_Id, Branch_Name, Department_Id, Department_Name, 
+                Pulse_Id, Pulse, Current_Status, Login_User_Id, login_user_name,
+                Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
                 Source_Id, Source_Name, isCurrent
             ) VALUES (
                 _Generated_Lead_Id, _Lead_Name, _Calculated_Lead_Type, _Current_PipelineStage_Id, _Current_Pipeline_Stage, 
-                _Pulse_Id, _Pulse, '1', _Login_User_Id, 
-                NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, 
+                _Pulse_Id, _Pulse, '1', _Login_User_Id, (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = _Login_User_Id LIMIT 1),
+                NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name,
                 NULLIF(_Source, 0), _Source_Name, 1
             );
         END IF;
+
         
          -- 4. INSERT FOLLOW-UP 
         IF _Is_FollowUp = 1 THEN
@@ -14654,7 +14800,7 @@ BEGIN
         END IF;
         DELETE FROM `lead_contact` WHERE Lead_Id = _Generated_Lead_Id;
         
-                    -- 3. UPDATE GHOSTING HISTORY IF PULSE WAS CHANGED
+        -- 3. UPDATE GHOSTING HISTORY IF PULSE WAS CHANGED
         IF _previous_Pulse_Id != _Pulse_Id THEN
         
             -- IF PREVIOUSLY GHOSTING (Closes active record)
@@ -14667,45 +14813,23 @@ BEGIN
             -- IF NEW PULSE IS GHOSTING (Opens new record)
             IF _isGhosting = 1 THEN
                 INSERT INTO `lead_ghosting_history` (
-                    Lead_Id, 
-                    Lead_Name, 
-                    Lead_Type, 
-                    PipelineStage_Id, 
-                    Pipeline_Stage, 
-                    Pulse_Id, 
-                    Pulse, 
-                    Current_Status, 
-                    Login_User_Id, 
-                    login_user_name, 
-                    Branch_Id, 
-                    Branch_Name, 
-                    Department_Id, 
-                    Department_Name, 
-                    Source_Id, 
-                    Source_Name, 
-                    isCurrent
-                ) VALUES (
-                    _Lead_Id, 
-                    _Lead_Name, 
-                    _Calculated_Lead_Type, 
-                    _Current_PipelineStage_Id, 
-                    _Current_Pipeline_Stage, 
-                    _Pulse_Id, 
-                    _Pulse, 
-                    '1', 
-                    _Login_User_Id, 
-                    NULL, 
-                    NULLIF(_Branch_Id, 0), 
-                    _Branch_Name, 
-                    NULLIF(_Department_Id, 0), 
-                    _Department_Name, 
-                    NULLIF(_Source, 0), 
-                    _Source_Name, 
-                    1
-                );
+                    Lead_Id, Lead_Name, Lead_Type, PipelineStage_Id, Pipeline_Stage, 
+                    Pulse_Id, Pulse, Current_Status, Login_User_Id, login_user_name, 
+                    Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
+                    Source_Id, Source_Name, isCurrent
+                ) 
+                SELECT 
+                    Lead_Id, Lead_Name, Lead_Type, _Current_PipelineStage_Id, _Current_Pipeline_Stage, 
+                    _Pulse_Id, _Pulse, '1', _Login_User_Id, 
+                    (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = _Login_User_Id LIMIT 1), 
+                    Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
+                    Source, Source_Name, 1
+                FROM `lead` 
+                WHERE Lead_Id = _Lead_Id;
             END IF;
             
         END IF;
+
 
         
     END IF;

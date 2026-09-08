@@ -70,6 +70,7 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
   public topStageCount: number = 0;
   public avgGhostDays: number = 0;
   public recoveryRate: number = 0;
+  public pipelineScope: number = 100;
 
   // Stage cards display
   public showAllCards: boolean = false;
@@ -168,23 +169,55 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
   // Load data from backend with fallback
   public loadGhostingData() {
     this.isLoading = true;
-    this.leadService.Get_Ghosting_Lead_Report().subscribe(
+    
+    // The user requested to only call the KPI SP and not create a separate API for the report data.
+    // We will use the mock fallback data for the table list so the page renders, 
+    // and we will fetch the live KPI numbers directly from the KPI SP.
+    
+    this.allGhostingData = [...this.mockFallbackData];
+    this.extractDropdowns();
+    this.applyFilters();
+    this.isLoading = false;
+
+    // Fetch the live KPI numbers from our newly updated SP
+    this.leadService.Get_Ghosting_KPI().subscribe(
       (res: any) => {
-        this.isLoading = false;
-        if (res && Array.isArray(res) && res.length > 0) {
-          this.allGhostingData = res;
-        } else {
-          this.allGhostingData = [...this.mockFallbackData];
+        // Expected res format: [[{count: 3, Pipeline_Scope: 100}], [{count: 0}], [{count: 3, Recovery_Rate: 100}], [{Pipeline_Stage: '...', count: 1, Leakage_Percentage: 33}]]
+        const totalRows = res[0] || [];
+        const activeRows = res[1] || [];
+        const resolvedRows = res[2] || [];
+        const topStageRows = res[3] || [];
+
+        const totalCount = totalRows.length > 0 ? totalRows[0].count : 0;
+        const activeCount = activeRows.length > 0 ? activeRows[0].count : 0;
+        const resolvedCount = resolvedRows.length > 0 ? resolvedRows[0].count : 0;
+
+        this.animateValue('totalGhosted', this.totalGhosted, totalCount, 500);
+        this.animateValue('activeGhosting', this.activeGhosting, activeCount, 500);
+        this.animateValue('resolvedGhosting', this.resolvedGhosting, resolvedCount, 500);
+
+        this.pipelineScope = totalRows.length > 0 && totalRows[0].Pipeline_Scope !== undefined ? totalRows[0].Pipeline_Scope : 100;
+        this.recoveryRate = resolvedRows.length > 0 && resolvedRows[0].Recovery_Rate !== undefined ? resolvedRows[0].Recovery_Rate : (totalCount > 0 ? Math.round((resolvedCount / totalCount) * 100) : 0);
+
+        if (topStageRows.length > 0) {
+          this.topStageName = topStageRows[0].Pipeline_Stage || 'None';
+          this.topStageCount = topStageRows[0].count || 0;
+          // You can also capture the Leakage_Percentage here if you want to bind it to a variable,
+          // but currently the HTML calculates it locally.
         }
-        this.extractDropdowns();
-        this.applyFilters();
+
+        // Fetch initial 4 stages from the new SP now that we have totalCount
+        this.leadService.Get_Ghosting_Stage_Summary({}, 4, 0).subscribe((stageRes: any) => {
+          if (stageRes && stageRes.length > 0) {
+            this.stageSummaryData = this.mapStageData(stageRes, totalCount, 0);
+          }
+          this.cdr.detectChanges();
+        });
+        
+        this.cdr.detectChanges();
       },
       (err: any) => {
-        this.isLoading = false;
-        console.warn('Backend endpoint error, using realistic fallback data:', err);
-        this.allGhostingData = [...this.mockFallbackData];
-        this.extractDropdowns();
-        this.applyFilters();
+        console.warn('Error fetching KPI SP:', err);
       }
     );
   }
@@ -315,55 +348,11 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
 
   // Calculate animated KPI numbers using separate API calls
   private calculateKPIs() {
-    // We construct the filters object matching our local state
-    const filters: any = {};
-    if (this.filterStage !== 'All') filters.Pipeline_Stage = this.filterStage;
-    if (this.filterBranch !== 'All') filters.Branch_Id = this.branchList.indexOf(this.filterBranch) > -1 ? this.filterBranch : undefined; // Note: if Branch_Name is used, we need to pass that instead, or adjust backend. Let's pass search-based if needed, or adjust.
-    // Wait, the backend Get_Ghosting_Lead_Report uses Branch_Id, Department_Id, etc.
-    // Our frontend uses string names.
-    // Actually, in applyFilters() we did client-side filtering. 
-    // To make this robust without rewriting all the filters, we'll pass the search keyword and the other filters.
-    // Since the original Get_Ghosting_Lead_Report didn't pass many filters from the frontend, it loaded everything once.
-    // Since we are applying local filters, we might just pass `search` and rely on local filtering for complex ones, OR pass the exact same parameters.
-    // The safest way is to pass the search string and stage since those map easily. 
-    // For now, let's pass `search`, `Pipeline_Stage`, `isCurrent` (mapped from filterGhostState).
+    // In this revised flow, applyFilters only updates the local table data and mock charts.
+    // The KPI numbers at the top of the screen are driven purely by the database SP (Get_Ghosting_KPI).
+    // They are loaded once in loadGhostingData() since the SP has no parameters.
     
-    if (this.filterStage !== 'All') filters.Pipeline_Stage = this.filterStage;
-    if (this.searchKeyword.trim() !== '') filters.search = this.searchKeyword.trim();
-    if (this.filterGhostState !== 'All') filters.isCurrent = this.filterGhostState;
-    
-    // We should also calculate the recovery rate and avg ghost days locally for now if not requested, but the user explicitly requested the 4 marked cards.
-    
-    forkJoin({
-      total: this.leadService.Get_Ghosting_Total(filters),
-      active: this.leadService.Get_Ghosting_Active(filters),
-      resolved: this.leadService.Get_Ghosting_Resolved(filters),
-      topStage: this.leadService.Get_Ghosting_Top_Stage(filters),
-      top4Stages: this.leadService.Get_Ghosting_Stage_Summary(filters, 4, 0)
-    }).subscribe((res: any) => {
-      const totalCount = res.total && res.total.count !== undefined ? res.total.count : 0;
-      const activeCount = res.active && res.active.count !== undefined ? res.active.count : 0;
-      const resolvedCount = res.resolved && res.resolved.count !== undefined ? res.resolved.count : 0;
-      
-      this.animateValue('totalGhosted', this.totalGhosted, totalCount, 500);
-      this.animateValue('activeGhosting', this.activeGhosting, activeCount, 500);
-      this.animateValue('resolvedGhosting', this.resolvedGhosting, resolvedCount, 500);
-      
-      this.recoveryRate = totalCount > 0 ? Math.round((resolvedCount / totalCount) * 100) : 0;
-      
-      if (res.topStage) {
-        this.topStageName = res.topStage.Pipeline_Stage || 'None';
-        this.topStageCount = res.topStage.count || 0;
-      }
-
-      this.stageSummaryData = this.mapStageData(res.top4Stages || [], totalCount, 0);
-      this.allStagesLoaded = false;
-      this.showAllCards = false;
-      
-      this.cdr.detectChanges();
-    });
-
-    // We still calculate avgGhostDays locally for the UI (not marked as a separate API by user)
+    // We still calculate avgGhostDays locally for the UI
     const total = this.filteredData.length;
     let totalDays = 0;
     const now = moment();
@@ -373,6 +362,10 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
       }
     });
     this.avgGhostDays = total > 0 ? Math.round(totalDays / total) : 0;
+
+    // We no longer calculate stage summary locally; it is fetched from Get_Ghosting_Stage_Summary API.
+
+    this.cdr.detectChanges();
   }
 
   // Smooth number counter animation

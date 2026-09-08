@@ -352,8 +352,9 @@
           <div style="border-right: 1px solid #e2e8f0; padding-right: 20px;">
             <label class="ig-label" style="margin-bottom: 5px; display: block; text-transform: uppercase;">Stage</label>
             <app-searchable-dropdown name="Selected_Pipeline_Stage" [(ngModel)]="Selected_Pipeline_Stage"
-              [data]="DropdownData['PipelineStage']" bindLabel="name" bindValue="name" [placeholder]="Lead_.Current_Pipeline_Stage || 'Select Stage...'"
-              (search)="onSearchDropdown('PipelineStage', $event)" (loadMore)="onLoadMoreDropdown('PipelineStage')">
+              [data]="DropdownData['PipelineStage']" bindLabel="name" bindValue="name" [placeholder]="Selected_Pipeline_Stage || 'Select Stage...'"
+              (search)="onSearchDropdown('PipelineStage', $event)" (loadMore)="onLoadMoreDropdown('PipelineStage')"
+              (ngModelChange)="PipelineStage_Change()" (itemSelected)="PipelineStage_Change()">
             </app-searchable-dropdown>
           </div>
 
@@ -363,7 +364,7 @@
               <label class="ig-label"
                 style="margin-bottom: 5px; display: block; text-transform: uppercase;">Pulse</label>
               <app-searchable-dropdown name="Selected_Pulse" [(ngModel)]="Selected_Pulse" [data]="DropdownData['Pulse']"
-                bindLabel="name" bindValue="name" [placeholder]="Lead_.Pulse || 'Select Pulse...'"
+                bindLabel="name" bindValue="name" [placeholder]="Selected_Pulse || 'Select Pulse...'"
                 (search)="onSearchDropdown('Pulse', $event)" (loadMore)="onLoadMoreDropdown('Pulse')">
               </app-searchable-dropdown>
             </div>
@@ -374,7 +375,7 @@
           <div style="margin-bottom: 10px;">
             <button mat-button type="button" class="ig-btn-outline"
               style="height: 30px; padding: 0 12px; font-size: 12px;"
-              (click)="Show_Pipeline_History = !Show_Pipeline_History">
+              (click)="Toggle_Pipeline_History()">
               {{ Show_Pipeline_History ? 'Hide History' : 'Show History' }}
             </button>
           </div>
@@ -387,18 +388,26 @@
               <div style="width: 100px; text-align: right;">Date</div>
             </div>
 
-            <div *ngIf="FollowUp_History?.length === 0"
-              style="display: flex; align-items: center; justify-content: center; padding: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; margin-bottom: 4px; font-style: italic;">
-              No history found
-            </div>
+            <div style="max-height: 250px; overflow-y: auto; padding-right: 5px;" class="custom-scrollbar"
+              (scroll)="onPipelineHistoryScroll($event)">
+              <div *ngIf="Pipeline_Pulse_History?.length === 0"
+                style="display: flex; align-items: center; justify-content: center; padding: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; margin-bottom: 4px; font-style: italic;">
+                No history found
+              </div>
 
-            <div *ngFor="let h of FollowUp_History"
-              style="display: flex; align-items: center; gap: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; margin-bottom: 4px;">
-              <div style="flex: 1;">{{ h.Pipeline_Stage || 'Need immediate follow up' }} <span *ngIf="h.Remark">— {{
-                  h.Remark }}</span></div>
-              <div style="width: 150px; font-weight: 500;">{{ h.Pulse || 'Not interested' }}</div>
-              <div style="width: 100px; text-align: right; color: #64748b;">{{ (h.Entry_Date | date:'M/d/yyyy') ||
-                '8/17/2026' }}</div>
+              <div *ngFor="let h of Pipeline_Pulse_History"
+                style="display: flex; align-items: center; gap: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; margin-bottom: 4px;">
+                <div style="flex: 1;">{{ h.Pipeline_Stage || 'Need immediate follow up' }} <span *ngIf="h.Remark">— {{
+                    h.Remark }}</span></div>
+                <div style="width: 150px; font-weight: 500;">{{ h.Pulse || 'Not interested' }}</div>
+                <div style="width: 100px; text-align: right; color: #64748b;">{{ (h.Entry_Date | date:'M/d/yyyy') ||
+                  '8/17/2026' }}</div>
+              </div>
+
+              <div *ngIf="Loading_Pipeline_History"
+                style="display: flex; align-items: center; justify-content: center; padding: 10px; font-size: 12px; color: #3b82f6; font-style: italic;">
+                Loading more history...
+              </div>
             </div>
           </div>
         </div>

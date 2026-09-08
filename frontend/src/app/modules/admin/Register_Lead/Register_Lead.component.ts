@@ -75,6 +75,10 @@ export class Register_LeadComponent implements OnInit {
   Staff_Data: any[] = [];
   Filtered_Staff_Data: any[] = [];
   FollowUp_History: any[] = [];
+  Pipeline_Pulse_History: any[] = [];
+  Pipeline_History_Page: number = 1;
+  Pipeline_History_HasMore: boolean = true;
+  Loading_Pipeline_History: boolean = false;
   Activity_Log: any[] = [];
   Meeting_Data: any[] = [];
   Quote_Tracking_Data: any[] = [];
@@ -396,9 +400,10 @@ export class Register_LeadComponent implements OnInit {
                 Next_Call_Action: false
              }));
            }
-           this.FollowUp_History = (data[2] && Array.isArray(data[2])) ? data[2] : [];
-           if (data[3] && Array.isArray(data[3])) {
-             leadData.Market_Study_Fields_Data = data[3];
+           // We are removing Pipeline History from the SP.
+           // So data[2] will now be the Market Study Fields Data.
+           if (data[2] && Array.isArray(data[2])) {
+             leadData.Market_Study_Fields_Data = data[2];
            }
            this.Edit_Lead(leadData);
         } else {
@@ -528,6 +533,11 @@ export class Register_LeadComponent implements OnInit {
     if (this.DropdownLoading[cacheKey] || this.DropdownEnd[cacheKey]) return;
     this.DropdownPage[cacheKey] = (this.DropdownPage[cacheKey] || 1) + 1;
     this.loadDropdownData(type, true, filterId);
+  }
+
+  PipelineStage_Change() {
+    this.Selected_Pulse = '';
+    this.DropdownData['Pulse'] = [];
   }
 
   onCompanyNameChange(value: string) {
@@ -1102,6 +1112,20 @@ export class Register_LeadComponent implements OnInit {
         }
       }
     }
+    
+    // Validate Pipeline Stage and Pulse selection
+    const pipelineStageObjValid = (this.DropdownData['PipelineStage'] || []).find(x => x.name === this.Selected_Pipeline_Stage);
+    const pulseObjValid = (this.DropdownData['Pulse'] || []).find(x => x.name === this.Selected_Pulse);
+
+    if (this.Selected_Pipeline_Stage && (!this.Selected_Pulse || !pulseObjValid)) {
+      this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Please select a valid Pulse for the selected Pipeline Stage.', Type: "3" } });
+      return;
+    }
+    
+    if (this.Selected_Pulse && (!this.Selected_Pipeline_Stage || !pipelineStageObjValid)) {
+      this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Please select a valid Pipeline Stage for the selected Pulse.', Type: "3" } });
+      return;
+    }
     const contactPersonValues = this.contactForm && this.contactForm.value && this.contactForm.value.contactPersons ? this.contactForm.value.contactPersons : [];
     const selectedContactValue = contactPersonValues.find(c => !!c.Next_Call_Action) || contactPersonValues[0] || null;
     if (!this.Lead_.Phone && selectedContactValue && selectedContactValue.POC_Direct_Mobile) this.Lead_.Phone = selectedContactValue.POC_Direct_Mobile;
@@ -1142,6 +1166,10 @@ export class Register_LeadComponent implements OnInit {
     
     const pulseObj = (this.DropdownData['Pulse'] || []).find(x => x.name === this.Selected_Pulse);
     (Lead_Copy as any).Pulse_Id = pulseObj ? pulseObj.id : 0;
+
+    (Lead_Copy as any).isGhosting = (this.Selected_Pulse && this.Selected_Pulse.toLowerCase().includes('ghost')) ? 1 : 0;
+    (Lead_Copy as any).was_Previously_Ghosting = ((this.Lead_ as any).Pulse && (this.Lead_ as any).Pulse.toLowerCase().includes('ghost')) ? 1 : 0;
+    (Lead_Copy as any).previous_Pulse_Id = (this.Lead_ as any).Pulse_Id || 0;
     
     const workflowObj = (this.DropdownData['Workflow'] || []).find(x => x.name === this.Selected_Workflow);
     (Lead_Copy as any).Workflow_Id = workflowObj ? workflowObj.id : 0;
@@ -1379,10 +1407,19 @@ export class Register_LeadComponent implements OnInit {
     this.DropdownData['Source'] = this.Lead_.Source ? [{ id: this.Lead_.Source, name: this.Lead_.Source_Name }] : [];
     this.DropdownData['LeadPriority'] = this.Lead_.Lead_Priority ? [{ name: this.Lead_.Lead_Priority }] : [];
     
-    this.Selected_Pipeline_Stage = '';
-    this.DropdownData['PipelineStage'] = [];
-    this.Selected_Pulse = '';
-    this.DropdownData['Pulse'] = [];
+    this.Selected_Pipeline_Stage = (this.Lead_ as any).Current_Pipeline_Stage || '';
+    if ((this.Lead_ as any).PipelineStage_Id) {
+       this.DropdownData['PipelineStage'] = [{ id: (this.Lead_ as any).PipelineStage_Id, name: this.Selected_Pipeline_Stage }];
+    } else {
+       this.DropdownData['PipelineStage'] = [];
+    }
+
+    this.Selected_Pulse = (this.Lead_ as any).Pulse || '';
+    if ((this.Lead_ as any).Pulse_Id) {
+       this.DropdownData['Pulse'] = [{ id: (this.Lead_ as any).Pulse_Id, name: this.Selected_Pulse }];
+    } else {
+       this.DropdownData['Pulse'] = [];
+    }
     
     this.Selected_Workflow = (this.Lead_ as any).Workflow || '';
     this.DropdownData['Workflow'] = (this.Lead_ as any).Workflow ? [{ name: (this.Lead_ as any).Workflow }] : [];
@@ -1411,6 +1448,44 @@ export class Register_LeadComponent implements OnInit {
     this.DropdownData['District'] = districts;
 
     this.Entry_View = true;
+  }
+
+  Toggle_Pipeline_History() {
+    this.Show_Pipeline_History = !this.Show_Pipeline_History;
+    if (this.Show_Pipeline_History && this.Lead_.Lead_Id) {
+       this.Pipeline_History_Page = 1;
+       this.Pipeline_Pulse_History = [];
+       this.Pipeline_History_HasMore = true;
+       this.Load_More_Pipeline_History();
+    }
+  }
+
+  Load_More_Pipeline_History() {
+    if (!this.Pipeline_History_HasMore || this.Loading_Pipeline_History) return;
+    this.Loading_Pipeline_History = true;
+    
+    this.Lead_Service_.Get_Pipeline_Pulse_History(this.Lead_.Lead_Id, this.Pipeline_History_Page, 20).subscribe(Rows => {
+        this.Loading_Pipeline_History = false;
+        const newRows = (Rows && Rows[0]) ? Rows[0] : [];
+        if (newRows.length < 20) {
+            this.Pipeline_History_HasMore = false;
+        }
+        if (newRows.length > 0) {
+            this.Pipeline_Pulse_History = [...this.Pipeline_Pulse_History, ...newRows];
+            this.Pipeline_History_Page++;
+        }
+    }, err => {
+        this.Loading_Pipeline_History = false;
+        console.error("Error fetching pipeline history:", err);
+    });
+  }
+
+  onPipelineHistoryScroll(event: any) {
+    const target = event.target;
+    // Load more when scrolled within 5px of the bottom
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 5) {
+      this.Load_More_Pipeline_History();
+    }
   }
 
   Get_Lead_Dynamic_Fields(Lead_Id: number) {

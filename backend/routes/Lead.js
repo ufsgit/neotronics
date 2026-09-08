@@ -214,6 +214,26 @@ router.get('/Get_Lead_FollowUp_History/:Lead_Id', function (req, res, next) {
     }
 });
 
+router.get('/Get_Pipeline_Pulse_History/:Lead_Id', function (req, res, next) {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+        
+        Lead.Get_Pipeline_Pulse_History(req.params.Lead_Id, limit, page, function (err, rows) {
+            if (err) {
+                res.json(err);
+            }
+            else {
+                res.json(rows);
+            }
+        });
+    }
+    catch (e) {
+        console.error("Exception in Get_Pipeline_Pulse_History:", e);
+        res.status(500).json({ error: e.message || String(e) });
+    }
+});
+
 router.get('/Get_Lead_Activity_Log/:Lead_Id', function (req, res, next) {
     try {
         Lead.Get_Lead_Activity_Log(req.params.Lead_Id, function (err, rows) {
@@ -348,6 +368,40 @@ router.get('/Search_Lead_Dropdowns/', function (req, res, next) {
         });
     } catch (e) {
         res.json(e);
+    }
+});
+
+router.get('/Get_Ghosting_KPI/', function (req, res, next) {
+    try {
+        Lead.Get_Ghosting_KPI(function (err, rows) {
+            if (err) {
+                res.status(500).json({ error: err.message || String(err) });
+            } else {
+                res.json(rows);
+            }
+        });
+    } catch (e) {
+        console.error("Exception in Get_Ghosting_KPI:", e);
+        res.status(500).json({ error: e.message || String(e) });
+    }
+});
+
+router.get('/Get_Ghosting_Stage_Summary/', function (req, res, next) {
+    try {
+        const limit = req.query.limit || 100;
+        const offset = req.query.offset || 0;
+        
+        Lead.Get_Ghosting_Stage_Summary(limit, offset, function (err, rows) {
+            if (err) {
+                res.status(500).json({ error: err.message || String(err) });
+            } else {
+                // Return just the first array (result set) like we usually do for SPs returning a single select
+                res.json(rows && rows.length > 0 ? rows[0] : []);
+            }
+        });
+    } catch (e) {
+        console.error("Exception in Get_Ghosting_Stage_Summary:", e);
+        res.status(500).json({ error: e.message || String(e) });
     }
 });
 
