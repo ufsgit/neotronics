@@ -15,7 +15,8 @@ export class LeadPulseComponent implements OnInit {
   searchText: string = '';
 
   columns = [
-    { key: 'name', label: 'Name' }
+    { key: 'Pulse_Name', label: 'Name' },
+    { key: 'isGhosting', label: 'Status' }
   ];
 
   constructor(private leadpulseService: LeadPulseService) { }

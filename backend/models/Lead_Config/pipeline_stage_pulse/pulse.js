@@ -6,10 +6,11 @@ var Pulse = {
         var id          = Number(body.Pulse_Id || 0);
         var name        = (body.Pulse_Name || '').trim();
         var description = body.Description || '';
+        var isGhosting  = body.isGhosting ? 1 : 0;
 
         return db.query(
-            'CALL LC_Pulse_Save(?, ?, ?)',
-            [id || null, name, description],
+            'CALL LC_Pulse_Save(?, ?, ?, ?)',
+            [id || null, name, description, isGhosting],
             callback
         );
     },

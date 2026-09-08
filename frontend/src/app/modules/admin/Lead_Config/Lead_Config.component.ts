@@ -35,7 +35,7 @@ export class Lead_ConfigComponent implements OnInit {
   isErrorModalOpen: boolean = false;
   errorMessage: string = '';
 
-  formData: { id: number; name: string; description: string; IsActive?: any } = { id: 0, name: '', description: '', IsActive: 1 };
+  formData: { id: number; name: string; description: string; IsActive?: any; isGhosting?: any } = { id: 0, name: '', description: '', IsActive: 1, isGhosting: 0 };
   
   columns = [
     { key: 'name', label: 'Name' },
@@ -167,7 +167,8 @@ export class Lead_ConfigComponent implements OnInit {
           id: item[pk] || item.id || 0,
           name: item[nameField] || item.name || item.Vertical_Name || item.Name || '',
           Description: item.Description || item.description || '',
-          IsActive: item.IsActive && typeof item.IsActive === 'object' && item.IsActive.data ? item.IsActive.data[0] : (item.IsActive ? 1 : 0)
+          IsActive: item.IsActive && typeof item.IsActive === 'object' && item.IsActive.data ? item.IsActive.data[0] : (item.IsActive ? 1 : 0),
+          isGhosting: item.isGhosting && typeof item.isGhosting === 'object' && item.isGhosting.data ? item.isGhosting.data[0] : (item.isGhosting ? 1 : 0)
         }));
         
         this.totalCount = this.Dropdown_Data.length;
@@ -194,7 +195,7 @@ export class Lead_ConfigComponent implements OnInit {
 
   onAdd() {
     this.isEditMode = false;
-    this.formData = { id: 0, name: '', description: '', IsActive: 1 };
+    this.formData = { id: 0, name: '', description: '', IsActive: 1, isGhosting: 0 };
     this.isModalOpen = true;
   }
 
@@ -206,7 +207,8 @@ export class Lead_ConfigComponent implements OnInit {
       id: item[pk] || item.id || 0,
       name: item[nameField] || item.name || '',
       description: item.Description || item.description || '',
-      IsActive: item.IsActive
+      IsActive: item.IsActive,
+      isGhosting: item.isGhosting
     };
     this.isModalOpen = true;
   }
@@ -230,6 +232,10 @@ export class Lead_ConfigComponent implements OnInit {
     
     if (this.activeSubTab === 'Market System') {
       body.IsActive = this.formData.IsActive ? 1 : 0;
+    }
+    
+    if (this.activeSubTab === 'Pulse') {
+      body.isGhosting = this.formData.isGhosting ? 1 : 0;
     }
 
     const url = environment.BasePath + route + '/Save';
@@ -345,6 +351,11 @@ export class Lead_ConfigComponent implements OnInit {
       this.columns = [
         { key: 'name', label: 'Name' },
         { key: 'IsActive', label: 'Status' }
+      ];
+    } else if (tab === 'Pulse') {
+      this.columns = [
+        { key: 'name', label: 'Name' },
+        { key: 'isGhosting', label: 'Status' }
       ];
     } else if (this.hasDescription(tab)) {
       this.columns = [
