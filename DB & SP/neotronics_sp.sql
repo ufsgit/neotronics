@@ -6863,69 +6863,67 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_PipelineStage_Get`(
-    IN p_Pipeline_Stage_Id INT
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_PipelineStage_Get`(IN p_Id INT)
 BEGIN
-    SELECT PipelineStage_Id AS Pipeline_Stage_Id, PipelineStage_Name AS Pipeline_Stage_Name, NULL AS Description
+    SELECT
+        PipelineStage_Id,
+        PipelineStage_Name,
+        Stage_Type,
+        Followup_Required,
+        Color
     FROM pipeline_stage_master
-    WHERE PipelineStage_Id = p_Pipeline_Stage_Id
-      AND IFNULL(DeleteStatus, 0) = 0;
+    WHERE PipelineStage_Id = p_Id
+      AND DeleteStatus = 0;
 END$$
 DELIMITER ;
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_PipelineStage_Save`(
-    IN p_Pipeline_Stage_Id INT,
-    IN p_Pipeline_Stage_Name VARCHAR(255),
-    IN p_Description TEXT
+    IN  p_Id                INT,
+    IN  p_Name              VARCHAR(200),
+    IN  p_StageType         TINYINT,
+    IN  p_FollowupRequired  TINYINT(1),
+    IN  p_Color             VARCHAR(20)
 )
 BEGIN
-    DECLARE v_Exists INT DEFAULT 0;
+    IF p_Id IS NULL OR p_Id = 0 THEN
+        -- INSERT new record
+        INSERT INTO pipeline_stage_master
+            (PipelineStage_Name, Stage_Type, Followup_Required, Color, DeleteStatus)
+        VALUES
+            (p_Name, IFNULL(p_StageType, 1), IFNULL(p_FollowupRequired, 1), p_Color, 0);
 
-    SELECT COUNT(*) INTO v_Exists
-    FROM pipeline_stage_master
-    WHERE PipelineStage_Name = p_Pipeline_Stage_Name
-      AND IFNULL(DeleteStatus, 0) = 0
-      AND (p_Pipeline_Stage_Id IS NULL OR p_Pipeline_Stage_Id = 0 OR PipelineStage_Id <> p_Pipeline_Stage_Id);
-
-    IF v_Exists > 0 THEN
-        SELECT 0 AS Pipeline_Stage_Id_, 'Name already exists' AS Message;
+        SELECT LAST_INSERT_ID() AS Id, 'Saved' AS Message;
     ELSE
-        IF p_Pipeline_Stage_Id IS NULL OR p_Pipeline_Stage_Id = 0 THEN
-            INSERT INTO pipeline_stage_master (PipelineStage_Name, DeleteStatus)
-            VALUES (p_Pipeline_Stage_Name, 0);
+        -- UPDATE existing record
+        UPDATE pipeline_stage_master
+        SET
+            PipelineStage_Name = p_Name,
+            Stage_Type         = IFNULL(p_StageType, 1),
+            Followup_Required  = IFNULL(p_FollowupRequired, 1),
+            Color              = p_Color
+        WHERE PipelineStage_Id = p_Id;
 
-            SELECT LAST_INSERT_ID() AS Pipeline_Stage_Id_, 'Saved Successfully' AS Message;
-        ELSE
-            UPDATE pipeline_stage_master
-            SET PipelineStage_Name = p_Pipeline_Stage_Name
-            WHERE PipelineStage_Id = p_Pipeline_Stage_Id;
-
-            SELECT p_Pipeline_Stage_Id AS Pipeline_Stage_Id_, 'Updated Successfully' AS Message;
-        END IF;
+        SELECT p_Id AS Id, 'Updated' AS Message;
     END IF;
 END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_PipelineStage_Search`(
-    IN p_Search VARCHAR(255)
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_PipelineStage_Search`(IN p_Search VARCHAR(200))
 BEGIN
-    IF p_Search IS NULL OR p_Search = '' THEN
-        SELECT PipelineStage_Id AS Pipeline_Stage_Id, PipelineStage_Name AS Pipeline_Stage_Name, NULL AS Description
-        FROM pipeline_stage_master
-        WHERE IFNULL(DeleteStatus, 0) = 0
-        ORDER BY PipelineStage_Name ASC
-        LIMIT 20;
-    ELSE
-        SELECT PipelineStage_Id AS Pipeline_Stage_Id, PipelineStage_Name AS Pipeline_Stage_Name, NULL AS Description
-        FROM pipeline_stage_master
-        WHERE PipelineStage_Name LIKE CONCAT('%', p_Search, '%')
-          AND IFNULL(DeleteStatus, 0) = 0
-        ORDER BY PipelineStage_Name ASC;
-    END IF;
+    SELECT
+        PipelineStage_Id,
+        PipelineStage_Name,
+        Stage_Type,
+        Followup_Required,
+        Color,
+        COUNT(*) OVER() AS TotalCount
+    FROM pipeline_stage_master
+    WHERE DeleteStatus = 0
+      AND (p_Search IS NULL OR p_Search = ''
+           OR PipelineStage_Name LIKE CONCAT('%', p_Search, '%'))
+    ORDER BY PipelineStage_Name ASC;
 END$$
 DELIMITER ;
 
