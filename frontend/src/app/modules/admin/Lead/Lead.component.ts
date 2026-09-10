@@ -200,6 +200,10 @@ export class LeadComponent implements OnInit {
 
   Reprocess_Drawer_Visible: boolean = false;
   Requirement_Details_Input: string = '';
+  FollowUp_Popup_Open: boolean = false;
+  Selected_Lead_For_FollowUp: Lead = new Lead();
+  Filtered_Department_Data: any[] = [];
+  Filtered_Staff_Data: any[] = [];
 
   // Dropdown state tracking
   DropdownData: { [key: string]: any[] } = {};
@@ -207,6 +211,9 @@ export class LeadComponent implements OnInit {
   DropdownSearch: { [key: string]: string } = {};
   DropdownLoading: { [key: string]: boolean } = {};
   DropdownEnd: { [key: string]: boolean } = {};
+  DropdownOriginalData: { [key: string]: any[] } = {};
+  DropdownOriginalPage: { [key: string]: number } = {};
+  DropdownOriginalEnd: { [key: string]: boolean } = {};
 
   constructor(
     public Lead_Service_: Lead_Service,
@@ -271,41 +278,143 @@ export class LeadComponent implements OnInit {
     this.Get_Leads();
   }
 
-  loadDropdownData(type: string, append: boolean = false) {
-    if (this.DropdownLoading[type]) return;
-    if (append && this.DropdownEnd[type]) return;
+  loadDropdownData(type: string, append: boolean = false, filterId: number = 0) {
+    const cacheKey = ((type === 'District' || type === 'Department' || type === 'Staff') && filterId) ? `${type}_${filterId}` : type;
     
-    this.DropdownLoading[type] = true;
-    const search = this.DropdownSearch[type] || '';
-    const page = this.DropdownPage[type] || 1;
+    if (this.DropdownLoading[cacheKey]) return;
+    if (append && this.DropdownEnd[cacheKey]) return;
     
-    this.Lead_Service_.Search_Lead_Dropdowns(type, search, page).subscribe(Rows => {
-      this.DropdownLoading[type] = false;
+    const search = this.DropdownSearch[cacheKey] || '';
+    
+    if (!append && search === '' && this.DropdownOriginalData[cacheKey]) {
+      this.DropdownData[cacheKey] = [...this.DropdownOriginalData[cacheKey]];
+      return;
+    }
+
+    this.DropdownLoading[cacheKey] = true;
+    const page = this.DropdownPage[cacheKey] || 1;
+    
+    this.Lead_Service_.Search_Lead_Dropdowns(type, search, page, filterId).subscribe(Rows => {
+      this.DropdownLoading[cacheKey] = false;
       const data = Array.isArray(Rows) ? Rows : [];
-      if (data.length === 0) {
-        this.DropdownEnd[type] = true;
+      if (data.length < 20) {
+        this.DropdownEnd[cacheKey] = true;
       }
       if (append) {
-        this.DropdownData[type] = [...(this.DropdownData[type] || []), ...data];
+        this.DropdownData[cacheKey] = [...(this.DropdownData[cacheKey] || []), ...data];
+        if (search === '') {
+          this.DropdownOriginalData[cacheKey] = [...this.DropdownData[cacheKey]];
+          this.DropdownOriginalPage[cacheKey] = this.DropdownPage[cacheKey] || 1;
+          this.DropdownOriginalEnd[cacheKey] = this.DropdownEnd[cacheKey] || false;
+        }
       } else {
-        this.DropdownData[type] = data;
+        this.DropdownData[cacheKey] = data;
+        if (search === '') {
+          this.DropdownOriginalData[cacheKey] = [...data];
+          this.DropdownOriginalPage[cacheKey] = this.DropdownPage[cacheKey] || 1;
+          this.DropdownOriginalEnd[cacheKey] = this.DropdownEnd[cacheKey] || false;
+        }
       }
     }, err => {
       console.error(`Error loading dropdown for ${type}`, err);
-      this.DropdownLoading[type] = false;
+      this.DropdownLoading[cacheKey] = false;
     });
   }
 
-  onSearchDropdown(type: string, searchText: string) {
-    this.DropdownSearch[type] = searchText;
-    this.DropdownPage[type] = 1;
-    this.DropdownEnd[type] = false;
-    this.loadDropdownData(type, false);
+  onSearchDropdown(type: string, searchText: string, filterId: number = 0) {
+    const cacheKey = ((type === 'District' || type === 'Department' || type === 'Staff') && filterId) ? `${type}_${filterId}` : type;
+    
+    this.DropdownSearch[cacheKey] = searchText;
+    this.DropdownEnd[cacheKey] = false;
+
+    if (searchText === '' && this.DropdownOriginalData[cacheKey]) {
+      this.DropdownData[cacheKey] = [...this.DropdownOriginalData[cacheKey]];
+      this.DropdownPage[cacheKey] = this.DropdownOriginalPage[cacheKey] || 1;
+      this.DropdownEnd[cacheKey] = this.DropdownOriginalEnd[cacheKey] || false;
+      return;
+    }
+
+    this.DropdownPage[cacheKey] = 1;
+    this.loadDropdownData(type, false, filterId);
   }
 
-  onLoadMoreDropdown(type: string) {
-    this.DropdownPage[type] = (this.DropdownPage[type] || 1) + 1;
-    this.loadDropdownData(type, true);
+  onLoadMoreDropdown(type: string, filterId: number = 0) {
+    const cacheKey = ((type === 'District' || type === 'Department' || type === 'Staff') && filterId) ? `${type}_${filterId}` : type;
+    if (this.DropdownLoading[cacheKey] || this.DropdownEnd[cacheKey]) return;
+    this.DropdownPage[cacheKey] = (this.DropdownPage[cacheKey] || 1) + 1;
+    this.loadDropdownData(type, true, filterId);
+  }
+
+  Location_Change() {
+    if (this.Selected_Lead_For_FollowUp.FollowUp_Location_Id && this.Selected_Lead_For_FollowUp.FollowUp_Location_Id != 0) {
+      this.Filtered_Department_Data = this.Department_Data.filter(d => d.Branch_Id == this.Selected_Lead_For_FollowUp.FollowUp_Location_Id);
+    } else {
+      this.Filtered_Department_Data = [...this.Department_Data];
+    }
+    const validDept = this.Filtered_Department_Data.find(d => d.Department_Id == this.Selected_Lead_For_FollowUp.FollowUp_Department_Id);
+    if (!validDept) {
+      this.Selected_Lead_For_FollowUp.FollowUp_Department_Id = 0;
+    }
+    this.Filter_Staff();
+  }
+
+  Department_Change() {
+    this.Filter_Staff();
+  }
+
+  Filter_Staff() {
+    let staff = [...(this.Staff_Data || [])];
+    if (this.Selected_Lead_For_FollowUp.FollowUp_Location_Id && this.Selected_Lead_For_FollowUp.FollowUp_Location_Id != 0) {
+      staff = staff.filter(s => s.Branch_Id == this.Selected_Lead_For_FollowUp.FollowUp_Location_Id);
+    }
+    if (this.Selected_Lead_For_FollowUp.FollowUp_Department_Id && this.Selected_Lead_For_FollowUp.FollowUp_Department_Id != 0) {
+      staff = staff.filter(s => s.Department_Id == this.Selected_Lead_For_FollowUp.FollowUp_Department_Id);
+    }
+    this.Filtered_Staff_Data = staff;
+
+    const validStaff = this.Filtered_Staff_Data.find(s => s.User_Details_Id == this.Selected_Lead_For_FollowUp.FollowUp_Staff_Id);
+    if (!validStaff) {
+      this.Selected_Lead_For_FollowUp.FollowUp_Staff_Id = 0;
+    }
+  }
+
+  Open_FollowUp(lead: Lead) {
+    this.Selected_Lead_For_FollowUp = Object.assign({}, lead);
+    this.Selected_Lead_For_FollowUp.Is_FollowUp = true;
+    this.Selected_Pipeline_Stage = '';
+    this.Selected_Pulse = '';
+    
+    if (this.Selected_Lead_For_FollowUp.Branch_Id > 0) {
+      this.Selected_Lead_For_FollowUp.FollowUp_Location_Id = this.Selected_Lead_For_FollowUp.Branch_Id;
+      this.DropdownData['Branch'] = [{ id: this.Selected_Lead_For_FollowUp.Branch_Id, name: this.Selected_Lead_For_FollowUp.Branch_Name }];
+    }
+    if (this.Selected_Lead_For_FollowUp.Department_Id > 0) {
+      this.Selected_Lead_For_FollowUp.FollowUp_Department_Id = this.Selected_Lead_For_FollowUp.Department_Id;
+      this.DropdownData['Department_' + this.Selected_Lead_For_FollowUp.Branch_Id] = [{ id: this.Selected_Lead_For_FollowUp.Department_Id, name: this.Selected_Lead_For_FollowUp.Department_Name }];
+    }
+    if (this.Selected_Lead_For_FollowUp.Staff_Id > 0) {
+      this.Selected_Lead_For_FollowUp.FollowUp_Staff_Id = this.Selected_Lead_For_FollowUp.Staff_Id;
+      this.DropdownData['Staff_' + this.Selected_Lead_For_FollowUp.Department_Id] = [{ id: this.Selected_Lead_For_FollowUp.Staff_Id, name: this.Selected_Lead_For_FollowUp.Staff_Name }];
+    }
+    if (this.Selected_Lead_For_FollowUp.Status_Id > 0) {
+      this.Selected_Lead_For_FollowUp.FollowUp_Status_Id = this.Selected_Lead_For_FollowUp.Status_Id;
+      this.DropdownData['TargetStage'] = [{ id: this.Selected_Lead_For_FollowUp.Status_Id, name: this.Selected_Lead_For_FollowUp.Status_Name }];
+    }
+
+    if (this.Department_Data.length === 0) {
+      this.Get_Dropdowns_Lead();
+    }
+
+    // Load PipelineStage dropdown if not already loaded
+    if (!this.DropdownData['PipelineStage'] || this.DropdownData['PipelineStage'].length === 0) {
+      this.loadDropdownData('PipelineStage', false, 0);
+    }
+    // Load Pulse dropdown if not already loaded
+    if (!this.DropdownData['Pulse'] || this.DropdownData['Pulse'].length === 0) {
+      this.loadDropdownData('Pulse', false, 0);
+    }
+
+    this.FollowUp_Popup_Open = true;
   }
 
   onCompanyNameChange(value: string) {
@@ -859,8 +968,77 @@ export class LeadComponent implements OnInit {
 
 
   Save_FollowUp() {
-    this.Lead_.Is_FollowUp = true;
-    this.Save_Lead();
+    const lead = this.Selected_Lead_For_FollowUp;
+
+    // --- Frontend Validation ---
+    if (!lead.FollowUp_Location_Id || lead.FollowUp_Location_Id === 0) {
+      this.snackBar.open('Please select a Branch.', 'Close', { duration: 3500 });
+      return;
+    }
+    if (!lead.FollowUp_Department_Id || lead.FollowUp_Department_Id === 0) {
+      this.snackBar.open('Please select Department Responsibility.', 'Close', { duration: 3500 });
+      return;
+    }
+    if (!lead.FollowUp_Staff_Id || lead.FollowUp_Staff_Id === 0) {
+      this.snackBar.open('Please select an Assigned Owner (Staff).', 'Close', { duration: 3500 });
+      return;
+    }
+    if (!lead.FollowUp_Status_Id || lead.FollowUp_Status_Id === 0) {
+      this.snackBar.open('Please select a Target Stage.', 'Close', { duration: 3500 });
+      return;
+    }
+
+    // --- Prevent duplicate submission ---
+    if (this.issLoading) return;
+
+    // --- Resolve names from dropdown data ---
+    const branchKey = 'Branch';
+    const deptKey = 'Department_' + lead.FollowUp_Location_Id;
+    const staffKey = 'Staff_' + lead.FollowUp_Department_Id;
+
+    const branchObj = (this.DropdownData[branchKey] || []).find((x: any) => x.id == lead.FollowUp_Location_Id);
+    const deptObj = (this.DropdownData[deptKey] || []).find((x: any) => x.id == lead.FollowUp_Department_Id);
+    const staffObj = (this.DropdownData[staffKey] || []).find((x: any) => x.id == lead.FollowUp_Staff_Id);
+    const pipelineObj = (this.DropdownData['PipelineStage'] || []).find((x: any) => x.name === this.Selected_Pipeline_Stage || x.id == this.Selected_Pipeline_Stage);
+    const pulseObj = (this.DropdownData['Pulse'] || []).find((x: any) => x.name === this.Selected_Pulse || x.id == this.Selected_Pulse);
+
+    // --- Build payload with exact follow_up table field names ---
+    const followUpPayload = {
+      Lead_Id: lead.Lead_Id,
+      Lead_Type: lead.Lead_Type,
+      Branch_Id: lead.FollowUp_Location_Id,
+      Branch_Name: branchObj ? branchObj.name : (lead.Branch_Name || ''),
+      Department_Id: lead.FollowUp_Department_Id,
+      Department_Name: deptObj ? deptObj.name : (lead.Department_Name || ''),
+      Staff_Id: lead.FollowUp_Staff_Id,
+      Staff_Name: staffObj ? staffObj.name : (lead.Staff_Name || ''),
+      Remark: (lead as any).FollowUp_Remark || '',
+      Next_FollowUp_Date: (lead as any).FollowUp_Next_Date || null,
+      PipelineStage_Id: pipelineObj ? pipelineObj.id : null,
+      Pipeline_Stage: pipelineObj ? pipelineObj.name : (this.Selected_Pipeline_Stage || null),
+      Pulse_Id: pulseObj ? pulseObj.id : null,
+      Pulse: pulseObj ? pulseObj.name : (this.Selected_Pulse || null),
+      Login_User_Id: Number(localStorage.getItem('Login_User') || 0)
+    };
+
+    this.issLoading = true;
+    this.Lead_Service_.Save_FollowUp(followUpPayload).pipe(finalize(() => this.issLoading = false)).subscribe({
+      next: (res: any) => {
+        if (res && res.success) {
+          this.FollowUp_Popup_Open = false;
+          this.Selected_Pipeline_Stage = '';
+          this.Selected_Pulse = '';
+          this.Get_Leads();
+          this.snackBar.open('Follow Up assigned successfully', 'Close', { duration: 3000 });
+        } else {
+          this.snackBar.open((res && res.message) || 'Error occurred during save. Please try again.', 'Close', { duration: 4000 });
+        }
+      },
+      error: (err: any) => {
+        const msg = (err && err.error && err.error.message) ? err.error.message : (err.message || 'Connection failed');
+        this.snackBar.open('Server Error: ' + msg, 'Close', { duration: 4000 });
+      }
+    });
   }
 
   Edit_Lead(lead_e: Lead) {

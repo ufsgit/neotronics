@@ -35,7 +35,25 @@ export class Lead_ConfigComponent implements OnInit {
   isErrorModalOpen: boolean = false;
   errorMessage: string = '';
 
-  formData: { id: number; name: string; description: string; IsActive?: any; isGhosting?: any } = { id: 0, name: '', description: '', IsActive: 1, isGhosting: 0 };
+  formData: {
+    id: number;
+    name: string;
+    description: string;
+    IsActive?: any;
+    isGhosting?: any;
+    Stage_Type?: number;
+    Followup_Required?: number;
+    Color?: string;
+  } = {
+    id: 0,
+    name: '',
+    description: '',
+    IsActive: 1,
+    isGhosting: 0,
+    Stage_Type: 1,
+    Followup_Required: 1,
+    Color: '#3b82f6'
+  };
   
   columns = [
     { key: 'name', label: 'Name' },
@@ -98,7 +116,7 @@ export class Lead_ConfigComponent implements OnInit {
       'Designation': 'Designation_Id',
       'Service/Product': 'Service_Product_Id',
       'Market System': 'Market_System_Id',
-      'Pipeline Stage': 'Pipeline_Stage_Id',
+      'Pipeline Stage': 'PipelineStage_Id',
       'Pulse': 'Pulse_Id',
       'Target Stage': 'Target_Stage_Id',
       'Branch': 'Assignment_Id',
@@ -118,7 +136,7 @@ export class Lead_ConfigComponent implements OnInit {
       'Designation': 'Designation_Name',
       'Service/Product': 'Service_Product_Name',
       'Market System': 'Market_System_Name',
-      'Pipeline Stage': 'Pipeline_Stage_Name',
+      'Pipeline Stage': 'PipelineStage_Name',
       'Pulse': 'Pulse_Name',
       'Target Stage': 'Target_Stage_Name',
       'Branch': 'Assignment_Name',
@@ -162,14 +180,25 @@ export class Lead_ConfigComponent implements OnInit {
         const pk = this.getPrimaryKeyField(this.activeSubTab);
         const nameField = this.getNameField(this.activeSubTab);
 
-        this.Dropdown_Data = list.map(item => ({
-          ...item,
-          id: item[pk] || item.id || 0,
-          name: item[nameField] || item.name || item.Vertical_Name || item.Name || '',
-          Description: item.Description || item.description || '',
-          IsActive: item.IsActive && typeof item.IsActive === 'object' && item.IsActive.data ? item.IsActive.data[0] : (item.IsActive ? 1 : 0),
-          isGhosting: item.isGhosting && typeof item.isGhosting === 'object' && item.isGhosting.data ? item.isGhosting.data[0] : (item.isGhosting ? 1 : 0)
-        }));
+        this.Dropdown_Data = list.map(item => {
+          const rawFollowup = item.Followup_Required !== undefined && item.Followup_Required !== null
+            ? (item.Followup_Required && typeof item.Followup_Required === 'object' && item.Followup_Required.data ? item.Followup_Required.data[0] : Number(item.Followup_Required))
+            : 1;
+
+          return {
+            ...item,
+            id: item[pk] || item.id || 0,
+            name: item[nameField] || item.name || item.Vertical_Name || item.Name || '',
+            Description: item.Description || item.description || '',
+            IsActive: item.IsActive && typeof item.IsActive === 'object' && item.IsActive.data ? item.IsActive.data[0] : (item.IsActive ? 1 : 0),
+            isGhosting: item.isGhosting && typeof item.isGhosting === 'object' && item.isGhosting.data ? item.isGhosting.data[0] : (item.isGhosting ? 1 : 0),
+            Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 1,
+            Stage_Type_Label: (item.Stage_Type == 2) ? 'Type 2' : 'Type 1',
+            Followup_Required: rawFollowup,
+            Followup_Required_Label: (rawFollowup === 0) ? 'No' : 'Yes',
+            Color: item.Color || '#3b82f6'
+          };
+        });
         
         this.totalCount = this.Dropdown_Data.length;
       },
@@ -195,7 +224,16 @@ export class Lead_ConfigComponent implements OnInit {
 
   onAdd() {
     this.isEditMode = false;
-    this.formData = { id: 0, name: '', description: '', IsActive: 1, isGhosting: 0 };
+    this.formData = {
+      id: 0,
+      name: '',
+      description: '',
+      IsActive: 1,
+      isGhosting: 0,
+      Stage_Type: 1,
+      Followup_Required: 1,
+      Color: '#3b82f6'
+    };
     this.isModalOpen = true;
   }
 
@@ -208,7 +246,10 @@ export class Lead_ConfigComponent implements OnInit {
       name: item[nameField] || item.name || '',
       description: item.Description || item.description || '',
       IsActive: item.IsActive,
-      isGhosting: item.isGhosting
+      isGhosting: item.isGhosting,
+      Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 1,
+      Followup_Required: item.Followup_Required !== undefined && item.Followup_Required !== null ? Number(item.Followup_Required) : 1,
+      Color: item.Color || '#3b82f6'
     };
     this.isModalOpen = true;
   }
@@ -236,6 +277,12 @@ export class Lead_ConfigComponent implements OnInit {
     
     if (this.activeSubTab === 'Pulse') {
       body.isGhosting = this.formData.isGhosting ? 1 : 0;
+    }
+
+    if (this.activeSubTab === 'Pipeline Stage') {
+      body.Stage_Type = Number(this.formData.Stage_Type || 1);
+      body.Followup_Required = this.formData.Followup_Required ? 1 : 0;
+      body.Color = this.formData.Color || '#3b82f6';
     }
 
     const url = environment.BasePath + route + '/Save';

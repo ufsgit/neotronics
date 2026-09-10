@@ -43,9 +43,31 @@
               <span *ngIf="item[col.key] == 0" style="background: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Inactive</span>
             </ng-container>
             <ng-template #checkGhosting>
-              <ng-container *ngIf="col.key === 'isGhosting'; else textBlock">
+              <ng-container *ngIf="col.key === 'isGhosting'; else checkFollowup">
                 <span *ngIf="item[col.key] == 1" style="background: #fee2e2; color: #b91c1c; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Active</span>
                 <span *ngIf="item[col.key] == 0" style="background: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Inactive</span>
+              </ng-container>
+            </ng-template>
+            <ng-template #checkFollowup>
+              <ng-container *ngIf="col.key === 'Followup_Required_Label'; else checkColor">
+                <span *ngIf="item.Followup_Required == 1" style="background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Yes</span>
+                <span *ngIf="item.Followup_Required == 0" style="background: #f1f5f9; color: #64748b; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">No</span>
+              </ng-container>
+            </ng-template>
+            <ng-template #checkColor>
+              <ng-container *ngIf="col.key === 'Color'; else checkStageType">
+                <div *ngIf="item[col.key]" style="display: flex; align-items: center; gap: 8px;">
+                  <span [style.background]="item[col.key]" style="width: 14px; height: 14px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,0.15); box-shadow: 0 1px 2px rgba(0,0,0,0.1);"></span>
+                  <span style="font-family: monospace; font-size: 12px; color: #475569;">{{ item[col.key] }}</span>
+                </div>
+                <span *ngIf="!item[col.key]" style="color: #94a3b8;">-</span>
+              </ng-container>
+            </ng-template>
+            <ng-template #checkStageType>
+              <ng-container *ngIf="col.key === 'Stage_Type_Label'; else textBlock">
+                <span style="background: #f1f5f9; color: #334155; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
+                  {{ item.Stage_Type == 2 ? 'lost' : 'won' }}
+                </span>
               </ng-container>
             </ng-template>
             <ng-template #textBlock>

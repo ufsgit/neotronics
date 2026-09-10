@@ -21,6 +21,10 @@ export class Lead_Service {
     return this.http.post(environment.BasePath + 'Lead/Save_NewLead/', Lead_);
   }
 
+  Save_FollowUp(followUpData: any): Observable<any> {
+    return this.http.post(environment.BasePath + 'Lead/Save_FollowUp/', followUpData);
+  }
+
   Get_Leads(): Observable<any> {
     return this.http.get(environment.BasePath + 'Lead/Get_Leads/', { params: { _t: Date.now().toString() } });
   }

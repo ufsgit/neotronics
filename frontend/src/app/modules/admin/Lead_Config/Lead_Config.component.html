@@ -61,6 +61,25 @@
         <input type="checkbox" id="isGhostingCheck" [(ngModel)]="formData.isGhosting" [checked]="formData.isGhosting == 1">
         <label for="isGhostingCheck" style="margin: 0; cursor: pointer; font-weight: 500;">Is Ghosting</label>
       </div>
+      <!-- Pipeline Stage Specific Fields -->
+      <div class="form-group" style="margin-bottom: 15px;" *ngIf="activeSubTab === 'Pipeline Stage'">
+        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #334155; font-size: 14px;">Stage Type</label>
+        <select class="form-control" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; background: white; font-size: 14px;" [(ngModel)]="formData.Stage_Type">
+          <option [ngValue]="1">won</option>
+          <option [ngValue]="2">lost</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;" *ngIf="activeSubTab === 'Pipeline Stage'">
+        <input type="checkbox" id="followupRequiredCheck" [(ngModel)]="formData.Followup_Required" [checked]="formData.Followup_Required == 1">
+        <label for="followupRequiredCheck" style="margin: 0; cursor: pointer; font-weight: 500; color: #334155; font-size: 14px;">Follow-up Required</label>
+      </div>
+      <div class="form-group" style="margin-bottom: 15px;" *ngIf="activeSubTab === 'Pipeline Stage'">
+        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #334155; font-size: 14px;">Color</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <input type="color" [(ngModel)]="formData.Color" style="width: 42px; height: 38px; padding: 2px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; background: white;">
+          <input type="text" class="form-control" style="flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-size: 14px;" [(ngModel)]="formData.Color" placeholder="#3b82f6">
+        </div>
+      </div>
     </div>
     <div class="modal-footer" style="padding: 15px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
       <button class="btn btn-secondary" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer;" (click)="closeModal()">Cancel</button>

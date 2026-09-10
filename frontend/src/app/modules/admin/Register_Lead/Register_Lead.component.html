@@ -4,12 +4,16 @@
     <!-- Entry Header -->
     <div class="ig-header">
       <div>
-        <h1 class="ig-title">{{ Is_View_Mode ? 'View Lead Profile' : (Lead_.Lead_Id > 0 ? 'Update Lead Profile' : 'Register New Lead') }}</h1>
-        <p class="ig-subtitle">{{ Lead_.Lead_Id > 0 ? (Is_View_Mode ? 'Viewing information for ' : 'Modify information for ') + Lead_.Lead_Name : ' ' }}</p>
+        <h1 class="ig-title">{{ Is_View_Mode ? 'View Lead Profile' : (Lead_.Lead_Id > 0 ? 'Update Lead Profile' :
+          'Register New Lead') }}</h1>
+        <p class="ig-subtitle">{{ Lead_.Lead_Id > 0 ? (Is_View_Mode ? 'Viewing information for ' : 'Modify information
+          for ') + Lead_.Lead_Name : ' ' }}</p>
       </div>
       <div class="ig-header-actions">
-        <button mat-button type="button" class="ig-btn-outline" (click)="Toggle_All_Sections()" style="margin-right: 8px; border-color: #cbd5e1; color: #475569; background: white;">
-          <i class="material-icons" style="vertical-align: middle;">{{ Are_All_Expanded ? 'unfold_less' : 'unfold_more' }}</i> 
+        <button mat-button type="button" class="ig-btn-outline" (click)="Toggle_All_Sections()"
+          style="margin-right: 8px; border-color: #cbd5e1; color: #475569; background: white;">
+          <i class="material-icons" style="vertical-align: middle;">{{ Are_All_Expanded ? 'unfold_less' : 'unfold_more'
+            }}</i>
           {{ Are_All_Expanded ? 'Collapse All' : 'Expand All' }}
         </button>
         <button mat-button type="button" class="ig-btn-cancel" (click)="Close_Click()">
@@ -24,7 +28,9 @@
     <form>
       <!-- ── Company Details ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Company Details')">
+        <div class="ig-section-header"
+          style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+          (click)="Toggle_Section('Company Details')">
           <p class="ig-section-title" style="margin: 0;"><i class="material-icons">business</i> Company Details</p>
           <i class="material-icons">{{ Expanded_Sections['Company Details'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
@@ -87,11 +93,16 @@
 
       <!-- ── Decision Makers & Contacts ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Decision Makers & Contacts')">
-          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">people</i> Decision Makers &amp; Contacts</p>
-          <i class="material-icons">{{ Expanded_Sections['Decision Makers & Contacts'] ? 'expand_less' : 'expand_more' }}</i>
+        <div class="ig-section-header"
+          style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+          (click)="Toggle_Section('Decision Makers & Contacts')">
+          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">people</i> Decision Makers &amp;
+            Contacts</p>
+          <i class="material-icons">{{ Expanded_Sections['Decision Makers & Contacts'] ? 'expand_less' : 'expand_more'
+            }}</i>
         </div>
-        <div [formGroup]="contactForm" *ngIf="Expanded_Sections['Decision Makers & Contacts']" style="margin-top: 15px;">
+        <div [formGroup]="contactForm" *ngIf="Expanded_Sections['Decision Makers & Contacts']"
+          style="margin-top: 15px;">
           <div formArrayName="contactPersons">
             <div *ngFor="let contact of contactPersons.controls; let i=index" [formGroupName]="i"
               class="ig-contact-card">
@@ -179,15 +190,18 @@
                 <div style="display: flex; align-items: center; gap: 20px;">
                   <label
                     style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569; cursor: default; margin: 0;">
-                    <input type="checkbox" [checked]="!!contact.get('POC_Full_Name').value" onclick="return false;"> Name captured
+                    <input type="checkbox" [checked]="!!contact.get('POC_Full_Name').value" onclick="return false;">
+                    Name captured
                   </label>
                   <label
                     style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569; cursor: default; margin: 0;">
-                    <input type="checkbox" [checked]="!!contact.get('POC_Direct_Mobile').value" onclick="return false;"> Number captured
+                    <input type="checkbox" [checked]="!!contact.get('POC_Direct_Mobile').value" onclick="return false;">
+                    Number captured
                   </label>
                   <label
                     style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569; cursor: default; margin: 0;">
-                    <input type="checkbox" [checked]="!!contact.get('POC_Email').value" onclick="return false;"> Email captured
+                    <input type="checkbox" [checked]="!!contact.get('POC_Email').value" onclick="return false;"> Email
+                    captured
                   </label>
                 </div>
               </div>
@@ -204,8 +218,11 @@
 
       <!-- ── Requirement Profile ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Requirement Profile')">
-          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">assignment</i> Requirement Profile</p>
+        <div class="ig-section-header"
+          style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+          (click)="Toggle_Section('Requirement Profile')">
+          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">assignment</i> Requirement Profile
+          </p>
           <i class="material-icons">{{ Expanded_Sections['Requirement Profile'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
         <div style="margin-top: 15px;" class="ig-grid ig-grid-2" *ngIf="Expanded_Sections['Requirement Profile']">
@@ -265,8 +282,11 @@
 
       <!-- ── Market Study ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Market Study')">
-          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">storefront</i> Market Study — Ask these while meeting
+        <div class="ig-section-header"
+          style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+          (click)="Toggle_Section('Market Study')">
+          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">storefront</i> Market Study — Ask
+            these while meeting
             the customer</p>
           <i class="material-icons">{{ Expanded_Sections['Market Study'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
@@ -285,35 +305,52 @@
           </div>
 
           <div *ngIf="Added_Market_Systems.length > 0" style="margin-top: 25px;">
-            <div *ngFor="let sys of Added_Market_Systems; let i = index" style="margin-bottom: 20px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc;">
-               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                 <h4 style="margin-top: 0; font-size: 14px; font-weight: 600; color: #1e293b; margin-bottom: 0;">{{ sys.name }} Details</h4>
-                 <button type="button" (click)="Remove_Market_System(i)" style="background: none; border: none; color: #ef4444; font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">
-                   Remove &times;
-                 </button>
-               </div>
-               
-               <div *ngIf="!sys.fields || sys.fields.length === 0" style="font-size: 13px; color: #64748b;">
-                 No fields configured for this system.
-               </div>
-               
-               <div *ngIf="sys.fields && sys.fields.length > 0" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
-                 <div *ngFor="let field of sys.fields">
-                    <label style="display:block; font-size: 12px; font-weight: 500; color: #334155; margin-bottom: 5px;">
-                       {{ field.Field_Name }} <span *ngIf="field.IsRequired" style="color: red;">*</span>
-                    </label>
-                    <input *ngIf="field.Field_Type === 'Text'" type="text" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}" class="form-control" style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;" placeholder="Enter {{field.Field_Name}}">
-                    <input *ngIf="field.Field_Type === 'Number'" type="number" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}" class="form-control" style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;" placeholder="0">
-                    <input *ngIf="field.Field_Type === 'Date'" type="date" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}" class="form-control" style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;">
-                    <select *ngIf="field.Field_Type === 'Dropdown'" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}" class="form-control" style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;">
-                       <option value="">Select option...</option>
-                    </select>
-                    <div *ngIf="field.Field_Type === 'Boolean' || field.Field_Type === 'Checkbox'" style="display: flex; align-items: center; gap: 8px; padding-top: 5px;">
-                      <input type="checkbox" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}" style="cursor: pointer;">
-                      <span style="font-size: 13px; color: #475569;">Yes</span>
-                    </div>
-                 </div>
-               </div>
+            <div *ngFor="let sys of Added_Market_Systems; let i = index"
+              style="margin-bottom: 20px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h4 style="margin-top: 0; font-size: 14px; font-weight: 600; color: #1e293b; margin-bottom: 0;">{{
+                  sys.name }} Details</h4>
+                <button type="button" (click)="Remove_Market_System(i)"
+                  style="background: none; border: none; color: #ef4444; font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: background 0.2s;"
+                  onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">
+                  Remove &times;
+                </button>
+              </div>
+
+              <div *ngIf="!sys.fields || sys.fields.length === 0" style="font-size: 13px; color: #64748b;">
+                No fields configured for this system.
+              </div>
+
+              <div *ngIf="sys.fields && sys.fields.length > 0"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
+                <div *ngFor="let field of sys.fields">
+                  <label style="display:block; font-size: 12px; font-weight: 500; color: #334155; margin-bottom: 5px;">
+                    {{ field.Field_Name }} <span *ngIf="field.IsRequired" style="color: red;">*</span>
+                  </label>
+                  <input *ngIf="field.Field_Type === 'Text'" type="text" [(ngModel)]="field.Field_Value"
+                    [ngModelOptions]="{standalone: true}" class="form-control"
+                    style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;"
+                    placeholder="Enter {{field.Field_Name}}">
+                  <input *ngIf="field.Field_Type === 'Number'" type="number" [(ngModel)]="field.Field_Value"
+                    [ngModelOptions]="{standalone: true}" class="form-control"
+                    style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;"
+                    placeholder="0">
+                  <input *ngIf="field.Field_Type === 'Date'" type="date" [(ngModel)]="field.Field_Value"
+                    [ngModelOptions]="{standalone: true}" class="form-control"
+                    style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;">
+                  <select *ngIf="field.Field_Type === 'Dropdown'" [(ngModel)]="field.Field_Value"
+                    [ngModelOptions]="{standalone: true}" class="form-control"
+                    style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;">
+                    <option value="">Select option...</option>
+                  </select>
+                  <div *ngIf="field.Field_Type === 'Boolean' || field.Field_Type === 'Checkbox'"
+                    style="display: flex; align-items: center; gap: 8px; padding-top: 5px;">
+                    <input type="checkbox" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}"
+                      style="cursor: pointer;">
+                    <span style="font-size: 13px; color: #475569;">Yes</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -322,7 +359,9 @@
 
       <!-- ── Lead Priority ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Lead Priority')">
+        <div class="ig-section-header"
+          style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+          (click)="Toggle_Section('Lead Priority')">
           <p class="ig-section-title" style="margin: 0;"><i class="material-icons">flag</i> Lead Priority</p>
           <i class="material-icons">{{ Expanded_Sections['Lead Priority'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
@@ -341,172 +380,190 @@
 
       <!-- ── Pipeline Stage & Pulse ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Pipeline Stage & Pulse')">
-          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">timeline</i> Pipeline Stage & Pulse</p>
-          <i class="material-icons">{{ Expanded_Sections['Pipeline Stage & Pulse'] ? 'expand_less' : 'expand_more' }}</i>
+        <div class="ig-section-header"
+          style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+          (click)="Toggle_Section('Pipeline Stage & Pulse')">
+          <p class="ig-section-title" style="margin: 0;"><i class="material-icons">timeline</i> Pipeline Stage & Pulse
+          </p>
+          <i class="material-icons">{{ Expanded_Sections['Pipeline Stage & Pulse'] ? 'expand_less' : 'expand_more'
+            }}</i>
         </div>
 
         <div *ngIf="Expanded_Sections['Pipeline Stage & Pulse']">
-        <div style="margin-top: 15px;" class="ig-grid ig-grid-2">
-          <!-- Stage -->
-          <div style="border-right: 1px solid #e2e8f0; padding-right: 20px;">
-            <label class="ig-label" style="margin-bottom: 5px; display: block; text-transform: uppercase;">Stage</label>
-            <app-searchable-dropdown name="Selected_Pipeline_Stage" [(ngModel)]="Selected_Pipeline_Stage"
-              [data]="DropdownData['PipelineStage']" bindLabel="name" bindValue="name" [placeholder]="Selected_Pipeline_Stage || 'Select Stage...'"
-              (search)="onSearchDropdown('PipelineStage', $event)" (loadMore)="onLoadMoreDropdown('PipelineStage')"
-              (ngModelChange)="PipelineStage_Change()" (itemSelected)="PipelineStage_Change()">
-            </app-searchable-dropdown>
-          </div>
-
-          <!-- Pulse -->
-          <div style="padding-left: 10px; display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
+          <div style="margin-top: 15px;" class="ig-grid ig-grid-2">
+            <!-- Stage -->
+            <div style="border-right: 1px solid #e2e8f0; padding-right: 20px;">
               <label class="ig-label"
-                style="margin-bottom: 5px; display: block; text-transform: uppercase;">Pulse</label>
-              <app-searchable-dropdown name="Selected_Pulse" [(ngModel)]="Selected_Pulse" [data]="DropdownData['Pulse']"
-                bindLabel="name" bindValue="name" [placeholder]="Selected_Pulse || 'Select Pulse...'"
-                (search)="onSearchDropdown('Pulse', $event)" (loadMore)="onLoadMoreDropdown('Pulse')">
+                style="margin-bottom: 5px; display: block; text-transform: uppercase;">Stage</label>
+              <app-searchable-dropdown name="Selected_Pipeline_Stage" [(ngModel)]="Selected_Pipeline_Stage"
+                [data]="DropdownData['PipelineStage']" bindLabel="name" bindValue="name"
+                [placeholder]="Selected_Pipeline_Stage || 'Select Stage...'"
+                (search)="onSearchDropdown('PipelineStage', $event)" (loadMore)="onLoadMoreDropdown('PipelineStage')"
+                (ngModelChange)="PipelineStage_Change()" (itemSelected)="PipelineStage_Change()">
               </app-searchable-dropdown>
             </div>
-          </div>
-        </div>
 
-        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
-          <div style="margin-bottom: 10px;">
-            <button mat-button type="button" class="ig-btn-outline"
-              style="height: 30px; padding: 0 12px; font-size: 12px;"
-              (click)="Toggle_Pipeline_History()">
-              {{ Show_Pipeline_History ? 'Hide History' : 'Show History' }}
-            </button>
-          </div>
-
-          <div *ngIf="Show_Pipeline_History" style="display: flex; flex-direction: column; gap: 8px;">
-            <div
-              style="display: flex; align-items: center; gap: 15px; font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 4px;">
-              <div style="flex: 1;">Stage</div>
-              <div style="width: 150px;">Pulse</div>
-              <div style="width: 100px; text-align: right;">Date</div>
-            </div>
-
-            <div style="max-height: 250px; overflow-y: auto; padding-right: 5px;" class="custom-scrollbar"
-              (scroll)="onPipelineHistoryScroll($event)">
-              <div *ngIf="Pipeline_Pulse_History?.length === 0"
-                style="display: flex; align-items: center; justify-content: center; padding: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; margin-bottom: 4px; font-style: italic;">
-                No history found
-              </div>
-
-              <div *ngFor="let h of Pipeline_Pulse_History"
-                style="display: flex; align-items: center; gap: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; margin-bottom: 4px;">
-                <div style="flex: 1;">{{ h.Pipeline_Stage || 'Need immediate follow up' }} <span *ngIf="h.Remark">— {{
-                    h.Remark }}</span></div>
-                <div style="width: 150px; font-weight: 500;">{{ h.Pulse || 'Not interested' }}</div>
-                <div style="width: 100px; text-align: right; color: #64748b;">{{ (h.Entry_Date | date:'M/d/yyyy') ||
-                  '8/17/2026' }}</div>
-              </div>
-
-              <div *ngIf="Loading_Pipeline_History"
-                style="display: flex; align-items: center; justify-content: center; padding: 10px; font-size: 12px; color: #3b82f6; font-style: italic;">
-                Loading more history...
+            <!-- Pulse -->
+            <div style="padding-left: 10px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <label class="ig-label"
+                  style="margin-bottom: 5px; display: block; text-transform: uppercase;">Pulse</label>
+                <app-searchable-dropdown name="Selected_Pulse" [(ngModel)]="Selected_Pulse"
+                  [data]="DropdownData['Pulse']" bindLabel="name" bindValue="name"
+                  [placeholder]="Selected_Pulse || 'Select Pulse...'" (search)="onSearchDropdown('Pulse', $event)"
+                  (loadMore)="onLoadMoreDropdown('Pulse')">
+                </app-searchable-dropdown>
               </div>
             </div>
           </div>
-        </div>
+
+          <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+            <div style="margin-bottom: 10px;">
+              <button mat-button type="button" class="ig-btn-outline"
+                style="height: 30px; padding: 0 12px; font-size: 12px;" (click)="Toggle_Pipeline_History()">
+                {{ Show_Pipeline_History ? 'Hide History' : 'Show History' }}
+              </button>
+            </div>
+
+            <div *ngIf="Show_Pipeline_History" style="display: flex; flex-direction: column; gap: 8px;">
+              <div
+                style="display: flex; align-items: center; gap: 15px; font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 4px;">
+                <div style="flex: 1;">Stage</div>
+                <div style="width: 150px;">Pulse</div>
+                <div style="width: 100px; text-align: right;">Date</div>
+              </div>
+
+              <div style="max-height: 250px; overflow-y: auto; padding-right: 5px;" class="custom-scrollbar"
+                (scroll)="onPipelineHistoryScroll($event)">
+                <div *ngIf="Pipeline_Pulse_History?.length === 0"
+                  style="display: flex; align-items: center; justify-content: center; padding: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; margin-bottom: 4px; font-style: italic;">
+                  No history found
+                </div>
+
+                <div *ngFor="let h of Pipeline_Pulse_History"
+                  style="display: flex; align-items: center; gap: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; margin-bottom: 4px;">
+                  <div style="flex: 1;">{{ h.Pipeline_Stage || 'Need immediate follow up' }} <span *ngIf="h.Remark">— {{
+                      h.Remark }}</span></div>
+                  <div style="width: 150px; font-weight: 500;">{{ h.Pulse || 'Not interested' }}</div>
+                  <div style="width: 100px; text-align: right; color: #64748b;">{{ (h.Entry_Date | date:'M/d/yyyy') ||
+                    '8/17/2026' }}</div>
+                </div>
+
+                <div *ngIf="Loading_Pipeline_History"
+                  style="display: flex; align-items: center; justify-content: center; padding: 10px; font-size: 12px; color: #3b82f6; font-style: italic;">
+                  Loading more history...
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- ── Assignment ── -->
       <div class="ig-section-card" *ngIf="!Lead_.Lead_Id || Is_View_Mode">
         <fieldset [disabled]="Is_View_Mode" style="border: none; padding: 0; margin: 0;">
-        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Assignment')">
-          <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">
-            <label for="chk_Is_FollowUp" class="ig-section-title"
-              style="margin: 0; display: flex; align-items: center; gap: 5px; cursor: pointer;" (click)="$event.stopPropagation()"><i
-                class="material-icons">event_available</i> {{ Lead_.Is_FollowUp ? 'Assignment' : 'Add Assignment'
-              }}</label>
-            <input type="checkbox" name="Is_FollowUp" [(ngModel)]="Lead_.Is_FollowUp"
-              style="width: 16px; height: 16px; margin: 0; cursor: pointer;" id="chk_Is_FollowUp" (click)="$event.stopPropagation()" />
+          <div class="ig-section-header"
+            style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+            (click)="Toggle_Section('Assignment')">
+            <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">
+              <label for="chk_Is_FollowUp" class="ig-section-title"
+                style="margin: 0; display: flex; align-items: center; gap: 5px; cursor: pointer;"
+                (click)="$event.stopPropagation()"><i class="material-icons">event_available</i> {{ Lead_.Is_FollowUp ?
+                'Assignment' : 'Add Assignment'
+                }}</label>
+              <input type="checkbox" name="Is_FollowUp" [(ngModel)]="Lead_.Is_FollowUp"
+                style="width: 16px; height: 16px; margin: 0; cursor: pointer;" id="chk_Is_FollowUp"
+                (click)="$event.stopPropagation()" />
+            </div>
+            <i class="material-icons">{{ Expanded_Sections['Assignment'] ? 'expand_less' : 'expand_more' }}</i>
           </div>
-          <i class="material-icons">{{ Expanded_Sections['Assignment'] ? 'expand_less' : 'expand_more' }}</i>
-        </div>
-        <div *ngIf="Expanded_Sections['Assignment']">
-        <div style="margin-top: 15px;" *ngIf="Lead_.Is_FollowUp">
-          <div class="ig-grid ig-grid-4">
-            <div class="ig-field">
-            <label class="ig-label" style="text-transform: uppercase;">Branch <span class="ig-req">*</span></label>
-            <app-searchable-dropdown name="FollowUp_Location_Id" [(ngModel)]="Lead_.FollowUp_Location_Id"
-              [data]="DropdownData['Branch']" bindLabel="name" bindValue="id" placeholder="Select Branch"
-              (search)="onSearchDropdown('Branch', $event)" (loadMore)="onLoadMoreDropdown('Branch')"
-              (itemSelected)="Location_Change()">
-            </app-searchable-dropdown>
-          </div>
-          <div class="ig-field">
-            <label class="ig-label" style="text-transform: uppercase;">Department Responsibility <span
-                class="ig-req">*</span></label>
-            <app-searchable-dropdown name="FollowUp_Department_Id" [(ngModel)]="Lead_.FollowUp_Department_Id"
-              [data]="DropdownData['Department_' + Lead_.FollowUp_Location_Id]" bindLabel="name" bindValue="id" placeholder="Select Department"
-              (search)="onSearchDropdown('Department', $event, Lead_.FollowUp_Location_Id)" (loadMore)="onLoadMoreDropdown('Department', Lead_.FollowUp_Location_Id)"
-              (itemSelected)="Department_Change()"
-              [disabled]="!Lead_.FollowUp_Location_Id || Lead_.FollowUp_Location_Id == 0">
-            </app-searchable-dropdown>
-          </div>
-          <div class="ig-field">
-            <label class="ig-label" style="text-transform: uppercase;">Assigned Owner <span
-                class="ig-req">*</span></label>
-            <app-searchable-dropdown name="FollowUp_Staff_Id" [(ngModel)]="Lead_.FollowUp_Staff_Id"
-              [data]="DropdownData['Staff_' + Lead_.FollowUp_Department_Id]" bindLabel="name" bindValue="id" placeholder="Select Staff"
-              (search)="onSearchDropdown('Staff', $event, Lead_.FollowUp_Department_Id)" (loadMore)="onLoadMoreDropdown('Staff', Lead_.FollowUp_Department_Id)"
-              [disabled]="!Lead_.FollowUp_Location_Id || Lead_.FollowUp_Location_Id == 0 || !Lead_.FollowUp_Department_Id || Lead_.FollowUp_Department_Id == 0">
-            </app-searchable-dropdown>
-          </div>
-          <div class="ig-field">
-            <label class="ig-label" style="text-transform: uppercase;">Target Stage <span
-                class="ig-req">*</span></label>
-            <app-searchable-dropdown name="FollowUp_Status_Id" [(ngModel)]="Lead_.FollowUp_Status_Id"
-              [data]="DropdownData['TargetStage']" bindLabel="name" bindValue="id" placeholder="Select Stage"
-              (search)="onSearchDropdown('TargetStage', $event)" (loadMore)="onLoadMoreDropdown('TargetStage')"
-              [disabled]="!Lead_.FollowUp_Location_Id || Lead_.FollowUp_Location_Id == 0 || !Lead_.FollowUp_Department_Id || Lead_.FollowUp_Department_Id == 0 || !Lead_.FollowUp_Staff_Id || Lead_.FollowUp_Staff_Id == 0">
-            </app-searchable-dropdown>
-          </div>
-        </div>
-          <div class="ig-grid ig-grid-4" style="margin-top: 15px;">
+          <div *ngIf="Expanded_Sections['Assignment']">
+            <div style="margin-top: 15px;" *ngIf="Lead_.Is_FollowUp">
+              <div class="ig-grid ig-grid-4">
+                <div class="ig-field">
+                  <label class="ig-label" style="text-transform: uppercase;">Branch <span
+                      class="ig-req">*</span></label>
+                  <app-searchable-dropdown name="FollowUp_Location_Id" [(ngModel)]="Lead_.FollowUp_Location_Id"
+                    [data]="DropdownData['Branch']" bindLabel="name" bindValue="id" placeholder="Select Branch"
+                    (search)="onSearchDropdown('Branch', $event)" (loadMore)="onLoadMoreDropdown('Branch')"
+                    (itemSelected)="Location_Change()">
+                  </app-searchable-dropdown>
+                </div>
+                <div class="ig-field">
+                  <label class="ig-label" style="text-transform: uppercase;">Department Responsibility <span
+                      class="ig-req">*</span></label>
+                  <app-searchable-dropdown name="FollowUp_Department_Id" [(ngModel)]="Lead_.FollowUp_Department_Id"
+                    [data]="DropdownData['Department_' + Lead_.FollowUp_Location_Id]" bindLabel="name" bindValue="id"
+                    placeholder="Select Department"
+                    (search)="onSearchDropdown('Department', $event, Lead_.FollowUp_Location_Id)"
+                    (loadMore)="onLoadMoreDropdown('Department', Lead_.FollowUp_Location_Id)"
+                    (itemSelected)="Department_Change()"
+                    [disabled]="!Lead_.FollowUp_Location_Id || Lead_.FollowUp_Location_Id == 0">
+                  </app-searchable-dropdown>
+                </div>
+                <div class="ig-field">
+                  <label class="ig-label" style="text-transform: uppercase;">Assigned Owner <span
+                      class="ig-req">*</span></label>
+                  <app-searchable-dropdown name="FollowUp_Staff_Id" [(ngModel)]="Lead_.FollowUp_Staff_Id"
+                    [data]="DropdownData['Staff_' + Lead_.FollowUp_Department_Id]" bindLabel="name" bindValue="id"
+                    placeholder="Select Staff"
+                    (search)="onSearchDropdown('Staff', $event, Lead_.FollowUp_Department_Id)"
+                    (loadMore)="onLoadMoreDropdown('Staff', Lead_.FollowUp_Department_Id)"
+                    [disabled]="!Lead_.FollowUp_Location_Id || Lead_.FollowUp_Location_Id == 0 || !Lead_.FollowUp_Department_Id || Lead_.FollowUp_Department_Id == 0">
+                  </app-searchable-dropdown>
+                </div>
+                <div class="ig-field">
+                  <label class="ig-label" style="text-transform: uppercase;">Target Stage <span
+                      class="ig-req">*</span></label>
+                  <app-searchable-dropdown name="FollowUp_Status_Id" [(ngModel)]="Lead_.FollowUp_Status_Id"
+                    [data]="DropdownData['TargetStage']" bindLabel="name" bindValue="id" placeholder="Select Stage"
+                    (search)="onSearchDropdown('TargetStage', $event)" (loadMore)="onLoadMoreDropdown('TargetStage')"
+                    [disabled]="!Lead_.FollowUp_Location_Id || Lead_.FollowUp_Location_Id == 0 || !Lead_.FollowUp_Department_Id || Lead_.FollowUp_Department_Id == 0 || !Lead_.FollowUp_Staff_Id || Lead_.FollowUp_Staff_Id == 0">
+                  </app-searchable-dropdown>
+                </div>
+              </div>
+              <div class="ig-grid ig-grid-4" style="margin-top: 15px;">
 
-            <div class="ig-field">
-              <label class="ig-label" style="text-transform: uppercase;">Next Follow-up Date</label>
-              <input type="date" class="ig-input" name="FollowUp_Next_Date" [(ngModel)]="Lead_.FollowUp_Next_Date" />
-            </div>
-            <div class="ig-field" style="grid-column: span 2;">
-              <label class="ig-label" style="text-transform: uppercase;">Remark</label>
-              <textarea class="ig-input" name="FollowUp_Remark" [(ngModel)]="Lead_.FollowUp_Remark" rows="1"></textarea>
+                <div class="ig-field">
+                  <label class="ig-label" style="text-transform: uppercase;">Next Follow-up Date</label>
+                  <input type="date" class="ig-input" name="FollowUp_Next_Date"
+                    [(ngModel)]="Lead_.FollowUp_Next_Date" />
+                </div>
+                <div class="ig-field" style="grid-column: span 2;">
+                  <label class="ig-label" style="text-transform: uppercase;">Remark</label>
+                  <textarea class="ig-input" name="FollowUp_Remark" [(ngModel)]="Lead_.FollowUp_Remark"
+                    rows="1"></textarea>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        </div>
         </fieldset>
       </div>
 
       <!-- ── Follow-up Automation ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Follow-up Automation')">
+        <div class="ig-section-header"
+          style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+          (click)="Toggle_Section('Follow-up Automation')">
           <p class="ig-section-title" style="margin: 0;"> Follow-up Automation (Ghosting Workflows)</p>
           <i class="material-icons">{{ Expanded_Sections['Follow-up Automation'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
-        <div style="margin-top: 15px; display: flex; align-items: flex-end; gap: 15px;" *ngIf="Expanded_Sections['Follow-up Automation']">
+        <div style="margin-top: 15px; display: flex; align-items: flex-end; gap: 15px;"
+          *ngIf="Expanded_Sections['Follow-up Automation']">
           <div style="flex: 1;">
             <label class="ig-label" style="margin-bottom: 5px; display: block;">Start workflow</label>
-            <app-searchable-dropdown class="ig-full-width-dropdown" name="Selected_Workflow" [(ngModel)]="Selected_Workflow"
-              [data]="DropdownData['Workflow']" bindLabel="name" bindValue="name" placeholder="Select a workflow..."
-              (search)="onSearchDropdown('Workflow', $event)" (loadMore)="onLoadMoreDropdown('Workflow')"
-              style="display: block; width: 100%;">
+            <app-searchable-dropdown class="ig-full-width-dropdown" name="Selected_Workflow"
+              [(ngModel)]="Selected_Workflow" [data]="DropdownData['Workflow']" bindLabel="name" bindValue="name"
+              placeholder="Select a workflow..." (search)="onSearchDropdown('Workflow', $event)"
+              (loadMore)="onLoadMoreDropdown('Workflow')" style="display: block; width: 100%;">
             </app-searchable-dropdown>
           </div>
           <div>
-            <button type="button" 
-              class="ig-btn-outline" 
+            <button type="button" class="ig-btn-outline"
               [style.border-color]="Selected_Workflow && !Lead_.Workflow_Start_Status ? '#22c55e' : ''"
               [style.color]="Selected_Workflow && !Lead_.Workflow_Start_Status ? '#22c55e' : (Lead_.Workflow_Start_Status ? '#fff' : '')"
               [style.background-color]="Lead_.Workflow_Start_Status ? '#22c55e' : ''"
-              style="height: 34px; padding: 0 16px;"
-              (click)="Toggle_Workflow_Start()">
+              style="height: 34px; padding: 0 16px;" (click)="Toggle_Workflow_Start()">
               {{ Lead_.Workflow_Start_Status ? 'Started' : 'Start' }}
             </button>
           </div>
@@ -519,11 +576,14 @@
 
       <!-- ── Interaction History ── -->
       <div class="ig-section-card" *ngIf="Show_History">
-        <div class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="Toggle_Section('Interaction History')">
+        <div class="ig-section-header"
+          style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+          (click)="Toggle_Section('Interaction History')">
           <p class="ig-section-title" style="margin: 0;"><i class="material-icons">history</i> Interaction History</p>
           <i class="material-icons">{{ Expanded_Sections['Interaction History'] ? 'expand_less' : 'expand_more' }}</i>
         </div>
-        <div class="ig-table-wrap" (scroll)="On_History_Scroll($event)" style="max-height: 400px; overflow-y: auto;" *ngIf="Expanded_Sections['Interaction History']">
+        <div class="ig-table-wrap" (scroll)="On_History_Scroll($event)" style="max-height: 400px; overflow-y: auto;"
+          *ngIf="Expanded_Sections['Interaction History']">
           <table class="ig-table">
             <thead>
               <tr>
@@ -551,11 +611,10 @@
                 <td class="ig-td">{{ h.Pulse || '—' }}</td>
                 <td class="ig-td">{{ h.Next_FollowUp_Date | date:'mediumDate' || '—' }}</td>
                 <td class="ig-td">
-                  <div class="ig-td-muted" title="{{h.Remark}}" 
-                       (click)="Open_Remark_Popup(h.Remark)" 
-                       [style.cursor]="(h.Remark?.length > 10) ? 'pointer' : 'default'"
-                       [style.color]="(h.Remark?.length > 10) ? '#3b82f6' : 'inherit'"
-                       style="word-break: break-all; max-width: 100px;">
+                  <div class="ig-td-muted" title="{{h.Remark}}" (click)="Open_Remark_Popup(h.Remark)"
+                    [style.cursor]="(h.Remark?.length > 10) ? 'pointer' : 'default'"
+                    [style.color]="(h.Remark?.length > 10) ? '#3b82f6' : 'inherit'"
+                    style="word-break: break-all; max-width: 100px;">
                     {{ (h.Remark | slice:0:10) || '—' }}{{ h.Remark?.length > 10 ? '...' : '' }}
                   </div>
                 </td>
@@ -603,7 +662,8 @@
       </div>
 
       <div class="ig-cf-popup-body" style="padding: 20px;">
-        <p style="font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; margin: 0; color: #333;">
+        <p
+          style="font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; margin: 0; color: #333;">
           {{ Remark_Popup_Text }}
         </p>
       </div>

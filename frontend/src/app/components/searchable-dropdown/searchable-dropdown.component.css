@@ -52,15 +52,14 @@
 }
 
 .ig-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  width: 100%;
+  /* position & coordinates are set via [ngStyle] in the template (position: fixed).
+     This ensures the panel renders relative to the viewport and never pushes
+     modal content or triggers a modal scrollbar. */
   background-color: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  z-index: 1000;
+  z-index: 99999;   /* above any modal backdrop */
   display: flex;
   flex-direction: column;
 }

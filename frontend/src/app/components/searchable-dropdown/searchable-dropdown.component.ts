@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, forwardRef, OnInit, OnDestroy, ElementRef, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef, OnInit, OnDestroy, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -28,9 +28,12 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
   @Output() loadMore = new EventEmitter<void>();
   @Output() itemSelected = new EventEmitter<any>();
 
+  @ViewChild('toggleRef', { static: false }) toggleRef: ElementRef;
+
   isOpen: boolean = false;
   value: any = null;
   searchText: string = '';
+  menuStyle: { [key: string]: string } = {};
   private searchSubject = new Subject<string>();
 
   onChange = (val: any) => {};
@@ -63,12 +66,50 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
     this.isOpen = !this.isOpen;
     if (this.isOpen) {
       this.onTouched();
+      this.computeMenuPosition();
       // If data is empty or only contains the pre-populated selected item, trigger a fetch
       if (!this.data || this.data.length <= 1) {
          this.search.emit(this.searchText);
       }
     } else {
       this.clearSearch();
+    }
+  }
+
+  /** Calculate fixed-position coords so the panel never pushes the modal. */
+  computeMenuPosition() {
+    const el: HTMLElement = this.elementRef.nativeElement.querySelector('.ig-dropdown-toggle');
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const menuHeight = 300; // max expected panel height (search + list)
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const openUpward = spaceBelow < menuHeight && rect.top > menuHeight;
+
+    if (openUpward) {
+      this.menuStyle = {
+        position: 'fixed',
+        bottom: (window.innerHeight - rect.top + 4) + 'px',
+        left: rect.left + 'px',
+        width: rect.width + 'px',
+        top: 'auto'
+      };
+    } else {
+      this.menuStyle = {
+        position: 'fixed',
+        top: (rect.bottom + 4) + 'px',
+        left: rect.left + 'px',
+        width: rect.width + 'px',
+        bottom: 'auto'
+      };
+    }
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:resize', ['$event'])
+  onWindowChange() {
+    if (this.isOpen) {
+      // Recompute on scroll/resize to keep panel aligned
+      this.computeMenuPosition();
     }
   }
 
