@@ -158,6 +158,7 @@ import { LeadWorkflowComponent } from './Lead_Config/Follow_up_Automation/Workfl
 
 import { DesignationComponent } from './Designation/Designation.component';
 import { DepartmentComponent } from './Department/Department.component';
+import { LeadDashboardV2Component } from './lead-dashboard-v2/lead-dashboard-v2.component';
 
 @NgModule({
 	imports: [
@@ -299,6 +300,7 @@ import { DepartmentComponent } from './Department/Department.component';
 		LeadBranchComponent,
 		LeadDepartmentComponent,
 		LeadWorkflowComponent,
+		LeadDashboardV2Component,
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],

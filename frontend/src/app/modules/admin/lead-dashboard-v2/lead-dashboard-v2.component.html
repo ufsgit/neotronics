@@ -1,0 +1,127 @@
+<div class="main-content dash-board pb-5">
+  <div class="container-fluid pt-4">
+    
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Lead Dashboard V2</h1>
+    </div>
+
+    <!-- KPI Cards Section (First Row) -->
+    <div class="row">
+      <!-- Total Leads Card -->
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2" style="transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Leads</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalLeads}}</div>
+              </div>
+              <div class="col-auto"><i class="material-icons fa-2x text-gray-300">people</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top 3 Pipeline Stages Cards -->
+      <div class="col-xl-3 col-md-6 mb-4" *ngFor="let stage of top3Stages; let i = index">
+        <div class="card shadow h-100 py-2" [ngClass]="{'border-left-success': i===0, 'border-left-info': i===1, 'border-left-warning': i===2}" style="transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-uppercase mb-1" [ngClass]="{'text-success': i===0, 'text-info': i===1, 'text-warning': i===2}">
+                  {{stage.Stage_Name}}
+                </div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{stage.Count}}</div>
+              </div>
+              <div class="col-auto">
+                <i class="material-icons fa-2x text-gray-300">trending_up</i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View More / Pipeline Metrics Section -->
+    <div class="row mb-4">
+      <div class="col-12 text-center">
+        <button class="btn btn-outline-primary" (click)="loadMorePipelineMetrics()">
+          {{ showMorePipeline ? 'Hide All Pipeline Stages' : 'View More Pipeline Stages' }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="showMorePipeline">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h4 mb-0 text-gray-800">All Pipeline Metrics</h1>
+      </div>
+      <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4" *ngFor="let metric of allPipelineStages; let i = index">
+          <div class="card shadow h-100 py-2" [ngClass]="{'border-left-primary': i%4===0, 'border-left-success': i%4===1, 'border-left-info': i%4===2, 'border-left-warning': i%4===3}" style="transition: transform .2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-uppercase mb-1" [ngClass]="{'text-primary': i%4===0, 'text-success': i%4===1, 'text-info': i%4===2, 'text-warning': i%4===3}">
+                    {{metric.Stage_Name}}
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{metric.Count}}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="material-icons fa-2x text-gray-300">assessment</i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 text-center p-3" *ngIf="isLoadingMorePipeline">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <div class="col-12 text-center text-muted p-3" *ngIf="!isLoadingMorePipeline && allPipelineStages.length === 0">
+          No metrics available.
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mt-4">
+      <!-- Pipeline Metrics Chart -->
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Pipeline Metrics Analysis</h6>
+          </div>
+          <div class="card-body chart-container p-0">
+            <google-chart *ngIf="chartPipelineData.length > 0" [title]="''" type="PieChart" [data]="chartPipelineData" [columnNames]="['Stage', 'Count']" [options]="chartOptions" style="width: 100%; height: 250px;"></google-chart>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Pulse Metrics Chart -->
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-success">Pulse Metrics Analysis</h6>
+          </div>
+          <div class="card-body chart-container p-0">
+            <google-chart *ngIf="chartPulseData.length > 0" [title]="''" type="PieChart" [data]="chartPulseData" [columnNames]="['Pulse', 'Count']" [options]="chartOptions" style="width: 100%; height: 250px;"></google-chart>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Source Metrics Chart -->
+      <div class="col-lg-4 col-md-12 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-info">Source Metrics Analysis</h6>
+          </div>
+          <div class="card-body chart-container p-0">
+            <google-chart *ngIf="chartSourceData.length > 0" [title]="''" type="PieChart" [data]="chartSourceData" [columnNames]="['Source', 'Count']" [options]="chartOptions" style="width: 100%; height: 250px;"></google-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

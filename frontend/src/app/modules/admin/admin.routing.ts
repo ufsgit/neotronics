@@ -85,6 +85,7 @@ import { DepartmentComponent } from './Department/Department.component';
 import { DepartmentStatusComponent } from './DepartmentStatus/DepartmentStatus.component';
 import { DashboardComponent } from './Dashboard/Dashboard.component';
 import { LeadDashboardComponent } from './lead-dashboard/lead-dashboard.component';
+import { LeadDashboardV2Component } from './lead-dashboard-v2/lead-dashboard-v2.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
 import { MarketStudyFieldsComponent } from './Lead_Config/Market_Study/MarketStudyFields/market-study-fields.component';
@@ -181,7 +182,7 @@ export const AdminRoutes: Routes = [
 			{ path: "Quotation_Confirmation", component: Quotation_ConfirmationComponent },
 			{ path: "Department", component: DepartmentComponent },
 			{ path: "DepartmentStatus", component: DepartmentStatusComponent },
-			{ path: "LeadDashboard", component: LeadDashboardComponent },
+			{ path: "LeadDashboard", component: LeadDashboardV2Component },
 			{ path: "OperationsDashboard", component: OperationsDashboardComponent },
 			{ path: "Lead_Config", component: Lead_ConfigComponent },
 			{ path: "Lead_Config/Market_Study/MarketSystem/:id/Fields", component: MarketStudyFieldsComponent },

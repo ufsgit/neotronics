@@ -24,7 +24,7 @@ var routes = require("./routes/index");
 const errorHandler = require('./helpers/error-handler');
 const requestContext = require("./helpers/request-context");
 const autoResponseWrapper = require("./helpers/auto-response-wrapper");
-
+var DashboardV2 = require('./routes/DashboardV2');
 var Login = require("./routes/Login");
 var Account_Group = require('./routes/Account_Group');
 var Account_Years = require('./routes/Account_Years');
@@ -168,6 +168,7 @@ app.use('/creditnote_details',creditnote_details);
 app.use('/creditnote_master',creditnote_master);
 app.use('/currencydetails',currencydetails);
 app.use('/Dashboard',Dashboard);
+app.use('/DashboardV2',DashboardV2);
 app.use('/debitnote_details',debitnote_details);
 app.use('/debitnote_master',debitnote_master);
 app.use('/delivery_salesmaster',delivery_salesmaster);
