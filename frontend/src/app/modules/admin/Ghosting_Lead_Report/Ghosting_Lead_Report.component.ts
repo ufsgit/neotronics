@@ -10,16 +10,14 @@ export interface GhostingLeadRecord {
   Lead_Name: string;
   PipelineStage_Id?: number;
   Pipeline_Stage: string;
-  Pulse_Id?: number;
-  Pulse: string;
-  Current_Status: string;
-  Login_User_Id?: number;
-  login_user_name: string;
+  Lead_Type: any;
+  Staff_Id?: number;
+  Staff_Name: string;
   Branch_Id?: number;
   Branch_Name: string;
   Department_Id?: number;
   Department_Name: string;
-  isCurrent: number; // 1 = Currently Ghosting, 0 = Historical / Resolved
+  Current_Status: any; // 1 = Active, 0 = Inactive
   Entry_Date: string;
 }
 
@@ -48,7 +46,8 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
   public filterDepartment: string = 'All';
   public filterStaff: string = 'All';
   public filterGhostState: string = 'All'; // 'All', '1' (Active), '0' (Resolved)
-  public filterStatus: string = 'All';
+  public filterLeadType: string = 'All';
+  public tableActiveOnly: boolean = false;
   public searchKeyword: string = '';
 
   // Quick card selections
@@ -60,7 +59,7 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
   public branchList: string[] = [];
   public departmentList: string[] = [];
   public staffList: string[] = [];
-  public statusList: string[] = [];
+  public leadTypeList: any[] = [];
 
   // Animated KPI numbers
   public totalGhosted: number = 0;
@@ -86,17 +85,22 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
   public copiedId: number | null = null;
 
   // Charts
-  public chartStageType = 'PieChart';
+  public chartStageType: any = 'PieChart';
+  // Server-side pagination state
+  serverTotalCount: number = 0;
+  serverPaginatedData: GhostingLeadRecord[] = [];
+
   public chartStageData: any[] = [];
-  public chartStageColumns = ['Stage', 'Ghosted Leads'];
+  public chartStageColumns: string[] = ['Stage', 'Count'];
 
-  public chartDeptType = 'PieChart';
+  public chartDeptType: any = 'PieChart';
   public chartDeptData: any[] = [];
-  public chartDeptColumns = ['Department', 'Ghosted Leads'];
+  public chartDeptColumns: string[] = ['Department', 'Count'];
 
-  public chartStaffType = 'ColumnChart';
+  public chartStaffType: any = 'ColumnChart';
   public chartStaffData: any[] = [];
-  public chartStaffColumns = ['Staff', 'Ghosted Leads'];
+  public chartStaffColumns: string[] = ['Staff', 'Count'];
+  public allExecutiveWorkloads: any[] = [];
 
   public chartTrendType = 'AreaChart';
   public chartTrendData: any[] = [];
@@ -118,7 +122,7 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
     colors: ['#4f46e5'],
     chartArea: { width: '84%', height: '72%' },
     hAxis: { slantedText: true, slantedTextAngle: 25, textStyle: { fontSize: 11, color: '#4a5568' } },
-    vAxis: { minValue: 0, baselineColor: '#e2e8f0', gridlines: { color: '#f1f5f9' } },
+    vAxis: { minValue: 0, format: '#', baselineColor: '#e2e8f0', gridlines: { color: '#f1f5f9' } },
     animation: { startup: true, duration: 800, easing: 'out' }
   };
 
@@ -134,26 +138,26 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
 
   // Fallback Mock Data matching the exact DDL schema
   private mockFallbackData: GhostingLeadRecord[] = [
-    { Lead_Id: 44, Lead_Name: 'Acme Technologies Ltd', PipelineStage_Id: 4, Pipeline_Stage: 'Negotiation', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 1, login_user_name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', isCurrent: 1, Entry_Date: '2026-09-05 14:30:00' },
-    { Lead_Id: 45, Lead_Name: 'Apex Health Systems', PipelineStage_Id: 4, Pipeline_Stage: 'Negotiation', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 12, login_user_name: 'Supadmin', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', isCurrent: 1, Entry_Date: '2026-09-04 11:15:00' },
-    { Lead_Id: 46, Lead_Name: 'Zenith Global Logistics', PipelineStage_Id: 4, Pipeline_Stage: 'Negotiation', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 15, login_user_name: 'Alin', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 9, Department_Name: 'Local Sales', isCurrent: 1, Entry_Date: '2026-09-03 16:45:00' },
-    { Lead_Id: 47, Lead_Name: 'Nova Retail Ventures', PipelineStage_Id: 4, Pipeline_Stage: 'Negotiation', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 1, login_user_name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', isCurrent: 1, Entry_Date: '2026-09-02 09:20:00' },
-    { Lead_Id: 48, Lead_Name: 'Prime Infra Developers', PipelineStage_Id: 4, Pipeline_Stage: 'Negotiation', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Closed Lost', Login_User_Id: 14, login_user_name: 'perfect', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 9, Department_Name: 'Local Sales', isCurrent: 0, Entry_Date: '2026-08-28 15:10:00' },
-    { Lead_Id: 49, Lead_Name: 'Stark Industries', PipelineStage_Id: 2, Pipeline_Stage: 'Need to Send Quote', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 1, login_user_name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', isCurrent: 1, Entry_Date: '2026-09-06 10:00:00' },
-    { Lead_Id: 50, Lead_Name: 'Wayne Enterprises Corp', PipelineStage_Id: 2, Pipeline_Stage: 'Need to Send Quote', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 15, login_user_name: 'Alin', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 9, Department_Name: 'Local Sales', isCurrent: 1, Entry_Date: '2026-09-04 17:30:00' },
-    { Lead_Id: 51, Lead_Name: 'Cyberdyne Systems', PipelineStage_Id: 2, Pipeline_Stage: 'Need to Send Quote', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Closed Lost', Login_User_Id: 12, login_user_name: 'Supadmin', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', isCurrent: 0, Entry_Date: '2026-08-25 12:00:00' },
-    { Lead_Id: 52, Lead_Name: 'LexCorp Financial Group', PipelineStage_Id: 3, Pipeline_Stage: 'Need to Schedule Sales Meeting', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 14, login_user_name: 'perfect', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', isCurrent: 1, Entry_Date: '2026-09-05 13:40:00' },
-    { Lead_Id: 53, Lead_Name: 'Oscorp Pharmaceuticals', PipelineStage_Id: 3, Pipeline_Stage: 'Need to Schedule Sales Meeting', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 1, login_user_name: 'Manu', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 6, Department_Name: 'Technical', isCurrent: 1, Entry_Date: '2026-09-01 11:20:00' },
-    { Lead_Id: 54, Lead_Name: 'Daily Bugle Media House', PipelineStage_Id: 5, Pipeline_Stage: 'Need Site Visit / Demo / Support', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 15, login_user_name: 'Alin', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 6, Department_Name: 'Technical', isCurrent: 1, Entry_Date: '2026-08-30 16:00:00' },
-    { Lead_Id: 55, Lead_Name: 'Umbrella BioTech Corp', PipelineStage_Id: 5, Pipeline_Stage: 'Need Site Visit / Demo / Support', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 12, login_user_name: 'Supadmin', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 7, Department_Name: 'Support', isCurrent: 1, Entry_Date: '2026-08-29 14:15:00' },
-    { Lead_Id: 56, Lead_Name: 'Massive Dynamic Solutions', PipelineStage_Id: 6, Pipeline_Stage: 'Verbal Commit', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 1, login_user_name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', isCurrent: 1, Entry_Date: '2026-09-04 10:45:00' },
-    { Lead_Id: 57, Lead_Name: 'InGen Bioscience Labs', PipelineStage_Id: 6, Pipeline_Stage: 'Verbal Commit', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Closed Won', Login_User_Id: 14, login_user_name: 'perfect', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', isCurrent: 0, Entry_Date: '2026-08-20 15:30:00' },
-    { Lead_Id: 58, Lead_Name: 'Tyrell Robotics Corp', PipelineStage_Id: 7, Pipeline_Stage: 'Immediate Follow-up Required on Quote', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 15, login_user_name: 'Alin', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 9, Department_Name: 'Local Sales', isCurrent: 1, Entry_Date: '2026-09-03 09:10:00' },
-    { Lead_Id: 59, Lead_Name: 'Weyland-Yutani Engineering', PipelineStage_Id: 7, Pipeline_Stage: 'Immediate Follow-up Required on Quote', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 1, login_user_name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', isCurrent: 1, Entry_Date: '2026-09-02 18:00:00' },
-    { Lead_Id: 60, Lead_Name: 'Hooli Cloud Computing', PipelineStage_Id: 1, Pipeline_Stage: 'Need to call up for first level call', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 12, login_user_name: 'Supadmin', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', isCurrent: 1, Entry_Date: '2026-09-06 16:20:00' },
-    { Lead_Id: 61, Lead_Name: 'Pied Piper Networks', PipelineStage_Id: 1, Pipeline_Stage: 'Need to call up for first level call', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 15, login_user_name: 'Alin', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 9, Department_Name: 'Local Sales', isCurrent: 1, Entry_Date: '2026-09-05 15:50:00' },
-    { Lead_Id: 62, Lead_Name: 'Ravencroft Medical Center', PipelineStage_Id: 8, Pipeline_Stage: 'Need to Send Company Profile', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 1, login_user_name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', isCurrent: 1, Entry_Date: '2026-09-04 12:00:00' },
-    { Lead_Id: 63, Lead_Name: 'Omni Consumer Products', PipelineStage_Id: 9, Pipeline_Stage: 'Work / Project Stuck', Pulse_Id: 4, Pulse: 'Ghosting', Current_Status: 'Active', Login_User_Id: 14, login_user_name: 'perfect', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 6, Department_Name: 'Technical', isCurrent: 1, Entry_Date: '2026-08-27 10:30:00' }
+    { Lead_Id: 44, Lead_Name: 'Acme Technologies Ltd', PipelineStage_Id: 4, Pipeline_Stage: 'Negotiation', Lead_Type: 1, Staff_Id: 1, Staff_Name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', Current_Status: '1', Entry_Date: '2026-09-05 14:30:00' },
+    { Lead_Id: 45, Lead_Name: 'Apex Health Systems', PipelineStage_Id: 4, Pipeline_Stage: 'Negotiation', Lead_Type: 2, Staff_Id: 12, Staff_Name: 'Supadmin', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', Current_Status: '1', Entry_Date: '2026-09-04 11:15:00' },
+    { Lead_Id: 46, Lead_Name: 'Zenith Global Logistics', PipelineStage_Id: 4, Pipeline_Stage: 'Negotiation', Lead_Type: 1, Staff_Id: 15, Staff_Name: 'Alin', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 9, Department_Name: 'Local Sales', Current_Status: '1', Entry_Date: '2026-09-03 16:45:00' },
+    { Lead_Id: 47, Lead_Name: 'Nova Retail Ventures', PipelineStage_Id: 4, Pipeline_Stage: 'Negotiation', Lead_Type: 1, Staff_Id: 1, Staff_Name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', Current_Status: '1', Entry_Date: '2026-09-02 09:20:00' },
+    { Lead_Id: 48, Lead_Name: 'Prime Infra Developers', PipelineStage_Id: 4, Pipeline_Stage: 'Negotiation', Lead_Type: 2, Staff_Id: 14, Staff_Name: 'perfect', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 9, Department_Name: 'Local Sales', Current_Status: '0', Entry_Date: '2026-08-28 15:10:00' },
+    { Lead_Id: 49, Lead_Name: 'Stark Industries', PipelineStage_Id: 2, Pipeline_Stage: 'Need to Send Quote', Lead_Type: 1, Staff_Id: 1, Staff_Name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', Current_Status: '1', Entry_Date: '2026-09-06 10:00:00' },
+    { Lead_Id: 50, Lead_Name: 'Wayne Enterprises Corp', PipelineStage_Id: 2, Pipeline_Stage: 'Need to Send Quote', Lead_Type: 1, Staff_Id: 15, Staff_Name: 'Alin', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 9, Department_Name: 'Local Sales', Current_Status: '1', Entry_Date: '2026-09-04 17:30:00' },
+    { Lead_Id: 51, Lead_Name: 'Cyberdyne Systems', PipelineStage_Id: 2, Pipeline_Stage: 'Need to Send Quote', Lead_Type: 2, Staff_Id: 12, Staff_Name: 'Supadmin', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', Current_Status: '0', Entry_Date: '2026-08-25 12:00:00' },
+    { Lead_Id: 52, Lead_Name: 'LexCorp Financial Group', PipelineStage_Id: 3, Pipeline_Stage: 'Need to Schedule Sales Meeting', Lead_Type: 1, Staff_Id: 14, Staff_Name: 'perfect', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', Current_Status: '1', Entry_Date: '2026-09-05 13:40:00' },
+    { Lead_Id: 53, Lead_Name: 'Oscorp Pharmaceuticals', PipelineStage_Id: 3, Pipeline_Stage: 'Need to Schedule Sales Meeting', Lead_Type: 1, Staff_Id: 1, Staff_Name: 'Manu', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 6, Department_Name: 'Technical', Current_Status: '1', Entry_Date: '2026-09-01 11:20:00' },
+    { Lead_Id: 54, Lead_Name: 'Daily Bugle Media House', PipelineStage_Id: 5, Pipeline_Stage: 'Need Site Visit / Demo / Support', Lead_Type: 1, Staff_Id: 15, Staff_Name: 'Alin', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 6, Department_Name: 'Technical', Current_Status: '1', Entry_Date: '2026-08-30 16:00:00' },
+    { Lead_Id: 55, Lead_Name: 'Umbrella BioTech Corp', PipelineStage_Id: 5, Pipeline_Stage: 'Need Site Visit / Demo / Support', Lead_Type: 1, Staff_Id: 12, Staff_Name: 'Supadmin', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 7, Department_Name: 'Support', Current_Status: '1', Entry_Date: '2026-08-29 14:15:00' },
+    { Lead_Id: 56, Lead_Name: 'Massive Dynamic Solutions', PipelineStage_Id: 6, Pipeline_Stage: 'Verbal Commit', Lead_Type: 1, Staff_Id: 1, Staff_Name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', Current_Status: '1', Entry_Date: '2026-09-04 10:45:00' },
+    { Lead_Id: 57, Lead_Name: 'InGen Bioscience Labs', PipelineStage_Id: 6, Pipeline_Stage: 'Verbal Commit', Lead_Type: 2, Staff_Id: 14, Staff_Name: 'perfect', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', Current_Status: '0', Entry_Date: '2026-08-20 15:30:00' },
+    { Lead_Id: 58, Lead_Name: 'Tyrell Robotics Corp', PipelineStage_Id: 7, Pipeline_Stage: 'Immediate Follow-up Required on Quote', Lead_Type: 1, Staff_Id: 15, Staff_Name: 'Alin', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 9, Department_Name: 'Local Sales', Current_Status: '1', Entry_Date: '2026-09-03 09:10:00' },
+    { Lead_Id: 59, Lead_Name: 'Weyland-Yutani Engineering', PipelineStage_Id: 7, Pipeline_Stage: 'Immediate Follow-up Required on Quote', Lead_Type: 1, Staff_Id: 1, Staff_Name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', Current_Status: '1', Entry_Date: '2026-09-02 18:00:00' },
+    { Lead_Id: 60, Lead_Name: 'Hooli Cloud Computing', PipelineStage_Id: 1, Pipeline_Stage: 'Need to call up for first level call', Lead_Type: 1, Staff_Id: 12, Staff_Name: 'Supadmin', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', Current_Status: '1', Entry_Date: '2026-09-06 16:20:00' },
+    { Lead_Id: 61, Lead_Name: 'Pied Piper Networks', PipelineStage_Id: 1, Pipeline_Stage: 'Need to call up for first level call', Lead_Type: 1, Staff_Id: 15, Staff_Name: 'Alin', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 9, Department_Name: 'Local Sales', Current_Status: '1', Entry_Date: '2026-09-05 15:50:00' },
+    { Lead_Id: 62, Lead_Name: 'Ravencroft Medical Center', PipelineStage_Id: 8, Pipeline_Stage: 'Need to Send Company Profile', Lead_Type: 1, Staff_Id: 1, Staff_Name: 'Manu', Branch_Id: 1, Branch_Name: 'Head Office', Department_Id: 5, Department_Name: 'Sales', Current_Status: '1', Entry_Date: '2026-09-04 12:00:00' },
+    { Lead_Id: 63, Lead_Name: 'Omni Consumer Products', PipelineStage_Id: 9, Pipeline_Stage: 'Work / Project Stuck', Lead_Type: 1, Staff_Id: 14, Staff_Name: 'perfect', Branch_Id: 2, Branch_Name: 'Branch Office 1', Department_Id: 6, Department_Name: 'Technical', Current_Status: '1', Entry_Date: '2026-08-27 10:30:00' }
   ];
 
   constructor(
@@ -169,20 +173,13 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
   // Load data from backend with fallback
   public loadGhostingData() {
     this.isLoading = true;
-    
-    // The user requested to only call the KPI SP and not create a separate API for the report data.
-    // We will use the mock fallback data for the table list so the page renders, 
-    // and we will fetch the live KPI numbers directly from the KPI SP.
-    
     this.allGhostingData = [...this.mockFallbackData];
     this.extractDropdowns();
-    this.applyFilters();
-    this.isLoading = false;
-
-    // Fetch the live KPI numbers from our newly updated SP
+    this.applyFilters(); // This will just filter mock data and prepare local KPIs
+    
+    // 1. Fetch the live KPI numbers (Cards)
     this.leadService.Get_Ghosting_KPI().subscribe(
       (res: any) => {
-        // Expected res format: [[{count: 3, Pipeline_Scope: 100}], [{count: 0}], [{count: 3, Recovery_Rate: 100}], [{Pipeline_Stage: '...', count: 1, Leakage_Percentage: 33}]]
         const totalRows = res[0] || [];
         const activeRows = res[1] || [];
         const resolvedRows = res[2] || [];
@@ -202,22 +199,23 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
         if (topStageRows.length > 0) {
           this.topStageName = topStageRows[0].Pipeline_Stage || 'None';
           this.topStageCount = topStageRows[0].count || 0;
-          // You can also capture the Leakage_Percentage here if you want to bind it to a variable,
-          // but currently the HTML calculates it locally.
         }
 
-        // Fetch initial 4 stages from the new SP now that we have totalCount
+        // 2. Fetch initial 4 stages (Pipeline counts)
         this.leadService.Get_Ghosting_Stage_Summary({}, 4, 0).subscribe((stageRes: any) => {
           if (stageRes && stageRes.length > 0) {
             this.stageSummaryData = this.mapStageData(stageRes, totalCount, 0);
           }
           this.cdr.detectChanges();
+          
+          // 3. Finally, prepare charts
+          this.prepareCharts();
+          this.isLoading = false;
         });
-        
-        this.cdr.detectChanges();
       },
       (err: any) => {
         console.warn('Error fetching KPI SP:', err);
+        this.isLoading = false;
       }
     );
   }
@@ -227,8 +225,8 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
     this.stageList = [...new Set(this.allGhostingData.map(d => d.Pipeline_Stage).filter(Boolean))].sort();
     this.branchList = [...new Set(this.allGhostingData.map(d => d.Branch_Name).filter(Boolean))].sort();
     this.departmentList = [...new Set(this.allGhostingData.map(d => d.Department_Name).filter(Boolean))].sort();
-    this.staffList = [...new Set(this.allGhostingData.map(d => d.login_user_name).filter(Boolean))].sort();
-    this.statusList = [...new Set(this.allGhostingData.map(d => d.Current_Status).filter(Boolean))].sort();
+    this.staffList = [...new Set(this.allGhostingData.map(d => d.Staff_Name).filter(Boolean))].sort();
+    this.leadTypeList = [...new Set(this.allGhostingData.map(d => d.Lead_Type))].sort();
   }
 
   // Quick preset filters
@@ -293,19 +291,22 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
       }
 
       // Staff filter
-      if (this.filterStaff !== 'All' && item.login_user_name !== this.filterStaff) {
+      if (this.filterStaff !== 'All' && item.Staff_Name !== this.filterStaff) {
         return false;
       }
 
-      // Ghost state filter (1 = Active, 0 = Historical)
+      // Ghost state filter (1 = Active, 0 = Inactive)
       if (this.filterGhostState !== 'All') {
-        const expected = parseInt(this.filterGhostState, 10);
-        if (item.isCurrent !== expected) return false;
+        if (String(item.Current_Status) !== this.filterGhostState) return false;
       }
 
-      // Current Status filter
-      if (this.filterStatus !== 'All' && item.Current_Status !== this.filterStatus) {
-        return false;
+      // Lead Type filter
+      if (this.filterLeadType !== 'All') {
+        const itemType = item.Lead_Type != null ? item.Lead_Type.toString() : '';
+        const filterType = this.filterLeadType != null ? this.filterLeadType.toString() : '';
+        if (itemType !== filterType) {
+          return false;
+        }
       }
 
       // Date Range Filter
@@ -325,14 +326,9 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
       if (this.searchKeyword && this.searchKeyword.trim() !== '') {
         const kw = this.searchKeyword.trim().toLowerCase();
         const matchesLead = (item.Lead_Name || '').toLowerCase().includes(kw);
-        const matchesStaff = (item.login_user_name || '').toLowerCase().includes(kw);
-        const matchesBranch = (item.Branch_Name || '').toLowerCase().includes(kw);
-        const matchesDept = (item.Department_Name || '').toLowerCase().includes(kw);
-        const matchesStage = (item.Pipeline_Stage || '').toLowerCase().includes(kw);
-        const matchesStatus = (item.Current_Status || '').toLowerCase().includes(kw);
-        const matchesId = (item.Lead_Id ? item.Lead_Id.toString() : '').includes(kw);
+        const matchesStaff = (item.Staff_Name || '').toLowerCase().includes(kw);
 
-        if (!matchesLead && !matchesStaff && !matchesBranch && !matchesDept && !matchesStage && !matchesStatus && !matchesId) {
+        if (!matchesLead && !matchesStaff) {
           return false;
         }
       }
@@ -342,8 +338,37 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
 
     this.currentPage = 1;
     this.calculateKPIs();
-    this.prepareCharts();
-    this.cdr.detectChanges();
+    if (this.viewSelection === 'Table') {
+      this.loadTableData();
+    }
+  }
+
+  public switchToTable() {
+    this.viewSelection = 'Table';
+    if (this.serverPaginatedData.length === 0) {
+      this.loadTableData();
+    }
+  }
+
+  public loadTableData() {
+    this.isLoading = true;
+    const offset = (this.currentPage - 1) * this.pageSize;
+    const search = this.searchKeyword.trim();
+    const isCurrent = this.filterGhostState !== 'All' ? parseInt(this.filterGhostState, 10) : null;
+    
+    this.leadService.Get_Ghosting_Register(this.pageSize, offset, search, isCurrent).subscribe(
+      (res: any) => {
+        this.serverPaginatedData = res.data || [];
+        this.serverTotalCount = res.totalCount || 0;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      (err: any) => {
+        console.error('Error fetching table data:', err);
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    );
   }
 
   // Calculate animated KPI numbers using separate API calls
@@ -443,40 +468,31 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
   // Prepare Google Charts data
   public prepareCharts() {
     // 1. Stage Donut Chart
-    const stageCounts: { [key: string]: number } = {};
-    this.filteredData.forEach(d => {
-      const s = d.Pipeline_Stage || 'Unassigned';
-      stageCounts[s] = (stageCounts[s] || 0) + 1;
+    this.leadService.Get_Ghosting_Charts_Data('stage_leakage').subscribe((res: any) => {
+      this.chartStageData = res.map((r: any) => [r.Label || 'Unassigned', r.Count]);
+      if (this.chartStageData.length === 0) {
+        this.chartStageData = [['No Data', 0]];
+      }
+      this.cdr.detectChanges();
     });
-    this.chartStageData = Object.keys(stageCounts).map(s => [s, stageCounts[s]]);
-    if (this.chartStageData.length === 0) {
-      this.chartStageData = [['No Data', 0]];
-    }
 
     // 2. Department Breakdown Chart
-    const deptCounts: { [key: string]: number } = {};
-    this.filteredData.forEach(d => {
-      const dept = d.Department_Name || 'General';
-      deptCounts[dept] = (deptCounts[dept] || 0) + 1;
+    this.leadService.Get_Ghosting_Charts_Data('departmental').subscribe((res: any) => {
+      this.chartDeptData = res.map((r: any) => [r.Label || 'General', r.Count]);
+      if (this.chartDeptData.length === 0) {
+        this.chartDeptData = [['No Data', 0]];
+      }
+      this.cdr.detectChanges();
     });
-    this.chartDeptData = Object.keys(deptCounts).map(dept => [dept, deptCounts[dept]]);
-    if (this.chartDeptData.length === 0) {
-      this.chartDeptData = [['No Data', 0]];
-    }
 
     // 3. Staff Leaderboard Bar Chart
-    const staffCounts: { [key: string]: number } = {};
-    this.filteredData.forEach(d => {
-      const staff = d.login_user_name || 'Unassigned';
-      staffCounts[staff] = (staffCounts[staff] || 0) + 1;
+    this.leadService.Get_Ghosting_Charts_Data('executive_workload').subscribe((res: any) => {
+      this.chartStaffData = res.map((r: any) => [r.Label || 'Unassigned', r.Count]);
+      if (this.chartStaffData.length === 0) {
+        this.chartStaffData = [['No Data', 0]];
+      }
+      this.cdr.detectChanges();
     });
-    this.chartStaffData = Object.keys(staffCounts)
-      .map(staff => [staff, staffCounts[staff]])
-      .sort((a, b) => (b[1] as number) - (a[1] as number))
-      .slice(0, 4);
-    if (this.chartStaffData.length === 0) {
-      this.chartStaffData = [['No Data', 0]];
-    }
 
     // 4. Monthly Trend Chart
     const monthCounts: { [key: string]: number } = {};
@@ -524,11 +540,23 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
     this.filterDepartment = 'All';
     this.filterStaff = 'All';
     this.filterGhostState = 'All';
-    this.filterStatus = 'All';
+    this.filterLeadType = 'All';
     this.searchKeyword = '';
     this.activeStageCard = '';
     this.activeStateCard = '';
     this.applyFilters();
+  }
+
+  public applyTableFilters() {
+    this.currentPage = 1;
+    this.applyFilters();
+  }
+
+  public resetTableFilters() {
+    this.searchKeyword = '';
+    this.pageSize = 10;
+    this.filterGhostState = 'All';
+    this.applyTableFilters();
   }
 
   // Active filters count for header badge
@@ -540,41 +568,75 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
     if (this.filterDepartment !== 'All') count++;
     if (this.filterStaff !== 'All') count++;
     if (this.filterGhostState !== 'All') count++;
-    if (this.filterStatus !== 'All') count++;
+    if (this.filterLeadType !== 'All') count++;
     if (this.searchKeyword.trim() !== '') count++;
     return count;
   }
 
   // Pagination slice
   get paginatedData(): GhostingLeadRecord[] {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.filteredData.slice(startIndex, startIndex + this.pageSize);
+    return this.serverPaginatedData;
   }
 
   get totalPages(): number {
-    return Math.ceil(this.filteredData.length / this.pageSize) || 1;
+    return Math.ceil(this.serverTotalCount / this.pageSize) || 1;
   }
 
-  public goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
+  get paginationPages(): (number | string)[] {
+    const total = this.totalPages;
+    const current = this.currentPage;
+    const delta = 1; // Shows 1 before and 1 after current page
+    const range: number[] = [];
+    const rangeWithDots: (number | string)[] = [];
+    let l: number | undefined;
+
+    for (let i = 1; i <= total; i++) {
+      if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+        range.push(i);
+      }
+    }
+
+    for (let i of range) {
+      if (l != null) {
+        if (i - l === 2) {
+          rangeWithDots.push(l + 1);
+        } else if (i - l !== 1) {
+          rangeWithDots.push('...');
+        }
+      }
+      rangeWithDots.push(i);
+      l = i;
+    }
+
+    return rangeWithDots;
+  }
+
+  public goToPage(page: any) {
+    if (page === '...') return;
+    const p = Number(page);
+    if (p >= 1 && p <= this.totalPages && this.currentPage !== p) {
+      this.currentPage = p;
+      this.loadTableData();
     }
   }
 
   public nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
+      this.loadTableData();
     }
   }
 
   public prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.loadTableData();
     }
   }
 
   public onPageSizeChange() {
     this.currentPage = 1;
+    this.loadTableData();
   }
 
   // Days inactive calculation
@@ -618,8 +680,17 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
   }
 
   // Navigate to Lead Profile
-  public navigateToLead(id: number) {
-    this.router.navigate(['/Lead/View', id]);
+  public navigateToLead(leadId: number) {
+    if (!leadId) return;
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/New_Lead_Mgmt'], { queryParams: { Lead_Id: leadId } }));
+    window.open(url, '_blank');
+  }
+
+  public viewAllExecutives() {
+    this.leadService.Get_Ghosting_Charts_Data('executive_workload').subscribe((res: any) => {
+      this.allExecutiveWorkloads = res;
+      this.cdr.detectChanges();
+    });
   }
 
   // Export to CSV
@@ -633,8 +704,7 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
       'Lead ID',
       'Lead Name',
       'Pipeline Stage',
-      'Pulse',
-      'Current Status',
+      'Lead Type',
       'Assigned User',
       'Branch',
       'Department',
@@ -646,12 +716,11 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
       `"${item.Lead_Id || ''}"`,
       `"${(item.Lead_Name || '').replace(/"/g, '""')}"`,
       `"${(item.Pipeline_Stage || '').replace(/"/g, '""')}"`,
-      `"${(item.Pulse || '').replace(/"/g, '""')}"`,
-      `"${(item.Current_Status || '').replace(/"/g, '""')}"`,
-      `"${(item.login_user_name || '').replace(/"/g, '""')}"`,
+      `"${item.Lead_Type || ''}"`,
+      `"${(item.Staff_Name || '').replace(/"/g, '""')}"`,
       `"${(item.Branch_Name || '').replace(/"/g, '""')}"`,
       `"${(item.Department_Name || '').replace(/"/g, '""')}"`,
-      `"${item.isCurrent === 1 ? 'Currently Ghosting' : 'Historical / Resolved'}"`,
+      `"${item.Current_Status === '1' || item.Current_Status == 1 ? 'Currently Ghosting' : 'Inactive'}"`,
       `"${item.Entry_Date ? moment(item.Entry_Date).format('YYYY-MM-DD HH:mm:ss') : ''}"`
     ]);
 

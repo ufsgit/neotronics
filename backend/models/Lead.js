@@ -644,14 +644,6 @@ var Lead = {
     Get_Pipeline_Pulse_History: function (Lead_Id, limit, page, callback) {
         let offset = (page - 1) * limit;
         return db.query("CALL Get_Pipeline_Pulse_History(?, ?, ?)", [Lead_Id, limit, offset], callback);
-    },
-    Get_Ghosting_KPI: function (callback) {
-        return db.query("CALL Get_Ghosting_KPI()", [], callback);
-    },
-    Get_Ghosting_Stage_Summary: function (limit, offset, callback) {
-        limit = parseInt(limit, 10) || 100;
-        offset = parseInt(offset, 10) || 0;
-        return db.query("CALL Get_Ghosting_Stage_Summary(?, ?)", [limit, offset], callback);
     }
 };
 

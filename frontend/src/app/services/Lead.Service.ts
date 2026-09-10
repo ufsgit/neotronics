@@ -26,19 +26,19 @@ export class Lead_Service {
   }
 
   Get_NewLeads(search: string = '', industry: number = 0, designation: number = 0, district: number = 0, priority: string = '', page: number = 1, limit: number = 20, lead_type: number = 0, pipeline_stage: number = 0): Observable<any> {
-    return this.http.get(environment.BasePath + 'Lead/Get_NewLeads/', { 
-      params: { 
-        search, 
-        industry: industry.toString(), 
-        designation: designation.toString(), 
-        district: district.toString(), 
-        priority, 
-        page: page.toString(), 
+    return this.http.get(environment.BasePath + 'Lead/Get_NewLeads/', {
+      params: {
+        search,
+        industry: industry.toString(),
+        designation: designation.toString(),
+        district: district.toString(),
+        priority,
+        page: page.toString(),
         limit: limit.toString(),
         lead_type: lead_type.toString(),
         pipeline_stage: pipeline_stage.toString(),
-        _t: Date.now().toString() 
-      } 
+        _t: Date.now().toString()
+      }
     });
   }
 
@@ -139,7 +139,7 @@ export class Lead_Service {
   }
 
   Get_Ghosting_KPI(filters: any = {}): Observable<any> {
-    return this.http.get(environment.BasePath + 'Lead/Get_Ghosting_KPI/', {
+    return this.http.get(environment.BasePath + 'Ghosting/Get_Ghosting_KPI/', {
       params: { ...filters, _t: Date.now().toString() }
     });
   }
@@ -169,8 +169,22 @@ export class Lead_Service {
   }
 
   Get_Ghosting_Stage_Summary(filters: any = {}, limit: number = 4, offset: number = 0): Observable<any> {
-    return this.http.get(environment.BasePath + 'Lead/Get_Ghosting_Stage_Summary/', {
+    return this.http.get(environment.BasePath + 'Ghosting/Get_Ghosting_Stage_Summary/', {
       params: { ...filters, limit: limit.toString(), offset: offset.toString(), _t: Date.now().toString() }
     });
+  }
+
+  Get_Ghosting_Charts_Data(type: string): Observable<any> {
+    return this.http.get(environment.BasePath + 'Ghosting/Get_Ghosting_Charts_Data/', {
+      params: { type: type, _t: Date.now().toString() }
+    });
+  }
+
+  Get_Ghosting_Register(limit: number, offset: number, search: string, is_current: number | null): Observable<any> {
+    let params: any = { limit: limit.toString(), offset: offset.toString(), _t: Date.now().toString() };
+    if (search) params.search = search;
+    if (is_current !== null) params.is_current = is_current.toString();
+    
+    return this.http.get(environment.BasePath + 'Ghosting/Get_Ghosting_Register/', { params });
   }
 }

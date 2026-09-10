@@ -711,6 +711,9 @@
   border-radius: 6px;
   margin: 0 2px;
   font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  min-width: 32px;
+  text-align: center;
 }
 
 .custom-pagination .page-item.active .page-link {

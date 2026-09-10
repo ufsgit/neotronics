@@ -2878,6 +2878,42 @@ Payment_Voucher_No From General_Settings where General_Settings_Id =General_Sett
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Ghosting_Charts_Data`(IN p_report_type VARCHAR(50))
+BEGIN
+    IF p_report_type = 'stage_leakage' THEN
+        SELECT Pipeline_Stage AS Label, COUNT(Lead_Id) as Count
+        FROM lead_ghosting_history
+        WHERE Pipeline_Stage IS NOT NULL AND Pipeline_Stage != ''
+        GROUP BY Pipeline_Stage
+        ORDER BY Count DESC;
+        
+    ELSEIF p_report_type = 'departmental' THEN
+        SELECT Department_Name AS Label, COUNT(Lead_Id) as Count
+        FROM lead_ghosting_history
+        WHERE Department_Name IS NOT NULL AND Department_Name != ''
+        GROUP BY Department_Name
+        ORDER BY Count DESC;
+        
+    ELSEIF p_report_type = 'executive_workload' THEN
+        SELECT Staff_Name AS Label, COUNT(Lead_Id) as Count
+        FROM lead_ghosting_history
+        WHERE Staff_Name IS NOT NULL AND Staff_Name != ''
+        GROUP BY Staff_Name
+        ORDER BY Count DESC
+        LIMIT 5;
+
+    ELSEIF p_report_type = 'executive_workload_all' THEN
+        SELECT Staff_Name AS Label, COUNT(Lead_Id) as Count
+        FROM lead_ghosting_history
+        WHERE Staff_Name IS NOT NULL AND Staff_Name != ''
+        GROUP BY Staff_Name
+        ORDER BY Count DESC;
+
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Ghosting_KPI`()
 BEGIN
     DECLARE v_total_ghosted INT DEFAULT 0;
@@ -2909,6 +2945,53 @@ BEGIN
     GROUP BY Pipeline_Stage
     ORDER BY count DESC
     LIMIT 1;
+
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Ghosting_Register`(
+    IN p_limit INT,
+    IN p_offset INT,
+    IN p_search VARCHAR(255),
+    IN p_is_current INT
+)
+BEGIN
+    -- Handle default pagination values if null
+    IF p_limit IS NULL OR p_limit <= 0 THEN SET p_limit = 10; END IF;
+    IF p_offset IS NULL OR p_offset < 0 THEN SET p_offset = 0; END IF;
+
+    -- Return the paginated data matching all filters
+    SELECT 
+        Lead_Id, 
+        Lead_Name, 
+        PipelineStage_Id, 
+        Pipeline_Stage, 
+        Lead_Type, 
+        Staff_Id, 
+        Staff_Name, 
+        Branch_Id, 
+        Branch_Name, 
+        Department_Id, 
+        Department_Name, 
+        Current_Status,
+        Entry_Date
+    FROM lead_ghosting_history
+    WHERE (p_search IS NULL OR p_search = ''
+       OR Lead_Name LIKE CONCAT(p_search, '%')
+       OR Staff_Name LIKE CONCAT(p_search, '%'))
+  AND (p_is_current IS NULL OR Current_Status = p_is_current)
+    ORDER BY Entry_Date DESC
+    LIMIT p_limit OFFSET p_offset;
+
+    -- Return the total count of matched records for the frontend pagination calculations
+    SELECT 
+        COUNT(Lead_Id) as TotalCount
+    FROM lead_ghosting_history
+    WHERE (p_search IS NULL OR p_search = ''
+       OR Lead_Name LIKE CONCAT(p_search, '%')
+       OR Staff_Name LIKE CONCAT(p_search, '%'))
+  AND (p_is_current IS NULL OR Current_Status = p_is_current);
 
 END$$
 DELIMITER ;
