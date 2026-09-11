@@ -1358,7 +1358,9 @@ export class Register_LeadComponent implements OnInit {
            Field_Name: f.Field_Name,
            Field_Type: f.Field_Type,
            Field_Value: f.Field_Value,
-           IsRequired: f.IsRequired == 1
+           IsRequired: f.IsRequired == 1,
+           CheckDuplication: f.CheckDuplication,
+           Field_Options: f.Field_Options
         }));
         
         const firstField = matchingFields[0];
