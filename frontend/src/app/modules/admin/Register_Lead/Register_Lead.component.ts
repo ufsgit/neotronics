@@ -1182,7 +1182,8 @@ export class Register_LeadComponent implements OnInit {
               Field_Name: field.Field_Name,
               Field_Type: field.Field_Type,
               Field_Value: field.Field_Value ? String(field.Field_Value) : '',
-              IsRequired: field.IsRequired ? 1 : 0
+              IsRequired: field.IsRequired ? 1 : 0,
+              CheckDuplication: field.CheckDuplication ? 1 : 0
            });
         }
       }

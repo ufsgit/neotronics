@@ -6775,6 +6775,7 @@ BEGIN
     SET p_Limit = IFNULL(p_Limit, 10);
     SET p_Search = IFNULL(p_Search, '');
     SET v_Offset = (p_Page - 1) * p_Limit;
+    
     -- 1. Data Query
     SELECT 
         Field_Id,
@@ -6782,6 +6783,8 @@ BEGIN
         Category_Name,
         Field_Name,
         Field_Type,
+        Field_Options,      -- Added Column
+        CheckDuplication,   -- Added Column
         IsRequired
     FROM market_study_field
     WHERE Category_Id = p_Category_Id
@@ -6789,6 +6792,7 @@ BEGIN
       AND (p_Search = '' OR Field_Name LIKE CONCAT(p_Search, '%'))
     ORDER BY Field_Id ASC
     LIMIT p_Limit OFFSET v_Offset;
+    
     -- 2. Total Count Query
     SELECT COUNT(*) AS TotalCount
     FROM market_study_field
@@ -6804,7 +6808,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_MarketStudyField_Save`(
     IN p_Category_Id INT,
     IN p_Field_Name VARCHAR(150),
     IN p_Field_Type VARCHAR(50),
-    IN p_IsRequired TINYINT(1)
+    IN p_IsRequired TINYINT(1),
+    IN p_Field_Options TEXT,           -- Added Parameter
+    IN p_CheckDuplication TINYINT(1)   -- Added Parameter
 )
 BEGIN
     -- OPTIMAL NAME CHECK
@@ -6826,10 +6832,20 @@ BEGIN
                 Category_Name, 
                 Field_Name, 
                 Field_Type, 
+                Field_Options,      -- Added Column
+                CheckDuplication,   -- Added Column
                 IsRequired,
                 DeleteStatus
             )
-            SELECT p_Category_Id, Category_Name, p_Field_Name, p_Field_Type, p_IsRequired, 0 
+            SELECT 
+                p_Category_Id, 
+                Category_Name, 
+                p_Field_Name, 
+                p_Field_Type, 
+                p_Field_Options,    -- Insert Value
+                p_CheckDuplication, -- Insert Value
+                p_IsRequired, 
+                0 
             FROM market_study_category 
             WHERE Category_Id = p_Category_Id;
             
@@ -6840,6 +6856,8 @@ BEGIN
             UPDATE market_study_field
             SET Field_Name = p_Field_Name,
                 Field_Type = p_Field_Type,
+                Field_Options = p_Field_Options,        -- Update Value
+                CheckDuplication = p_CheckDuplication,  -- Update Value
                 IsRequired = p_IsRequired
             WHERE Field_Id = p_Field_Id;
             
@@ -6863,17 +6881,14 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_PipelineStage_Get`(IN p_Id INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_PipelineStage_Get`(
+    IN p_Pipeline_Stage_Id INT
+)
 BEGIN
-    SELECT
-        PipelineStage_Id,
-        PipelineStage_Name,
-        Stage_Type,
-        Followup_Required,
-        Color
+    SELECT PipelineStage_Id AS Pipeline_Stage_Id, PipelineStage_Name AS Pipeline_Stage_Name, NULL AS Description
     FROM pipeline_stage_master
-    WHERE PipelineStage_Id = p_Id
-      AND DeleteStatus = 0;
+    WHERE PipelineStage_Id = p_Pipeline_Stage_Id
+      AND IFNULL(DeleteStatus, 0) = 0;
 END$$
 DELIMITER ;
 
@@ -6887,15 +6902,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_PipelineStage_Save`(
 )
 BEGIN
     IF p_Id IS NULL OR p_Id = 0 THEN
-        -- INSERT new record
         INSERT INTO pipeline_stage_master
             (PipelineStage_Name, Stage_Type, Followup_Required, Color, DeleteStatus)
         VALUES
             (p_Name, IFNULL(p_StageType, 1), IFNULL(p_FollowupRequired, 1), p_Color, 0);
-
         SELECT LAST_INSERT_ID() AS Id, 'Saved' AS Message;
     ELSE
-        -- UPDATE existing record
         UPDATE pipeline_stage_master
         SET
             PipelineStage_Name = p_Name,
@@ -6903,7 +6915,6 @@ BEGIN
             Followup_Required  = IFNULL(p_FollowupRequired, 1),
             Color              = p_Color
         WHERE PipelineStage_Id = p_Id;
-
         SELECT p_Id AS Id, 'Updated' AS Message;
     END IF;
 END$$
@@ -14953,10 +14964,10 @@ BEGIN
         DELETE FROM `lead_market_study_data` WHERE Lead_Id = _Generated_Lead_Id;
         
         INSERT INTO `lead_market_study_data` (
-            Lead_Id, Lead_Name, Category_Id, Category_Name, Field_Id, Field_Name, Field_Type, Field_Value, IsRequired, Entry_By
+            Lead_Id, Lead_Name, Category_Id, Category_Name, Field_Id, Field_Name, Field_Type, Field_Value, IsRequired, CheckDuplication, Entry_By
         )
         SELECT 
-            _Generated_Lead_Id, _Lead_Name, Category_Id, Category_Name, Field_Id, Field_Name, Field_Type, Field_Value, IsRequired, _Login_User_Id
+            _Generated_Lead_Id, _Lead_Name, Category_Id, Category_Name, Field_Id, Field_Name, Field_Type, Field_Value, IsRequired, CheckDuplication, _Login_User_Id
         FROM JSON_TABLE(_Market_Study_Fields_JSON, '$[*]' COLUMNS (
             Category_Id INT PATH '$.Category_Id',
             Category_Name VARCHAR(100) PATH '$.Category_Name',
@@ -14964,9 +14975,11 @@ BEGIN
             Field_Name VARCHAR(150) PATH '$.Field_Name',
             Field_Type VARCHAR(50) PATH '$.Field_Type',
             Field_Value TEXT PATH '$.Field_Value',
-            IsRequired TINYINT(1) PATH '$.IsRequired'
+            IsRequired TINYINT(1) PATH '$.IsRequired',
+            CheckDuplication TINYINT(1) PATH '$.CheckDuplication'  -- Reads the new flag from JSON
         )) AS msjt;
     END IF;
+
     
     COMMIT;
     
@@ -28540,14 +28553,21 @@ BEGIN
         ORDER BY Category_Name 
         LIMIT v_Limit OFFSET v_Offset;
         
-	    -- Market Study Fields
+    -- Market Study Fields
     ELSEIF p_Type = 'MarketStudyFields' THEN
-        SELECT Field_Id AS id, Field_Name, Field_Type, IsRequired 
+        SELECT 
+            Field_Id AS id, 
+            Field_Name, 
+            Field_Type, 
+            IsRequired, 
+            Field_Options, 
+            CheckDuplication   
         FROM market_study_field 
         WHERE Category_Id = p_Filter_Id 
         AND IFNULL(DeleteStatus, 0) = 0 
         ORDER BY Field_Id ASC 
         LIMIT v_Limit OFFSET v_Offset;
+
 
         
     END IF;
