@@ -194,6 +194,13 @@ export class Register_LeadComponent implements OnInit {
   }
 
   Add_Market_System(sys: any) {
+    const existingIndex = this.Added_Market_Systems.findIndex(a => a.id === sys.id);
+    if (existingIndex > -1) {
+      // It's already added, so remove it (toggle off)
+      this.Added_Market_Systems.splice(existingIndex, 1);
+      return;
+    }
+
     let newSys = JSON.parse(JSON.stringify(sys)); // Deep clone so duplicates have independent fields
     
     if (!newSys.fields) {
@@ -215,6 +222,32 @@ export class Register_LeadComponent implements OnInit {
 
   isSystemAdded(sys: any): boolean {
     return this.Added_Market_Systems.some(a => a.id === sys.id);
+  }
+
+  getOptionsArray(field: any): string[] {
+    if (field.Field_Options) {
+      return String(field.Field_Options).split(',').map((o: string) => o.trim()).filter((o: string) => o);
+    }
+    if (field.Field_Value) {
+      return String(field.Field_Value).split(',').map((o: string) => o.trim()).filter((o: string) => o);
+    }
+    return [];
+  }
+
+  isCheckboxSelected(fieldValue: any, option: string): boolean {
+    if (!fieldValue) return false;
+    return String(fieldValue).split(',').map(s => s.trim()).includes(option);
+  }
+
+  toggleMarketStudyCheckbox(field: any, option: string) {
+    let currentValues = field.Field_Value ? String(field.Field_Value).split(',').map(s => s.trim()).filter(s => s) : [];
+    const index = currentValues.indexOf(option);
+    if (index > -1) {
+      currentValues.splice(index, 1);
+    } else {
+      currentValues.push(option);
+    }
+    field.Field_Value = currentValues.join(', ');
   }
 
   Clear_All_Interests() {

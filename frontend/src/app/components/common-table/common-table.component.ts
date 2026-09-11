@@ -25,6 +25,7 @@ export class CommonTableComponent implements OnInit, OnDestroy {
   
   @Input() showSubItems: boolean = false;
   @Output() subItems = new EventEmitter<any>();
+  @Output() viewOptions = new EventEmitter<any>();
 
   private searchSubject = new Subject<string>();
   private searchSubscription!: Subscription;
@@ -87,6 +88,14 @@ export class CommonTableComponent implements OnInit, OnDestroy {
       event.stopPropagation();
     }
     this.subItems.emit(item);
+  }
+
+  onViewOptions(item: any, event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    this.viewOptions.emit(item);
   }
 
   prevPage() {

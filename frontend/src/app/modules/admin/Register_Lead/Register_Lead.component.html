@@ -298,8 +298,8 @@
 
           <div style="display: flex; flex-wrap: wrap; gap: 10px;">
             <button type="button" *ngFor="let sys of Available_Market_Systems" (click)="Add_Market_System(sys)"
-              style="background: #ffffff; color: #64748b; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s;"
-              onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#ffffff'">
+              [ngStyle]="{'background': isSystemAdded(sys) ? '#eff6ff' : '#ffffff', 'color': isSystemAdded(sys) ? '#3b82f6' : '#64748b', 'border-color': isSystemAdded(sys) ? '#bfdbfe' : '#e2e8f0'}"
+              style="border: 1px solid; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s;">
               {{sys.name}}
             </button>
           </div>
@@ -342,12 +342,27 @@
                     [ngModelOptions]="{standalone: true}" class="form-control"
                     style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;">
                     <option value="">Select option...</option>
+                    <option *ngFor="let opt of getOptionsArray(field)" [value]="opt">{{opt}}</option>
                   </select>
-                  <div *ngIf="field.Field_Type === 'Boolean' || field.Field_Type === 'Checkbox'"
+                  <div *ngIf="field.Field_Type === 'Boolean'"
                     style="display: flex; align-items: center; gap: 8px; padding-top: 5px;">
                     <input type="checkbox" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}"
                       style="cursor: pointer;">
                     <span style="font-size: 13px; color: #475569;">Yes</span>
+                  </div>
+                  <div *ngIf="field.Field_Type === 'Checkbox'"
+                    style="display: flex; flex-wrap: wrap; gap: 15px; padding-top: 5px;">
+                    <label *ngFor="let opt of getOptionsArray(field)" style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 13px; color: #475569; font-weight: normal; margin: 0;">
+                      <input type="checkbox" [checked]="isCheckboxSelected(field.Field_Value, opt)" (change)="toggleMarketStudyCheckbox(field, opt)">
+                      {{opt}}
+                    </label>
+                  </div>
+                  <div *ngIf="field.Field_Type === 'Radio'"
+                    style="display: flex; flex-wrap: wrap; gap: 15px; padding-top: 5px;">
+                    <label *ngFor="let opt of getOptionsArray(field)" style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 13px; color: #475569; font-weight: normal; margin: 0;">
+                      <input type="radio" [name]="'radio_' + field.Field_Id" [value]="opt" [(ngModel)]="field.Field_Value" [ngModelOptions]="{standalone: true}">
+                      {{opt}}
+                    </label>
                   </div>
                 </div>
               </div>

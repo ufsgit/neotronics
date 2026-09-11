@@ -22,13 +22,15 @@ export class MarketStudyFieldsComponent implements OnInit {
   columns = [
     { key: 'Field_Name', label: 'Field Name' },
     { key: 'Field_Type', label: 'Field Type' },
+    { key: 'Field_Options', label: 'Options' },
+    { key: 'CheckDuplication', label: 'Duplication Check' },
     { key: 'IsRequired', label: 'Required' }
   ];
 
   isModalOpen: boolean = false;
   isEditMode: boolean = false;
   isSaving: boolean = false;
-  formData: { id: number; name: string; type: string; isRequired: number } = { id: 0, name: '', type: 'Text', isRequired: 0 };
+  formData: { id: number; name: string; type: string; isRequired: number; fieldOptions: string; checkDuplication: number } = { id: 0, name: '', type: 'Text', isRequired: 0, fieldOptions: '', checkDuplication: 0 };
 
   isDeleteModalOpen: boolean = false;
   isDeleting: boolean = false;
@@ -38,7 +40,11 @@ export class MarketStudyFieldsComponent implements OnInit {
   isErrorModalOpen: boolean = false;
   errorMessage: string = '';
 
-  fieldTypes: string[] = ['Text', 'Number', 'Date', 'Dropdown', 'Boolean', 'Checkbox'];
+  isOptionsModalOpen: boolean = false;
+  optionsToView: string = '';
+  optionsToViewName: string = '';
+
+  fieldTypes: string[] = ['Text', 'Number', 'Date', 'Dropdown', 'Checkbox', 'Radio'];
 
   constructor(private route: ActivatedRoute, private http: HttpClient) { }
 
@@ -95,7 +101,7 @@ export class MarketStudyFieldsComponent implements OnInit {
 
   onAdd() {
     this.isEditMode = false;
-    this.formData = { id: 0, name: '', type: 'Text', isRequired: 0 };
+    this.formData = { id: 0, name: '', type: 'Text', isRequired: 0, fieldOptions: '', checkDuplication: 0 };
     this.isModalOpen = true;
   }
 
@@ -105,13 +111,27 @@ export class MarketStudyFieldsComponent implements OnInit {
       id: item.Field_Id,
       name: item.Field_Name || '',
       type: item.Field_Type || 'Text',
-      isRequired: item.IsRequired ? 1 : 0
+      isRequired: item.IsRequired ? 1 : 0,
+      fieldOptions: item.Field_Options || '',
+      checkDuplication: item.CheckDuplication ? 1 : 0
     };
     this.isModalOpen = true;
   }
 
   closeModal() {
     this.isModalOpen = false;
+  }
+
+  onViewOptions(item: any) {
+    this.optionsToViewName = item.Field_Name || '';
+    this.optionsToView = item.Field_Options || '';
+    this.isOptionsModalOpen = true;
+  }
+
+  closeOptionsModal() {
+    this.isOptionsModalOpen = false;
+    this.optionsToView = '';
+    this.optionsToViewName = '';
   }
 
   saveItem() {
@@ -123,7 +143,9 @@ export class MarketStudyFieldsComponent implements OnInit {
       Category_Id: this.categoryId,
       Field_Name: this.formData.name.trim(),
       Field_Type: this.formData.type,
-      IsRequired: this.formData.isRequired ? 1 : 0
+      IsRequired: this.formData.isRequired ? 1 : 0,
+      Field_Options: this.formData.fieldOptions,
+      CheckDuplication: this.formData.checkDuplication ? 1 : 0
     };
 
     const url = `${environment.BasePath}Lead_Config/market_study/market_study_field/Save`;

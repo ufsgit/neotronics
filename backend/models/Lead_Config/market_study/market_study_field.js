@@ -19,7 +19,9 @@ var MarketStudyField = {
                             Category_Name: item.Category_Name,
                             Field_Name: item.Field_Name,
                             Field_Type: item.Field_Type,
-                            IsRequired: item.IsRequired
+                            IsRequired: item.IsRequired,
+                            Field_Options: item.Field_Options,
+                            CheckDuplication: item.CheckDuplication
                         };
                     });
                 }
@@ -39,10 +41,19 @@ var MarketStudyField = {
         var fieldName   = (body.Field_Name || '').trim();
         var fieldType   = (body.Field_Type || 'Text').trim();
         var isRequired  = Number(body.IsRequired || 0);
+        
+        // Sanitize fieldOptions: split by comma, trim spaces, remove empty, and rejoin
+        var rawOptions = body.Field_Options || '';
+        var fieldOptions = rawOptions.split(',')
+            .map(function(opt) { return opt.trim(); })
+            .filter(function(opt) { return opt.length > 0; })
+            .join(', ');
+            
+        var checkDuplication = Number(body.CheckDuplication || 0);
 
         return db.query(
-            'CALL LC_MarketStudyField_Save(?, ?, ?, ?, ?)',
-            [fieldId || null, categoryId || null, fieldName, fieldType, isRequired],
+            'CALL LC_MarketStudyField_Save(?, ?, ?, ?, ?, ?, ?)',
+            [fieldId || null, categoryId || null, fieldName, fieldType, isRequired, fieldOptions, checkDuplication],
             callback
         );
     },
