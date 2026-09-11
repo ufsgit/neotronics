@@ -167,4 +167,9 @@ export class LeadAssignmentComponent {
     this.expanded = !this.expanded;
     this.expandedChange.emit(this.expanded);
   }
+
+  getSelectedStageObj(): any {
+    if (!this.selectedPipelineStage || !this.dropdownData || !this.dropdownData['PipelineStage']) return null;
+    return (this.dropdownData['PipelineStage'] || []).find((x: any) => x.name === this.selectedPipelineStage || x.id == this.selectedPipelineStage);
+  }
 }

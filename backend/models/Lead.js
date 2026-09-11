@@ -385,7 +385,9 @@ var Lead = {
             strOrNull(Lead_.POC_Work_Phone), strOrNull(Lead_.POC_Office_Type), boolOrNull(Lead_.Name_Captured), boolOrNull(Lead_.Number_Captured), boolOrNull(Lead_.Email_Captured),
             
             strOrNull(Lead_.Enquiry_For), strOrNull(Lead_.Enquiry_For_Note), strOrNull(Lead_.Next_FollowUp_Date), strOrNull(Lead_.Remarks),
-            strOrNull(Lead_.Lead_Priority), intOrNull(Lead_.Current_PipelineStage_Id), strOrNull(Lead_.Current_Pipeline_Stage), intOrNull(Lead_.Pulse_Id), strOrNull(Lead_.Pulse), 
+            strOrNull(Lead_.Lead_Priority), intOrNull(Lead_.Current_PipelineStage_Id), strOrNull(Lead_.Current_Pipeline_Stage),
+            intOrNull(Lead_.Stage_Type), boolOrNull(Lead_.Followup_Required), strOrNull(Lead_.Color),
+            intOrNull(Lead_.Pulse_Id), strOrNull(Lead_.Pulse), 
             boolOrNull(Lead_.isGhosting), boolOrNull(Lead_.was_Previously_Ghosting), intOrNull(Lead_.previous_Pulse_Id),
             intOrNull(Lead_.Status_Id), strOrNull(Lead_.Status_Name), intOrNull(Lead_.Branch_Id), strOrNull(Lead_.Branch_Name), intOrNull(Lead_.Department_Id), strOrNull(Lead_.Department_Name), intOrNull(Lead_.Staff_Id),
             strOrNull(Lead_.Staff_Name), intOrNull(Lead_.Workflow_Id), strOrNull(Lead_.Workflow), boolOrNull(Lead_.Workflow_Start_Status),
@@ -400,7 +402,7 @@ var Lead = {
             strOrNull(Lead_.Market_Study_Fields_JSON)
         ];
         
-        const placeholders = new Array(65).fill('?').join(',');
+        const placeholders = new Array(68).fill('?').join(',');
         
         return db.query(`CALL Save_NewLead(${placeholders})`, params, (err, rows) => {
             if (err) return callback(err, rows);

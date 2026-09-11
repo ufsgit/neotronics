@@ -14696,13 +14696,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     
     IN _Current_PipelineStage_Id INT,
     IN _Current_Pipeline_Stage VARCHAR(100),
+    IN _Stage_Type TINYINT(1),
+    IN _Followup_Required TINYINT(1),
+    IN _Color VARCHAR(20),
     IN _Pulse_Id INT,
     IN _Pulse VARCHAR(100),
-	IN _isGhosting TINYINT(1),
+    IN _isGhosting TINYINT(1),
     IN _was_Previously_Ghosting TINYINT(1),
     IN _previous_Pulse_Id INT,
 
-    
     IN _Status_Id INT,
     IN _Status_Name VARCHAR(100),
     IN _Branch_Id INT,
@@ -14728,81 +14730,55 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     IN _Login_User_Id INT,
     
     IN _Contact_Person_Details_JSON TEXT,
-    
-        -- PARAMETERS FOR MARKET STUDY --
     IN _Market_Study_Systems TEXT,
     IN _Market_Study_Fields_JSON TEXT
 )
 BEGIN
-    -- 1. ALL DECLARATIONS GO FIRST
     DECLARE _Generated_Lead_Id INT;
     DECLARE _Calculated_Lead_Type INT DEFAULT 0;
 
-    -- 2. ERROR HANDLER
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
         ROLLBACK;
         RESIGNAL;
     END;
 
-    -- 3. EXECUTABLE LOGIC GOES HERE (Right above START TRANSACTION)
-    -- ==========================================
-    -- LEAD TYPE FILTRATION LOGIC
-    -- ==========================================
     IF (_POC_Full_Name IS NOT NULL AND _POC_Full_Name != '' AND 
         _POC_Designation_Id > 0 AND 
         _POC_Direct_Mobile IS NOT NULL AND _POC_Direct_Mobile != '' AND
         _Enquiry_For IS NOT NULL AND _Enquiry_For != '') THEN
-        
-        SET _Calculated_Lead_Type = 4; -- REPLACE WITH 'LEAD' ID
-
+        SET _Calculated_Lead_Type = 4;
     ELSEIF (_Lead_Name IS NOT NULL AND _Lead_Name != '' AND 
-            _Vertical > 0 AND 
-            _Address IS NOT NULL AND _Address != '' AND 
-            _State > 0 AND 
-            _Source > 0 AND 
-            _Company_Size_Id > 0 AND
+            _Vertical > 0 AND _Address IS NOT NULL AND _Address != '' AND 
+            _State > 0 AND _Source > 0 AND _Company_Size_Id > 0 AND
             _POC_Full_Name IS NOT NULL AND _POC_Full_Name != '' AND 
-            _POC_Designation_Id > 0 AND 
-            _POC_Direct_Mobile IS NOT NULL AND _POC_Direct_Mobile != '') THEN
-            
-        SET _Calculated_Lead_Type = 3; -- REPLACE WITH 'PROCESSED' ID
-
+            _POC_Designation_Id > 0 AND _POC_Direct_Mobile IS NOT NULL AND _POC_Direct_Mobile != '') THEN
+        SET _Calculated_Lead_Type = 3;
     ELSEIF (_Lead_Name IS NOT NULL AND _Lead_Name != '' AND 
-            _Vertical > 0 AND 
-            _Address IS NOT NULL AND _Address != '' AND 
-            _State > 0 AND 
-            _Source > 0 AND 
-            _Company_Size_Id > 0) THEN
-            
-        SET _Calculated_Lead_Type = 2; -- REPLACE WITH 'RAW LEAD' ID
-
-    ELSEIF (_Lead_Name IS NOT NULL AND _Lead_Name != '' AND 
-            _Vertical > 0) THEN
-            
-        SET _Calculated_Lead_Type = 1; -- REPLACE WITH 'QUICK LEAD' ID
-
+            _Vertical > 0 AND _Address IS NOT NULL AND _Address != '' AND 
+            _State > 0 AND _Source > 0 AND _Company_Size_Id > 0) THEN
+        SET _Calculated_Lead_Type = 2;
+    ELSEIF (_Lead_Name IS NOT NULL AND _Lead_Name != '' AND _Vertical > 0) THEN
+        SET _Calculated_Lead_Type = 1;
     ELSE
-        SET _Calculated_Lead_Type = _Lead_Type; 
+        SET _Calculated_Lead_Type = _Lead_Type;
     END IF;
-    -- ==========================================
 
-    -- 4. START TRANSACTION
     START TRANSACTION;
 
     IF _Lead_Id = 0 THEN
-        -- 1. INSERT INTO LEAD
+
         INSERT INTO `lead` (
             Lead_Name, Lead_Type, Vertical, Vertical_Name, Address, State, State_Name, District, District_Name,
             Company_Size_Id, Company_Size_Name, Source, Source_Name, 
             POC_Full_Name, POC_Designation_Id, POC_Designation, POC_Direct_Mobile, POC_Email, 
             POC_State_Id, POC_State, POC_Location_Id, POC_Loc, POC_Work_Phone, POC_Office_Type,
             Name_Captured, Number_Captured, Email_Captured, 
-            Enquiry_For, Enquiry_For_Note, 
-            Market_Study_Systems, 
-            Next_FollowUp_Date, Remarks,
-            Lead_Priority, 
-            PipelineStage_Id, Current_Pipeline_Stage, Pulse_Id, Pulse, isGhosting,
+            Enquiry_For, Enquiry_For_Note, Market_Study_Systems, 
+            Next_FollowUp_Date, Remarks, Lead_Priority, 
+            PipelineStage_Id, Current_Pipeline_Stage,
+            Stage_Type, Followup_Required, Color,
+            Pulse_Id, Pulse, isGhosting,
             Status_Id, Status_Name, 
             Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name, 
             Workflow_Id, Workflow, Workflow_Start_Status
@@ -14812,42 +14788,49 @@ BEGIN
             _POC_Full_Name, _POC_Designation_Id, _POC_Designation, _POC_Direct_Mobile, _POC_Email,
             _POC_State_Id, _POC_State, _POC_Location_Id, _POC_Loc, _POC_Work_Phone, _POC_Office_Type,
             _Name_Captured, _Number_Captured, _Email_Captured, 
-            _Enquiry_For, _Enquiry_For_Note, 
-            _Market_Study_Systems, 
-            _Next_FollowUp_Date, _Remarks,
-            _Lead_Priority, _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, IFNULL(_isGhosting, 0),
+            _Enquiry_For, _Enquiry_For_Note, _Market_Study_Systems, 
+            _Next_FollowUp_Date, _Remarks, _Lead_Priority,
+            _Current_PipelineStage_Id, _Current_Pipeline_Stage,
+            IFNULL(_Stage_Type, 0), IFNULL(_Followup_Required, 1), IFNULL(_Color, '#3b82f6'),
+            _Pulse_Id, _Pulse, IFNULL(_isGhosting, 0),
             _Status_Id, _Status_Name, 
             NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name, 
             _Workflow_Id, _Workflow, _Workflow_Start_Status
         );
         SET _Generated_Lead_Id = LAST_INSERT_ID();
         
-        -- 2. INSERT PIPELINE HISTORY
         IF (_Current_Pipeline_Stage IS NOT NULL AND _Current_Pipeline_Stage != '') OR (_Pulse IS NOT NULL AND _Pulse != '') THEN
             INSERT INTO `lead_pipeline_pulse_history` (
-                Lead_Id, PipelineStage_Id, Pipeline_Stage, Pulse_Id, Pulse, Current_Status, Login_User_Id
+                Lead_Id, PipelineStage_Id, Pipeline_Stage,
+                Stage_Type, Followup_Required, Color,
+                Pulse_Id, Pulse, Current_Status, Login_User_Id
             ) VALUES (
-                _Generated_Lead_Id, _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, _Status_Name, _Login_User_Id
+                _Generated_Lead_Id, _Current_PipelineStage_Id, _Current_Pipeline_Stage,
+                IFNULL(_Stage_Type, 0), IFNULL(_Followup_Required, 1), IFNULL(_Color, '#3b82f6'),
+                _Pulse_Id, _Pulse, _Status_Name, _Login_User_Id
             );
         END IF;
         
-        -- 3. INSERT GHOSTING HISTORY FOR NEW LEAD
         IF _isGhosting = 1 THEN
             INSERT INTO `lead_ghosting_history` (
-                Lead_Id, Lead_Name, Lead_Type, PipelineStage_Id, Pipeline_Stage, 
-                Pulse_Id, Pulse, Current_Status, Login_User_Id, login_user_name,
+                Lead_Id, Lead_Name, Lead_Type,
+                PipelineStage_Id, Pipeline_Stage,
+                Stage_Type, Followup_Required, Color,
+                Pulse_Id, Pulse, Current_Status,
+                Login_User_Id, login_user_name,
                 Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
                 Source_Id, Source_Name, isCurrent
             ) VALUES (
-                _Generated_Lead_Id, _Lead_Name, _Calculated_Lead_Type, _Current_PipelineStage_Id, _Current_Pipeline_Stage, 
-                _Pulse_Id, _Pulse, '1', _Login_User_Id, (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = _Login_User_Id LIMIT 1),
+                _Generated_Lead_Id, _Lead_Name, _Calculated_Lead_Type,
+                _Current_PipelineStage_Id, _Current_Pipeline_Stage,
+                IFNULL(_Stage_Type, 0), IFNULL(_Followup_Required, 1), IFNULL(_Color, '#3b82f6'),
+                _Pulse_Id, _Pulse, '1',
+                _Login_User_Id, (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = _Login_User_Id LIMIT 1),
                 NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name,
                 NULLIF(_Source, 0), _Source_Name, 1
             );
         END IF;
 
-        
-         -- 4. INSERT FOLLOW-UP 
         IF _Is_FollowUp = 1 THEN
             INSERT INTO `follow_up` (
                 Lead_Id, Lead_Type, Status_Id, Status_Name, Branch_Id, Branch_Name, 
@@ -14861,7 +14844,7 @@ BEGIN
         END IF;
         
     ELSE
-        -- 1. UPDATE LEAD
+
         UPDATE `lead`
         SET 
             Lead_Name = _Lead_Name, Lead_Type = _Calculated_Lead_Type, Vertical = _Vertical, Vertical_Name = _Vertical_Name,
@@ -14872,62 +14855,65 @@ BEGIN
             POC_Location_Id = _POC_Location_Id, POC_Loc = _POC_Loc, POC_Work_Phone = _POC_Work_Phone, POC_Office_Type = _POC_Office_Type,
             Name_Captured = _Name_Captured, Number_Captured = _Number_Captured, Email_Captured = _Email_Captured, 
             Enquiry_For = _Enquiry_For, Enquiry_For_Note = _Enquiry_For_Note, 
-            Market_Study_Systems = _Market_Study_Systems, 
-            Lead_Priority = _Lead_Priority,
-            PipelineStage_Id = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', PipelineStage_Id, _Current_PipelineStage_Id), 
-            Current_Pipeline_Stage = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', Current_Pipeline_Stage, _Current_Pipeline_Stage), 
-            Pulse_Id = IF(_Pulse IS NULL OR _Pulse = '', Pulse_Id, _Pulse_Id), 
-            Pulse = IF(_Pulse IS NULL OR _Pulse = '', Pulse, _Pulse), isGhosting = IFNULL(_isGhosting, 0),
+            Market_Study_Systems = _Market_Study_Systems, Lead_Priority = _Lead_Priority,
+            PipelineStage_Id       = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', PipelineStage_Id, _Current_PipelineStage_Id), 
+            Current_Pipeline_Stage = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', Current_Pipeline_Stage, _Current_Pipeline_Stage),
+            Stage_Type             = IFNULL(_Stage_Type, Stage_Type),
+            Followup_Required      = IFNULL(_Followup_Required, Followup_Required),
+            Color                  = IFNULL(_Color, Color),
+            Pulse_Id               = IF(_Pulse IS NULL OR _Pulse = '', Pulse_Id, _Pulse_Id), 
+            Pulse                  = IF(_Pulse IS NULL OR _Pulse = '', Pulse, _Pulse),
+            isGhosting             = IFNULL(_isGhosting, 0),
             Workflow_Id = _Workflow_Id, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
         WHERE Lead_Id = _Lead_Id;
         
         SET _Generated_Lead_Id = _Lead_Id;
-        -- 2. INSERT PIPELINE HISTORY
+
         IF (_Current_Pipeline_Stage IS NOT NULL AND _Current_Pipeline_Stage != '') OR (_Pulse IS NOT NULL AND _Pulse != '') THEN
             INSERT INTO `lead_pipeline_pulse_history` (
-                Lead_Id, PipelineStage_Id, Pipeline_Stage, Pulse_Id, Pulse, Current_Status, Login_User_Id
+                Lead_Id, PipelineStage_Id, Pipeline_Stage,
+                Stage_Type, Followup_Required, Color,
+                Pulse_Id, Pulse, Current_Status, Login_User_Id
             ) VALUES (
-                _Generated_Lead_Id, _Current_PipelineStage_Id, _Current_Pipeline_Stage, _Pulse_Id, _Pulse, _Status_Name, _Login_User_Id
+                _Generated_Lead_Id, _Current_PipelineStage_Id, _Current_Pipeline_Stage,
+                IFNULL(_Stage_Type, 0), IFNULL(_Followup_Required, 1), IFNULL(_Color, '#3b82f6'),
+                _Pulse_Id, _Pulse, _Status_Name, _Login_User_Id
             );
         END IF;
         DELETE FROM `lead_contact` WHERE Lead_Id = _Generated_Lead_Id;
         
-        -- 3. UPDATE GHOSTING HISTORY IF PULSE WAS CHANGED
         IF _previous_Pulse_Id != _Pulse_Id THEN
-        
-            -- IF PREVIOUSLY GHOSTING (Closes active record)
             IF _was_Previously_Ghosting = 1 THEN
                 UPDATE `lead_ghosting_history`
                 SET isCurrent = 0, Current_Status = '0' 
                 WHERE Lead_Id = _Lead_Id AND isCurrent = 1;
             END IF;
             
-            -- IF NEW PULSE IS GHOSTING (Opens new record)
             IF _isGhosting = 1 THEN
                 INSERT INTO `lead_ghosting_history` (
-                    Lead_Id, Lead_Name, Lead_Type, PipelineStage_Id, Pipeline_Stage, 
-                    Pulse_Id, Pulse, Current_Status, Login_User_Id, login_user_name, 
+                    Lead_Id, Lead_Name, Lead_Type,
+                    PipelineStage_Id, Pipeline_Stage,
+                    Stage_Type, Followup_Required, Color,
+                    Pulse_Id, Pulse, Current_Status,
+                    Login_User_Id, login_user_name,
                     Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
                     Source_Id, Source_Name, isCurrent
                 ) 
                 SELECT 
-                    Lead_Id, Lead_Name, Lead_Type, _Current_PipelineStage_Id, _Current_Pipeline_Stage, 
-                    _Pulse_Id, _Pulse, '1', _Login_User_Id, 
-                    (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = _Login_User_Id LIMIT 1), 
+                    Lead_Id, Lead_Name, Lead_Type,
+                    _Current_PipelineStage_Id, _Current_Pipeline_Stage,
+                    IFNULL(_Stage_Type, 0), IFNULL(_Followup_Required, 1), IFNULL(_Color, '#3b82f6'),
+                    _Pulse_Id, _Pulse, '1',
+                    _Login_User_Id, (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = _Login_User_Id LIMIT 1),
                     Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
                     Source, Source_Name, 1
                 FROM `lead` 
                 WHERE Lead_Id = _Lead_Id;
             END IF;
-            
         END IF;
 
-
-        
     END IF;
     
-    
-    -- 3. BULK INSERT CONTACTS FROM JSON
     IF _Contact_Person_Details_JSON IS NOT NULL AND _Contact_Person_Details_JSON != '' AND _Contact_Person_Details_JSON != '[]' THEN
         INSERT INTO `lead_contact` (
             Lead_Id, Full_Name, Designation_Id, Designation_Name, Direct_Mobile, Email_Address, Work_Phone,
@@ -14957,12 +14943,8 @@ BEGIN
         )) AS jt;
     END IF;
     
-    
-        -- 4. BULK INSERT MARKET STUDY FIELDS FROM JSON
     IF _Market_Study_Fields_JSON IS NOT NULL AND _Market_Study_Fields_JSON != '' AND _Market_Study_Fields_JSON != '[]' THEN
-        -- Clear old data if doing an update
         DELETE FROM `lead_market_study_data` WHERE Lead_Id = _Generated_Lead_Id;
-        
         INSERT INTO `lead_market_study_data` (
             Lead_Id, Lead_Name, Category_Id, Category_Name, Field_Id, Field_Name, Field_Type, Field_Value, IsRequired, CheckDuplication, Entry_By
         )
@@ -14976,11 +14958,10 @@ BEGIN
             Field_Type VARCHAR(50) PATH '$.Field_Type',
             Field_Value TEXT PATH '$.Field_Value',
             IsRequired TINYINT(1) PATH '$.IsRequired',
-            CheckDuplication TINYINT(1) PATH '$.CheckDuplication'  -- Reads the new flag from JSON
+            CheckDuplication TINYINT(1) PATH '$.CheckDuplication'
         )) AS msjt;
     END IF;
 
-    
     COMMIT;
     
     SELECT _Generated_Lead_Id AS Key_Id;
@@ -28498,10 +28479,18 @@ BEGIN
         LIMIT v_Limit OFFSET v_Offset;
 
     ELSEIF p_Type = 'PipelineStage' THEN
-        SELECT PipelineStage_Id AS id, PipelineStage_Name AS name FROM pipeline_stage_master 
-        WHERE PipelineStage_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
-        ORDER BY PipelineStage_Id 
-        LIMIT v_Limit OFFSET v_Offset;
+    SELECT 
+        PipelineStage_Id    AS id, 
+        PipelineStage_Name  AS name,
+        Stage_Type          AS Stage_Type,
+        Followup_Required   AS Followup_Required,
+        Color               AS Color
+    FROM pipeline_stage_master 
+    WHERE PipelineStage_Name LIKE p_Search 
+      AND IFNULL(DeleteStatus, 0) = 0 
+    ORDER BY PipelineStage_Id 
+    LIMIT v_Limit OFFSET v_Offset;
+
 
     ELSEIF p_Type = 'Pulse' THEN
         SELECT Pulse_Id AS id, Pulse_Name AS name FROM pulse_master 

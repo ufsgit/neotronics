@@ -64,6 +64,13 @@ export class Lead {
     Lead_Priority: string;
     Contact_Person_Details: any[] = [];
     Last_FollowUp_Date: any;
+    Current_PipelineStage_Id: number;
+    Current_Pipeline_Stage: string;
+    Stage_Type: number;
+    Followup_Required: number;
+    Color: string;
+    Pulse_Id: number;
+    Pulse: string;
 
     constructor() {
         this.Lead_Id = 0;

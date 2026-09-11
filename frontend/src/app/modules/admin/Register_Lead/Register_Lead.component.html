@@ -416,6 +416,39 @@
                 (search)="onSearchDropdown('PipelineStage', $event)" (loadMore)="onLoadMoreDropdown('PipelineStage')"
                 (ngModelChange)="PipelineStage_Change()" (itemSelected)="PipelineStage_Change()">
               </app-searchable-dropdown>
+
+              <!-- Selected Stage Metadata Badges -->
+              <div *ngIf="getSelectedPipelineStageObj()" style="display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+                <!-- Color Indicator Pill -->
+                <span *ngIf="getSelectedPipelineStageObj()?.Color" 
+                      [style.background]="getSelectedPipelineStageObj().Color + '18'" 
+                      [style.color]="getSelectedPipelineStageObj().Color" 
+                      [style.border]="'1px solid ' + getSelectedPipelineStageObj().Color + '40'" 
+                      style="display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px;">
+                  <span [style.background]="getSelectedPipelineStageObj().Color" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                  {{ getSelectedPipelineStageObj().name }}
+                </span>
+
+                <!-- Stage Type Badge (Won / Lost) -->
+                <span *ngIf="getSelectedPipelineStageObj()?.Stage_Type !== undefined && getSelectedPipelineStageObj()?.Stage_Type !== null" 
+                      [style.background]="getSelectedPipelineStageObj().Stage_Type == 2 ? '#fef2f2' : '#f0fdf4'" 
+                      [style.color]="getSelectedPipelineStageObj().Stage_Type == 2 ? '#dc2626' : '#16a34a'" 
+                      [style.border]="getSelectedPipelineStageObj().Stage_Type == 2 ? '1px solid #fecaca' : '1px solid #bbf7d0'" 
+                      style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 12px; text-transform: uppercase;">
+                  <i class="material-icons" style="font-size: 12px;">{{ getSelectedPipelineStageObj().Stage_Type == 2 ? 'cancel' : 'check_circle' }}</i>
+                  {{ getSelectedPipelineStageObj().Stage_Type == 2 ? 'Lost' : 'Won' }}
+                </span>
+
+                <!-- Follow-up Required Badge -->
+                <span *ngIf="getSelectedPipelineStageObj()?.Followup_Required !== undefined && getSelectedPipelineStageObj()?.Followup_Required !== null" 
+                      [style.background]="getSelectedPipelineStageObj().Followup_Required == 1 ? '#eff6ff' : '#f8fafc'" 
+                      [style.color]="getSelectedPipelineStageObj().Followup_Required == 1 ? '#1d4ed8' : '#64748b'" 
+                      [style.border]="getSelectedPipelineStageObj().Followup_Required == 1 ? '1px solid #bfdbfe' : '1px solid #e2e8f0'" 
+                      style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 12px;">
+                  <i class="material-icons" style="font-size: 12px;">{{ getSelectedPipelineStageObj().Followup_Required == 1 ? 'event_available' : 'event_busy' }}</i>
+                  {{ getSelectedPipelineStageObj().Followup_Required == 1 ? 'Follow-up Required' : 'Follow-up Optional' }}
+                </span>
+              </div>
             </div>
 
             <!-- Pulse -->
@@ -457,8 +490,17 @@
 
                 <div *ngFor="let h of Pipeline_Pulse_History"
                   style="display: flex; align-items: center; gap: 15px; font-size: 13px; color: #475569; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; margin-bottom: 4px;">
-                  <div style="flex: 1;">{{ h.Pipeline_Stage || 'Need immediate follow up' }} <span *ngIf="h.Remark">— {{
-                      h.Remark }}</span></div>
+                  <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+                    <span *ngIf="h.Color" [style.background]="h.Color" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0;"></span>
+                    <span>{{ h.Pipeline_Stage || 'Need immediate follow up' }}</span>
+                    <span *ngIf="h.Stage_Type !== undefined && h.Stage_Type !== null" 
+                          [style.background]="h.Stage_Type == 2 ? '#fef2f2' : '#f0fdf4'" 
+                          [style.color]="h.Stage_Type == 2 ? '#ef4444' : '#16a34a'" 
+                          style="font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; text-transform: uppercase;">
+                      {{ h.Stage_Type == 2 ? 'Lost' : 'Won' }}
+                    </span>
+                    <span *ngIf="h.Remark">— {{ h.Remark }}</span>
+                  </div>
                   <div style="width: 150px; font-weight: 500;">{{ h.Pulse || 'Not interested' }}</div>
                   <div style="width: 100px; text-align: right; color: #64748b;">{{ (h.Entry_Date | date:'M/d/yyyy') ||
                     '8/17/2026' }}</div>

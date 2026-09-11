@@ -1017,6 +1017,9 @@ export class LeadComponent implements OnInit {
       Next_FollowUp_Date: (lead as any).FollowUp_Next_Date || null,
       PipelineStage_Id: pipelineObj ? pipelineObj.id : null,
       Pipeline_Stage: pipelineObj ? pipelineObj.name : (this.Selected_Pipeline_Stage || null),
+      Stage_Type: pipelineObj && pipelineObj.Stage_Type !== undefined ? Number(pipelineObj.Stage_Type) : 0,
+      Followup_Required: pipelineObj && pipelineObj.Followup_Required !== undefined ? Number(pipelineObj.Followup_Required) : 1,
+      Color: pipelineObj && pipelineObj.Color ? pipelineObj.Color : '#3b82f6',
       Pulse_Id: pulseObj ? pulseObj.id : null,
       Pulse: pulseObj ? pulseObj.name : (this.Selected_Pulse || null),
       Login_User_Id: Number(localStorage.getItem('Login_User') || 0)

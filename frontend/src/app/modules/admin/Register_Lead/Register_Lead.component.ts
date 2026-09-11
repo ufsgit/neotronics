@@ -573,6 +573,11 @@ export class Register_LeadComponent implements OnInit {
     this.DropdownData['Pulse'] = [];
   }
 
+  getSelectedPipelineStageObj(): any {
+    if (!this.Selected_Pipeline_Stage || !this.DropdownData['PipelineStage']) return null;
+    return (this.DropdownData['PipelineStage'] || []).find((x: any) => x.name === this.Selected_Pipeline_Stage || x.id == this.Selected_Pipeline_Stage);
+  }
+
   onCompanyNameChange(value: string) {
     this.companyNameSubject.next(value);
   }
@@ -1197,6 +1202,9 @@ export class Register_LeadComponent implements OnInit {
     
     const pipelineStageObj = (this.DropdownData['PipelineStage'] || []).find(x => x.name === this.Selected_Pipeline_Stage);
     (Lead_Copy as any).Current_PipelineStage_Id = pipelineStageObj ? pipelineStageObj.id : 0;
+    (Lead_Copy as any).Stage_Type = pipelineStageObj && pipelineStageObj.Stage_Type !== undefined ? Number(pipelineStageObj.Stage_Type) : 0;
+    (Lead_Copy as any).Followup_Required = pipelineStageObj && pipelineStageObj.Followup_Required !== undefined ? Number(pipelineStageObj.Followup_Required) : 1;
+    (Lead_Copy as any).Color = pipelineStageObj && pipelineStageObj.Color ? pipelineStageObj.Color : '#3b82f6';
     
     const pulseObj = (this.DropdownData['Pulse'] || []).find(x => x.name === this.Selected_Pulse);
     (Lead_Copy as any).Pulse_Id = pulseObj ? pulseObj.id : 0;

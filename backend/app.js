@@ -118,6 +118,7 @@ var Notifications = require('./routes/Notifications');
 var OperationsDashboard = require('./routes/OperationsDashboard');
 var leadconfig = require('./routes/leadconfig');
 var FollowUp = require('./routes/FollowUp');
+var New_FollowUp = require('./routes/New_FollowUp');
 var Ghosting = require('./routes/Ghosting');
 
 
@@ -250,6 +251,7 @@ app.use('/api/Notification', Notifications);
 app.use('/OperationsDashboard', OperationsDashboard);
 app.use('/leadconfig', leadconfig);
 app.use('/FollowUp', FollowUp);
+app.use('/New_FollowUp', New_FollowUp);
 app.use('/Ghosting', Ghosting);
 
 // ── Lead Config Modular Routes ──────────────────────────────────────────

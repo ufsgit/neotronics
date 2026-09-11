@@ -1,6 +1,9 @@
 <div class="ig-dropdown-container" [class.ig-disabled]="disabled">
   <div class="ig-dropdown-toggle ig-input" (click)="toggleDropdown()" [class.open]="isOpen">
-    <span class="ig-dropdown-value" *ngIf="value != null && value !== 0 && getDisplayValue()">{{ getDisplayValue() }}</span>
+    <span class="ig-dropdown-value" *ngIf="value != null && value !== 0 && getDisplayValue()" style="display: inline-flex; align-items: center; gap: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+      <span *ngIf="getSelectedItem()?.Color" [style.background-color]="getSelectedItem().Color" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;"></span>
+      <span>{{ getDisplayValue() }}</span>
+    </span>
     <span class="ig-dropdown-placeholder" *ngIf="value == null || value === 0 || !getDisplayValue()">{{ placeholder }}</span>
     <i class="material-icons ig-dropdown-caret">arrow_drop_down</i>
   </div>
@@ -16,8 +19,27 @@
         No options available
       </div>
       
-      <div class="ig-dropdown-item" *ngFor="let item of data" (click)="selectItem(item, $event)" [class.selected]="value === item[bindValue]">
-        {{ item[bindLabel] }}
+      <div class="ig-dropdown-item" *ngFor="let item of data" (click)="selectItem(item, $event)" [class.selected]="value === item[bindValue]" style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 8px; overflow: hidden; text-overflow: ellipsis;">
+          <span *ngIf="item.Color" [style.background-color]="item.Color" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;"></span>
+          <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item[bindLabel] }}</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: 8px;" *ngIf="item.Stage_Type !== undefined || item.Followup_Required !== undefined">
+          <span *ngIf="item.Stage_Type !== undefined && item.Stage_Type !== null" 
+                [style.background]="item.Stage_Type == 2 ? '#fef2f2' : '#f0fdf4'" 
+                [style.color]="item.Stage_Type == 2 ? '#ef4444' : '#16a34a'" 
+                [style.border]="item.Stage_Type == 2 ? '1px solid #fecaca' : '1px solid #bbf7d0'"
+                style="font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; text-transform: uppercase;">
+            {{ item.Stage_Type == 2 ? 'Lost' : 'Won' }}
+          </span>
+          <span *ngIf="item.Followup_Required !== undefined && item.Followup_Required !== null" 
+                [style.background]="item.Followup_Required == 1 ? '#eff6ff' : '#f8fafc'" 
+                [style.color]="item.Followup_Required == 1 ? '#2563eb' : '#94a3b8'" 
+                [title]="item.Followup_Required == 1 ? 'Follow-up Required' : 'Follow-up Optional'"
+                style="font-size: 10px; font-weight: 500; padding: 1px 4px; border-radius: 4px; display: inline-flex; align-items: center;">
+            <i class="material-icons" style="font-size: 12px;">{{ item.Followup_Required == 1 ? 'alarm' : 'alarm_off' }}</i>
+          </span>
+        </div>
       </div>
 
       <div class="ig-dropdown-loading" *ngIf="loading">

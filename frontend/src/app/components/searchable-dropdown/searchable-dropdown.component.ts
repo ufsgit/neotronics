@@ -167,4 +167,11 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
     }
     return this.fallbackName || '';
   }
+
+  getSelectedItem(): any {
+    if (this.value != null && Array.isArray(this.data)) {
+      return this.data.find(item => item[this.bindValue] == this.value);
+    }
+    return null;
+  }
 }
