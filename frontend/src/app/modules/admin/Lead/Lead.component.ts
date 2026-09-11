@@ -401,15 +401,16 @@ export class LeadComponent implements OnInit {
       this.DropdownData['TargetStage'] = [{ id: this.Selected_Lead_For_FollowUp.Status_Id, name: this.Selected_Lead_For_FollowUp.Status_Name }];
     }
 
-    if (this.Department_Data.length === 0) {
-      this.Get_Dropdowns_Lead();
+    // Load all follow-up dropdowns using only Search_Lead_Dropdowns API
+    if (!this.DropdownData['Branch'] || this.DropdownData['Branch'].length === 0) {
+      this.loadDropdownData('Branch', false, 0);
     }
-
-    // Load PipelineStage dropdown if not already loaded
+    if (!this.DropdownData['TargetStage'] || this.DropdownData['TargetStage'].length === 0) {
+      this.loadDropdownData('TargetStage', false, 0);
+    }
     if (!this.DropdownData['PipelineStage'] || this.DropdownData['PipelineStage'].length === 0) {
       this.loadDropdownData('PipelineStage', false, 0);
     }
-    // Load Pulse dropdown if not already loaded
     if (!this.DropdownData['Pulse'] || this.DropdownData['Pulse'].length === 0) {
       this.loadDropdownData('Pulse', false, 0);
     }
