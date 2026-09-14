@@ -124,6 +124,11 @@ export class Register_LeadComponent implements OnInit {
   History_Has_More: boolean = true;
   Remark_Popup_Open: boolean = false;
   Remark_Popup_Text: string = '';
+  
+  Duplicate_Popup_Open: boolean = false;
+  Duplicate_Messages: string[] = [];
+  Has_Checked_Duplicates: boolean = false;
+  Has_Duplicates_Found: boolean = false;
 
   Toggle_Workflow_Start() {
     if (this.Selected_Workflow) {
@@ -194,6 +199,8 @@ export class Register_LeadComponent implements OnInit {
   }
 
   Add_Market_System(sys: any) {
+    this.Has_Checked_Duplicates = false;
+    this.Has_Duplicates_Found = false;
     const existingIndex = this.Added_Market_Systems.findIndex(a => a.id === sys.id);
     if (existingIndex > -1) {
       // It's already added, so remove it (toggle off)
@@ -217,11 +224,73 @@ export class Register_LeadComponent implements OnInit {
   }
 
   Remove_Market_System(index: number) {
+    this.Has_Checked_Duplicates = false;
+    this.Has_Duplicates_Found = false;
     this.Added_Market_Systems.splice(index, 1);
   }
 
   isSystemAdded(sys: any): boolean {
     return this.Added_Market_Systems.some(a => a.id === sys.id);
+  }
+
+  hasDuplicateCheckFields(sys: any): boolean {
+    if (!sys || !sys.fields) return false;
+    return sys.fields.some((f: any) => f.CheckDuplication == 1 || f.CheckDuplication == true);
+  }
+
+  hasAnyDuplicateCheckFields(): boolean {
+    return this.Added_Market_Systems.some(sys => this.hasDuplicateCheckFields(sys));
+  }
+
+  isCheckingDuplicates: boolean = false;
+
+  Check_All_Market_Systems_Duplicate(event: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    let checks: any[] = [];
+    this.Added_Market_Systems.forEach(sys => {
+      if (sys.fields) {
+        sys.fields.forEach((f: any) => {
+          if ((f.CheckDuplication == 1 || f.CheckDuplication == true) && f.Field_Value) {
+            checks.push({
+              CategoryId: Number(sys.id || sys.Category_Id),
+              FieldId: Number(f.id || f.Field_Id),
+              FieldValue: String(f.Field_Value)
+            });
+          }
+        });
+      }
+    });
+    
+    if (checks.length === 0) {
+      this.snackBar.open("Please enter a value for at least one duplicate check field.", "Close", { duration: 3000 });
+      return;
+    }
+    
+    this.isCheckingDuplicates = true;
+    this.Lead_Service_.Check_Market_Study_Duplicate(checks).subscribe(
+      (res: any) => {
+        this.isCheckingDuplicates = false;
+        this.Has_Checked_Duplicates = true;
+        if (res && res.success && res.data && res.data.length > 0) {
+          this.Has_Duplicates_Found = true;
+          this.Duplicate_Messages = res.data.map((d: any) => d.Message);
+          this.Duplicate_Popup_Open = true;
+        } else {
+          this.Has_Duplicates_Found = false;
+          this.snackBar.open("No duplicates found.", "Close", { duration: 3000 });
+        }
+      },
+      (err) => {
+        this.isCheckingDuplicates = false;
+        this.Has_Checked_Duplicates = true;
+        this.Has_Duplicates_Found = false;
+        console.error("Duplicate Check Error:", err);
+        this.snackBar.open("Error checking for duplicates.", "Close", { duration: 3000 });
+      }
+    );
   }
 
   getOptionsArray(field: any): string[] {
@@ -1136,6 +1205,37 @@ export class Register_LeadComponent implements OnInit {
     if (!this.Lead_.Lead_Name) {
       this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter Lead Name', Type: "3" } });
       return;
+    }
+    
+    // Check if duplicate check is required before saving
+    if (this.hasAnyDuplicateCheckFields()) {
+      if (!this.Has_Checked_Duplicates) {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Please check for duplicates in the Market Study section before saving.', Type: "3" } });
+        
+        dialogRef.afterClosed().subscribe(() => {
+          // Scroll to the Market Study section
+          const element = document.getElementById('market-study-section-header');
+          if (element) {
+            if (!this.Expanded_Sections['Market Study']) {
+              this.Toggle_Section('Market Study'); // Auto-expand it
+            }
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+        return;
+      }
+      
+      if (this.Has_Duplicates_Found) {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Cannot save because duplicates were found in the Market Study section. Please fix them before saving.', Type: "3" } });
+        
+        dialogRef.afterClosed().subscribe(() => {
+          const element = document.getElementById('market-study-section-header');
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+        return;
+      }
     }
     
     // Validate Market Study Required Fields

@@ -282,13 +282,22 @@
 
       <!-- ── Market Study ── -->
       <div class="ig-section-card">
-        <div class="ig-section-header"
+        <div id="market-study-section-header" class="ig-section-header"
           style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
           (click)="Toggle_Section('Market Study')">
           <p class="ig-section-title" style="margin: 0;"><i class="material-icons">storefront</i> Market Study — Ask
             these while meeting
             the customer</p>
-          <i class="material-icons">{{ Expanded_Sections['Market Study'] ? 'expand_less' : 'expand_more' }}</i>
+          <div style="display: flex; align-items: center; gap: 15px;">
+            <button type="button" *ngIf="hasAnyDuplicateCheckFields()" (click)="Check_All_Market_Systems_Duplicate($event)"
+              [disabled]="isCheckingDuplicates"
+              [ngStyle]="{'opacity': isCheckingDuplicates ? '0.6' : '1', 'cursor': isCheckingDuplicates ? 'not-allowed' : 'pointer'}"
+              style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 4px; transition: all 0.2s; height: 28px; display: flex; align-items: center; gap: 4px;">
+              <i class="material-icons" style="font-size: 14px;">{{ isCheckingDuplicates ? 'hourglass_empty' : 'content_copy' }}</i> 
+              {{ isCheckingDuplicates ? 'Checking...' : 'Check Duplicate' }}
+            </button>
+            <i class="material-icons">{{ Expanded_Sections['Market Study'] ? 'expand_less' : 'expand_more' }}</i>
+          </div>
         </div>
 
         <div style="margin-top: 15px;" *ngIf="Expanded_Sections['Market Study']">
@@ -310,11 +319,13 @@
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h4 style="margin-top: 0; font-size: 14px; font-weight: 600; color: #1e293b; margin-bottom: 0;">{{
                   sys.name }} Details</h4>
-                <button type="button" (click)="Remove_Market_System(i)"
-                  style="background: none; border: none; color: #ef4444; font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: background 0.2s;"
-                  onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">
-                  Remove &times;
-                </button>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                  <button type="button" (click)="Remove_Market_System(i)"
+                    style="background: none; border: none; color: #ef4444; font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: background 0.2s;"
+                    onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">
+                    Remove &times;
+                  </button>
+                </div>
               </div>
 
               <div *ngIf="!sys.fields || sys.fields.length === 0" style="font-size: 13px; color: #64748b;">
@@ -326,19 +337,24 @@
                 <div *ngFor="let field of sys.fields">
                   <label style="display:block; font-size: 12px; font-weight: 500; color: #334155; margin-bottom: 5px;">
                     {{ field.Field_Name }} <span *ngIf="field.IsRequired" style="color: red;">*</span>
+                    <span *ngIf="field.CheckDuplication == 1" style="color: #3b82f6; margin-left: 2px;" title="Duplicate Check Enabled">*</span>
                   </label>
                   <input *ngIf="field.Field_Type === 'Text'" type="text" [(ngModel)]="field.Field_Value"
+                    (ngModelChange)="Has_Checked_Duplicates = false"
                     [ngModelOptions]="{standalone: true}" class="form-control"
                     style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;"
                     placeholder="Enter {{field.Field_Name}}">
                   <input *ngIf="field.Field_Type === 'Number'" type="number" [(ngModel)]="field.Field_Value"
+                    (ngModelChange)="Has_Checked_Duplicates = false"
                     [ngModelOptions]="{standalone: true}" class="form-control"
                     style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;"
                     placeholder="0">
                   <input *ngIf="field.Field_Type === 'Date'" type="date" [(ngModel)]="field.Field_Value"
+                    (ngModelChange)="Has_Checked_Duplicates = false"
                     [ngModelOptions]="{standalone: true}" class="form-control"
                     style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;">
                   <select *ngIf="field.Field_Type === 'Dropdown'" [(ngModel)]="field.Field_Value"
+                    (ngModelChange)="Has_Checked_Duplicates = false"
                     [ngModelOptions]="{standalone: true}" class="form-control"
                     style="width:100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;">
                     <option value="">Select option...</option>
@@ -723,6 +739,34 @@
           style="font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; margin: 0; color: #333;">
           {{ Remark_Popup_Text }}
         </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DUPLICATE CHECK POPUP -->
+  <div class="ig-cf-overlay" *ngIf="Duplicate_Popup_Open">
+    <div class="ig-cf-popup" style="max-width: 600px;" (click)="$event.stopPropagation()">
+      <div class="ig-cf-popup-header">
+        <div>
+          <p class="ig-cf-popup-lead">Duplicate Check Results</p>
+          <p class="ig-cf-popup-sub" style="color: #ef4444;">Please review the duplicates found below</p>
+        </div>
+        <button class="ig-cf-close" (click)="Duplicate_Popup_Open = false">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+
+      <div class="ig-cf-popup-body" style="padding: 20px;">
+        <div style="background: #fee2e2; border: 1px solid #fca5a5; padding: 15px; border-radius: 6px; margin-bottom: 10px;" *ngFor="let msg of Duplicate_Messages">
+          <p style="font-size: 14px; line-height: 1.5; margin: 0; color: #991b1b;">
+            <i class="material-icons" style="font-size: 16px; vertical-align: text-bottom; margin-right: 5px;">warning</i>
+            {{ msg }}
+          </p>
+        </div>
+        
+        <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+          <button mat-button type="button" class="ig-btn-cancel" (click)="Duplicate_Popup_Open = false">Close</button>
+        </div>
       </div>
     </div>
   </div>
