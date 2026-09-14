@@ -3823,7 +3823,12 @@ BEGIN
       AND (p_DesignationId IS NULL OR p_DesignationId = 0 OR l.POC_Designation_Id = p_DesignationId)
       AND (p_DistrictId IS NULL OR p_DistrictId = 0 OR l.District = p_DistrictId)
       AND (p_Priority IS NULL OR p_Priority = '' OR l.Lead_Priority = p_Priority)
-      AND (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
+      AND (
+          CASE 
+              WHEN p_Lead_Type = 5 THEN l.Market_Study_Systems IS NOT NULL AND l.Market_Study_Systems != ''
+              ELSE p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type
+          END
+      )
       AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId)
     ORDER BY l.Lead_Id DESC
     LIMIT p_Limit OFFSET v_Offset;
@@ -3836,7 +3841,12 @@ BEGIN
       AND (p_DesignationId IS NULL OR p_DesignationId = 0 OR l.POC_Designation_Id = p_DesignationId)
       AND (p_DistrictId IS NULL OR p_DistrictId = 0 OR l.District = p_DistrictId)
       AND (p_Priority IS NULL OR p_Priority = '' OR l.Lead_Priority = p_Priority)
-      AND (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
+      AND (
+          CASE 
+              WHEN p_Lead_Type = 5 THEN l.Market_Study_Systems IS NOT NULL AND l.Market_Study_Systems != ''
+              ELSE p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type
+          END
+      )
       AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId);
 END$$
 DELIMITER ;
