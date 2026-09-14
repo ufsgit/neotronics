@@ -133,8 +133,8 @@ export class Lead_Service {
     return this.http.get(environment.BasePath + 'Lead/Search_Company_Name/' + encodeURIComponent(query));
   }
 
-  Check_Market_Study_Duplicate(checks: any[]): Observable<any> {
-    return this.http.post(environment.BasePath + 'Lead/Check_Market_Study_Duplicate/', { checks });
+  Check_Market_Study_Duplicate(checks: any[], LeadId: number = 0): Observable<any> {
+    return this.http.post(environment.BasePath + 'Lead/Check_Market_Study_Duplicate/', { checks, LeadId });
   }
 
   Get_Ghosting_Lead_Report(filters: any = {}): Observable<any> {

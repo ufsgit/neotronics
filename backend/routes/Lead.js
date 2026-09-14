@@ -373,8 +373,8 @@ router.get('/Search_Lead_Dropdowns/', function (req, res, next) {
 
 router.post('/Check_Market_Study_Duplicate/', function (req, res, next) {
     try {
-        const { checks } = req.body; // Expecting an array: [{CategoryId, FieldId, FieldValue}]
-        console.log("Bulk Duplicate Check Payload received:", checks);
+        const { checks, LeadId } = req.body; // Expecting an array of checks and optional LeadId
+        console.log("Bulk Duplicate Check Payload received:", checks, "LeadId:", LeadId);
         
         if (!checks || !Array.isArray(checks) || checks.length === 0) {
             return res.status(400).json({ success: false, message: "A valid array of checks is required." });
@@ -383,7 +383,7 @@ router.post('/Check_Market_Study_Duplicate/', function (req, res, next) {
         const jsonString = JSON.stringify(checks);
         console.log("JSON String sent to SP:", jsonString);
 
-        Lead.Check_Market_Study_Duplicate_Bulk(jsonString, function (err, rows) {
+        Lead.Check_Market_Study_Duplicate_Bulk(jsonString, LeadId || 0, function (err, rows) {
             console.log("SP Result Rows:", rows);
             if (err) {
                 return res.status(500).json({ success: false, message: "Database error", error: err.message });

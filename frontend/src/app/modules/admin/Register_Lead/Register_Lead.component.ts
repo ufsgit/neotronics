@@ -26,30 +26,37 @@ import { NotificationService } from '../../../services/notification.service';
 export class Register_LeadComponent implements OnInit {
   companyNameSubject: Subject<string> = new Subject<string>();
   Expanded_Sections: { [key: string]: boolean } = {
-    'Company Details': true,
-    'Decision Makers & Contacts': true,
-    'Requirement Profile': true,
-    'Market Study': true,
-    'Lead Priority': true,
-    'Pipeline Stage & Pulse': true,
-    'Assignment': true,
-    'Follow-up Automation': true,
-    'Interaction History': true
+    'Company Details': false,
+    'Decision Makers & Contacts': false,
+    'Requirement Profile': false,
+    'Market Study': false,
+    'Lead Priority': false,
+    'Pipeline Stage & Pulse': false,
+    'Add Assignment': false,
+    'Follow-Up Automation': false,
+    'Interaction History': false
   };
 
   Toggle_Section(section: string) {
     this.Expanded_Sections[section] = !this.Expanded_Sections[section];
   }
 
+  get Visible_Tabs(): string[] {
+    return this.Tabs.filter(t => {
+      if ((t === 'Add Assignment' || t === 'Pipeline Stage & Pulse') && this.Lead_.Lead_Id > 0 && !this.Is_View_Mode) {
+        return false;
+      }
+      return true;
+    });
+  }
+
   get Are_All_Expanded(): boolean {
-    return Object.values(this.Expanded_Sections).every(val => val === true);
+    return this.Visible_Tabs.every(t => this.Expanded_Sections[t] === true);
   }
 
   Toggle_All_Sections() {
     const expand = !this.Are_All_Expanded;
-    for (let key in this.Expanded_Sections) {
-      this.Expanded_Sections[key] = expand;
-    }
+    this.Visible_Tabs.forEach(t => this.Expanded_Sections[t] = expand);
   }
 
   Lead_: Lead = new Lead();
@@ -129,6 +136,20 @@ export class Register_LeadComponent implements OnInit {
   Duplicate_Messages: string[] = [];
   Has_Checked_Duplicates: boolean = false;
   Has_Duplicates_Found: boolean = false;
+  
+  Tabs: string[] = [
+    'Company Details',
+    'Decision Makers & Contacts',
+    'Requirement Profile',
+    'Market Study',
+    'Lead Priority',
+    'Pipeline Stage & Pulse',
+    'Add Assignment',
+    'Follow-Up Automation'
+  ];
+  Select_Tab(tabName: string) {
+    this.Expanded_Sections[tabName] = !this.Expanded_Sections[tabName];
+  }
 
   Toggle_Workflow_Start() {
     if (this.Selected_Workflow) {
@@ -270,7 +291,8 @@ export class Register_LeadComponent implements OnInit {
     }
     
     this.isCheckingDuplicates = true;
-    this.Lead_Service_.Check_Market_Study_Duplicate(checks).subscribe(
+    const currentLeadId = this.Lead_.Lead_Id || 0;
+    this.Lead_Service_.Check_Market_Study_Duplicate(checks, currentLeadId).subscribe(
       (res: any) => {
         this.isCheckingDuplicates = false;
         this.Has_Checked_Duplicates = true;
@@ -1554,6 +1576,8 @@ export class Register_LeadComponent implements OnInit {
     this.Selected_Pipeline_Stage = (this.Lead_ as any).Current_Pipeline_Stage || '';
     if ((this.Lead_ as any).PipelineStage_Id) {
        this.DropdownData['PipelineStage'] = [{ id: (this.Lead_ as any).PipelineStage_Id, name: this.Selected_Pipeline_Stage }];
+    } else if (this.Selected_Pipeline_Stage) {
+       this.DropdownData['PipelineStage'] = [{ id: 0, name: this.Selected_Pipeline_Stage }];
     } else {
        this.DropdownData['PipelineStage'] = [];
     }
@@ -1561,6 +1585,8 @@ export class Register_LeadComponent implements OnInit {
     this.Selected_Pulse = (this.Lead_ as any).Pulse || '';
     if ((this.Lead_ as any).Pulse_Id) {
        this.DropdownData['Pulse'] = [{ id: (this.Lead_ as any).Pulse_Id, name: this.Selected_Pulse }];
+    } else if (this.Selected_Pulse) {
+       this.DropdownData['Pulse'] = [{ id: 0, name: this.Selected_Pulse }];
     } else {
        this.DropdownData['Pulse'] = [];
     }

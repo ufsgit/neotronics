@@ -89,6 +89,32 @@ End$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Check_Lead_Market_Study_Duplicate_Bulk`(
+    IN p_JsonData JSON,
+    IN p_ExcludeLeadId INT
+)
+BEGIN
+    SELECT 
+        l.Category_Name,
+        l.Field_Name,
+        l.Field_Value,
+        CONCAT('Duplicate found in Category "', l.Category_Name, '", Field "', l.Field_Name, '" with the value "', l.Field_Value, '".') AS Message
+    FROM lead_market_study_data l
+    JOIN JSON_TABLE(
+        p_JsonData,
+        '$[*]' COLUMNS (
+            CategoryId INT PATH '$.CategoryId',
+            FieldId INT PATH '$.FieldId',
+            FieldValue TEXT PATH '$.FieldValue'
+        )
+    ) AS jt ON l.Category_Id = jt.CategoryId 
+           AND l.Field_Id = jt.FieldId 
+           AND l.Field_Value = jt.FieldValue
+    WHERE l.Lead_Id != p_ExcludeLeadId; -- <-- THIS IS THE MAGIC LINE THAT FIXES IT!
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Client_Accounts_Branch_Typeahead_Admin`( In Client_Accounts_Name_ varchar(100))
 Begin 
  set Client_Accounts_Name_ = Concat( '%',Client_Accounts_Name_ ,'%');
@@ -3738,15 +3764,20 @@ BEGIN
     
     -- 3. Market Study Fields (Formerly 4)
     SELECT 
-        Category_Id,
-        Category_Name,
-        Field_Id,
-        Field_Name,
-        Field_Type,
-        Field_Value,
-        IsRequired
-    FROM `lead_market_study_data`
-    WHERE Lead_Id = p_LeadId;
+        L.Category_Id,
+        L.Category_Name,
+        L.Field_Id,
+        L.Field_Name,
+        L.Field_Type,
+        L.Field_Value,
+        L.IsRequired,
+        L.CheckDuplication,
+        M.Field_Options  -- <-- Pulling the options from the Master table!
+    FROM `lead_market_study_data` L
+    LEFT JOIN `market_study_field` M ON L.Field_Id = M.Field_Id
+    WHERE L.Lead_Id = p_LeadId;
+
+
 
 END$$
 DELIMITER ;
@@ -14856,6 +14887,7 @@ BEGIN
             Name_Captured = _Name_Captured, Number_Captured = _Number_Captured, Email_Captured = _Email_Captured, 
             Enquiry_For = _Enquiry_For, Enquiry_For_Note = _Enquiry_For_Note, 
             Market_Study_Systems = _Market_Study_Systems, Lead_Priority = _Lead_Priority,
+            /*
             PipelineStage_Id       = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', PipelineStage_Id, _Current_PipelineStage_Id), 
             Current_Pipeline_Stage = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', Current_Pipeline_Stage, _Current_Pipeline_Stage),
             Stage_Type             = IFNULL(_Stage_Type, Stage_Type),
@@ -14864,53 +14896,13 @@ BEGIN
             Pulse_Id               = IF(_Pulse IS NULL OR _Pulse = '', Pulse_Id, _Pulse_Id), 
             Pulse                  = IF(_Pulse IS NULL OR _Pulse = '', Pulse, _Pulse),
             isGhosting             = IFNULL(_isGhosting, 0),
+            */
             Workflow_Id = _Workflow_Id, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
         WHERE Lead_Id = _Lead_Id;
         
         SET _Generated_Lead_Id = _Lead_Id;
 
-        IF (_Current_Pipeline_Stage IS NOT NULL AND _Current_Pipeline_Stage != '') OR (_Pulse IS NOT NULL AND _Pulse != '') THEN
-            INSERT INTO `lead_pipeline_pulse_history` (
-                Lead_Id, PipelineStage_Id, Pipeline_Stage,
-                Stage_Type, Followup_Required, Color,
-                Pulse_Id, Pulse, Current_Status, Login_User_Id
-            ) VALUES (
-                _Generated_Lead_Id, _Current_PipelineStage_Id, _Current_Pipeline_Stage,
-                IFNULL(_Stage_Type, 0), IFNULL(_Followup_Required, 1), IFNULL(_Color, '#3b82f6'),
-                _Pulse_Id, _Pulse, _Status_Name, _Login_User_Id
-            );
-        END IF;
         DELETE FROM `lead_contact` WHERE Lead_Id = _Generated_Lead_Id;
-        
-        IF _previous_Pulse_Id != _Pulse_Id THEN
-            IF _was_Previously_Ghosting = 1 THEN
-                UPDATE `lead_ghosting_history`
-                SET isCurrent = 0, Current_Status = '0' 
-                WHERE Lead_Id = _Lead_Id AND isCurrent = 1;
-            END IF;
-            
-            IF _isGhosting = 1 THEN
-                INSERT INTO `lead_ghosting_history` (
-                    Lead_Id, Lead_Name, Lead_Type,
-                    PipelineStage_Id, Pipeline_Stage,
-                    Stage_Type, Followup_Required, Color,
-                    Pulse_Id, Pulse, Current_Status,
-                    Login_User_Id, login_user_name,
-                    Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
-                    Source_Id, Source_Name, isCurrent
-                ) 
-                SELECT 
-                    Lead_Id, Lead_Name, Lead_Type,
-                    _Current_PipelineStage_Id, _Current_Pipeline_Stage,
-                    IFNULL(_Stage_Type, 0), IFNULL(_Followup_Required, 1), IFNULL(_Color, '#3b82f6'),
-                    _Pulse_Id, _Pulse, '1',
-                    _Login_User_Id, (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = _Login_User_Id LIMIT 1),
-                    Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
-                    Source, Source_Name, 1
-                FROM `lead` 
-                WHERE Lead_Id = _Lead_Id;
-            END IF;
-        END IF;
 
     END IF;
     

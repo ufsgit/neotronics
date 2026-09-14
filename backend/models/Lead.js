@@ -647,8 +647,8 @@ var Lead = {
         let offset = (page - 1) * limit;
         return db.query("CALL Get_Pipeline_Pulse_History(?, ?, ?)", [Lead_Id, limit, offset], callback);
     },
-    Check_Market_Study_Duplicate_Bulk: function (JsonChecks, callback) {
-        return db.query("CALL Check_Lead_Market_Study_Duplicate_Bulk(?)", [JsonChecks], callback);
+    Check_Market_Study_Duplicate_Bulk: function (JsonChecks, LeadId, callback) {
+        return db.query("CALL Check_Lead_Market_Study_Duplicate_Bulk(?, ?)", [JsonChecks, LeadId], callback);
     }
 };
 
