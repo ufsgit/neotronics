@@ -233,7 +233,7 @@ BEGIN
         p.PipelineStage_Name AS Stage_Name,
         COUNT(l.Lead_Id) AS Count
     FROM pipeline_stage_master p
-    LEFT JOIN neotronics_19_08.`lead` l 
+    LEFT JOIN `lead` l 
         ON l.PipelineStage_Id = p.PipelineStage_Id
     WHERE IFNULL(p.DeleteStatus, 0) = 0
     GROUP BY p.PipelineStage_Id, p.PipelineStage_Name
@@ -248,7 +248,7 @@ BEGIN
         IFNULL(p.PipelineStage_Name, 'Unassigned') AS Stage_Name,
         COUNT(l.Lead_Id) AS Count
     FROM pipeline_stage_master p
-    LEFT JOIN neotronics_19_08.`lead` l 
+    LEFT JOIN `lead` l 
         ON l.PipelineStage_Id = p.PipelineStage_Id
     WHERE IFNULL(p.DeleteStatus, 0) = 0
     GROUP BY p.PipelineStage_Id, p.PipelineStage_Name
@@ -260,13 +260,13 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `DashboardV2_PipelineTop3`()
 BEGIN
     -- Total leads count
-    SELECT COUNT(*) AS TotalLeads FROM neotronics_19_08.`lead`;
+    SELECT COUNT(*) AS TotalLeads FROM `lead`;
     -- Top 3 pipeline stages by lead count (only stages with leads)
     SELECT 
         p.PipelineStage_Name AS Stage_Name,
         COUNT(l.Lead_Id) AS Count
     FROM pipeline_stage_master p
-    LEFT JOIN neotronics_19_08.`lead` l 
+    LEFT JOIN `lead` l 
         ON l.PipelineStage_Id = p.PipelineStage_Id
     WHERE IFNULL(p.DeleteStatus, 0) = 0
     GROUP BY p.PipelineStage_Id, p.PipelineStage_Name
@@ -283,7 +283,7 @@ BEGIN
         IFNULL(p.Pulse_Name, 'Unassigned') AS Pulse_Name,
         COUNT(l.Lead_Id) AS Count
     FROM pulse_master p
-    LEFT JOIN neotronics_19_08.`lead` l 
+    LEFT JOIN `lead` l 
         ON l.Pulse_Id = p.Pulse_Id
     WHERE IFNULL(p.DeleteStatus, 0) = 0
     GROUP BY p.Pulse_Id, p.Pulse_Name
@@ -298,7 +298,7 @@ BEGIN
         IFNULL(s.sourceName, 'Unknown') AS Source_Name,
         COUNT(l.Lead_Id) AS Count
     FROM `source` s
-    LEFT JOIN neotronics_19_08.`lead` l 
+    LEFT JOIN `lead` l 
         ON l.Source = s.id
     WHERE IFNULL(s.DeleteStatus, 0) = 0
     GROUP BY s.id, s.sourceName
