@@ -66,7 +66,7 @@
             <ng-template #checkStageType>
               <ng-container *ngIf="col.key === 'Stage_Type_Label'; else checkBooleanValues">
                 <span style="background: #f1f5f9; color: #334155; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
-                  {{ item.Stage_Type == 2 ? 'lost' : 'won' }}
+                  {{ item.Stage_Type == 1 ? 'won' : (item.Stage_Type == 2 ? 'lost' : 'normal') }}
                 </span>
               </ng-container>
             </ng-template>

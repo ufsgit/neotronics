@@ -50,7 +50,7 @@ export class Lead_ConfigComponent implements OnInit {
     description: '',
     IsActive: 1,
     isGhosting: 0,
-    Stage_Type: 1,
+    Stage_Type: 0,
     Followup_Required: 1,
     Color: '#3b82f6'
   };
@@ -192,8 +192,8 @@ export class Lead_ConfigComponent implements OnInit {
             Description: item.Description || item.description || '',
             IsActive: item.IsActive && typeof item.IsActive === 'object' && item.IsActive.data ? item.IsActive.data[0] : (item.IsActive ? 1 : 0),
             isGhosting: item.isGhosting && typeof item.isGhosting === 'object' && item.isGhosting.data ? item.isGhosting.data[0] : (item.isGhosting ? 1 : 0),
-            Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 1,
-            Stage_Type_Label: (item.Stage_Type == 2) ? 'Type 2' : 'Type 1',
+            Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 0,
+            Stage_Type_Label: (item.Stage_Type == 1) ? 'won' : (item.Stage_Type == 2) ? 'lost' : 'normal',
             Followup_Required: rawFollowup,
             Followup_Required_Label: (rawFollowup === 0) ? 'No' : 'Yes',
             Color: item.Color || '#3b82f6'
@@ -230,7 +230,7 @@ export class Lead_ConfigComponent implements OnInit {
       description: '',
       IsActive: 1,
       isGhosting: 0,
-      Stage_Type: 1,
+      Stage_Type: 0,
       Followup_Required: 1,
       Color: '#3b82f6'
     };
@@ -247,7 +247,7 @@ export class Lead_ConfigComponent implements OnInit {
       description: item.Description || item.description || '',
       IsActive: item.IsActive,
       isGhosting: item.isGhosting,
-      Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 1,
+      Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 0,
       Followup_Required: item.Followup_Required !== undefined && item.Followup_Required !== null ? Number(item.Followup_Required) : 1,
       Color: item.Color || '#3b82f6'
     };
@@ -280,7 +280,7 @@ export class Lead_ConfigComponent implements OnInit {
     }
 
     if (this.activeSubTab === 'Pipeline Stage') {
-      body.Stage_Type = Number(this.formData.Stage_Type || 1);
+      body.Stage_Type = (this.formData.Stage_Type !== undefined && this.formData.Stage_Type !== null) ? Number(this.formData.Stage_Type) : 0;
       body.Followup_Required = this.formData.Followup_Required ? 1 : 0;
       body.Color = this.formData.Color || '#3b82f6';
     }

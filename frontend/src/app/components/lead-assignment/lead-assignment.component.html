@@ -188,14 +188,14 @@
                 {{ getSelectedStageObj().name }}
               </span>
 
-              <!-- Stage Type Badge (Won / Lost) -->
+              <!-- Stage Type Badge (Won / Lost / Normal) -->
               <span *ngIf="getSelectedStageObj()?.Stage_Type !== undefined && getSelectedStageObj()?.Stage_Type !== null" 
-                    [style.background]="getSelectedStageObj().Stage_Type == 2 ? '#fef2f2' : '#f0fdf4'" 
-                    [style.color]="getSelectedStageObj().Stage_Type == 2 ? '#dc2626' : '#16a34a'" 
-                    [style.border]="getSelectedStageObj().Stage_Type == 2 ? '1px solid #fecaca' : '1px solid #bbf7d0'" 
+                    [style.background]="getSelectedStageObj().Stage_Type == 2 ? '#fef2f2' : (getSelectedStageObj().Stage_Type == 1 ? '#f0fdf4' : '#f1f5f9')" 
+                    [style.color]="getSelectedStageObj().Stage_Type == 2 ? '#dc2626' : (getSelectedStageObj().Stage_Type == 1 ? '#16a34a' : '#475569')" 
+                    [style.border]="getSelectedStageObj().Stage_Type == 2 ? '1px solid #fecaca' : (getSelectedStageObj().Stage_Type == 1 ? '1px solid #bbf7d0' : '1px solid #cbd5e1')" 
                     style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 12px; text-transform: uppercase;">
-                <i class="material-icons" style="font-size: 12px;">{{ getSelectedStageObj().Stage_Type == 2 ? 'cancel' : 'check_circle' }}</i>
-                {{ getSelectedStageObj().Stage_Type == 2 ? 'Lost' : 'Won' }}
+                <i class="material-icons" style="font-size: 12px;">{{ getSelectedStageObj().Stage_Type == 2 ? 'cancel' : (getSelectedStageObj().Stage_Type == 1 ? 'check_circle' : 'remove_circle_outline') }}</i>
+                {{ getSelectedStageObj().Stage_Type == 2 ? 'Lost' : (getSelectedStageObj().Stage_Type == 1 ? 'Won' : 'Normal') }}
               </span>
 
               <!-- Follow-up Required Badge -->

@@ -33,6 +33,7 @@
       <div class="form-group" style="margin-bottom: 16px;">
         <label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 14px; color: #334155;">Stage Type</label>
         <select class="form-control" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; background: white; font-size: 14px;" [(ngModel)]="formData.Stage_Type">
+          <option [ngValue]="0">normal</option>
           <option [ngValue]="1">won</option>
           <option [ngValue]="2">lost</option>
         </select>

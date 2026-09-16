@@ -159,6 +159,7 @@ import { LeadWorkflowComponent } from './Lead_Config/Follow_up_Automation/Workfl
 import { DesignationComponent } from './Designation/Designation.component';
 import { DepartmentComponent } from './Department/Department.component';
 import { LeadDashboardV2Component } from './lead-dashboard-v2/lead-dashboard-v2.component';
+import { LeadDashboardV3Component } from './lead-dashboard-v3/lead-dashboard-v3.component';
 
 @NgModule({
 	imports: [
@@ -301,12 +302,11 @@ import { LeadDashboardV2Component } from './lead-dashboard-v2/lead-dashboard-v2.
 		LeadDepartmentComponent,
 		LeadWorkflowComponent,
 		LeadDashboardV2Component,
+		LeadDashboardV3Component,
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],
 })
 export class AdminModule {}
 
-// Trigger recompile 1787205671385
-// Trigger recompile 1787205955069
-// Trigger recompile 1787206033346
+// Trigger recompile 1787206150000

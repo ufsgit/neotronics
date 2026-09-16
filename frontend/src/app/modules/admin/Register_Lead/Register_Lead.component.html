@@ -414,7 +414,7 @@
                 [data]="DropdownData['PipelineStage']" bindLabel="name" bindValue="name"
                 [placeholder]="Selected_Pipeline_Stage || 'Select Stage...'"
                 (search)="onSearchDropdown('PipelineStage', $event)" (loadMore)="onLoadMoreDropdown('PipelineStage')"
-                (ngModelChange)="PipelineStage_Change()" (itemSelected)="PipelineStage_Change()">
+                (itemSelected)="PipelineStage_Change($event)">
               </app-searchable-dropdown>
 
               <!-- Selected Stage Metadata Badges -->
@@ -429,24 +429,21 @@
                   {{ getSelectedPipelineStageObj().name }}
                 </span>
 
-                <!-- Stage Type Badge (Won / Lost) -->
+                <!-- Stage Type Badge (Won / Lost / Normal) -->
                 <span *ngIf="getSelectedPipelineStageObj()?.Stage_Type !== undefined && getSelectedPipelineStageObj()?.Stage_Type !== null" 
-                      [style.background]="getSelectedPipelineStageObj().Stage_Type == 2 ? '#fef2f2' : '#f0fdf4'" 
-                      [style.color]="getSelectedPipelineStageObj().Stage_Type == 2 ? '#dc2626' : '#16a34a'" 
-                      [style.border]="getSelectedPipelineStageObj().Stage_Type == 2 ? '1px solid #fecaca' : '1px solid #bbf7d0'" 
+                      [style.background]="getSelectedPipelineStageObj().Stage_Type == 2 ? '#fef2f2' : (getSelectedPipelineStageObj().Stage_Type == 1 ? '#f0fdf4' : '#f1f5f9')" 
+                      [style.color]="getSelectedPipelineStageObj().Stage_Type == 2 ? '#dc2626' : (getSelectedPipelineStageObj().Stage_Type == 1 ? '#16a34a' : '#475569')" 
+                      [style.border]="getSelectedPipelineStageObj().Stage_Type == 2 ? '1px solid #fecaca' : (getSelectedPipelineStageObj().Stage_Type == 1 ? '1px solid #bbf7d0' : '1px solid #cbd5e1')" 
                       style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 12px; text-transform: uppercase;">
-                  <i class="material-icons" style="font-size: 12px;">{{ getSelectedPipelineStageObj().Stage_Type == 2 ? 'cancel' : 'check_circle' }}</i>
-                  {{ getSelectedPipelineStageObj().Stage_Type == 2 ? 'Lost' : 'Won' }}
+                  <i class="material-icons" style="font-size: 12px;">{{ getSelectedPipelineStageObj().Stage_Type == 2 ? 'cancel' : (getSelectedPipelineStageObj().Stage_Type == 1 ? 'check_circle' : 'remove_circle_outline') }}</i>
+                  {{ getSelectedPipelineStageObj().Stage_Type == 2 ? 'Lost' : (getSelectedPipelineStageObj().Stage_Type == 1 ? 'Won' : 'Normal') }}
                 </span>
 
                 <!-- Follow-up Required Badge -->
-                <span *ngIf="getSelectedPipelineStageObj()?.Followup_Required !== undefined && getSelectedPipelineStageObj()?.Followup_Required !== null" 
-                      [style.background]="getSelectedPipelineStageObj().Followup_Required == 1 ? '#eff6ff' : '#f8fafc'" 
-                      [style.color]="getSelectedPipelineStageObj().Followup_Required == 1 ? '#1d4ed8' : '#64748b'" 
-                      [style.border]="getSelectedPipelineStageObj().Followup_Required == 1 ? '1px solid #bfdbfe' : '1px solid #e2e8f0'" 
-                      style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 12px;">
-                  <i class="material-icons" style="font-size: 12px;">{{ getSelectedPipelineStageObj().Followup_Required == 1 ? 'event_available' : 'event_busy' }}</i>
-                  {{ getSelectedPipelineStageObj().Followup_Required == 1 ? 'Follow-up Required' : 'Follow-up Optional' }}
+                <span *ngIf="isFollowupRequired()" 
+                      style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 12px;">
+                  <i class="material-icons" style="font-size: 12px;">event_available</i>
+                  Follow-up Required
                 </span>
               </div>
             </div>
@@ -459,7 +456,8 @@
                 <app-searchable-dropdown name="Selected_Pulse" [(ngModel)]="Selected_Pulse"
                   [data]="DropdownData['Pulse']" bindLabel="name" bindValue="name"
                   [placeholder]="Selected_Pulse || 'Select Pulse...'" (search)="onSearchDropdown('Pulse', $event)"
-                  (loadMore)="onLoadMoreDropdown('Pulse')">
+                  (loadMore)="onLoadMoreDropdown('Pulse')"
+                  (itemSelected)="Pulse_Change($event)">
                 </app-searchable-dropdown>
               </div>
             </div>
@@ -494,10 +492,10 @@
                     <span *ngIf="h.Color" [style.background]="h.Color" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0;"></span>
                     <span>{{ h.Pipeline_Stage || 'Need immediate follow up' }}</span>
                     <span *ngIf="h.Stage_Type !== undefined && h.Stage_Type !== null" 
-                          [style.background]="h.Stage_Type == 2 ? '#fef2f2' : '#f0fdf4'" 
-                          [style.color]="h.Stage_Type == 2 ? '#ef4444' : '#16a34a'" 
+                          [style.background]="h.Stage_Type == 2 ? '#fef2f2' : (h.Stage_Type == 1 ? '#f0fdf4' : '#f1f5f9')" 
+                          [style.color]="h.Stage_Type == 2 ? '#ef4444' : (h.Stage_Type == 1 ? '#16a34a' : '#475569')" 
                           style="font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; text-transform: uppercase;">
-                      {{ h.Stage_Type == 2 ? 'Lost' : 'Won' }}
+                      {{ h.Stage_Type == 2 ? 'Lost' : (h.Stage_Type == 1 ? 'Won' : 'Normal') }}
                     </span>
                     <span *ngIf="h.Remark">— {{ h.Remark }}</span>
                   </div>
@@ -517,7 +515,7 @@
       </div>
 
       <!-- ── Assignment ── -->
-      <div class="ig-section-card" *ngIf="(!Lead_.Lead_Id || Is_View_Mode) && Expanded_Sections['Add Assignment']">
+      <div class="ig-section-card" *ngIf="isFollowupRequired() && Expanded_Sections['Add Assignment']">
         <fieldset [disabled]="Is_View_Mode" style="border: none; padding: 0; margin: 0;">
           <div class="ig-section-header" style="display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">

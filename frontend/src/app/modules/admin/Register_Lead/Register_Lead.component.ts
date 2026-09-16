@@ -38,12 +38,15 @@ export class Register_LeadComponent implements OnInit {
   };
 
   Toggle_Section(section: string) {
-    this.Expanded_Sections[section] = !this.Expanded_Sections[section];
+    this.Select_Tab(section);
   }
 
   get Visible_Tabs(): string[] {
     return this.Tabs.filter(t => {
       if ((t === 'Add Assignment' || t === 'Pipeline Stage & Pulse') && this.Lead_.Lead_Id > 0 && !this.Is_View_Mode) {
+        return false;
+      }
+      if (t === 'Add Assignment' && !this.isFollowupRequired()) {
         return false;
       }
       return true;
@@ -149,6 +152,13 @@ export class Register_LeadComponent implements OnInit {
   ];
   Select_Tab(tabName: string) {
     this.Expanded_Sections[tabName] = !this.Expanded_Sections[tabName];
+    if (tabName === 'Pipeline Stage & Pulse') {
+      if (this.Expanded_Sections['Pipeline Stage & Pulse']) {
+        this.Expanded_Sections['Add Assignment'] = this.isFollowupRequired();
+      } else {
+        this.Expanded_Sections['Add Assignment'] = false;
+      }
+    }
   }
 
   Toggle_Workflow_Start() {
@@ -567,6 +577,13 @@ export class Register_LeadComponent implements OnInit {
         this.DropdownEnd[type] = false;
         this.loadDropdownData(type);
       });
+    } else {
+      ['PipelineStage', 'Pulse'].forEach(type => {
+        this.DropdownPage[type] = 1;
+        this.DropdownSearch[type] = '';
+        this.DropdownEnd[type] = false;
+        this.loadDropdownData(type);
+      });
     }
 
     // Universally fetch Market Study Categories (for both create and edit)
@@ -621,11 +638,34 @@ export class Register_LeadComponent implements OnInit {
           this.DropdownOriginalEnd[cacheKey] = this.DropdownEnd[cacheKey] || false;
         }
       } else {
+        if (cacheKey === 'PipelineStage' && this.Selected_Pipeline_Stage) {
+          const match = data.find((d: any) => 
+            String(d.name || '').trim().toLowerCase() === String(this.Selected_Pipeline_Stage).trim().toLowerCase() ||
+            String(d.id) === String(this.Selected_Pipeline_Stage)
+          );
+          if (!match && this.getSelectedPipelineStageObj()) {
+            data.unshift(this.getSelectedPipelineStageObj());
+          }
+        }
+        if (cacheKey === 'Pulse' && this.Selected_Pulse) {
+          const match = data.find((d: any) => 
+            String(d.name || '').trim().toLowerCase() === String(this.Selected_Pulse).trim().toLowerCase() ||
+            String(d.id) === String(this.Selected_Pulse)
+          );
+          if (!match) {
+            data.unshift({ id: (this.Lead_ as any).Pulse_Id || 0, name: this.Selected_Pulse });
+          }
+        }
         this.DropdownData[cacheKey] = data;
         if (search === '') {
           this.DropdownOriginalData[cacheKey] = [...data];
           this.DropdownOriginalPage[cacheKey] = this.DropdownPage[cacheKey] || 1;
           this.DropdownOriginalEnd[cacheKey] = this.DropdownEnd[cacheKey] || false;
+        }
+        if (cacheKey === 'PipelineStage') {
+          if (this.Expanded_Sections['Pipeline Stage & Pulse']) {
+            this.Expanded_Sections['Add Assignment'] = this.isFollowupRequired();
+          }
         }
       }
     }, err => {
@@ -659,14 +699,75 @@ export class Register_LeadComponent implements OnInit {
     this.loadDropdownData(type, true, filterId);
   }
 
-  PipelineStage_Change() {
-    this.Selected_Pulse = '';
-    this.DropdownData['Pulse'] = [];
+  PipelineStage_Change(event?: any) {
+    if (event) {
+      this.Selected_Pipeline_Stage = event.name || event.id || this.Selected_Pipeline_Stage;
+    }
+    if (!this.Is_View_Mode) {
+      this.Selected_Pulse = '';
+      this.DropdownData['Pulse'] = [];
+    }
+    if (this.isFollowupRequired()) {
+      if (this.Expanded_Sections['Pipeline Stage & Pulse']) {
+        this.Expanded_Sections['Add Assignment'] = true;
+      }
+    } else {
+      this.Expanded_Sections['Add Assignment'] = false;
+    }
+  }
+
+  Pulse_Change(event?: any) {
+    if (event) {
+      this.Selected_Pulse = event.name || event.id || this.Selected_Pulse;
+    }
+    if (this.isFollowupRequired()) {
+      if (this.Expanded_Sections['Pipeline Stage & Pulse']) {
+        this.Expanded_Sections['Add Assignment'] = true;
+      }
+    } else {
+      this.Expanded_Sections['Add Assignment'] = false;
+    }
+  }
+
+  isFollowupRequired(): boolean {
+    const checkValue = (val: any): boolean => {
+      if (val === undefined || val === null) return false;
+      if (typeof val === 'object' && val.data && Array.isArray(val.data)) {
+        return val.data[0] == 1;
+      }
+      return val === true || val == 1 || val === '1';
+    };
+
+    const stageObj = this.getSelectedPipelineStageObj();
+    if (stageObj && stageObj.Followup_Required !== undefined && stageObj.Followup_Required !== null) {
+      return checkValue(stageObj.Followup_Required);
+    }
+    if (this.Lead_ && (this.Lead_ as any).Followup_Required !== undefined && (this.Lead_ as any).Followup_Required !== null) {
+      return checkValue((this.Lead_ as any).Followup_Required);
+    }
+    return false;
   }
 
   getSelectedPipelineStageObj(): any {
-    if (!this.Selected_Pipeline_Stage || !this.DropdownData['PipelineStage']) return null;
-    return (this.DropdownData['PipelineStage'] || []).find((x: any) => x.name === this.Selected_Pipeline_Stage || x.id == this.Selected_Pipeline_Stage);
+    if (!this.Selected_Pipeline_Stage) return null;
+    const stageStr = String(this.Selected_Pipeline_Stage).trim().toLowerCase();
+    const list = this.DropdownData['PipelineStage'] || [];
+    let found = list.find((x: any) => 
+      String(x.name || '').trim().toLowerCase() === stageStr || 
+      String(x.id) === String(this.Selected_Pipeline_Stage)
+    );
+    if (found) return found;
+
+    if (this.Lead_ && ((this.Lead_ as any).Followup_Required !== undefined || (this.Lead_ as any).Color || (this.Lead_ as any).Stage_Type !== undefined)) {
+      return {
+        id: (this.Lead_ as any).PipelineStage_Id || 0,
+        name: (this.Lead_ as any).Current_Pipeline_Stage || this.Selected_Pipeline_Stage,
+        Color: (this.Lead_ as any).Color,
+        Stage_Type: (this.Lead_ as any).Stage_Type,
+        Followup_Required: (this.Lead_ as any).Followup_Required
+      };
+    }
+    return null;
   }
 
   onCompanyNameChange(value: string) {
@@ -1574,19 +1675,27 @@ export class Register_LeadComponent implements OnInit {
     this.DropdownData['LeadPriority'] = this.Lead_.Lead_Priority ? [{ name: this.Lead_.Lead_Priority }] : [];
     
     this.Selected_Pipeline_Stage = (this.Lead_ as any).Current_Pipeline_Stage || '';
-    if ((this.Lead_ as any).PipelineStage_Id) {
-       this.DropdownData['PipelineStage'] = [{ id: (this.Lead_ as any).PipelineStage_Id, name: this.Selected_Pipeline_Stage }];
-    } else if (this.Selected_Pipeline_Stage) {
-       this.DropdownData['PipelineStage'] = [{ id: 0, name: this.Selected_Pipeline_Stage }];
+    if (this.Selected_Pipeline_Stage) {
+       this.DropdownData['PipelineStage'] = [{ 
+         id: (this.Lead_ as any).PipelineStage_Id || 0, 
+         name: this.Selected_Pipeline_Stage,
+         Color: (this.Lead_ as any).Color,
+         Stage_Type: (this.Lead_ as any).Stage_Type,
+         Followup_Required: (this.Lead_ as any).Followup_Required
+       }];
     } else {
        this.DropdownData['PipelineStage'] = [];
     }
 
+    if (this.Expanded_Sections['Pipeline Stage & Pulse']) {
+      this.Expanded_Sections['Add Assignment'] = this.isFollowupRequired();
+    } else if (!this.isFollowupRequired()) {
+      this.Expanded_Sections['Add Assignment'] = false;
+    }
+
     this.Selected_Pulse = (this.Lead_ as any).Pulse || '';
-    if ((this.Lead_ as any).Pulse_Id) {
-       this.DropdownData['Pulse'] = [{ id: (this.Lead_ as any).Pulse_Id, name: this.Selected_Pulse }];
-    } else if (this.Selected_Pulse) {
-       this.DropdownData['Pulse'] = [{ id: 0, name: this.Selected_Pulse }];
+    if (this.Selected_Pulse) {
+       this.DropdownData['Pulse'] = [{ id: (this.Lead_ as any).Pulse_Id || 0, name: this.Selected_Pulse }];
     } else {
        this.DropdownData['Pulse'] = [];
     }

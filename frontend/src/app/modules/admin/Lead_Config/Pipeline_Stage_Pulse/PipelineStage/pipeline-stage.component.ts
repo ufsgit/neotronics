@@ -34,7 +34,7 @@ export class LeadPipelineStageComponent implements OnInit {
   } = {
     id: 0,
     name: '',
-    Stage_Type: 1,
+    Stage_Type: 0,
     Followup_Required: 1,
     Color: '#3b82f6'
   };
@@ -71,8 +71,8 @@ export class LeadPipelineStageComponent implements OnInit {
             ...item,
             id: item.PipelineStage_Id || item.Pipeline_Stage_Id || item.id || 0,
             name: item.PipelineStage_Name || item.Pipeline_Stage_Name || item.name || '',
-            Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 1,
-            Stage_Type_Label: (item.Stage_Type == 2) ? 'Type 2' : 'Type 1',
+            Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 0,
+            Stage_Type_Label: (item.Stage_Type == 1) ? 'won' : (item.Stage_Type == 2) ? 'lost' : 'normal',
             Followup_Required: rawFollowup,
             Followup_Required_Label: (rawFollowup === 0) ? 'No' : 'Yes',
             Color: item.Color || '#3b82f6'
@@ -106,7 +106,7 @@ export class LeadPipelineStageComponent implements OnInit {
     this.formData = {
       id: 0,
       name: '',
-      Stage_Type: 1,
+      Stage_Type: 0,
       Followup_Required: 1,
       Color: '#3b82f6'
     };
@@ -118,7 +118,7 @@ export class LeadPipelineStageComponent implements OnInit {
     this.formData = {
       id: item.id || item.PipelineStage_Id || 0,
       name: item.name || item.PipelineStage_Name || '',
-      Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 1,
+      Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 0,
       Followup_Required: item.Followup_Required !== undefined && item.Followup_Required !== null ? Number(item.Followup_Required) : 1,
       Color: item.Color || '#3b82f6'
     };
@@ -136,7 +136,7 @@ export class LeadPipelineStageComponent implements OnInit {
     const payload = {
       Pipeline_Stage_Id: this.formData.id,
       Pipeline_Stage_Name: this.formData.name.trim(),
-      Stage_Type: Number(this.formData.Stage_Type || 1),
+      Stage_Type: (this.formData.Stage_Type !== undefined && this.formData.Stage_Type !== null) ? Number(this.formData.Stage_Type) : 0,
       Followup_Required: this.formData.Followup_Required ? 1 : 0,
       Color: this.formData.Color || '#3b82f6'
     };

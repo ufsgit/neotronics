@@ -5,7 +5,7 @@ var PipelineStage = {
     Save_Pipeline_Stage: function (body, callback) {
         var id               = Number(body.PipelineStage_Id || body.Pipeline_Stage_Id || body.id || 0);
         var name             = (body.PipelineStage_Name || body.Pipeline_Stage_Name || body.name || '').trim();
-        var stageType        = Number(body.Stage_Type || 1);
+        var stageType        = (body.Stage_Type !== undefined && body.Stage_Type !== null) ? Number(body.Stage_Type) : 0;
         var followupRequired = body.Followup_Required !== undefined ? Number(body.Followup_Required) : 1;
         var color            = body.Color || null;
 

@@ -162,15 +162,25 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
   
   getDisplayValue(): string {
     if (this.value != null && Array.isArray(this.data)) {
-      const selectedItem = this.data.find(item => item[this.bindValue] == this.value);
+      const v = String(this.value).trim().toLowerCase();
+      const selectedItem = this.data.find(item => 
+        item[this.bindValue] == this.value || 
+        String(item[this.bindValue] || '').trim().toLowerCase() === v ||
+        String(item[this.bindLabel] || '').trim().toLowerCase() === v
+      );
       if (selectedItem) return selectedItem[this.bindLabel];
     }
-    return this.fallbackName || '';
+    return this.fallbackName || (this.value ? String(this.value) : '');
   }
 
   getSelectedItem(): any {
     if (this.value != null && Array.isArray(this.data)) {
-      return this.data.find(item => item[this.bindValue] == this.value);
+      const v = String(this.value).trim().toLowerCase();
+      return this.data.find(item => 
+        item[this.bindValue] == this.value || 
+        String(item[this.bindValue] || '').trim().toLowerCase() === v ||
+        String(item[this.bindLabel] || '').trim().toLowerCase() === v
+      );
     }
     return null;
   }
