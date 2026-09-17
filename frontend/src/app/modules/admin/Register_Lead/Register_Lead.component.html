@@ -420,12 +420,12 @@
               <!-- Selected Stage Metadata Badges -->
               <div *ngIf="getSelectedPipelineStageObj()" style="display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
                 <!-- Color Indicator Pill -->
-                <span *ngIf="getSelectedPipelineStageObj()?.Color" 
-                      [style.background]="getSelectedPipelineStageObj().Color + '18'" 
-                      [style.color]="getSelectedPipelineStageObj().Color" 
-                      [style.border]="'1px solid ' + getSelectedPipelineStageObj().Color + '40'" 
+                <span *ngIf="getSelectedPipelineStageObj()" 
+                      [style.background]="(getSelectedPipelineStageObj().Color || '#3b82f6') + '18'" 
+                      [style.color]="getSelectedPipelineStageObj().Color || '#3b82f6'" 
+                      [style.border]="'1px solid ' + (getSelectedPipelineStageObj().Color || '#3b82f6') + '40'" 
                       style="display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px;">
-                  <span [style.background]="getSelectedPipelineStageObj().Color" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                  <span [style.background]="getSelectedPipelineStageObj().Color || '#3b82f6'" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
                   {{ getSelectedPipelineStageObj().name }}
                 </span>
 
@@ -459,6 +459,16 @@
                   (loadMore)="onLoadMoreDropdown('Pulse')"
                   (itemSelected)="Pulse_Change($event)">
                 </app-searchable-dropdown>
+
+                <!-- Selected Pulse Metadata Badges -->
+                <div *ngIf="getSelectedPulseObj()" style="display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+                  <!-- Ghost Status Badge -->
+                  <span *ngIf="getSelectedPulseObj()?.isGhosting == 1 || getSelectedPulseObj()?.ghosting == 1" 
+                        style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 12px; text-transform: uppercase;">
+                    <i class="material-icons" style="font-size: 12px;">warning</i>
+                    Ghosting
+                  </span>
+                </div>
               </div>
             </div>
           </div>

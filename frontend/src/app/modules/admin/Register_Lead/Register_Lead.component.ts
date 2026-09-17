@@ -770,6 +770,26 @@ export class Register_LeadComponent implements OnInit {
     return null;
   }
 
+  getSelectedPulseObj(): any {
+    if (!this.Selected_Pulse) return null;
+    const pulseStr = String(this.Selected_Pulse).trim().toLowerCase();
+    const list = this.DropdownData['Pulse'] || [];
+    let found = list.find((x: any) => 
+      String(x.name || '').trim().toLowerCase() === pulseStr || 
+      String(x.id) === String(this.Selected_Pulse)
+    );
+    if (found) return found;
+
+    if (this.Lead_ && ((this.Lead_ as any).isGhosting !== undefined || (this.Lead_ as any).isGhosting === 1)) {
+      return {
+        id: (this.Lead_ as any).Pulse_Id || 0,
+        name: (this.Lead_ as any).Pulse || this.Selected_Pulse,
+        isGhosting: (this.Lead_ as any).isGhosting
+      };
+    }
+    return null;
+  }
+
   onCompanyNameChange(value: string) {
     this.companyNameSubject.next(value);
   }
