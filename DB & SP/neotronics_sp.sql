@@ -90,27 +90,29 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Check_Lead_Market_Study_Duplicate_Bulk`(
-    IN p_JsonData JSON,
-    IN p_ExcludeLeadId INT
+    IN p_JsonChecks JSON
 )
 BEGIN
+    -- Parses the incoming JSON array of checks
     SELECT 
-        l.Category_Name,
-        l.Field_Name,
-        l.Field_Value,
-        CONCAT('Duplicate found in Category "', l.Category_Name, '", Field "', l.Field_Name, '" with the value "', l.Field_Value, '".') AS Message
-    FROM lead_market_study_data l
-    JOIN JSON_TABLE(
-        p_JsonData,
+        CONCAT('Duplicate found in Category "', lmsd.Category_Name, '", Field "', lmsd.Field_Name, '" with the value "', jt.FieldValue, '".') AS Message
+    FROM JSON_TABLE(
+        p_JsonChecks,
         '$[*]' COLUMNS (
             CategoryId INT PATH '$.CategoryId',
             FieldId INT PATH '$.FieldId',
             FieldValue TEXT PATH '$.FieldValue'
         )
-    ) AS jt ON l.Category_Id = jt.CategoryId 
-           AND l.Field_Id = jt.FieldId 
-           AND l.Field_Value = jt.FieldValue
-    WHERE l.Lead_Id != p_ExcludeLeadId; -- <-- THIS IS THE MAGIC LINE THAT FIXES IT!
+    ) AS jt
+    -- Join against the market study table to find exact matches
+    -- (This will now include deleted leads since we aren't filtering them out)
+    INNER JOIN lead_market_study_data lmsd 
+        ON lmsd.Category_Id = jt.CategoryId 
+        AND lmsd.Field_Id = jt.FieldId
+        AND lmsd.Field_Value = jt.FieldValue
+    -- Group by to prevent spamming the same message if multiple leads share the duplicate
+    GROUP BY lmsd.Category_Name, lmsd.Field_Name, jt.FieldValue; 
+
 END$$
 DELIMITER ;
 
@@ -233,7 +235,7 @@ BEGIN
         p.PipelineStage_Name AS Stage_Name,
         COUNT(l.Lead_Id) AS Count
     FROM pipeline_stage_master p
-    LEFT JOIN `lead` l 
+    LEFT JOIN neotronics_19_08.`lead` l 
         ON l.PipelineStage_Id = p.PipelineStage_Id
     WHERE IFNULL(p.DeleteStatus, 0) = 0
     GROUP BY p.PipelineStage_Id, p.PipelineStage_Name
@@ -248,7 +250,7 @@ BEGIN
         IFNULL(p.PipelineStage_Name, 'Unassigned') AS Stage_Name,
         COUNT(l.Lead_Id) AS Count
     FROM pipeline_stage_master p
-    LEFT JOIN `lead` l 
+    LEFT JOIN neotronics_19_08.`lead` l 
         ON l.PipelineStage_Id = p.PipelineStage_Id
     WHERE IFNULL(p.DeleteStatus, 0) = 0
     GROUP BY p.PipelineStage_Id, p.PipelineStage_Name
@@ -260,13 +262,13 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `DashboardV2_PipelineTop3`()
 BEGIN
     -- Total leads count
-    SELECT COUNT(*) AS TotalLeads FROM `lead`;
+    SELECT COUNT(*) AS TotalLeads FROM neotronics_19_08.`lead`;
     -- Top 3 pipeline stages by lead count (only stages with leads)
     SELECT 
         p.PipelineStage_Name AS Stage_Name,
         COUNT(l.Lead_Id) AS Count
     FROM pipeline_stage_master p
-    LEFT JOIN `lead` l 
+    LEFT JOIN neotronics_19_08.`lead` l 
         ON l.PipelineStage_Id = p.PipelineStage_Id
     WHERE IFNULL(p.DeleteStatus, 0) = 0
     GROUP BY p.PipelineStage_Id, p.PipelineStage_Name
@@ -283,7 +285,7 @@ BEGIN
         IFNULL(p.Pulse_Name, 'Unassigned') AS Pulse_Name,
         COUNT(l.Lead_Id) AS Count
     FROM pulse_master p
-    LEFT JOIN `lead` l 
+    LEFT JOIN neotronics_19_08.`lead` l 
         ON l.Pulse_Id = p.Pulse_Id
     WHERE IFNULL(p.DeleteStatus, 0) = 0
     GROUP BY p.Pulse_Id, p.Pulse_Name
@@ -298,7 +300,7 @@ BEGIN
         IFNULL(s.sourceName, 'Unknown') AS Source_Name,
         COUNT(l.Lead_Id) AS Count
     FROM `source` s
-    LEFT JOIN `lead` l 
+    LEFT JOIN neotronics_19_08.`lead` l 
         ON l.Source = s.id
     WHERE IFNULL(s.DeleteStatus, 0) = 0
     GROUP BY s.id, s.sourceName
@@ -3764,20 +3766,15 @@ BEGIN
     
     -- 3. Market Study Fields (Formerly 4)
     SELECT 
-        L.Category_Id,
-        L.Category_Name,
-        L.Field_Id,
-        L.Field_Name,
-        L.Field_Type,
-        L.Field_Value,
-        L.IsRequired,
-        L.CheckDuplication,
-        M.Field_Options  -- <-- Pulling the options from the Master table!
-    FROM `lead_market_study_data` L
-    LEFT JOIN `market_study_field` M ON L.Field_Id = M.Field_Id
-    WHERE L.Lead_Id = p_LeadId;
-
-
+        Category_Id,
+        Category_Name,
+        Field_Id,
+        Field_Name,
+        Field_Type,
+        Field_Value,
+        IsRequired
+    FROM `lead_market_study_data`
+    WHERE Lead_Id = p_LeadId;
 
 END$$
 DELIMITER ;
@@ -3823,12 +3820,7 @@ BEGIN
       AND (p_DesignationId IS NULL OR p_DesignationId = 0 OR l.POC_Designation_Id = p_DesignationId)
       AND (p_DistrictId IS NULL OR p_DistrictId = 0 OR l.District = p_DistrictId)
       AND (p_Priority IS NULL OR p_Priority = '' OR l.Lead_Priority = p_Priority)
-      AND (
-          CASE 
-              WHEN p_Lead_Type = 5 THEN l.Market_Study_Systems IS NOT NULL AND l.Market_Study_Systems != ''
-              ELSE p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type
-          END
-      )
+      AND (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
       AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId)
     ORDER BY l.Lead_Id DESC
     LIMIT p_Limit OFFSET v_Offset;
@@ -3841,12 +3833,7 @@ BEGIN
       AND (p_DesignationId IS NULL OR p_DesignationId = 0 OR l.POC_Designation_Id = p_DesignationId)
       AND (p_DistrictId IS NULL OR p_DistrictId = 0 OR l.District = p_DistrictId)
       AND (p_Priority IS NULL OR p_Priority = '' OR l.Lead_Priority = p_Priority)
-      AND (
-          CASE 
-              WHEN p_Lead_Type = 5 THEN l.Market_Study_Systems IS NOT NULL AND l.Market_Study_Systems != ''
-              ELSE p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type
-          END
-      )
+      AND (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
       AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId);
 END$$
 DELIMITER ;
@@ -14844,11 +14831,11 @@ BEGIN
             INSERT INTO `lead_pipeline_pulse_history` (
                 Lead_Id, PipelineStage_Id, Pipeline_Stage,
                 Stage_Type, Followup_Required, Color,
-                Pulse_Id, Pulse, Current_Status, Login_User_Id
+                Pulse_Id, Pulse, isGhosting, Current_Status, Login_User_Id
             ) VALUES (
                 _Generated_Lead_Id, _Current_PipelineStage_Id, _Current_Pipeline_Stage,
                 IFNULL(_Stage_Type, 0), IFNULL(_Followup_Required, 1), IFNULL(_Color, '#3b82f6'),
-                _Pulse_Id, _Pulse, _Status_Name, _Login_User_Id
+                _Pulse_Id, _Pulse, IFNULL(_isGhosting, 0),_Status_Name, _Login_User_Id
             );
         END IF;
         
@@ -14897,7 +14884,6 @@ BEGIN
             Name_Captured = _Name_Captured, Number_Captured = _Number_Captured, Email_Captured = _Email_Captured, 
             Enquiry_For = _Enquiry_For, Enquiry_For_Note = _Enquiry_For_Note, 
             Market_Study_Systems = _Market_Study_Systems, Lead_Priority = _Lead_Priority,
-            /*
             PipelineStage_Id       = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', PipelineStage_Id, _Current_PipelineStage_Id), 
             Current_Pipeline_Stage = IF(_Current_Pipeline_Stage IS NULL OR _Current_Pipeline_Stage = '', Current_Pipeline_Stage, _Current_Pipeline_Stage),
             Stage_Type             = IFNULL(_Stage_Type, Stage_Type),
@@ -14906,12 +14892,12 @@ BEGIN
             Pulse_Id               = IF(_Pulse IS NULL OR _Pulse = '', Pulse_Id, _Pulse_Id), 
             Pulse                  = IF(_Pulse IS NULL OR _Pulse = '', Pulse, _Pulse),
             isGhosting             = IFNULL(_isGhosting, 0),
-            */
             Workflow_Id = _Workflow_Id, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
         WHERE Lead_Id = _Lead_Id;
         
         SET _Generated_Lead_Id = _Lead_Id;
 
+        
         DELETE FROM `lead_contact` WHERE Lead_Id = _Generated_Lead_Id;
 
     END IF;
@@ -28493,9 +28479,9 @@ BEGIN
     ORDER BY PipelineStage_Id 
     LIMIT v_Limit OFFSET v_Offset;
 
-
-    ELSEIF p_Type = 'Pulse' THEN
-        SELECT Pulse_Id AS id, Pulse_Name AS name FROM pulse_master 
+	ELSEIF p_Type = 'Pulse' THEN
+        SELECT Pulse_Id AS id, Pulse_Name AS name, isGhosting 
+        FROM pulse_master 
         WHERE Pulse_Name LIKE p_Search AND IFNULL(DeleteStatus, 0) = 0 
         ORDER BY Pulse_Id 
         LIMIT v_Limit OFFSET v_Offset;
