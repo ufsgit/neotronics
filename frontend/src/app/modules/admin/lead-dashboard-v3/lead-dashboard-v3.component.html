@@ -1,15 +1,232 @@
-<div class="main-content dash-board pb-5">
-  <div class="container-fluid pt-4">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 mb-0 text-gray-800">Lead Dashboard V3</h1>
+<div class="main-content dash-board pt-4 pb-5 px-4" style="background-color: #f5f7fa; min-height: 100vh;">
+
+  <!-- Top Controls & Status Row -->
+  <div class="row align-items-center mb-4">
+    <div class="col-md-6">
+      <div class="d-flex flex-wrap gap-3">
+        <div class="status-box delayed">DELAYED : <span class="ms-2 fw-bold fs-5">25</span></div>
+        <div class="status-box today">TODAY : <span class="ms-2 fw-bold fs-5">0</span></div>
+        <div class="status-box upcoming">UPCOMING : <span class="ms-2 fw-bold fs-5">0</span></div>
+      </div>
     </div>
-    
-    <div class="row">
-      <div class="col-12">
-        <div class="card shadow mb-4">
-          <div class="card-body">
-            <p class="mb-0 text-gray-700">Lead Dashboard V3 component initialized successfully.</p>
+    <div class="col-md-6 mt-3 mt-md-0 d-flex justify-content-md-end gap-2 flex-wrap">
+      <button class="btn btn-add-lead">+ ADD NEW LEAD</button>
+      <button class="btn btn-nav">LEADS</button>
+      <button class="btn btn-nav" [routerLink]="['/FollowUpCalendar']">CALENDAR</button>
+    </div>
+  </div>
+
+  <!-- Modern Metrics (KPI) Ribbon -->
+  <div class="row mb-4 g-3">
+    <div class="col">
+      <div class="kpi-card">
+        <div class="kpi-title">TOTAL LEADS</div>
+        <div class="kpi-value">26</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="kpi-card">
+        <div class="kpi-title">QUALIFIED</div>
+        <div class="kpi-value">10</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="kpi-card">
+        <div class="kpi-title">QUOTATION</div>
+        <div class="kpi-value">10</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="kpi-card">
+        <div class="kpi-title">GHOSTING</div>
+        <div class="kpi-value">0</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="kpi-card">
+        <div class="kpi-title">WON</div>
+        <div class="kpi-value">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pipeline & Follow-up Summary Row -->
+  <div class="row mb-4 g-4">
+    <!-- Pipeline Card -->
+    <div class="col-lg-8">
+      <div class="modern-card">
+        <div class="d-flex justify-content-between align-items-center pe-3">
+          <h6 class="table-title border-bottom-0 mb-0">PIPELINE BY STAGE</h6>
+          <button class="btn btn-sm btn-outline-secondary" (click)="showPipelineGraph = !showPipelineGraph">
+            {{ showPipelineGraph ? 'View Table' : 'View Graph' }}
+          </button>
+        </div>
+        
+        <!-- Table View -->
+        <div class="table-responsive" *ngIf="!showPipelineGraph" style="max-height: 240px; overflow-y: auto; border-top: 1px solid #f0f0f0;">
+          <table class="table table-sm custom-table mb-0">
+            <thead style="position: sticky; top: 0; z-index: 1;">
+              <tr>
+                <th>Stage</th>
+                <th class="text-end">Leads</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Raw Lead</td><td class="text-end">4</td></tr>
+              <tr><td>Qualified</td><td class="text-end">10</td></tr>
+              <tr><td>Quotation Sent</td><td class="text-end">10</td></tr>
+              <tr><td>Ghosting</td><td class="text-end">0</td></tr>
+              <tr><td>Final Stage</td><td class="text-end">1</td></tr>
+              <tr><td>Won</td><td class="text-end">0</td></tr>
+              <tr><td>Lost</td><td class="text-end">0</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Graph View -->
+        <div *ngIf="showPipelineGraph" class="p-3 border-top" style="height: 240px;">
+          <google-chart 
+            [type]="'PieChart'" 
+            [data]="chartData.pipeline.data" 
+            [options]="chartData.pipeline.options"
+            style="width: 100%; height: 100%;">
+          </google-chart>
+        </div>
+      </div>
+    </div>
+
+    <!-- Follow Up Summary -->
+    <div class="col-lg-4">
+      <div class="modern-card h-100">
+        <div class="table-responsive">
+          <table class="table table-sm custom-table mt-0">
+            <thead>
+              <tr>
+                <th colspan="2" class="text-start p-3">FOLLOW-UP SUMMARY</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="fw-bold">Due today</td><td class="text-end fw-bold">0</td></tr>
+              <tr><td class="fw-bold">This week</td><td class="text-end fw-bold">0</td></tr>
+              <tr><td class="fw-bold">This month</td><td class="text-end fw-bold">25</td></tr>
+              <tr><td class="fw-bold">Overdue</td><td class="text-end fw-bold">25</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Tables Row -->
+  <div class="row mb-4 g-4">
+    <!-- Day-wise -->
+    <div class="col-lg-4">
+      <div class="modern-card h-100">
+        <h6 class="table-title">DAY-WISE ACTIVITY</h6>
+        <div class="table-responsive">
+          <table class="table table-sm custom-table text-center">
+            <thead>
+              <tr>
+                <th class="text-start">Date</th>
+                <th>Activities</th>
+                <th>Won</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of dayWiseActivity" [class.highlighted-row]="item.highlight">
+                <td class="text-start">{{ item.date }}</td>
+                <td>{{ item.activities }}</td>
+                <td>{{ item.won }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Week-wise & Follow Up Summary -->
+    <div class="col-lg-4">
+      <div class="modern-card h-100">
+        <h6 class="table-title">WEEK-WISE ACTIVITY</h6>
+        <div class="table-responsive">
+          <table class="table table-sm custom-table text-center">
+            <thead>
+              <tr>
+                <th class="text-start">Week Starting</th>
+                <th>Activities</th>
+                <th>Won</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of weekWiseActivity">
+                <td class="text-start">{{ item.week }}</td>
+                <td>{{ item.activities }}</td>
+                <td>{{ item.won }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Month-wise -->
+    <div class="col-lg-4">
+      <div class="modern-card h-100">
+        <h6 class="table-title">MONTH-WISE ACTIVITY</h6>
+        <div class="table-responsive">
+          <table class="table table-sm custom-table text-center">
+            <thead>
+              <tr>
+                <th class="text-start">Month</th>
+                <th>Activities</th>
+                <th>Won</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of monthWiseActivity">
+                <td class="text-start">{{ item.month }}</td>
+                <td>{{ item.activities }}</td>
+                <td>{{ item.won }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Charts Area -->
+  <div class="row g-4 mb-4">
+    <div class="col-12">
+      <div class="modern-card">
+        <div class="d-flex justify-content-between align-items-center pe-3">
+          <h6 class="table-title border-bottom-0 mb-0">ACTIVITY CHART</h6>
+          <div class="btn-group">
+            <button class="btn btn-sm" [class.btn-primary]="activityChartMode === 'daily'" [class.btn-outline-secondary]="activityChartMode !== 'daily'" (click)="activityChartMode = 'daily'">Daily</button>
+            <button class="btn btn-sm" [class.btn-primary]="activityChartMode === 'weekly'" [class.btn-outline-secondary]="activityChartMode !== 'weekly'" (click)="activityChartMode = 'weekly'">Weekly</button>
+            <button class="btn btn-sm" [class.btn-primary]="activityChartMode === 'monthly'" [class.btn-outline-secondary]="activityChartMode !== 'monthly'" (click)="activityChartMode = 'monthly'">Monthly</button>
           </div>
+        </div>
+
+        <div class="p-3 border-top" style="height: 350px;">
+          <google-chart *ngIf="activityChartMode === 'daily'"
+            [type]="'LineChart'" 
+            [data]="chartData.daily.data" 
+            [options]="chartData.daily.options"
+            style="width: 100%; height: 100%;">
+          </google-chart>
+          <google-chart *ngIf="activityChartMode === 'weekly'"
+            [type]="'LineChart'" 
+            [data]="chartData.weekly.data" 
+            [options]="chartData.weekly.options"
+            style="width: 100%; height: 100%;">
+          </google-chart>
+          <google-chart *ngIf="activityChartMode === 'monthly'"
+            [type]="'LineChart'" 
+            [data]="chartData.monthly.data" 
+            [options]="chartData.monthly.options"
+            style="width: 100%; height: 100%;">
+          </google-chart>
         </div>
       </div>
     </div>

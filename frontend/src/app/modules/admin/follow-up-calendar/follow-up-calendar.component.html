@@ -1,0 +1,100 @@
+<div class="main-content calendar-board pb-5 px-4" style="background-color: white;">
+  <!-- Main Title -->
+  <div class="row pt-4">
+    <div class="col-12">
+      <h1 class="header-title mb-3">FOLLOW-UP CALENDAR</h1>
+    </div>
+  </div>
+
+  <!-- Controls Row 1 -->
+  <div class="row align-items-end mb-3">
+    <!-- Selected Date -->
+    <div class="col-auto me-4">
+      <div class="fw-bold mb-1">Selected Date</div>
+      <button class="btn btn-today px-4 fw-bold text-white">TODAY</button>
+    </div>
+
+    <!-- Date Navigation -->
+    <div class="col-auto">
+      <div class="fw-bold mb-1">09-Sep-2026 <span class="fst-italic fw-normal text-muted">Wednesday</span></div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-nav-blue fw-bold">&lt; DAY</button>
+        <button class="btn btn-nav-blue fw-bold">DAY &gt;</button>
+        
+        <button class="btn btn-nav-blue fw-bold ms-3">&lt; WEEK</button>
+        <button class="btn btn-nav-blue fw-bold">WEEK &gt;</button>
+        
+        <button class="btn btn-nav-blue fw-bold ms-3">&lt; MONTH</button>
+        <button class="btn btn-nav-blue fw-bold">MONTH &gt;</button>
+      </div>
+    </div>
+
+    <!-- View & Pick Date -->
+    <div class="col-auto ms-4">
+      <div class="d-flex align-items-center gap-3">
+        <div>
+          <div class="fw-bold mb-1">View</div>
+          <div class="view-display text-center fw-bold">Day</div>
+        </div>
+        <div class="mt-4 pt-1">
+          <button class="btn btn-pick-date fw-bold text-white">PICK DATE</button>
+        </div>
+        <div class="mt-4 pt-1 fst-italic text-muted small ms-2">
+          Use the buttons above. This sheet is read-only.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls Row 2 (View Types) -->
+  <div class="row mb-4">
+    <div class="col-12 d-flex gap-2 border-bottom pb-3">
+      <button class="btn btn-view-type fw-bold">DAY VIEW</button>
+      <button class="btn btn-view-type fw-bold">WEEK VIEW</button>
+      <button class="btn btn-view-type fw-bold">MONTH VIEW</button>
+      <button class="btn btn-view-type fw-bold">ALL VIEWS</button>
+      <button class="btn btn-view-type fw-bold ms-4">BACK TO LEADS</button>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex align-items-center gap-4 mb-2">
+        <h4 class="table-header-title mb-0">DAY VIEW</h4>
+        <h6 class="fw-bold mb-0">Wednesday, 09 Sep 2026</h6>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm calendar-table">
+          <thead>
+            <tr>
+              <th>Follow-up Date</th>
+              <th>Customer / Lead</th>
+              <th>Next Action</th>
+              <th>Status / Stage</th>
+              <th>Priority</th>
+              <th>Contact Person</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of calendarData">
+              <td class="text-end">{{ item.date }}</td>
+              <td>{{ item.customer }}</td>
+              <td>{{ item.nextAction }}</td>
+              <td>{{ item.status }}</td>
+              <td>{{ item.priority }}</td>
+              <td [ngClass]="{'text-end': item.contact === '0'}">{{ item.contact }}</td>
+            </tr>
+            <!-- Empty rows to match design padding -->
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>

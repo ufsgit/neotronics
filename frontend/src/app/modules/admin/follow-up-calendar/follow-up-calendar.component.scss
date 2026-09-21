@@ -1,0 +1,83 @@
+.header-title {
+  font-family: 'Times New Roman', serif;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.table-header-title {
+  font-family: 'Times New Roman', serif;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #174b78;
+}
+
+/* Control Buttons */
+.btn-today {
+  background-color: #278833;
+  border-radius: 4px;
+}
+.btn-today:hover {
+  background-color: #1e6d27;
+  color: white;
+}
+
+.btn-nav-blue {
+  background-color: #174b78;
+  color: white;
+  border-radius: 4px;
+  padding: 4px 15px;
+}
+.btn-nav-blue:hover {
+  opacity: 0.9;
+  color: white;
+}
+
+.btn-pick-date {
+  background-color: #555555;
+  border-radius: 4px;
+  padding: 4px 15px;
+}
+.btn-pick-date:hover {
+  background-color: #333333;
+  color: white;
+}
+
+.btn-view-type {
+  background-color: #555555;
+  color: white;
+  border-radius: 6px;
+  padding: 5px 20px;
+}
+.btn-view-type:hover {
+  background-color: #333333;
+  color: white;
+}
+
+/* View Display Box */
+.view-display {
+  background-color: #fff9c4;
+  border: 1px solid #ccc;
+  padding: 4px 30px;
+  color: #000;
+}
+
+/* Table styling */
+.calendar-table {
+  border: 1px solid #dee2e6;
+}
+.calendar-table thead {
+  background-color: #174b78;
+}
+.calendar-table thead th {
+  color: white !important;
+  font-weight: normal;
+  border-bottom: none;
+  padding: 6px 10px;
+}
+.calendar-table tbody td {
+  padding: 4px 10px;
+  vertical-align: middle;
+}
+.calendar-table tbody tr {
+  height: 28px; /* ensure empty rows have height */
+}

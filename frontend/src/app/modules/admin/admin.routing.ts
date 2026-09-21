@@ -87,6 +87,7 @@ import { DashboardComponent } from './Dashboard/Dashboard.component';
 import { LeadDashboardComponent } from './lead-dashboard/lead-dashboard.component';
 import { LeadDashboardV2Component } from './lead-dashboard-v2/lead-dashboard-v2.component';
 import { LeadDashboardV3Component } from './lead-dashboard-v3/lead-dashboard-v3.component';
+import { FollowUpCalendarComponent } from './follow-up-calendar/follow-up-calendar.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
 import { MarketStudyFieldsComponent } from './Lead_Config/Market_Study/MarketStudyFields/market-study-fields.component';
@@ -183,8 +184,9 @@ export const AdminRoutes: Routes = [
 			{ path: "Quotation_Confirmation", component: Quotation_ConfirmationComponent },
 			{ path: "Department", component: DepartmentComponent },
 			{ path: "DepartmentStatus", component: DepartmentStatusComponent },
-			{ path: "LeadDashboard", component: LeadDashboardV2Component },
+			{ path: "LeadDashboard", component: LeadDashboardV3Component },
 			{ path: "LeadDashboardV3", component: LeadDashboardV3Component },
+			{ path: "FollowUpCalendar", component: FollowUpCalendarComponent },
 			{ path: "OperationsDashboard", component: OperationsDashboardComponent },
 			{ path: "Lead_Config", component: Lead_ConfigComponent },
 			{ path: "Lead_Config/Market_Study/MarketSystem/:id/Fields", component: MarketStudyFieldsComponent },

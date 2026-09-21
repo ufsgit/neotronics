@@ -160,6 +160,7 @@ import { DesignationComponent } from './Designation/Designation.component';
 import { DepartmentComponent } from './Department/Department.component';
 import { LeadDashboardV2Component } from './lead-dashboard-v2/lead-dashboard-v2.component';
 import { LeadDashboardV3Component } from './lead-dashboard-v3/lead-dashboard-v3.component';
+import { FollowUpCalendarComponent } from './follow-up-calendar/follow-up-calendar.component';
 
 @NgModule({
 	imports: [
@@ -303,6 +304,7 @@ import { LeadDashboardV3Component } from './lead-dashboard-v3/lead-dashboard-v3.
 		LeadWorkflowComponent,
 		LeadDashboardV2Component,
 		LeadDashboardV3Component,
+		FollowUpCalendarComponent,
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],
