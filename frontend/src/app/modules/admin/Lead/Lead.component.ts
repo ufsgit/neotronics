@@ -1000,6 +1000,7 @@ export class LeadComponent implements OnInit {
     const branchObj = (this.DropdownData[branchKey] || []).find((x: any) => x.id == lead.FollowUp_Location_Id);
     const deptObj = (this.DropdownData[deptKey] || []).find((x: any) => x.id == lead.FollowUp_Department_Id);
     const staffObj = (this.DropdownData[staffKey] || []).find((x: any) => x.id == lead.FollowUp_Staff_Id);
+    const targetStageObj = (this.DropdownData['TargetStage'] || []).find((x: any) => x.id == lead.FollowUp_Status_Id);
     const pipelineObj = (this.DropdownData['PipelineStage'] || []).find((x: any) => x.name === this.Selected_Pipeline_Stage || x.id == this.Selected_Pipeline_Stage);
     const pulseObj = (this.DropdownData['Pulse'] || []).find((x: any) => x.name === this.Selected_Pulse || x.id == this.Selected_Pulse);
 
@@ -1013,9 +1014,11 @@ export class LeadComponent implements OnInit {
       Department_Name: deptObj ? deptObj.name : (lead.Department_Name || ''),
       Staff_Id: lead.FollowUp_Staff_Id,
       Staff_Name: staffObj ? staffObj.name : (lead.Staff_Name || ''),
+      Target_Stage_Id: lead.FollowUp_Status_Id,
+      Target_Stage_Name: targetStageObj ? targetStageObj.name : (lead.Status_Name || ''),
       Remark: (lead as any).FollowUp_Remark || '',
       Next_FollowUp_Date: (lead as any).FollowUp_Next_Date || null,
-      PipelineStage_Id: pipelineObj ? pipelineObj.id : null,
+      Pipeline_Stage_Id: pipelineObj ? pipelineObj.id : null,
       Pipeline_Stage: pipelineObj ? pipelineObj.name : (this.Selected_Pipeline_Stage || null),
       Stage_Type: pipelineObj && pipelineObj.Stage_Type !== undefined ? Number(pipelineObj.Stage_Type) : 0,
       Followup_Required: pipelineObj && pipelineObj.Followup_Required !== undefined ? Number(pipelineObj.Followup_Required) : 1,

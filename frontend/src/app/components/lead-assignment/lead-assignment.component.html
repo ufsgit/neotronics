@@ -1,4 +1,4 @@
-<div class="ig-section-card" *ngIf="!lead.Lead_Id || isViewMode || isPopup">
+<div [ngClass]="{'ig-section-card': !isPopup}" *ngIf="!lead.Lead_Id || isViewMode || isPopup">
   <fieldset [disabled]="isViewMode" style="border: none; padding: 0; margin: 0;">
     <div *ngIf="!isPopup" class="ig-section-header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="toggleExpanded()">
       <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">
@@ -67,6 +67,76 @@
 
     <!-- MODERN POPUP MODE -->
     <div *ngIf="isPopup" class="popup-layout">
+      <!-- PIPELINE SECTION -->
+      <div class="popup-pipeline-section">
+        <div class="popup-section-header">
+          <i class="material-icons">account_tree</i> Pipeline
+        </div>
+        <div class="popup-grid-2">
+
+          <!-- Pipeline Stage -->
+          <div class="mod-field">
+            <label class="mod-label"><i class="material-icons">layers</i> Pipeline Stage</label>
+            <div class="mod-input-group">
+              <div class="mod-icon-box" [style.color]="getSelectedStageObj()?.Color || '#64748b'"><i class="material-icons">layers</i></div>
+              <div class="mod-input-wrapper">
+                <app-searchable-dropdown name="Popup_Pipeline_Stage_Field" [(ngModel)]="selectedPipelineStage" (ngModelChange)="selectedPipelineStageChange.emit(selectedPipelineStage)"
+                  [data]="dropdownData['PipelineStage']" bindLabel="name" bindValue="name" placeholder="Select Stage..."
+                  (search)="onSearchDropdown('PipelineStage', $event)" (loadMore)="onLoadMoreDropdown('PipelineStage')">
+                </app-searchable-dropdown>
+              </div>
+            </div>
+
+            <!-- Pipeline Stage Meta Badges -->
+            <div *ngIf="getSelectedStageObj()" style="display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
+              <!-- Color Indicator Pill -->
+              <span *ngIf="getSelectedStageObj()?.Color" 
+                    [style.background]="getSelectedStageObj().Color + '18'" 
+                    [style.color]="getSelectedStageObj().Color" 
+                    [style.border]="'1px solid ' + getSelectedStageObj().Color + '40'" 
+                    style="display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px;">
+                <span [style.background]="getSelectedStageObj().Color" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                {{ getSelectedStageObj().name }}
+              </span>
+
+              <!-- Stage Type Badge (Won / Lost / Normal) -->
+              <span *ngIf="getSelectedStageObj()?.Stage_Type !== undefined && getSelectedStageObj()?.Stage_Type !== null" 
+                    [style.background]="getSelectedStageObj().Stage_Type == 2 ? '#fef2f2' : (getSelectedStageObj().Stage_Type == 1 ? '#f0fdf4' : '#f1f5f9')" 
+                    [style.color]="getSelectedStageObj().Stage_Type == 2 ? '#dc2626' : (getSelectedStageObj().Stage_Type == 1 ? '#16a34a' : '#475569')" 
+                    [style.border]="getSelectedStageObj().Stage_Type == 2 ? '1px solid #fecaca' : (getSelectedStageObj().Stage_Type == 1 ? '1px solid #bbf7d0' : '1px solid #cbd5e1')" 
+                    style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 12px; text-transform: uppercase;">
+                <i class="material-icons" style="font-size: 12px;">{{ getSelectedStageObj().Stage_Type == 2 ? 'cancel' : (getSelectedStageObj().Stage_Type == 1 ? 'check_circle' : 'remove_circle_outline') }}</i>
+                {{ getSelectedStageObj().Stage_Type == 2 ? 'Lost' : (getSelectedStageObj().Stage_Type == 1 ? 'Won' : 'Normal') }}
+              </span>
+
+              <!-- Follow-up Required Badge -->
+              <span *ngIf="getSelectedStageObj()?.Followup_Required !== undefined && getSelectedStageObj()?.Followup_Required !== null" 
+                    [style.background]="getSelectedStageObj().Followup_Required == 1 ? '#eff6ff' : '#f8fafc'" 
+                    [style.color]="getSelectedStageObj().Followup_Required == 1 ? '#1d4ed8' : '#64748b'" 
+                    [style.border]="getSelectedStageObj().Followup_Required == 1 ? '1px solid #bfdbfe' : '1px solid #e2e8f0'" 
+                    style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 12px;">
+                <i class="material-icons" style="font-size: 12px;">{{ getSelectedStageObj().Followup_Required == 1 ? 'event_available' : 'event_busy' }}</i>
+                {{ getSelectedStageObj().Followup_Required == 1 ? 'Follow-up Required' : 'Follow-up Optional' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Pulse -->
+          <div class="mod-field">
+            <label class="mod-label"><i class="material-icons">show_chart</i> Pulse</label>
+            <div class="mod-input-group">
+              <div class="mod-icon-box"><i class="material-icons">show_chart</i></div>
+              <div class="mod-input-wrapper">
+                <app-searchable-dropdown name="Popup_Pulse_Field" [(ngModel)]="selectedPulse" (ngModelChange)="selectedPulseChange.emit(selectedPulse)"
+                  [data]="dropdownData['Pulse']" bindLabel="name" bindValue="name" placeholder="Select Pulse..."
+                  (search)="onSearchDropdown('Pulse', $event)" (loadMore)="onLoadMoreDropdown('Pulse')">
+                </app-searchable-dropdown>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
       
       <!-- ROW 1: Branch | Department | Assigned Owner -->
       <div class="popup-grid-3">
@@ -154,77 +224,6 @@
           <textarea class="mod-textarea" name="Popup_FollowUp_Remark" [(ngModel)]="lead.FollowUp_Remark" placeholder="Enter remarks..."></textarea>
         </div>
 
-      </div>
-
-      <!-- PIPELINE SECTION -->
-      <div class="popup-pipeline-section">
-        <div class="popup-section-header">
-          <i class="material-icons">account_tree</i> Pipeline
-        </div>
-        <div class="popup-grid-2">
-
-          <!-- Pipeline Stage -->
-          <div class="mod-field">
-            <label class="mod-label"><i class="material-icons">layers</i> Pipeline Stage</label>
-            <div class="mod-input-group">
-              <div class="mod-icon-box" [style.color]="getSelectedStageObj()?.Color || '#64748b'"><i class="material-icons">layers</i></div>
-              <div class="mod-input-wrapper">
-                <app-searchable-dropdown name="Popup_Pipeline_Stage_Field" [(ngModel)]="selectedPipelineStage" (ngModelChange)="selectedPipelineStageChange.emit(selectedPipelineStage)"
-                  [data]="dropdownData['PipelineStage']" bindLabel="name" bindValue="name" placeholder="Select Stage..."
-                  (search)="onSearchDropdown('PipelineStage', $event)" (loadMore)="onLoadMoreDropdown('PipelineStage')">
-                </app-searchable-dropdown>
-              </div>
-            </div>
-
-            <!-- Pipeline Stage Meta Badges -->
-            <div *ngIf="getSelectedStageObj()" style="display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
-              <!-- Color Indicator Pill -->
-              <span *ngIf="getSelectedStageObj()?.Color" 
-                    [style.background]="getSelectedStageObj().Color + '18'" 
-                    [style.color]="getSelectedStageObj().Color" 
-                    [style.border]="'1px solid ' + getSelectedStageObj().Color + '40'" 
-                    style="display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px;">
-                <span [style.background]="getSelectedStageObj().Color" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
-                {{ getSelectedStageObj().name }}
-              </span>
-
-              <!-- Stage Type Badge (Won / Lost / Normal) -->
-              <span *ngIf="getSelectedStageObj()?.Stage_Type !== undefined && getSelectedStageObj()?.Stage_Type !== null" 
-                    [style.background]="getSelectedStageObj().Stage_Type == 2 ? '#fef2f2' : (getSelectedStageObj().Stage_Type == 1 ? '#f0fdf4' : '#f1f5f9')" 
-                    [style.color]="getSelectedStageObj().Stage_Type == 2 ? '#dc2626' : (getSelectedStageObj().Stage_Type == 1 ? '#16a34a' : '#475569')" 
-                    [style.border]="getSelectedStageObj().Stage_Type == 2 ? '1px solid #fecaca' : (getSelectedStageObj().Stage_Type == 1 ? '1px solid #bbf7d0' : '1px solid #cbd5e1')" 
-                    style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 12px; text-transform: uppercase;">
-                <i class="material-icons" style="font-size: 12px;">{{ getSelectedStageObj().Stage_Type == 2 ? 'cancel' : (getSelectedStageObj().Stage_Type == 1 ? 'check_circle' : 'remove_circle_outline') }}</i>
-                {{ getSelectedStageObj().Stage_Type == 2 ? 'Lost' : (getSelectedStageObj().Stage_Type == 1 ? 'Won' : 'Normal') }}
-              </span>
-
-              <!-- Follow-up Required Badge -->
-              <span *ngIf="getSelectedStageObj()?.Followup_Required !== undefined && getSelectedStageObj()?.Followup_Required !== null" 
-                    [style.background]="getSelectedStageObj().Followup_Required == 1 ? '#eff6ff' : '#f8fafc'" 
-                    [style.color]="getSelectedStageObj().Followup_Required == 1 ? '#1d4ed8' : '#64748b'" 
-                    [style.border]="getSelectedStageObj().Followup_Required == 1 ? '1px solid #bfdbfe' : '1px solid #e2e8f0'" 
-                    style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 12px;">
-                <i class="material-icons" style="font-size: 12px;">{{ getSelectedStageObj().Followup_Required == 1 ? 'event_available' : 'event_busy' }}</i>
-                {{ getSelectedStageObj().Followup_Required == 1 ? 'Follow-up Required' : 'Follow-up Optional' }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Pulse -->
-          <div class="mod-field">
-            <label class="mod-label"><i class="material-icons">show_chart</i> Pulse</label>
-            <div class="mod-input-group">
-              <div class="mod-icon-box"><i class="material-icons">show_chart</i></div>
-              <div class="mod-input-wrapper">
-                <app-searchable-dropdown name="Popup_Pulse_Field" [(ngModel)]="selectedPulse" (ngModelChange)="selectedPulseChange.emit(selectedPulse)"
-                  [data]="dropdownData['Pulse']" bindLabel="name" bindValue="name" placeholder="Select Pulse..."
-                  (search)="onSearchDropdown('Pulse', $event)" (loadMore)="onLoadMoreDropdown('Pulse')">
-                </app-searchable-dropdown>
-              </div>
-            </div>
-          </div>
-
-        </div>
       </div>
 
     </div>

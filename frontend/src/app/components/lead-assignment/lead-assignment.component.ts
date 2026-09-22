@@ -25,9 +25,9 @@ import { Lead } from '../../models/Lead';
     }
     /* ── Pipeline section separator ── */
     .popup-pipeline-section {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid #e2e8f0;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
     }
     .popup-section-header {
       display: flex;
