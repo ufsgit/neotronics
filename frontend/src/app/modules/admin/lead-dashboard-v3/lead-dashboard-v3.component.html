@@ -4,9 +4,9 @@
   <div class="row align-items-center mb-4">
     <div class="col-md-6">
       <div class="d-flex flex-wrap gap-3">
-        <div class="status-box delayed">DELAYED : <span class="ms-2 fw-bold fs-5">25</span></div>
-        <div class="status-box today">TODAY : <span class="ms-2 fw-bold fs-5">0</span></div>
-        <div class="status-box upcoming">UPCOMING : <span class="ms-2 fw-bold fs-5">0</span></div>
+        <div class="status-box delayed">DELAYED : <span class="ms-2 fw-bold fs-5">{{ kpiData?.Delayed || 0 }}</span></div>
+        <div class="status-box today">TODAY : <span class="ms-2 fw-bold fs-5">{{ kpiData?.Today || 0 }}</span></div>
+        <div class="status-box upcoming">UPCOMING : <span class="ms-2 fw-bold fs-5">{{ kpiData?.Upcoming || 0 }}</span></div>
       </div>
     </div>
     <div class="col-md-6 mt-3 mt-md-0 d-flex justify-content-md-end gap-2 flex-wrap">
@@ -21,31 +21,31 @@
     <div class="col">
       <div class="kpi-card">
         <div class="kpi-title">TOTAL LEADS</div>
-        <div class="kpi-value">26</div>
+        <div class="kpi-value">{{ kpiData?.Total_Leads || 0 }}</div>
       </div>
     </div>
     <div class="col">
       <div class="kpi-card">
         <div class="kpi-title">QUALIFIED</div>
-        <div class="kpi-value">10</div>
+        <div class="kpi-value">{{ kpiData?.Qualified || 0 }}</div>
       </div>
     </div>
     <div class="col">
       <div class="kpi-card">
         <div class="kpi-title">QUOTATION</div>
-        <div class="kpi-value">10</div>
+        <div class="kpi-value">{{ kpiData?.Quotation || 0 }}</div>
       </div>
     </div>
     <div class="col">
       <div class="kpi-card">
         <div class="kpi-title">GHOSTING</div>
-        <div class="kpi-value">0</div>
+        <div class="kpi-value">{{ kpiData?.Ghosting || 0 }}</div>
       </div>
     </div>
     <div class="col">
       <div class="kpi-card">
         <div class="kpi-title">WON</div>
-        <div class="kpi-value">0</div>
+        <div class="kpi-value">{{ kpiData?.Won || 0 }}</div>
       </div>
     </div>
   </div>
@@ -72,13 +72,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>Raw Lead</td><td class="text-end">4</td></tr>
-              <tr><td>Qualified</td><td class="text-end">10</td></tr>
-              <tr><td>Quotation Sent</td><td class="text-end">10</td></tr>
-              <tr><td>Ghosting</td><td class="text-end">0</td></tr>
-              <tr><td>Final Stage</td><td class="text-end">1</td></tr>
-              <tr><td>Won</td><td class="text-end">0</td></tr>
-              <tr><td>Lost</td><td class="text-end">0</td></tr>
+              <tr *ngIf="pipelineData.length === 0">
+                <td colspan="2" class="text-center text-muted">No Data Found</td>
+              </tr>
+              <tr *ngFor="let stage of pipelineData">
+                <td>{{ stage.Stage }}</td>
+                <td class="text-end">{{ stage.Leads }}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -106,10 +106,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td class="fw-bold">Due today</td><td class="text-end fw-bold">0</td></tr>
-              <tr><td class="fw-bold">This week</td><td class="text-end fw-bold">0</td></tr>
-              <tr><td class="fw-bold">This month</td><td class="text-end fw-bold">25</td></tr>
-              <tr><td class="fw-bold">Overdue</td><td class="text-end fw-bold">25</td></tr>
+              <tr><td class="fw-bold">Due today</td><td class="text-end fw-bold">{{ followUpData?.Due_Today || 0 }}</td></tr>
+              <tr><td class="fw-bold">This week</td><td class="text-end fw-bold">{{ followUpData?.This_Week || 0 }}</td></tr>
+              <tr><td class="fw-bold">This month</td><td class="text-end fw-bold">{{ followUpData?.This_Month || 0 }}</td></tr>
+              <tr><td class="fw-bold">Overdue</td><td class="text-end fw-bold">{{ followUpData?.Overdue || 0 }}</td></tr>
             </tbody>
           </table>
         </div>
@@ -133,10 +133,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of dayWiseActivity" [class.highlighted-row]="item.highlight">
-                <td class="text-start">{{ item.date }}</td>
-                <td>{{ item.activities }}</td>
-                <td>{{ item.won }}</td>
+              <tr *ngIf="dayWiseActivity.length === 0">
+                <td colspan="3" class="text-muted">No Data Found</td>
+              </tr>
+              <tr *ngFor="let item of dayWiseActivity">
+                <td class="text-start">{{ item.Date_Label }}</td>
+                <td>{{ item.Activities }}</td>
+                <td>{{ item.Won }}</td>
               </tr>
             </tbody>
           </table>
@@ -144,7 +147,7 @@
       </div>
     </div>
 
-    <!-- Week-wise & Follow Up Summary -->
+    <!-- Week-wise -->
     <div class="col-lg-4">
       <div class="modern-card h-100">
         <h6 class="table-title">WEEK-WISE ACTIVITY</h6>
@@ -158,10 +161,13 @@
               </tr>
             </thead>
             <tbody>
+              <tr *ngIf="weekWiseActivity.length === 0">
+                <td colspan="3" class="text-muted">No Data Found</td>
+              </tr>
               <tr *ngFor="let item of weekWiseActivity">
-                <td class="text-start">{{ item.week }}</td>
-                <td>{{ item.activities }}</td>
-                <td>{{ item.won }}</td>
+                <td class="text-start">{{ item.Week_Starting }}</td>
+                <td>{{ item.Activities }}</td>
+                <td>{{ item.Won }}</td>
               </tr>
             </tbody>
           </table>
@@ -183,10 +189,13 @@
               </tr>
             </thead>
             <tbody>
+              <tr *ngIf="monthWiseActivity.length === 0">
+                <td colspan="3" class="text-muted">No Data Found</td>
+              </tr>
               <tr *ngFor="let item of monthWiseActivity">
-                <td class="text-start">{{ item.month }}</td>
-                <td>{{ item.activities }}</td>
-                <td>{{ item.won }}</td>
+                <td class="text-start">{{ item.Month_Label }}</td>
+                <td>{{ item.Activities }}</td>
+                <td>{{ item.Won }}</td>
               </tr>
             </tbody>
           </table>

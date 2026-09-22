@@ -3536,6 +3536,118 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Dashboard_V3_Activity_Chart`(
+    IN _Type VARCHAR(50)
+)
+BEGIN
+    IF _Type = 'Day' THEN
+        SELECT 
+            DATE_FORMAT(MAX(Activity_Date), '%d-%b') AS Date_Label,
+            COUNT(LeadActivityLog_Id) AS Activities
+        FROM `lead_activity_log`
+        GROUP BY DATE(Activity_Date)
+        ORDER BY DATE(Activity_Date) ASC;
+        
+    ELSEIF _Type = 'Week' THEN
+        SELECT 
+            DATE_FORMAT(MAX(DATE_SUB(Activity_Date, INTERVAL WEEKDAY(Activity_Date) DAY)), '%d-%b') AS Date_Label,
+            COUNT(LeadActivityLog_Id) AS Activities
+        FROM `lead_activity_log`
+        GROUP BY YEARWEEK(Activity_Date, 1)
+        ORDER BY YEARWEEK(Activity_Date, 1) ASC;
+        
+    ELSEIF _Type = 'Month' THEN
+        SELECT 
+            DATE_FORMAT(MAX(Activity_Date), '%b %y') AS Date_Label,
+            COUNT(LeadActivityLog_Id) AS Activities
+        FROM `lead_activity_log`
+        GROUP BY DATE_FORMAT(Activity_Date, '%Y-%m')
+        ORDER BY MAX(Activity_Date) ASC;
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Dashboard_V3_Activity_Table`(
+    IN _Type VARCHAR(50)
+)
+BEGIN
+    IF _Type = 'Day' THEN
+        SELECT 
+            DATE_FORMAT(MAX(Activity_Date), '%d-%b') AS Date_Label,
+            COUNT(LeadActivityLog_Id) AS Activities,
+            SUM(IF(Won_Lost_Status = 1, 1, 0)) AS Won
+        FROM `lead_activity_log`
+        GROUP BY DATE(Activity_Date)
+        ORDER BY DATE(Activity_Date) DESC;
+        
+    ELSEIF _Type = 'Week' THEN
+        SELECT 
+            DATE_FORMAT(MAX(DATE_SUB(Activity_Date, INTERVAL WEEKDAY(Activity_Date) DAY)), '%d-%b-%Y') AS Week_Starting,
+            COUNT(LeadActivityLog_Id) AS Activities,
+            SUM(IF(Won_Lost_Status = 1, 1, 0)) AS Won
+        FROM `lead_activity_log`
+        GROUP BY YEARWEEK(Activity_Date, 1)
+        ORDER BY YEARWEEK(Activity_Date, 1) DESC;
+        
+    ELSEIF _Type = 'Month' THEN
+        SELECT 
+            DATE_FORMAT(MAX(Activity_Date), '%b %Y') AS Month_Label,
+            COUNT(LeadActivityLog_Id) AS Activities,
+            SUM(IF(Won_Lost_Status = 1, 1, 0)) AS Won
+        FROM `lead_activity_log`
+        GROUP BY DATE_FORMAT(Activity_Date, '%Y-%m')
+        ORDER BY MAX(Activity_Date) DESC;
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Dashboard_V3_KPIs`()
+BEGIN
+    SELECT 
+        -- Top Header (Follow-Ups)
+        SUM(IF(Next_FollowUp_Date < CURRENT_DATE, 1, 0)) AS `Delayed`,
+        SUM(IF(Next_FollowUp_Date = CURRENT_DATE, 1, 0)) AS `Today`,
+        SUM(IF(Next_FollowUp_Date > CURRENT_DATE, 1, 0)) AS `Upcoming`,
+        
+        -- Middle Row (Lead Metrics)
+        COUNT(Lead_Id) AS Total_Leads,
+        SUM(IF(Lead_Type = 4, 1, 0)) AS Qualified,
+        SUM(IF(Current_Pipeline_Stage = 'Quotation Sent', 1, 0)) AS Quotation,
+        SUM(IFNULL(isGhosting, 0)) AS Ghosting,
+        SUM(IFNULL(sale_won, 0)) AS Won
+    FROM `lead`;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Dashboard_V3_Pipeline_FollowUp`(
+    IN _Type VARCHAR(50)
+)
+BEGIN
+    IF _Type = 'Pipeline' THEN
+        -- Used for Pipeline Pie Chart / Table
+        SELECT 
+            IFNULL(Current_Pipeline_Stage, 'Unassigned') AS Stage,
+            COUNT(Lead_Id) AS Leads
+        FROM `lead`
+        WHERE Current_Pipeline_Stage IS NOT NULL AND Current_Pipeline_Stage != ''
+        GROUP BY Current_Pipeline_Stage;
+        
+    ELSEIF _Type = 'FollowUp' THEN
+        -- Used for Follow-up Summary Table
+        SELECT 
+            SUM(IF(Next_FollowUp_Date = CURRENT_DATE, 1, 0)) AS Due_Today,
+            SUM(IF(YEARWEEK(Next_FollowUp_Date, 1) = YEARWEEK(CURRENT_DATE, 1), 1, 0)) AS This_Week,
+            SUM(IF(MONTH(Next_FollowUp_Date) = MONTH(CURRENT_DATE) AND YEAR(Next_FollowUp_Date) = YEAR(CURRENT_DATE), 1, 0)) AS This_Month,
+            SUM(IF(Next_FollowUp_Date < CURRENT_DATE, 1, 0)) AS Overdue
+        FROM `lead`;
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Filter_Dropdown`(
     IN p_Type VARCHAR(100),
     IN p_Search VARCHAR(255),
@@ -14779,11 +14891,11 @@ sp_label: BEGIN
             
             sale_won               = CASE WHEN p_Stage_Type = 1 THEN 1 ELSE 0 END,
             sale_won_date          = CASE WHEN p_Stage_Type = 1 THEN IFNULL(sale_won_date, CURRENT_TIMESTAMP) ELSE NULL END,
-            sale_won_by            = CASE WHEN p_Stage_Type = 1 THEN IFNULL(sale_won_by, p_Login_User_Id) ELSE NULL END,
+            sale_won_by            = CASE WHEN p_Stage_Type = 1 THEN p_Staff_Id ELSE NULL END,
             
             sale_lost              = CASE WHEN p_Stage_Type = 2 THEN 1 ELSE 0 END,
             sale_lost_date         = CASE WHEN p_Stage_Type = 2 THEN IFNULL(sale_lost_date, CURRENT_TIMESTAMP) ELSE NULL END,
-            sale_lost_by           = CASE WHEN p_Stage_Type = 2 THEN IFNULL(sale_lost_by, p_Login_User_Id) ELSE NULL END
+            sale_lost_by           = CASE WHEN p_Stage_Type = 2 THEN p_Staff_Id ELSE NULL END
             
         WHERE Lead_Id = p_Lead_Id;
 
@@ -14877,6 +14989,39 @@ sp_label: BEGIN
             IFNULL(p_Followup_Required, 1), IFNULL(p_Color, '#3b82f6'),
             p_Pulse_Id, p_Pulse, isGhosting,
             p_Login_User_Id
+        FROM `lead`
+        WHERE Lead_Id = p_Lead_Id;
+
+        -- ── 7. Insert into lead_activity_log table ──────────────────────
+        INSERT INTO `lead_activity_log` (
+            Lead_Id,
+            Lead_Name,
+            Branch_Id,
+            Branch_Name,
+            Department_Id,
+            Department_Name,
+            Staff_Id,
+            Staff_Name,
+            Won_Lost_Status,
+            Activity_Type,
+            Activity_Title,
+            User_Id,
+            Remarks
+        )
+        SELECT
+            Lead_Id,
+            Lead_Name,
+            p_Branch_Id,
+            p_Branch_Name,
+            p_Department_Id,
+            p_Department_Name,
+            p_Staff_Id,
+            p_Staff_Name,
+            IFNULL(p_Stage_Type, 0),
+            'Follow Up',
+            'Follow Up Added',
+            p_Login_User_Id,
+            p_Remark
         FROM `lead`
         WHERE Lead_Id = p_Lead_Id;
 
@@ -15031,18 +15176,30 @@ BEGIN
              -- WON LOGIC
             IF(_Stage_Type = 1, 1, 0), 
             IF(_Stage_Type = 1, CURRENT_TIMESTAMP, NULL), 
-            IF(_Stage_Type = 1, _Login_User_Id, NULL),
+            IF(_Stage_Type = 1, _Staff_Id, NULL),
             
             -- LOST LOGIC
             IF(_Stage_Type = 2, 1, 0), 
             IF(_Stage_Type = 2, CURRENT_TIMESTAMP, NULL), 
-            IF(_Stage_Type = 2, _Login_User_Id, NULL),
+            IF(_Stage_Type = 2, _Staff_Id, NULL),
             
             NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name,
              _Target_Stage_Id, _Target_Stage_Name,
             _Workflow_Id, _Workflow, _Workflow_Start_Status
         );
-        SET _Generated_Lead_Id = LAST_INSERT_ID();
+        
+		SET _Generated_Lead_Id = LAST_INSERT_ID();
+                
+                -- --- START ADDITION: Activity Log for NEW Lead ---
+        INSERT INTO `lead_activity_log` (
+            Lead_Id, Lead_Name, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
+            Won_Lost_Status, Activity_Type, Activity_Title, User_Id
+        ) VALUES (
+            _Generated_Lead_Id, _Lead_Name, NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name,
+            IF(_Stage_Type IN (1, 2), _Stage_Type, 0), 'Lead Creation', 'New Lead Registered', _Login_User_Id
+        );
+        -- --- END ADDITION ---
+
         
         IF (_Current_Pipeline_Stage IS NOT NULL AND _Current_Pipeline_Stage != '') OR (_Pulse IS NOT NULL AND _Pulse != '') THEN
             INSERT INTO `lead_pipeline_pulse_history` (
@@ -15111,6 +15268,19 @@ BEGIN
             isGhosting             = IFNULL(_isGhosting, 0),
             Workflow_Id = _Workflow_Id, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
         WHERE Lead_Id = _Lead_Id;
+        
+                -- --- START ADDITION: Activity Log for UPDATED Lead ---
+        INSERT INTO `lead_activity_log` (
+            Lead_Id, Lead_Name, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
+            Won_Lost_Status, Activity_Type, Activity_Title, User_Id
+        )
+        SELECT 
+            Lead_Id, Lead_Name, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
+            IFNULL(Stage_Type, 0), 'Lead Update', 'Lead Profile Updated', _Login_User_Id
+        FROM `lead`
+        WHERE Lead_Id = _Lead_Id;
+        -- --- END ADDITION ---
+
         
         SET _Generated_Lead_Id = _Lead_Id;
 

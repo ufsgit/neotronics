@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DashboardV3_Service } from '../../../services/DashboardV3.Service';
 
 @Component({
   selector: 'app-lead-dashboard-v3',
@@ -10,112 +11,50 @@ export class LeadDashboardV3Component implements OnInit {
   showPipelineGraph = true;
   activityChartMode: 'daily' | 'weekly' | 'monthly' = 'daily';
 
-  // Dummy Activity Tables Data
-  dayWiseActivity = [
-    { date: '08-Sep', activities: 0, won: 0 },
-    { date: '09-Sep', activities: 0, won: 0 },
-    { date: '10-Sep', activities: 0, won: 0 },
-    { date: '11-Sep', activities: 0, won: 0 },
-    { date: '12-Sep', activities: 0, won: 0 },
-    { date: '13-Sep', activities: 0, won: 0 },
-    { date: '14-Sep', activities: 0, won: 0 },
-    { date: '15-Sep', activities: 0, won: 0 },
-    { date: '16-Sep', activities: 0, won: 0, highlight: true },
-    { date: '17-Sep', activities: 0, won: 0 }
-  ];
-
-  weekWiseActivity = [
-    { week: '03-Aug-2026', activities: 0, won: 0 },
-    { week: '10-Aug-2026', activities: 0, won: 0 },
-    { week: '17-Aug-2026', activities: 0, won: 0 },
-    { week: '24-Aug-2026', activities: 0, won: 0 },
-    { week: '31-Aug-2026', activities: 14, won: 0 },
-    { week: '07-Sep-2026', activities: 0, won: 0 },
-    { week: '14-Sep-2026', activities: 0, won: 0 },
-    { week: '21-Sep-2026', activities: 0, won: 0 }
-  ];
-
-  monthWiseActivity = [
-    { month: 'Oct 2025', activities: 0, won: 0 },
-    { month: 'Nov 2025', activities: 0, won: 0 },
-    { month: 'Dec 2025', activities: 0, won: 0 },
-    { month: 'Jan 2026', activities: 0, won: 0 },
-    { month: 'Feb 2026', activities: 0, won: 0 },
-    { month: 'Mar 2026', activities: 0, won: 0 },
-    { month: 'Apr 2026', activities: 0, won: 0 },
-    { month: 'May 2026', activities: 0, won: 0 },
-    { month: 'Jun 2026', activities: 0, won: 0 },
-    { month: 'Jul 2026', activities: 0, won: 0 }
-  ];
+  kpiData: any = {};
+  followUpData: any = {};
+  pipelineData: any[] = [];
+  
+  dayWiseActivity: any[] = [];
+  weekWiseActivity: any[] = [];
+  monthWiseActivity: any[] = [];
 
   // Dummy Chart Data for google-charts
   chartData = {
     daily: {
-      data: [
-        ['08-Sep', 0],
-        ['10-Sep', 0],
-        ['12-Sep', 0],
-        ['14-Sep', 0],
-        ['16-Sep', 0],
-        ['18-Sep', 0],
-        ['20-Sep', 0]
-      ],
+      data: [],
       options: {
         legend: { position: 'right' },
         colors: ['#4285F4'],
         hAxis: { slantedText: true, slantedTextAngle: 45 },
-        vAxis: { minValue: 0, maxValue: 1 },
+        vAxis: { minValue: 0 },
         chartArea: { width: '75%', height: '65%' }
       }
     },
     weekly: {
-      data: [
-        ['03-Aug', 0],
-        ['10-Aug', 0],
-        ['17-Aug', 0],
-        ['24-Aug', 0],
-        ['31-Aug', 14],
-        ['07-Sep', 0],
-        ['14-Sep', 0],
-        ['21-Sep', 0]
-      ],
+      data: [],
       options: {
         legend: { position: 'right' },
         colors: ['#4285F4'],
         curveType: 'function',
         hAxis: { slantedText: true, slantedTextAngle: 45 },
-        vAxis: { minValue: -2, maxValue: 16 },
+        vAxis: { minValue: 0 },
         chartArea: { width: '75%', height: '65%' }
       }
     },
     monthly: {
-      data: [
-        ['Oct 25', 0],
-        ['Dec 25', 0],
-        ['Feb 26', 0],
-        ['Apr 26', 0],
-        ['Jun 26', 0],
-        ['Aug 26', 14]
-      ],
+      data: [],
       options: {
         legend: { position: 'right' },
         colors: ['#4285F4'],
         curveType: 'function',
         hAxis: { slantedText: true, slantedTextAngle: 45 },
-        vAxis: { minValue: -2, maxValue: 16 },
+        vAxis: { minValue: 0 },
         chartArea: { width: '75%', height: '65%' }
       }
     },
     pipeline: {
-      data: [
-        ['Raw Lead', 4],
-        ['Qualified', 10],
-        ['Quotation Sent', 10],
-        ['Ghosting', 0],
-        ['Final Stage', 1],
-        ['Won', 0],
-        ['Lost', 0]
-      ],
+      data: [],
       options: {
         legend: { position: 'right' },
         pieHole: 0.4,
@@ -124,9 +63,41 @@ export class LeadDashboardV3Component implements OnInit {
     }
   };
 
-  constructor() { }
+  constructor(private dashboardService: DashboardV3_Service) { }
 
   ngOnInit(): void {
+    this.fetchDashboardData();
+  }
+
+  fetchDashboardData() {
+    this.dashboardService.getDashboardV3Data().subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.kpiData = res.kpi || {};
+          this.followUpData = res.followUpSummary || {};
+          
+          this.pipelineData = res.pipeline || [];
+          this.chartData.pipeline.data = this.pipelineData.map(p => [p.Stage, p.Leads]);
+          
+          this.dayWiseActivity = res.activityDay || [];
+          this.weekWiseActivity = res.activityWeek || [];
+          this.monthWiseActivity = res.activityMonth || [];
+
+          this.chartData.daily.data = (res.chartDay || []).map((d: any) => [d.Date_Label, d.Activities]);
+          this.chartData.weekly.data = (res.chartWeek || []).map((w: any) => [w.Date_Label, w.Activities]);
+          this.chartData.monthly.data = (res.chartMonth || []).map((m: any) => [m.Date_Label, m.Activities]);
+          
+          // Fallbacks for empty charts to prevent google charts error
+          if (this.chartData.daily.data.length === 0) this.chartData.daily.data = [['No Data', 0]];
+          if (this.chartData.weekly.data.length === 0) this.chartData.weekly.data = [['No Data', 0]];
+          if (this.chartData.monthly.data.length === 0) this.chartData.monthly.data = [['No Data', 0]];
+          if (this.chartData.pipeline.data.length === 0) this.chartData.pipeline.data = [['No Data', 0]];
+        }
+      },
+      error: (err) => {
+        console.error('Error loading dashboard data', err);
+      }
+    });
   }
 
 }
