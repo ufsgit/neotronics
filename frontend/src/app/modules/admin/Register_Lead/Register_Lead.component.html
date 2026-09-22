@@ -530,12 +530,15 @@
           <div class="ig-section-header" style="display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">
               <label for="chk_Is_FollowUp" class="ig-section-title"
-                style="margin: 0; display: flex; align-items: center; gap: 5px; cursor: pointer;"
+                style="margin: 0; display: flex; align-items: center; gap: 5px;"
+                [style.cursor]="isFollowupRequired() ? 'not-allowed' : 'pointer'"
                 (click)="$event.stopPropagation()"><i class="material-icons">event_available</i> {{ Lead_.Is_FollowUp ?
                 'Assignment' : 'Add Assignment'
                 }}</label>
               <input type="checkbox" name="Is_FollowUp" [(ngModel)]="Lead_.Is_FollowUp"
-                style="width: 16px; height: 16px; margin: 0; cursor: pointer;" id="chk_Is_FollowUp"
+                [disabled]="isFollowupRequired() || Is_View_Mode"
+                style="width: 16px; height: 16px; margin: 0;" id="chk_Is_FollowUp"
+                [style.cursor]="isFollowupRequired() ? 'not-allowed' : 'pointer'"
                 (click)="$event.stopPropagation()" />
             </div>
           </div>

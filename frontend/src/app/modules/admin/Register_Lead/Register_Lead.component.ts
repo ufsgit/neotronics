@@ -708,10 +708,12 @@ export class Register_LeadComponent implements OnInit {
       this.DropdownData['Pulse'] = [];
     }
     if (this.isFollowupRequired()) {
+      (this.Lead_ as any).Is_FollowUp = true;
       if (this.Expanded_Sections['Pipeline Stage & Pulse']) {
         this.Expanded_Sections['Add Assignment'] = true;
       }
     } else {
+      (this.Lead_ as any).Is_FollowUp = false;
       this.Expanded_Sections['Add Assignment'] = false;
     }
   }
@@ -721,10 +723,12 @@ export class Register_LeadComponent implements OnInit {
       this.Selected_Pulse = event.name || event.id || this.Selected_Pulse;
     }
     if (this.isFollowupRequired()) {
+      (this.Lead_ as any).Is_FollowUp = true;
       if (this.Expanded_Sections['Pipeline Stage & Pulse']) {
         this.Expanded_Sections['Add Assignment'] = true;
       }
     } else {
+      (this.Lead_ as any).Is_FollowUp = false;
       this.Expanded_Sections['Add Assignment'] = false;
     }
   }
@@ -1406,6 +1410,25 @@ export class Register_LeadComponent implements OnInit {
     if (this.Selected_Pulse && (!this.Selected_Pipeline_Stage || !pipelineStageObjValid)) {
       this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Please select a valid Pipeline Stage for the selected Pulse.', Type: "3" } });
       return;
+    }
+    
+    if (this.Lead_.Is_FollowUp) {
+      if (!this.Lead_.FollowUp_Location_Id) {
+        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Please select a Branch for the assignment.', Type: "3" } });
+        return;
+      }
+      if (!this.Lead_.FollowUp_Department_Id) {
+        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Please select a Department Responsibility for the assignment.', Type: "3" } });
+        return;
+      }
+      if (!this.Lead_.FollowUp_Staff_Id) {
+        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Please select an Assigned Owner for the assignment.', Type: "3" } });
+        return;
+      }
+      if (!this.Lead_.FollowUp_Status_Id) {
+        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Please select a Target Stage for the assignment.', Type: "3" } });
+        return;
+      }
     }
     const contactPersonValues = this.contactForm && this.contactForm.value && this.contactForm.value.contactPersons ? this.contactForm.value.contactPersons : [];
     const selectedContactValue = contactPersonValues.find(c => !!c.Next_Call_Action) || contactPersonValues[0] || null;
