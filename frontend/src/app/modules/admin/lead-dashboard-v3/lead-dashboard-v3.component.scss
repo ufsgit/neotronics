@@ -153,3 +153,15 @@
   margin-bottom: 12px;
   text-align: center;
 }
+
+/* Custom Widths for 60/40 Split */
+@media (min-width: 992px) {
+  .col-lg-60 {
+    flex: 0 0 60%;
+    max-width: 60%;
+  }
+  .col-lg-40 {
+    flex: 0 0 40%;
+    max-width: 40%;
+  }
+}

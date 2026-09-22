@@ -1514,8 +1514,6 @@ export class Register_LeadComponent implements OnInit {
     if (this.Lead_.Is_FollowUp) {
       Lead_Copy.Department_Id = this.Lead_.FollowUp_Department_Id;
       Lead_Copy.Department_Name = this.DropdownData['Department_' + this.Lead_.FollowUp_Location_Id] ? (this.DropdownData['Department_' + this.Lead_.FollowUp_Location_Id].find(x => x.id === this.Lead_.FollowUp_Department_Id) || {}).name || '' : '';
-      Lead_Copy.Status_Id = this.Lead_.FollowUp_Status_Id;
-      Lead_Copy.Status_Name = this.DropdownData['TargetStage'] ? (this.DropdownData['TargetStage'].find(x => x.id === this.Lead_.FollowUp_Status_Id) || {}).name || '' : '';
       Lead_Copy.Staff_Id = this.Lead_.FollowUp_Staff_Id;
       Lead_Copy.Staff_Name = this.DropdownData['Staff_' + this.Lead_.FollowUp_Department_Id] ? (this.DropdownData['Staff_' + this.Lead_.FollowUp_Department_Id].find(x => x.id === this.Lead_.FollowUp_Staff_Id) || {}).name || '' : '';
       Lead_Copy.Branch_Id = this.Lead_.FollowUp_Location_Id;
@@ -1525,19 +1523,20 @@ export class Register_LeadComponent implements OnInit {
       Lead_Copy.FollowUp_Branch_Id = Lead_Copy.Branch_Id;
       Lead_Copy.FollowUp_Branch_Name = Lead_Copy.Branch_Name;
       Lead_Copy.FollowUp_Dept_Name = Lead_Copy.Department_Name;
-      Lead_Copy.FollowUp_Status_Name = Lead_Copy.Status_Name;
+      Lead_Copy.FollowUp_Status_Name = this.DropdownData['TargetStage'] ? (this.DropdownData['TargetStage'].find(x => x.id === this.Lead_.FollowUp_Status_Id) || {}).name || '' : '';
       Lead_Copy.FollowUp_Staff_Name = Lead_Copy.Staff_Name;
 
     } else {
       Lead_Copy.Department_Id = 0;
       Lead_Copy.Department_Name = '';
-      Lead_Copy.Status_Id = this.Lead_.Status_Id;
-      Lead_Copy.Status_Name = this.Lead_.Status_Name;
       Lead_Copy.Staff_Id = 0;
       Lead_Copy.Staff_Name = '';
       Lead_Copy.Branch_Id = 0;
       Lead_Copy.Branch_Name = '';
     }
+    
+    Lead_Copy.Target_Stage_Id = this.Lead_.FollowUp_Status_Id || 0;
+    Lead_Copy.Target_Stage_Name = this.DropdownData['TargetStage'] ? (this.DropdownData['TargetStage'].find(x => x.id == Lead_Copy.Target_Stage_Id) || {}).name || '' : '';
     
     Lead_Copy.Next_FollowUp_Date = this.Lead_.FollowUp_Next_Date;
     Lead_Copy.Remarks = this.Lead_.FollowUp_Remark;
@@ -1637,9 +1636,9 @@ export class Register_LeadComponent implements OnInit {
       this.Lead_.FollowUp_Staff_Id = this.Lead_.Staff_Id;
       this.DropdownData['Staff_' + this.Lead_.Department_Id] = [{ id: this.Lead_.Staff_Id, name: this.Lead_.Staff_Name }];
     }
-    if (this.Lead_.Status_Id > 0) {
-      this.Lead_.FollowUp_Status_Id = this.Lead_.Status_Id;
-      this.DropdownData['TargetStage'] = [{ id: this.Lead_.Status_Id, name: this.Lead_.Status_Name }];
+    if (this.Lead_.Target_Stage_Id > 0) {
+      this.Lead_.FollowUp_Status_Id = this.Lead_.Target_Stage_Id;
+      this.DropdownData['TargetStage'] = [{ id: this.Lead_.Target_Stage_Id, name: this.Lead_.Target_Stage_Name }];
     }
 
     this.Lead_.FollowUp_Next_Date = this.Lead_.Next_FollowUp_Date ? this.New_Date(this.Lead_.Next_FollowUp_Date) : null;

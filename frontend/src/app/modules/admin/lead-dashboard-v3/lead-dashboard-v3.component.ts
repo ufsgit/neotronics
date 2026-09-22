@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LeadDashboardV3Component implements OnInit {
 
-  showPipelineGraph = false;
+  showPipelineGraph = true;
   activityChartMode: 'daily' | 'weekly' | 'monthly' = 'daily';
 
   // Dummy Activity Tables Data

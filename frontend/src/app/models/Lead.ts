@@ -34,6 +34,8 @@ export class Lead {
     Department_Name: string;
     Status_Id: number;
     Status_Name: string;
+    Target_Stage_Id: number;
+    Target_Stage_Name: string;
     Staff_Id: number;
     Staff_Name: string;
     Remark: string;
@@ -101,6 +103,7 @@ export class Lead {
         this.District = 0;
         this.Department_Id = 0;
         this.Status_Id = 0;
+        this.Target_Stage_Id = 0;
         this.Staff_Id = 0;
         this.Remark = "";
         this.Location_Id = 0;

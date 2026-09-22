@@ -389,8 +389,8 @@ var Lead = {
             intOrNull(Lead_.Stage_Type), boolOrNull(Lead_.Followup_Required), strOrNull(Lead_.Color),
             intOrNull(Lead_.Pulse_Id), strOrNull(Lead_.Pulse), 
             boolOrNull(Lead_.isGhosting), boolOrNull(Lead_.was_Previously_Ghosting), intOrNull(Lead_.previous_Pulse_Id),
-            intOrNull(Lead_.Status_Id), strOrNull(Lead_.Status_Name), intOrNull(Lead_.Branch_Id), strOrNull(Lead_.Branch_Name), intOrNull(Lead_.Department_Id), strOrNull(Lead_.Department_Name), intOrNull(Lead_.Staff_Id),
-            strOrNull(Lead_.Staff_Name), intOrNull(Lead_.Workflow_Id), strOrNull(Lead_.Workflow), boolOrNull(Lead_.Workflow_Start_Status),
+            intOrNull(Lead_.Branch_Id), strOrNull(Lead_.Branch_Name), intOrNull(Lead_.Department_Id), strOrNull(Lead_.Department_Name), intOrNull(Lead_.Staff_Id),
+            strOrNull(Lead_.Staff_Name), intOrNull(Lead_.Target_Stage_Id), strOrNull(Lead_.Target_Stage_Name), intOrNull(Lead_.Workflow_Id), strOrNull(Lead_.Workflow), boolOrNull(Lead_.Workflow_Start_Status),
             
             boolOrNull(Lead_.Is_FollowUp), intOrNull(Lead_.FollowUp_Branch_Id), strOrNull(Lead_.FollowUp_Branch_Name), intOrNull(Lead_.FollowUp_Department_Id), strOrNull(Lead_.FollowUp_Dept_Name),
             intOrNull(Lead_.FollowUp_Status_Id), strOrNull(Lead_.FollowUp_Status_Name), intOrNull(Lead_.FollowUp_Staff_Id), strOrNull(Lead_.FollowUp_Staff_Name),
@@ -648,7 +648,7 @@ var Lead = {
         return db.query("CALL Get_Pipeline_Pulse_History(?, ?, ?)", [Lead_Id, limit, offset], callback);
     },
     Check_Market_Study_Duplicate_Bulk: function (JsonChecks, LeadId, callback) {
-        return db.query("CALL Check_Lead_Market_Study_Duplicate_Bulk(?, ?)", [JsonChecks, LeadId], callback);
+        return db.query("CALL Check_Lead_Market_Study_Duplicate_Bulk(?)", [JsonChecks], callback);
     }
 };
 
