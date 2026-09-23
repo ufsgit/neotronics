@@ -1,83 +1,400 @@
-.header-title {
-  font-family: 'Times New Roman', serif;
-  font-weight: bold;
-  letter-spacing: 1px;
+$navy: #1c2b4a;
+$navy-dark: #16233d;
+$gold: #f5e6a8;
+$green: #2e9e5b;
+$border: #d9dee6;
+$text-muted: #6b7688;
+
+.fu-page {
+  padding: 32px 40px;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-.table-header-title {
-  font-family: 'Times New Roman', serif;
-  font-weight: bold;
-  letter-spacing: 1px;
-  color: #174b78;
+.fu-header-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(28, 43, 74, 0.06);
+  border: 1px solid rgba(217, 222, 230, 0.6);
+  padding: 24px 32px;
+  margin-bottom: 24px;
 }
 
-/* Control Buttons */
-.btn-today {
-  background-color: #278833;
+.fu-simple-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-muted;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fu-header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.fu-picker-wrapper {
+  position: relative;
+}
+
+.fu-header-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.fu-date-navigator {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.fu-selected-value {
+  display: flex;
+  flex-direction: column;
+  
+  .fu-date {
+    font-size: 18px;
+    font-weight: 600;
+    color: $navy;
+  }
+  .fu-weekday {
+    font-size: 13px;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+}
+
+.fu-nav-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: #f7f9fc;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #eef1f6;
+}
+
+.btn {
+  border: none;
   border-radius: 4px;
-}
-.btn-today:hover {
-  background-color: #1e6d27;
-  color: white;
-}
-
-.btn-nav-blue {
-  background-color: #174b78;
-  color: white;
-  border-radius: 4px;
-  padding: 4px 15px;
-}
-.btn-nav-blue:hover {
-  opacity: 0.9;
-  color: white;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.btn-pick-date {
-  background-color: #555555;
-  border-radius: 4px;
-  padding: 4px 15px;
-}
-.btn-pick-date:hover {
-  background-color: #333333;
-  color: white;
-}
-
-.btn-view-type {
-  background-color: #555555;
-  color: white;
+.btn-icon {
+  @extend .btn;
+  background: white;
+  color: $navy;
+  border: 1px solid #eef1f6;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
-  padding: 5px 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  
+  &:hover {
+    background: #f4f6fa;
+  }
 }
-.btn-view-type:hover {
-  background-color: #333333;
+
+.btn-today {
+  @extend .btn;
+  background: white;
+  color: $navy;
+  border: 1px solid #eef1f6;
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  
+  &:hover {
+    color: $green;
+  }
+}
+
+.fu-view-toggles {
+  display: flex;
+  align-items: center;
+  background: #f7f9fc;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #eef1f6;
+  gap: 4px;
+  
+  .divider {
+    width: 1px;
+    height: 20px;
+    background: #d9dee6;
+    margin: 0 8px;
+  }
+}
+
+.btn-toggle {
+  background: transparent;
+  color: $text-muted;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: $navy;
+  }
+  
+  &.active {
+    background: white;
+    color: $navy;
+    box-shadow: 0 2px 6px rgba(28,43,74,0.08);
+  }
+  
+  &.secondary {
+    color: #8b95a5;
+    &:hover { color: $navy; }
+  }
+}
+
+.btn-dark {
+  @extend .btn;
+  background: $navy;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(28, 43, 74, 0.15);
+  
+  &:hover {
+    background: $navy-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(28, 43, 74, 0.2);
+  }
+}
+
+.fu-view-select {
+  background: white;
+  border: 1px solid $border;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $navy;
+  outline: none;
+  cursor: pointer;
+  
+  &:focus {
+    border-color: $navy;
+  }
+}
+
+.fu-date-input {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 10;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.1);
+  border: 1px solid $border;
+  border-radius: 8px;
+  padding: 12px;
+  background: white;
+  font-family: inherit;
+}
+
+.fu-table-wrap {
+  border-top: 3px solid $border;
+  padding-top: 16px;
+}
+
+.fu-table-heading {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  color: #2b3550;
+  margin-bottom: 12px;
+
+  .fu-range {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 13px;
+    color: $text-muted;
+    margin-left: 10px;
+    font-weight: 400;
+  }
+}
+
+.fu-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    background: $navy;
+    color: #fff;
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 14px 16px;
+    border-bottom: 1px solid $border;
+    font-size: 14px;
+    color: #2b3550;
+    min-height: 20px;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #fafbfc;
+  }
+}
+
+.fu-calendar-grid {
+  border-left: 1px solid $border;
+  border-top: 1px solid $border;
+  margin-top: 16px;
+}
+
+.fu-calendar-header {
+  display: flex;
+  background: $navy;
   color: white;
 }
 
-/* View Display Box */
-.view-display {
-  background-color: #fff9c4;
-  border: 1px solid #ccc;
-  padding: 4px 30px;
-  color: #000;
+.fu-calendar-day-name {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  border-right: 1px solid $border;
 }
 
-/* Table styling */
-.calendar-table {
-  border: 1px solid #dee2e6;
+.fu-calendar-week {
+  display: flex;
 }
-.calendar-table thead {
-  background-color: #174b78;
+
+.fu-calendar-day {
+  flex: 1;
+  border-right: 1px solid $border;
+  border-bottom: 1px solid $border;
+  min-height: 120px;
+  padding: 8px;
+  background: #fff;
+  width: 0; // allow flex items to shrink
+  
+  &.other-month {
+    background: #fafbfc;
+    color: #a0aabf;
+  }
+  
+  &.is-today {
+    background: #e6f3eb; // light green
+  }
+  
+  .day-number {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    text-align: right;
+  }
+  
+  .day-events {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .day-event {
+    font-size: 11px;
+    background: $gold;
+    padding: 4px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #2b3550;
+    cursor: pointer;
+    border-left: 3px solid $navy;
+    
+    &:hover {
+      opacity: 0.9;
+    }
+  }
 }
-.calendar-table thead th {
-  color: white !important;
-  font-weight: normal;
-  border-bottom: none;
-  padding: 6px 10px;
+
+.fu-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.calendar-table tbody td {
-  padding: 4px 10px;
-  vertical-align: middle;
+
+.fu-modal {
+  background: white;
+  border-radius: 12px;
+  width: 800px;
+  max-width: 90vw;
+  max-height: 90vh;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
-.calendar-table tbody tr {
-  height: 28px; /* ensure empty rows have height */
+
+.fu-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid $border;
+  background: #fcfcfd;
+  
+  h3 {
+    margin: 0;
+    font-size: 18px;
+    color: $navy;
+    font-weight: 600;
+  }
+}
+
+.fu-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: $text-muted;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  
+  &:hover {
+    color: #ff4d4f;
+  }
+}
+
+.fu-modal-body {
+  padding: 24px;
+  overflow-y: auto;
 }

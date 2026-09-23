@@ -1,75 +1,140 @@
-<div class="main-content calendar-board pb-5 px-4" style="background-color: white;">
-  <!-- Main Title -->
-  <div class="row pt-4">
-    <div class="col-12">
-      <h1 class="header-title mb-3">FOLLOW-UP CALENDAR</h1>
+<div class="fu-page">
+
+  <div class="fu-header-card">
+    <h2 class="fu-simple-title">Follow-up Calendar</h2>
+    
+    <div class="fu-header-bottom">
+      <div class="fu-date-navigator">
+        <div class="fu-selected-value">
+          <span class="fu-date">{{ formattedSelectedDate }}</span>
+          <span class="fu-weekday">{{ selectedWeekday }}</span>
+        </div>
+        <div class="fu-nav-buttons">
+          <button class="btn btn-today" (click)="goToday()">Today</button>
+          <button class="btn btn-icon" (click)="prev()">&larr;</button>
+          <button class="btn btn-icon" (click)="next()">&rarr;</button>
+        </div>
+        <div class="fu-picker-wrapper">
+          <button class="btn btn-dark" (click)="togglePicker()">
+            <span class="icon">📅</span> Pick Date
+          </button>
+          <input *ngIf="showDatePicker" type="date" class="fu-date-input" [value]="pickerValue" (change)="onPickerChange($event.target.value)">
+        </div>
+      </div>
+      
+      <div class="fu-view-toggles">
+        <button class="btn-toggle" [class.active]="view==='day'" (click)="setView('day')">Day</button>
+        <button class="btn-toggle" [class.active]="view==='week'" (click)="setView('week')">Week</button>
+        <button class="btn-toggle" [class.active]="view==='month'" (click)="setView('month')">Month</button>
+        <div class="divider"></div>
+        <button class="btn-toggle" [class.active]="view==='all'" (click)="setView('all')">All Views</button>
+        <button class="btn-toggle secondary" routerLink="/Lead">Back to Leads</button>
+      </div>
     </div>
   </div>
 
-  <!-- Controls Row 1 -->
-  <div class="row align-items-end mb-3">
-    <!-- Selected Date -->
-    <div class="col-auto me-4">
-      <div class="fw-bold mb-1">Selected Date</div>
-      <button class="btn btn-today px-4 fw-bold text-white">TODAY</button>
-    </div>
-
-    <!-- Date Navigation -->
-    <div class="col-auto">
-      <div class="fw-bold mb-1">09-Sep-2026 <span class="fst-italic fw-normal text-muted">Wednesday</span></div>
-      <div class="d-flex gap-2">
-        <button class="btn btn-nav-blue fw-bold">&lt; DAY</button>
-        <button class="btn btn-nav-blue fw-bold">DAY &gt;</button>
-        
-        <button class="btn btn-nav-blue fw-bold ms-3">&lt; WEEK</button>
-        <button class="btn btn-nav-blue fw-bold">WEEK &gt;</button>
-        
-        <button class="btn btn-nav-blue fw-bold ms-3">&lt; MONTH</button>
-        <button class="btn btn-nav-blue fw-bold">MONTH &gt;</button>
-      </div>
-    </div>
-
-    <!-- View & Pick Date -->
-    <div class="col-auto ms-4">
-      <div class="d-flex align-items-center gap-3">
+  <div class="fu-table-wrap">
+    
+    <ng-container *ngIf="view !== 'all'">
+      <div class="fu-table-heading" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
-          <div class="fw-bold mb-1">View</div>
-          <div class="view-display text-center fw-bold">Day</div>
+          {{ view.toUpperCase() }} VIEW <span class="fu-range">{{ getRangeLabelFor(view) }}</span>
         </div>
-        <div class="mt-4 pt-1">
-          <button class="btn btn-pick-date fw-bold text-white">PICK DATE</button>
-        </div>
-        <div class="mt-4 pt-1 fst-italic text-muted small ms-2">
-          Use the buttons above. This sheet is read-only.
+        <button class="btn btn-dark" (click)="toggleDisplayMode()">
+          {{ displayMode === 'list' ? 'CALENDAR' : 'LIST' }}
+        </button>
+      </div>
+
+      <ng-container *ngIf="displayMode === 'list'">
+        <ng-container *ngTemplateOutlet="tableView; context: { $implicit: getRowsForView(view) }"></ng-container>
+      </ng-container>
+      
+      <ng-container *ngIf="displayMode === 'calendar'">
+        <ng-container *ngTemplateOutlet="calendarView"></ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="view === 'all'">
+      <div class="fu-table-heading" style="margin-bottom: 16px;">
+        DAY VIEW <span class="fu-range">{{ getRangeLabelFor('day') }}</span>
+      </div>
+      <ng-container *ngTemplateOutlet="tableView; context: { $implicit: getRowsForView('day') }"></ng-container>
+
+      <div class="fu-table-heading" style="margin-top: 40px; margin-bottom: 16px;">
+        WEEK VIEW <span class="fu-range">{{ getRangeLabelFor('week') }}</span>
+      </div>
+      <ng-container *ngTemplateOutlet="tableView; context: { $implicit: getRowsForView('week') }"></ng-container>
+
+      <div class="fu-table-heading" style="margin-top: 40px; margin-bottom: 16px;">
+        MONTH VIEW <span class="fu-range">{{ getRangeLabelFor('month') }}</span>
+      </div>
+      <ng-container *ngTemplateOutlet="calendarView"></ng-container>
+    </ng-container>
+
+  </div>
+
+  <ng-template #tableView let-rows>
+    <table class="fu-table">
+      <thead>
+        <tr>
+          <th>Follow-up Date</th>
+          <th>Customer / Lead</th>
+          <th>Next Action</th>
+          <th>Status / Stage</th>
+          <th>Priority</th>
+          <th>Contact Person</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows">
+          <td>{{ row ? row.date : '' }}</td>
+          <td>{{ row ? row.customer : '' }}</td>
+          <td>{{ row ? row.nextAction : '' }}</td>
+          <td>{{ row ? row.status : '' }}</td>
+          <td>{{ row ? row.priority : '' }}</td>
+          <td>{{ row ? row.contact : '' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-template>
+
+  <ng-template #calendarView>
+    <div class="fu-calendar-grid">
+      <div class="fu-calendar-header">
+        <div class="fu-calendar-day-name">Sun</div>
+        <div class="fu-calendar-day-name">Mon</div>
+        <div class="fu-calendar-day-name">Tue</div>
+        <div class="fu-calendar-day-name">Wed</div>
+        <div class="fu-calendar-day-name">Thu</div>
+        <div class="fu-calendar-day-name">Fri</div>
+        <div class="fu-calendar-day-name">Sat</div>
+      </div>
+      <div class="fu-calendar-week" *ngFor="let week of calendarWeeks">
+        <div class="fu-calendar-day" 
+             *ngFor="let day of week" 
+             [class.other-month]="day.getMonth() !== selectedDate.getMonth()" 
+             [class.is-today]="isToday(day)">
+          <div class="day-number">{{ day.getDate() }}</div>
+          <div class="day-events" *ngIf="getFollowUpsForDate(day).length as count">
+            <div class="day-event count-event" (click)="openLeadsModal(day)">
+              {{ count }} Lead{{ count > 1 ? 's' : '' }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </ng-template>
 
-  <!-- Controls Row 2 (View Types) -->
-  <div class="row mb-4">
-    <div class="col-12 d-flex gap-2 border-bottom pb-3">
-      <button class="btn btn-view-type fw-bold">DAY VIEW</button>
-      <button class="btn btn-view-type fw-bold">WEEK VIEW</button>
-      <button class="btn btn-view-type fw-bold">MONTH VIEW</button>
-      <button class="btn btn-view-type fw-bold">ALL VIEWS</button>
-      <button class="btn btn-view-type fw-bold ms-4">BACK TO LEADS</button>
-    </div>
-  </div>
-
-  <!-- Data Table -->
-  <div class="row">
-    <div class="col-12">
-      <div class="d-flex align-items-center gap-4 mb-2">
-        <h4 class="table-header-title mb-0">DAY VIEW</h4>
-        <h6 class="fw-bold mb-0">Wednesday, 09 Sep 2026</h6>
+  <div class="fu-modal-overlay" *ngIf="selectedDayLeads" (click)="closeLeadsModal()">
+    <div class="fu-modal" (click)="$event.stopPropagation()">
+      <div class="fu-modal-header">
+        <h3>Leads for {{ selectedDayForModal | date:'longDate' }}</h3>
+        <button class="fu-modal-close" (click)="closeLeadsModal()">&times;</button>
       </div>
-
-      <div class="table-responsive">
-        <table class="table table-bordered table-sm calendar-table">
+      <div class="fu-modal-body">
+        <table class="fu-table">
           <thead>
             <tr>
-              <th>Follow-up Date</th>
               <th>Customer / Lead</th>
               <th>Next Action</th>
               <th>Status / Stage</th>
@@ -78,19 +143,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of calendarData">
-              <td class="text-end">{{ item.date }}</td>
-              <td>{{ item.customer }}</td>
-              <td>{{ item.nextAction }}</td>
-              <td>{{ item.status }}</td>
-              <td>{{ item.priority }}</td>
-              <td [ngClass]="{'text-end': item.contact === '0'}">{{ item.contact }}</td>
+            <tr *ngFor="let f of selectedDayLeads">
+              <td>{{ f.customer }}</td>
+              <td>{{ f.nextAction }}</td>
+              <td>{{ f.status }}</td>
+              <td>{{ f.priority }}</td>
+              <td>{{ f.contact }}</td>
             </tr>
-            <!-- Empty rows to match design padding -->
-            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
           </tbody>
         </table>
       </div>
