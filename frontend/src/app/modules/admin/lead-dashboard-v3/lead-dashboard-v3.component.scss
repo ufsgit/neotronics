@@ -165,3 +165,8 @@
     max-width: 40%;
   }
 }
+
+/* Fix for Google Charts Tooltip Flickering */
+::ng-deep .google-visualization-tooltip {
+  pointer-events: none;
+}
