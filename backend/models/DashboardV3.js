@@ -68,6 +68,36 @@ var DashboardV3 = {
             .catch(err => {
                 callback(err, null);
             });
+    },
+    getKPIs: function(callback) {
+        db.query("CALL Get_Lead_Dashboard_V3_KPIs()", [], (err, rows) => {
+            if (err) callback(err, null); else callback(null, rows[0] ? rows[0][0] : {});
+        });
+    },
+    getPipeline: function(callback) {
+        db.query("CALL Get_Lead_Dashboard_V3_Pipeline_FollowUp('Pipeline')", [], (err, rows) => {
+            if (err) callback(err, null); else callback(null, rows[0] || []);
+        });
+    },
+    getFollowUp: function(callback) {
+        db.query("CALL Get_Lead_Dashboard_V3_Pipeline_FollowUp('FollowUp')", [], (err, rows) => {
+            if (err) callback(err, null); else callback(null, rows[0] ? rows[0][0] : {});
+        });
+    },
+    getActivityDay: function(callback) {
+        db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Day')", [], (err, rows) => {
+            if (err) callback(err, null); else callback(null, rows[0] || []);
+        });
+    },
+    getActivityWeek: function(callback) {
+        db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Week')", [], (err, rows) => {
+            if (err) callback(err, null); else callback(null, rows[0] || []);
+        });
+    },
+    getActivityMonth: function(callback) {
+        db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Month')", [], (err, rows) => {
+            if (err) callback(err, null); else callback(null, rows[0] || []);
+        });
     }
 };
 

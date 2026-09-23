@@ -19,6 +19,14 @@ export class LeadDashboardV3Component implements OnInit {
   weekWiseActivity: any[] = [];
   monthWiseActivity: any[] = [];
 
+  // Loading states
+  loadingKPI = true;
+  loadingPipeline = true;
+  loadingFollowUp = true;
+  loadingDay = true;
+  loadingWeek = true;
+  loadingMonth = true;
+
   // Dummy Chart Data for google-charts
   chartData = {
     daily: {
@@ -70,33 +78,56 @@ export class LeadDashboardV3Component implements OnInit {
   }
 
   fetchDashboardData() {
-    this.dashboardService.getDashboardV3Data().subscribe({
+    this.dashboardService.getKPI().subscribe({
       next: (res: any) => {
-        if (res) {
-          this.kpiData = res.kpi || {};
-          this.followUpData = res.followUpSummary || {};
-          
-          this.pipelineData = res.pipeline || [];
-          this.chartData.pipeline.data = this.pipelineData.map(p => [p.Stage, p.Leads]);
-          
-          this.dayWiseActivity = res.activityDay || [];
-          this.weekWiseActivity = res.activityWeek || [];
-          this.monthWiseActivity = res.activityMonth || [];
-
-          this.chartData.daily.data = (res.chartDay || []).map((d: any) => [d.Date_Label, d.Activities]);
-          this.chartData.weekly.data = (res.chartWeek || []).map((w: any) => [w.Date_Label, w.Activities]);
-          this.chartData.monthly.data = (res.chartMonth || []).map((m: any) => [m.Date_Label, m.Activities]);
-          
-          // Fallbacks for empty charts to prevent google charts error
-          if (this.chartData.daily.data.length === 0) this.chartData.daily.data = [['No Data', 0]];
-          if (this.chartData.weekly.data.length === 0) this.chartData.weekly.data = [['No Data', 0]];
-          if (this.chartData.monthly.data.length === 0) this.chartData.monthly.data = [['No Data', 0]];
-          if (this.chartData.pipeline.data.length === 0) this.chartData.pipeline.data = [['No Data', 0]];
-        }
+        this.kpiData = res || {};
+        this.loadingKPI = false;
       },
-      error: (err) => {
-        console.error('Error loading dashboard data', err);
-      }
+      error: (err) => { console.error('Error loading KPI', err); this.loadingKPI = false; }
+    });
+
+    this.dashboardService.getPipeline().subscribe({
+      next: (res: any) => {
+        this.pipelineData = res || [];
+        this.chartData.pipeline.data = this.pipelineData.length > 0 ? this.pipelineData.map(p => [p.Stage, p.Leads]) : [['No Data', 0]];
+        this.loadingPipeline = false;
+      },
+      error: (err) => { console.error('Error loading Pipeline', err); this.loadingPipeline = false; }
+    });
+
+    this.dashboardService.getFollowUpSummary().subscribe({
+      next: (res: any) => {
+        this.followUpData = res || {};
+        this.loadingFollowUp = false;
+      },
+      error: (err) => { console.error('Error loading FollowUp', err); this.loadingFollowUp = false; }
+    });
+
+    this.dashboardService.getActivityDay().subscribe({
+      next: (res: any) => {
+        this.dayWiseActivity = res || [];
+        this.chartData.daily.data = this.dayWiseActivity.length > 0 ? this.dayWiseActivity.map((d: any) => [d.Date_Label, d.Activities]) : [['No Data', 0]];
+        this.loadingDay = false;
+      },
+      error: (err) => { console.error('Error loading Day Activity', err); this.loadingDay = false; }
+    });
+
+    this.dashboardService.getActivityWeek().subscribe({
+      next: (res: any) => {
+        this.weekWiseActivity = res || [];
+        this.chartData.weekly.data = this.weekWiseActivity.length > 0 ? this.weekWiseActivity.map((w: any) => [w.Date_Label, w.Activities]) : [['No Data', 0]];
+        this.loadingWeek = false;
+      },
+      error: (err) => { console.error('Error loading Week Activity', err); this.loadingWeek = false; }
+    });
+
+    this.dashboardService.getActivityMonth().subscribe({
+      next: (res: any) => {
+        this.monthWiseActivity = res || [];
+        this.chartData.monthly.data = this.monthWiseActivity.length > 0 ? this.monthWiseActivity.map((m: any) => [m.Date_Label, m.Activities]) : [['No Data', 0]];
+        this.loadingMonth = false;
+      },
+      error: (err) => { console.error('Error loading Month Activity', err); this.loadingMonth = false; }
     });
   }
 

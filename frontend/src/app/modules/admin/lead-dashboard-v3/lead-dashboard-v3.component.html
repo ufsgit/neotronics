@@ -4,9 +4,15 @@
   <div class="row align-items-center mb-4">
     <div class="col-md-6">
       <div class="d-flex flex-wrap gap-3">
-        <div class="status-box delayed">DELAYED : <span class="ms-2 fw-bold fs-5">{{ kpiData?.Delayed || 0 }}</span></div>
-        <div class="status-box today">TODAY : <span class="ms-2 fw-bold fs-5">{{ kpiData?.Today || 0 }}</span></div>
-        <div class="status-box upcoming">UPCOMING : <span class="ms-2 fw-bold fs-5">{{ kpiData?.Upcoming || 0 }}</span></div>
+        <div class="status-box delayed">DELAYED : <span class="ms-2 fw-bold fs-5">
+          <ng-container *ngIf="!loadingKPI; else inlineLoader">{{ kpiData?.Delayed || 0 }}</ng-container>
+        </span></div>
+        <div class="status-box today">TODAY : <span class="ms-2 fw-bold fs-5">
+          <ng-container *ngIf="!loadingKPI; else inlineLoader">{{ kpiData?.Today || 0 }}</ng-container>
+        </span></div>
+        <div class="status-box upcoming">UPCOMING : <span class="ms-2 fw-bold fs-5">
+          <ng-container *ngIf="!loadingKPI; else inlineLoader">{{ kpiData?.Upcoming || 0 }}</ng-container>
+        </span></div>
       </div>
     </div>
     <div class="col-md-6 mt-3 mt-md-0 d-flex justify-content-md-end gap-2 flex-wrap">
@@ -21,31 +27,31 @@
     <div class="col">
       <div class="kpi-card">
         <div class="kpi-title">TOTAL LEADS</div>
-        <div class="kpi-value">{{ kpiData?.Total_Leads || 0 }}</div>
+        <div class="kpi-value"><ng-container *ngIf="!loadingKPI; else inlineLoader">{{ kpiData?.Total_Leads || 0 }}</ng-container></div>
       </div>
     </div>
     <div class="col">
       <div class="kpi-card">
         <div class="kpi-title">QUALIFIED</div>
-        <div class="kpi-value">{{ kpiData?.Qualified || 0 }}</div>
+        <div class="kpi-value"><ng-container *ngIf="!loadingKPI; else inlineLoader">{{ kpiData?.Qualified || 0 }}</ng-container></div>
       </div>
     </div>
     <div class="col">
       <div class="kpi-card">
         <div class="kpi-title">QUOTATION</div>
-        <div class="kpi-value">{{ kpiData?.Quotation || 0 }}</div>
+        <div class="kpi-value"><ng-container *ngIf="!loadingKPI; else inlineLoader">{{ kpiData?.Quotation || 0 }}</ng-container></div>
       </div>
     </div>
     <div class="col">
       <div class="kpi-card">
         <div class="kpi-title">GHOSTING</div>
-        <div class="kpi-value">{{ kpiData?.Ghosting || 0 }}</div>
+        <div class="kpi-value"><ng-container *ngIf="!loadingKPI; else inlineLoader">{{ kpiData?.Ghosting || 0 }}</ng-container></div>
       </div>
     </div>
     <div class="col">
       <div class="kpi-card">
         <div class="kpi-title">WON</div>
-        <div class="kpi-value">{{ kpiData?.Won || 0 }}</div>
+        <div class="kpi-value"><ng-container *ngIf="!loadingKPI; else inlineLoader">{{ kpiData?.Won || 0 }}</ng-container></div>
       </div>
     </div>
   </div>
@@ -64,33 +70,37 @@
         
         <!-- Table View -->
         <div class="table-responsive" *ngIf="!showPipelineGraph" style="max-height: 240px; overflow-y: auto; border-top: 1px solid #f0f0f0;">
-          <table class="table table-sm custom-table mb-0">
-            <thead style="position: sticky; top: 0; z-index: 1;">
-              <tr>
-                <th>Stage</th>
-                <th class="text-end">Leads</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="pipelineData.length === 0">
-                <td colspan="2" class="text-center text-muted">No Data Found</td>
-              </tr>
-              <tr *ngFor="let stage of pipelineData">
-                <td>{{ stage.Stage }}</td>
-                <td class="text-end">{{ stage.Leads }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <ng-container *ngIf="!loadingPipeline; else flashLoader">
+            <table class="table table-sm custom-table mb-0">
+              <thead style="position: sticky; top: 0; z-index: 1;">
+                <tr>
+                  <th>Stage</th>
+                  <th class="text-end">Leads</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="pipelineData.length === 0">
+                  <td colspan="2" class="text-center text-muted">No Data Found</td>
+                </tr>
+                <tr *ngFor="let stage of pipelineData">
+                  <td>{{ stage.Stage }}</td>
+                  <td class="text-end">{{ stage.Leads }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </ng-container>
         </div>
 
         <!-- Graph View -->
         <div *ngIf="showPipelineGraph" class="p-3 border-top" style="height: 240px;">
-          <google-chart 
-            [type]="'PieChart'" 
-            [data]="chartData.pipeline.data" 
-            [options]="chartData.pipeline.options"
-            style="width: 100%; height: 100%;">
-          </google-chart>
+          <ng-container *ngIf="!loadingPipeline; else flashLoader">
+            <google-chart 
+              [type]="'PieChart'" 
+              [data]="chartData.pipeline.data" 
+              [options]="chartData.pipeline.options"
+              style="width: 100%; height: 100%;">
+            </google-chart>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -99,19 +109,21 @@
     <div class="col-12 col-lg-40">
       <div class="modern-card h-100">
         <div class="table-responsive">
-          <table class="table table-sm custom-table mt-0">
-            <thead>
-              <tr>
-                <th colspan="2" class="text-start p-3">FOLLOW-UP SUMMARY</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td class="fw-bold">Due today</td><td class="text-end fw-bold">{{ followUpData?.Due_Today || 0 }}</td></tr>
-              <tr><td class="fw-bold">This week</td><td class="text-end fw-bold">{{ followUpData?.This_Week || 0 }}</td></tr>
-              <tr><td class="fw-bold">This month</td><td class="text-end fw-bold">{{ followUpData?.This_Month || 0 }}</td></tr>
-              <tr><td class="fw-bold">Overdue</td><td class="text-end fw-bold">{{ followUpData?.Overdue || 0 }}</td></tr>
-            </tbody>
-          </table>
+          <ng-container *ngIf="!loadingFollowUp; else flashLoader">
+            <table class="table table-sm custom-table mt-0">
+              <thead>
+                <tr>
+                  <th colspan="2" class="text-start p-3">FOLLOW-UP SUMMARY</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="fw-bold">Due today</td><td class="text-end fw-bold">{{ followUpData?.Due_Today || 0 }}</td></tr>
+                <tr><td class="fw-bold">This week</td><td class="text-end fw-bold">{{ followUpData?.This_Week || 0 }}</td></tr>
+                <tr><td class="fw-bold">This month</td><td class="text-end fw-bold">{{ followUpData?.This_Month || 0 }}</td></tr>
+                <tr><td class="fw-bold">Overdue</td><td class="text-end fw-bold">{{ followUpData?.Overdue || 0 }}</td></tr>
+              </tbody>
+            </table>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -123,26 +135,28 @@
     <div class="col-lg-4">
       <div class="modern-card h-100">
         <h6 class="table-title">DAY-WISE ACTIVITY</h6>
-        <div class="table-responsive">
-          <table class="table table-sm custom-table text-center">
-            <thead>
-              <tr>
-                <th class="text-start">Date</th>
-                <th>Activities</th>
-                <th>Won</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="dayWiseActivity.length === 0">
-                <td colspan="3" class="text-muted">No Data Found</td>
-              </tr>
-              <tr *ngFor="let item of dayWiseActivity">
-                <td class="text-start">{{ item.Date_Label }}</td>
-                <td>{{ item.Activities }}</td>
-                <td>{{ item.Won }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="table-responsive" style="height: 350px; overflow-y: auto;">
+          <ng-container *ngIf="!loadingDay; else flashLoader">
+            <table class="table table-sm custom-table text-center">
+              <thead style="position: sticky; top: 0; z-index: 1;">
+                <tr>
+                  <th class="text-start">Date</th>
+                  <th>Activities</th>
+                  <th>Won</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="dayWiseActivity.length === 0">
+                  <td colspan="3" class="text-muted">No Data Found</td>
+                </tr>
+                <tr *ngFor="let item of dayWiseActivity">
+                  <td class="text-start">{{ item.Date_Label }}</td>
+                  <td>{{ item.Activities }}</td>
+                  <td>{{ item.Won }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -151,26 +165,28 @@
     <div class="col-lg-4">
       <div class="modern-card h-100">
         <h6 class="table-title">WEEK-WISE ACTIVITY</h6>
-        <div class="table-responsive">
-          <table class="table table-sm custom-table text-center">
-            <thead>
-              <tr>
-                <th class="text-start">Week Starting</th>
-                <th>Activities</th>
-                <th>Won</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="weekWiseActivity.length === 0">
-                <td colspan="3" class="text-muted">No Data Found</td>
-              </tr>
-              <tr *ngFor="let item of weekWiseActivity">
-                <td class="text-start">{{ item.Week_Starting }}</td>
-                <td>{{ item.Activities }}</td>
-                <td>{{ item.Won }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="table-responsive" style="height: 350px; overflow-y: auto;">
+          <ng-container *ngIf="!loadingWeek; else flashLoader">
+            <table class="table table-sm custom-table text-center">
+              <thead style="position: sticky; top: 0; z-index: 1;">
+                <tr>
+                  <th class="text-start">Week Starting</th>
+                  <th>Activities</th>
+                  <th>Won</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="weekWiseActivity.length === 0">
+                  <td colspan="3" class="text-muted">No Data Found</td>
+                </tr>
+                <tr *ngFor="let item of weekWiseActivity">
+                  <td class="text-start">{{ item.Week_Starting }}</td>
+                  <td>{{ item.Activities }}</td>
+                  <td>{{ item.Won }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -179,26 +195,28 @@
     <div class="col-lg-4">
       <div class="modern-card h-100">
         <h6 class="table-title">MONTH-WISE ACTIVITY</h6>
-        <div class="table-responsive">
-          <table class="table table-sm custom-table text-center">
-            <thead>
-              <tr>
-                <th class="text-start">Month</th>
-                <th>Activities</th>
-                <th>Won</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="monthWiseActivity.length === 0">
-                <td colspan="3" class="text-muted">No Data Found</td>
-              </tr>
-              <tr *ngFor="let item of monthWiseActivity">
-                <td class="text-start">{{ item.Month_Label }}</td>
-                <td>{{ item.Activities }}</td>
-                <td>{{ item.Won }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="table-responsive" style="height: 350px; overflow-y: auto;">
+          <ng-container *ngIf="!loadingMonth; else flashLoader">
+            <table class="table table-sm custom-table text-center">
+              <thead style="position: sticky; top: 0; z-index: 1;">
+                <tr>
+                  <th class="text-start">Month</th>
+                  <th>Activities</th>
+                  <th>Won</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="monthWiseActivity.length === 0">
+                  <td colspan="3" class="text-muted">No Data Found</td>
+                </tr>
+                <tr *ngFor="let item of monthWiseActivity">
+                  <td class="text-start">{{ item.Month_Label }}</td>
+                  <td>{{ item.Activities }}</td>
+                  <td>{{ item.Won }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -218,26 +236,44 @@
         </div>
 
         <div class="p-3 border-top" style="height: 350px;">
-          <google-chart *ngIf="activityChartMode === 'daily'"
-            [type]="'LineChart'" 
-            [data]="chartData.daily.data" 
-            [options]="chartData.daily.options"
-            style="width: 100%; height: 100%;">
-          </google-chart>
-          <google-chart *ngIf="activityChartMode === 'weekly'"
-            [type]="'LineChart'" 
-            [data]="chartData.weekly.data" 
-            [options]="chartData.weekly.options"
-            style="width: 100%; height: 100%;">
-          </google-chart>
-          <google-chart *ngIf="activityChartMode === 'monthly'"
-            [type]="'LineChart'" 
-            [data]="chartData.monthly.data" 
-            [options]="chartData.monthly.options"
-            style="width: 100%; height: 100%;">
-          </google-chart>
+          <ng-container *ngIf="
+            (activityChartMode === 'daily' && !loadingDay) ||
+            (activityChartMode === 'weekly' && !loadingWeek) ||
+            (activityChartMode === 'monthly' && !loadingMonth); else flashLoader">
+            <google-chart *ngIf="activityChartMode === 'daily'"
+              [type]="'LineChart'" 
+              [data]="chartData.daily.data" 
+              [options]="chartData.daily.options"
+              style="width: 100%; height: 100%;">
+            </google-chart>
+            <google-chart *ngIf="activityChartMode === 'weekly'"
+              [type]="'LineChart'" 
+              [data]="chartData.weekly.data" 
+              [options]="chartData.weekly.options"
+              style="width: 100%; height: 100%;">
+            </google-chart>
+            <google-chart *ngIf="activityChartMode === 'monthly'"
+              [type]="'LineChart'" 
+              [data]="chartData.monthly.data" 
+              [options]="chartData.monthly.options"
+              style="width: 100%; height: 100%;">
+            </google-chart>
+          </ng-container>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Loader Templates -->
+  <ng-template #inlineLoader>
+    <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
+  </ng-template>
+
+  <ng-template #flashLoader>
+    <div class="d-flex justify-content-center align-items-center h-100 w-100 p-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </ng-template>
 </div>
