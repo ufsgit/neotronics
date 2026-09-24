@@ -2197,6 +2197,50 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Calendar_FollowUps`(
+    IN p_User_Id INT, 
+    IN p_ViewType VARCHAR(10), 
+    IN p_CurrentDate DATE
+  )
+BEGIN
+    DECLARE v_StartDate DATE;
+    DECLARE v_EndDate DATE;
+
+    IF p_ViewType = 'DAY' THEN
+        SET v_StartDate = p_CurrentDate;
+        SET v_EndDate = p_CurrentDate;
+    ELSEIF p_ViewType = 'WEEK' THEN
+        SET v_StartDate = DATE_SUB(p_CurrentDate, INTERVAL DAYOFWEEK(p_CurrentDate) - 1 DAY);
+        SET v_EndDate = DATE_ADD(v_StartDate, INTERVAL 6 DAY);
+    ELSEIF p_ViewType = 'MONTH' THEN
+        SET v_StartDate = DATE_FORMAT(p_CurrentDate, '%Y-%m-01');
+        SET v_EndDate = LAST_DAY(p_CurrentDate);
+    ELSE
+        SET v_StartDate = p_CurrentDate;
+        SET v_EndDate = p_CurrentDate;
+    END IF;
+
+    SELECT 
+        Lead_Id as Lead_Id,
+        DATE_FORMAT(Next_FollowUp_Date, '%Y-%m-%d') as date,
+        Lead_Name as customer,
+        COALESCE(Remarks, '') as nextAction,
+        COALESCE(Current_Pipeline_Stage, Status_Name, '') as status,
+        COALESCE(Lead_Priority, '') as priority,
+        COALESCE(POC_Full_Name, '') as contact
+    FROM `lead`
+    WHERE Next_FollowUp_Date BETWEEN v_StartDate AND v_EndDate
+      AND (
+          EXISTS(SELECT 1 FROM user_details WHERE User_Details_Id = p_User_Id AND User_Type_Id = 1)
+          OR p_User_Id IS NULL 
+          OR p_User_Id = 0 
+          OR Staff_Id = p_User_Id 
+      )
+    ORDER BY Next_FollowUp_Date ASC;
+  END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Client_Accounts`( In Client_Accounts_Id_ Int)
 Begin 
  SELECT 
