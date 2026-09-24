@@ -19,40 +19,46 @@ export class DialogBox_Component implements OnInit {
   showNo: string;
   show: boolean;
   Heading: string;
-  NoButton: String;
-  YesButton: String;
-  Image_Url:string;
+  NoButton: string;
+  YesButton: string;
+  Image_Url: string;
   constructor(
     public dialogRef: MatDialogRef<DialogBox_Component>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.message = this.cleanMessage(data.Message);
-    this.showNo = data.Type;
+    this.message = this.cleanMessage(data.Message) || data.Message || 'An error occurred';
+    this.showNo = data.Type || '3';
     this.showNo= this.showNo.toString();
      
     if (this.showNo == "false" || this.showNo == "False") {
       this.NoButton = "No";
       this.YesButton = "OK";
-      this.Image_Url='/assets/img/Green_Tick.png';
+      this.Image_Url='assets/img/Green_Tick.png';
       this.show=false;
     }
     else if(this.showNo == "true" ||this.showNo == "True") {
       this.NoButton = "No";
       this.YesButton = "Yes";
-      this.Image_Url='/assets/img/Question_Mark.png';
+      this.Image_Url='assets/img/Question_Mark.png';
       this.show=true;
     }
     else if(this.showNo == "2" )
     {
       this.NoButton = "No";
       this.YesButton = "OK";
-      this.Image_Url='/assets/img/Red_Into.png';
+      this.Image_Url='assets/img/Red_Into.png';
       this.show=false;
     }
     else if(this.showNo == "3" )
     {
       this.NoButton = "No";
       this.YesButton = "OK";
-      this.Image_Url='/assets/img/White_Img.png';
+      this.Image_Url='assets/img/Red_Into.png'; // Change to Red_Into.png for errors
+      this.show=false;
+    }
+    else {
+      this.NoButton = "No";
+      this.YesButton = "OK";
+      this.Image_Url='assets/img/Red_Into.png';
       this.show=false;
     }
     this.Heading = data.Heading;

@@ -123,15 +123,19 @@ import { LeadDashboardComponent } from './lead-dashboard/lead-dashboard.componen
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
 import { VerticalsComponent } from './Lead_Dropdown_Manage/Company_Details/verticals/verticals.component';
-
-
-
-
-
-
-
-
-
+import { BranchComponent } from './Lead_Dropdown_Manage/Assignment/branch/branch.component';
+import { DepartmentComponent as LDDepartmentComponent } from './Lead_Dropdown_Manage/Assignment/department/department.component';
+import { CompanySizeComponent as LDCompanySizeComponent } from './Lead_Dropdown_Manage/Company_Details/company-size/company-size.component';
+import { DistrictComponent } from './Lead_Dropdown_Manage/Company_Details/district/district.component';
+import { SourceComponent } from './Lead_Dropdown_Manage/Company_Details/source/source.component';
+import { StateComponent } from './Lead_Dropdown_Manage/Company_Details/state/state.component';
+import { DesignationComponent as LDDesignationComponent } from './Lead_Dropdown_Manage/Contacts/designation/designation.component';
+import { WorkflowComponent } from './Lead_Dropdown_Manage/Follow_up_Automation/workflow/workflow.component';
+import { MarketSystemComponent } from './Lead_Dropdown_Manage/Market_Study/market-system/market-system.component';
+import { PipelineStageComponent } from './Lead_Dropdown_Manage/Pipeline_Stage_Pulse/pipeline-stage/pipeline-stage.component';
+import { PulseComponent } from './Lead_Dropdown_Manage/Pipeline_Stage_Pulse/pulse/pulse.component';
+import { TargetStageComponent } from './Lead_Dropdown_Manage/Pipeline_Stage_Pulse/target-stage/target-stage.component';
+import { ServiceProductComponent } from './Lead_Dropdown_Manage/Requirement_Profile/service-product/service-product.component';
 
 
 import { SharedDropdownTableComponent } from './Lead_Dropdown_Manage/shared-dropdown-table/shared-dropdown-table.component';
@@ -284,6 +288,19 @@ import { FollowUpCalendarComponent } from './follow-up-calendar/follow-up-calend
 		OperationsDashboardComponent,
 		Lead_ConfigComponent,
 		VerticalsComponent,
+		BranchComponent,
+		LDDepartmentComponent,
+		LDCompanySizeComponent,
+		DistrictComponent,
+		SourceComponent,
+		StateComponent,
+		LDDesignationComponent,
+		WorkflowComponent,
+		MarketSystemComponent,
+		PipelineStageComponent,
+		PulseComponent,
+		TargetStageComponent,
+		ServiceProductComponent,
 		LeadVerticalComponent,
 		LeadStateComponent,
 		LeadDistrictComponent,

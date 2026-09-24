@@ -1588,11 +1588,13 @@ export class LoginComponent implements OnInit {
 					}
 				);
 			} else {
-				this.issLoading = false;
-				this.cdr.detectChanges();
-				const dialogRef = this.dialogBox.open(DialogBox_Component, {
-					panelClass: "Dialogbox-Class",
-					data: { Message: "Invalid User Name/Password", Type: "3" },
+				this.ngZone.run(() => {
+					this.issLoading = false;
+					this.cdr.detectChanges();
+					const dialogRef = this.dialogBox.open(DialogBox_Component, {
+						panelClass: "Dialogbox-Class",
+						data: { Message: "Invalid User Name/Password", Type: "3" },
+					});
 				});
 			}
 		}
