@@ -353,3 +353,38 @@ table tr:last-child td:last-child,
   .crm-modal-footer { padding: 15px 20px; flex-direction: column; }
   .crm-btn-cancel, .crm-btn-save { width: 100%; }
 }
+
+
+/* --- Glassmorphism Utilities --- */
+
+/* Base glass panel */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1) !important;
+  border-radius: 16px;
+  color: inherit;
+}
+
+/* Dark glass panel (useful for dark themes or strong colored backgrounds) */
+.glass-panel-dark {
+  background: rgba(17, 25, 40, 0.65) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25) !important;
+  border-radius: 16px;
+  color: #fff !important;
+}
+
+/* Hover effects for glass panels if they are clickable/cards */
+.glass-card {
+  transition: all 0.3s ease;
+}
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+}
