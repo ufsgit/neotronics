@@ -330,7 +330,13 @@ $text-muted: #6b7688;
     text-overflow: ellipsis;
     color: #2b3550;
     cursor: pointer;
+    border: none;
     border-left: 3px solid $navy;
+    text-align: left;
+    width: 100%;
+    display: block;
+    font-family: inherit;
+    outline: none;
     
     &:hover {
       opacity: 0.9;

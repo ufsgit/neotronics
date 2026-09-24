@@ -172,7 +172,7 @@ import { FollowUpCalendarComponent } from './follow-up-calendar/follow-up-calend
 		MatSortModule,
 		MatIconModule,
 		MatMenuModule,
-		GoogleChartsModule,
+		GoogleChartsModule.forRoot('', 'current'),
 		MatSelectModule,
 		MatButtonModule,
 		MatDialogModule,

@@ -240,19 +240,19 @@
             (activityChartMode === 'daily' && !loadingDay) ||
             (activityChartMode === 'weekly' && !loadingWeek) ||
             (activityChartMode === 'monthly' && !loadingMonth); else flashLoader">
-            <google-chart *ngIf="activityChartMode === 'daily'"
+            <google-chart [hidden]="activityChartMode !== 'daily'"
               [type]="'LineChart'" 
               [data]="chartData.daily.data" 
               [options]="chartData.daily.options"
               style="width: 100%; height: 100%;">
             </google-chart>
-            <google-chart *ngIf="activityChartMode === 'weekly'"
+            <google-chart [hidden]="activityChartMode !== 'weekly'"
               [type]="'LineChart'" 
               [data]="chartData.weekly.data" 
               [options]="chartData.weekly.options"
               style="width: 100%; height: 100%;">
             </google-chart>
-            <google-chart *ngIf="activityChartMode === 'monthly'"
+            <google-chart [hidden]="activityChartMode !== 'monthly'"
               [type]="'LineChart'" 
               [data]="chartData.monthly.data" 
               [options]="chartData.monthly.options"

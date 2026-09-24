@@ -88,8 +88,12 @@ export class LeadDashboardV3Component implements OnInit {
 
     this.dashboardService.getPipeline().subscribe({
       next: (res: any) => {
-        this.pipelineData = res || [];
-        this.chartData.pipeline.data = this.pipelineData.length > 0 ? this.pipelineData.map(p => [p.Stage, p.Leads]) : [['No Data', 0]];
+        try {
+          this.pipelineData = Array.isArray(res) ? res : [];
+          this.chartData.pipeline.data = this.pipelineData.length > 0 ? this.pipelineData.map(p => [p.Stage, p.Leads]) : [['No Data', 0]];
+        } catch (e) {
+          console.warn('Pipeline chart data mapping error:', e);
+        }
         this.loadingPipeline = false;
       },
       error: (err) => { console.error('Error loading Pipeline', err); this.loadingPipeline = false; }
@@ -105,8 +109,12 @@ export class LeadDashboardV3Component implements OnInit {
 
     this.dashboardService.getActivityDay().subscribe({
       next: (res: any) => {
-        this.dayWiseActivity = res || [];
-        this.chartData.daily.data = this.dayWiseActivity.length > 0 ? this.dayWiseActivity.map((d: any) => [d.Date_Label, d.Activities]) : [['No Data', 0]];
+        try {
+          this.dayWiseActivity = Array.isArray(res) ? res : [];
+          this.chartData.daily.data = this.dayWiseActivity.length > 0 ? this.dayWiseActivity.map((d: any) => [d.Date_Label, d.Activities]) : [['No Data', 0]];
+        } catch (e) {
+          console.warn('Daily chart data mapping error:', e);
+        }
         this.loadingDay = false;
       },
       error: (err) => { console.error('Error loading Day Activity', err); this.loadingDay = false; }
@@ -114,8 +122,12 @@ export class LeadDashboardV3Component implements OnInit {
 
     this.dashboardService.getActivityWeek().subscribe({
       next: (res: any) => {
-        this.weekWiseActivity = res || [];
-        this.chartData.weekly.data = this.weekWiseActivity.length > 0 ? this.weekWiseActivity.map((w: any) => [w.Date_Label, w.Activities]) : [['No Data', 0]];
+        try {
+          this.weekWiseActivity = Array.isArray(res) ? res : [];
+          this.chartData.weekly.data = this.weekWiseActivity.length > 0 ? this.weekWiseActivity.map((w: any) => [w.Date_Label, w.Activities]) : [['No Data', 0]];
+        } catch (e) {
+          console.warn('Weekly chart data mapping error:', e);
+        }
         this.loadingWeek = false;
       },
       error: (err) => { console.error('Error loading Week Activity', err); this.loadingWeek = false; }
@@ -123,8 +135,12 @@ export class LeadDashboardV3Component implements OnInit {
 
     this.dashboardService.getActivityMonth().subscribe({
       next: (res: any) => {
-        this.monthWiseActivity = res || [];
-        this.chartData.monthly.data = this.monthWiseActivity.length > 0 ? this.monthWiseActivity.map((m: any) => [m.Date_Label, m.Activities]) : [['No Data', 0]];
+        try {
+          this.monthWiseActivity = Array.isArray(res) ? res : [];
+          this.chartData.monthly.data = this.monthWiseActivity.length > 0 ? this.monthWiseActivity.map((m: any) => [m.Date_Label, m.Activities]) : [['No Data', 0]];
+        } catch (e) {
+          console.warn('Monthly chart data mapping error:', e);
+        }
         this.loadingMonth = false;
       },
       error: (err) => { console.error('Error loading Month Activity', err); this.loadingMonth = false; }

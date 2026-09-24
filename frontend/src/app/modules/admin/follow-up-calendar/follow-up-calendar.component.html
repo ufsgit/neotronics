@@ -83,6 +83,7 @@
           <th>Status / Stage</th>
           <th>Priority</th>
           <th>Contact Person</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -93,6 +94,11 @@
           <td>{{ row ? row.status : '' }}</td>
           <td>{{ row ? row.priority : '' }}</td>
           <td>{{ row ? row.contact : '' }}</td>
+          <td>
+            <button *ngIf="row" class="ig-icon-btn ig-action-blue" (click)="openFollowUp(row)" title="Follow Up" style="border: none; background: transparent; cursor: pointer; color: #3b82f6; display: flex; align-items: center; justify-content: center;">
+              <i class="material-icons">event_available</i>
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -116,9 +122,9 @@
              [class.is-today]="isToday(day)">
           <div class="day-number">{{ day.getDate() }}</div>
           <div class="day-events" *ngIf="getFollowUpsForDate(day).length as count">
-            <div class="day-event count-event" (click)="openLeadsModal(day)">
+            <button type="button" class="day-event count-event" (click)="openLeadsModal(day)">
               {{ count }} Lead{{ count > 1 ? 's' : '' }}
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -140,6 +146,7 @@
               <th>Status / Stage</th>
               <th>Priority</th>
               <th>Contact Person</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -149,6 +156,11 @@
               <td>{{ f.status }}</td>
               <td>{{ f.priority }}</td>
               <td>{{ f.contact }}</td>
+              <td>
+                <button class="ig-icon-btn ig-action-blue" (click)="openFollowUp(f)" title="Follow Up" style="border: none; background: transparent; cursor: pointer; color: #3b82f6; display: flex; align-items: center; justify-content: center;">
+                  <i class="material-icons">event_available</i>
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -156,4 +168,42 @@
     </div>
   </div>
 
+  <div class="ig-cf-overlay" *ngIf="FollowUp_Popup_Open" (click)="FollowUp_Popup_Open = false" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+    <div class="ig-cf-popup" style="max-width: 800px; width: 90%; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" (click)="$event.stopPropagation()">
+      <div class="ig-cf-popup-header" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #e2e8f0;">
+        <div>
+          <p class="ig-cf-popup-lead" style="margin: 0; font-size: 16px; font-weight: 600; color: #1e293b;">Follow Up</p>
+          <p class="ig-cf-popup-sub" style="margin: 4px 0 0; font-size: 13px; color: #64748b;">{{ Selected_Lead_For_FollowUp?.Lead_Name }}</p>
+        </div>
+        <button class="ig-cf-close" (click)="FollowUp_Popup_Open = false" style="background: transparent; border: none; cursor: pointer; color: #64748b;">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+
+      <div class="ig-cf-popup-body" style="padding: 20px;">
+        <app-lead-assignment
+          *ngIf="FollowUp_Popup_Open"
+          [lead]="Selected_Lead_For_FollowUp"
+          [dropdownData]="DropdownData"
+          [isViewMode]="false"
+          [isPopup]="true"
+          [(selectedPipelineStage)]="Selected_Pipeline_Stage"
+          [(selectedPulse)]="Selected_Pulse"
+          (searchDropdown)="onSearchDropdown($event.type, $event.search, $event.id)"
+          (loadMoreDropdown)="onLoadMoreDropdown($event.type, $event.id)"
+          (locationChange)="Location_Change()"
+          (departmentChange)="Department_Change()">
+        </app-lead-assignment>
+        
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; align-items: center;">
+          <span *ngIf="issLoading" style="font-size: 13px; color: #64748b;">Saving...</span>
+          <button type="button" class="ig-btn-cancel" (click)="FollowUp_Popup_Open = false" [disabled]="issLoading" style="padding: 8px 16px; border-radius: 4px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer;">Cancel</button>
+          <button type="button" class="ig-btn-save" (click)="Save_FollowUp()" [disabled]="issLoading" style="padding: 8px 16px; border-radius: 4px; border: none; background: #3b82f6; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+            <i class="material-icons" style="font-size: 18px;">{{ issLoading ? 'hourglass_empty' : 'save' }}</i>
+            {{ issLoading ? 'Saving...' : 'Save Assignment' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
