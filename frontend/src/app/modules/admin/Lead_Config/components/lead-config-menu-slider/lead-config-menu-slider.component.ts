@@ -26,7 +26,7 @@ export class LeadConfigMenuSliderComponent implements OnInit {
   ];
 
   subTabs: { [key: string]: string[] } = {
-    'Company Details': ['Vertical', 'State', 'District', 'Company Size', 'Source'],
+    'Company Details': ['Deal Type', 'Vertical', 'State', 'District', 'Company Size', 'Source'],
     'Contacts': ['Designation'],
     'Requirement Profile': ['Service/Product'],
     'Market Study': ['Market System'],

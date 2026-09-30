@@ -1,0 +1,88 @@
+<!-- Loading Overlay -->
+<div *ngIf="issLoading" class="ig-overlay">
+  <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value" diameter="36"></mat-progress-spinner>
+</div>
+
+<div class="ig-page">
+
+  <!-- ── HEADER ── -->
+  <div class="ig-header">
+    <div>
+      <h1 class="ig-title">Deal Type</h1>
+      <p class="ig-subtitle">Manage deal types for leads and opportunities</p>
+    </div>
+    <button mat-button class="ig-btn-add" type="button" (click)="New_Deal_Type()" *ngIf="!Entry_View">
+      <i class="material-icons">add</i> Add Deal Type
+    </button>
+  </div>
+
+  <!-- ── ENTRY FORM ── -->
+  <div class="ig-form-card" *ngIf="Entry_View">
+    <p class="ig-form-label">{{ Deal_Type_.Deal_Type_Id > 0 ? 'Edit Deal Type' : 'New Deal Type' }}</p>
+    <div class="ig-form-row">
+      <div class="ig-field">
+        <label class="ig-label">Deal Type Name <span class="ig-req">*</span></label>
+        <input
+          type="text"
+          class="ig-input"
+          [(ngModel)]="Deal_Type_.Deal_Type_Name"
+          maxlength="100"
+          placeholder="Enter deal type name"
+          autocomplete="off"
+        />
+      </div>
+      <div class="ig-form-actions">
+        <button class="ig-btn-cancel" type="button" (click)="New_Deal_Type()">Cancel</button>
+        <button class="ig-btn-save" type="button" (click)="Save_Deal_Type()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEARCH ── -->
+  <div class="ig-search-bar" *ngIf="!Entry_View">
+    <div class="ig-search-wrap">
+      <i class="material-icons">search</i>
+      <input
+        type="text"
+        class="ig-search-input"
+        [(ngModel)]="Search_Name"
+        placeholder="Search deal type…"
+        (keyup.enter)="Search_Deal_Type()"
+      />
+    </div>
+    <span class="ig-count">{{ Total_Entries }} {{ Total_Entries === 1 ? 'record' : 'records' }}</span>
+  </div>
+
+  <!-- ── TABLE ── -->
+  <div class="ig-table-card" *ngIf="!Entry_View">
+    <div class="ig-table-wrap">
+      <table class="ig-table">
+        <thead>
+          <tr>
+            <th class="ig-th ig-th-no">#</th>
+            <th class="ig-th">Deal Type Name</th>
+            <th class="ig-th ig-th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let dt of Deal_Type_Data; let i = index" class="ig-tr">
+            <td class="ig-td ig-td-no">{{ i + 1 }}</td>
+            <td class="ig-td ig-td-name">{{ dt.Deal_Type_Name }}</td>
+            <td class="ig-td ig-td-actions">
+              <button class="ig-icon-btn ig-edit" (click)="Edit_Deal_Type(dt, i)" title="Edit">
+                <i class="material-icons">edit</i>
+              </button>
+              <button class="ig-icon-btn ig-delete" (click)="Delete_Deal_Type(dt.Deal_Type_Id, i)" title="Delete">
+                <i class="material-icons">delete_outline</i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="Deal_Type_Data?.length === 0">
+            <td colspan="3" class="ig-empty">No records found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

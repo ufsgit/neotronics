@@ -92,6 +92,7 @@ import { OperationsDashboardComponent } from './operations-dashboard/operations-
 import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
 import { MarketStudyFieldsComponent } from './Lead_Config/Market_Study/MarketStudyFields/market-study-fields.component';
 import { Register_LeadComponent } from "./Register_Lead/Register_Lead.component";
+import { Deal_TypeComponent } from './Deal_Type/Deal_Type.component';
 
 export const AdminRoutes: Routes = [
 	{
@@ -181,6 +182,7 @@ export const AdminRoutes: Routes = [
 			{ path: "User_Type", component: User_TypeComponent },
 			{ path: "Working_Status", component: Working_StatusComponent },
 			{ path: "Company_Size", component: Company_SizeComponent },
+			{ path: "Deal_Type", component: Deal_TypeComponent },
 			{ path: "Quotation_Confirmation", component: Quotation_ConfirmationComponent },
 			{ path: "Department", component: DepartmentComponent },
 			{ path: "DepartmentStatus", component: DepartmentStatusComponent },

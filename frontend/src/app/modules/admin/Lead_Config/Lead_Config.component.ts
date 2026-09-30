@@ -71,7 +71,7 @@ export class Lead_ConfigComponent implements OnInit {
   ];
 
   subTabs: { [key: string]: string[] } = {
-    'Company Details': ['Vertical', 'State', 'District', 'Company Size', 'Source'],
+    'Company Details': ['Deal Type', 'Vertical', 'State', 'District', 'Company Size', 'Source'],
     'Contacts': ['Designation'],
     'Requirement Profile': ['Service/Product'],
     'Market Study': ['Market System'],
@@ -93,6 +93,7 @@ export class Lead_ConfigComponent implements OnInit {
       'District': 'Lead_Config/company_details/district',
       'Company Size': 'Lead_Config/company_details/company_size',
       'Source': 'Lead_Config/company_details/source',
+      'Deal Type': 'Lead_Config/company_details/deal_type',
       'Designation': 'Lead_Config/contacts/designation',
       'Service/Product': 'Lead_Config/requirement_profile/service_product',
       'Market System': 'Lead_Config/market_study/market_system',
@@ -113,6 +114,7 @@ export class Lead_ConfigComponent implements OnInit {
       'District': 'District_Id',
       'Company Size': 'Company_Size_Id',
       'Source': 'Source_Id',
+      'Deal Type': 'Deal_Type_Id',
       'Designation': 'Designation_Id',
       'Service/Product': 'Service_Product_Id',
       'Market System': 'Market_System_Id',
@@ -133,6 +135,7 @@ export class Lead_ConfigComponent implements OnInit {
       'District': 'District_Name',
       'Company Size': 'Company_Size_Name',
       'Source': 'Source_Name',
+      'Deal Type': 'Deal_Type_Name',
       'Designation': 'Designation_Name',
       'Service/Product': 'Service_Product_Name',
       'Market System': 'Market_System_Name',

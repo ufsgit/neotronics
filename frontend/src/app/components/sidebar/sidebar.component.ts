@@ -224,6 +224,24 @@ Menus:any[];
       Menu_Type: true,
     });
   }
+
+  private ensureDealTypeMenuItem() {
+    if (!Array.isArray(this.menuItems)) this.menuItems = [];
+    const exists = this.menuItems.some((m: any) => (m && (m.path === '/Deal_Type' || m.path === 'Deal_Type')));
+    if (exists) return;
+    this.menuItems.push({
+      path: '/Deal_Type',
+      title: 'Deal Type',
+      icon: 'handshake',
+      class: '',
+      Menu_Id: '0',
+      View: 'true',
+      Save: 'true',
+      Edit: 'true',
+      Delete: 'true',
+      Menu_Type: true,
+    });
+  }
   constructor(
     public userData: UserData,
     public router: Router,
@@ -239,6 +257,7 @@ Menus:any[];
     this.ensureDesignationMenuItem();
     this.ensureCompanySizeMenuItem();
     this.ensureQuotationConfirmationMenuItem();
+    this.ensureDealTypeMenuItem();
   }
 
   ngOnInit() {
@@ -257,6 +276,7 @@ this.ensureVerticalMenuItem();
 this.ensureDesignationMenuItem();
 this.ensureCompanySizeMenuItem();
 this.ensureQuotationConfirmationMenuItem();
+this.ensureDealTypeMenuItem();
   }
 
   isMobileMenu() {

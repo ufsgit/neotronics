@@ -263,6 +263,7 @@ app.use('/Lead_Config/company_details/state', require('./routes/Lead_Config/comp
 app.use('/Lead_Config/company_details/district', require('./routes/Lead_Config/company_details/district'));
 app.use('/Lead_Config/company_details/company_size', require('./routes/Lead_Config/company_details/company_size'));
 app.use('/Lead_Config/company_details/source', require('./routes/Lead_Config/company_details/source'));
+app.use('/Lead_Config/company_details/deal_type', require('./routes/Lead_Config/Company_Details/deal_type'));
 
 app.use('/Lead_Config/contacts/designation', require('./routes/Lead_Config/contacts/designation'));
 app.use('/Lead_Config/requirement_profile/service_product', require('./routes/Lead_Config/requirement_profile/service_product'));
