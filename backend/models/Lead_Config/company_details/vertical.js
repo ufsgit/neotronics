@@ -6,10 +6,12 @@ var Vertical = {
         var verticalId   = Number(body.Vertical_Id || 0);
         var verticalName = (body.Vertical_Name || '').trim();
         var description  = body.Description || '';
+        var dealTypeId   = body.Deal_Type_Id ? Number(body.Deal_Type_Id) : null;
+        var dealTypeName = body.Deal_Type_Name || null;
 
         return db.query(
-            'CALL LC_Vertical_Save(?, ?, ?)',
-            [verticalId || null, verticalName, description],
+            'CALL LC_Vertical_Save(?, ?, ?, ?, ?)',
+            [verticalId || null, verticalName, description, dealTypeId, dealTypeName],
             callback
         );
     },

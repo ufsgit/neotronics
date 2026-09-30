@@ -15,6 +15,7 @@ export class Lead_ConfigComponent implements OnInit {
   isSidebarOpen: boolean = true;
   issLoading: boolean = false;
   Dropdown_Data: any[] = [];
+  dealTypesList: any[] = [];
   
   pageIndex: number = 1;
   pageSize: number = 10;
@@ -44,6 +45,7 @@ export class Lead_ConfigComponent implements OnInit {
     Stage_Type?: number;
     Followup_Required?: number;
     Color?: string;
+    Deal_Type_Id?: number;
   } = {
     id: 0,
     name: '',
@@ -52,7 +54,8 @@ export class Lead_ConfigComponent implements OnInit {
     isGhosting: 0,
     Stage_Type: 0,
     Followup_Required: 1,
-    Color: '#3b82f6'
+    Color: '#3b82f6',
+    Deal_Type_Id: null
   };
   
   columns = [
@@ -84,6 +87,24 @@ export class Lead_ConfigComponent implements OnInit {
 
   ngOnInit() {
     this.selectSubTab(this.activeSubTab);
+  }
+
+  loadDealTypes() {
+    const url = environment.BasePath + 'Lead_Config/company_details/deal_type/Search';
+    const options: any = { params: { search: '' }, ...this.getAuthHeaders() };
+    this.http.get(url, options).subscribe(
+      (res: any) => {
+        let list: any[] = [];
+        if (res && Array.isArray(res)) list = res;
+        else if (res && Array.isArray(res[0])) list = res[0];
+        
+        this.dealTypesList = list.map(item => ({
+          id: item.Deal_Type_Id || item.id,
+          name: item.Deal_Type_Name || item.name
+        }));
+      },
+      (error) => console.error('Error fetching deal types:', error)
+    );
   }
 
   getRoutePathForSubTab(tab: string): string {
@@ -199,7 +220,9 @@ export class Lead_ConfigComponent implements OnInit {
             Stage_Type_Label: (item.Stage_Type == 1) ? 'won' : (item.Stage_Type == 2) ? 'lost' : 'normal',
             Followup_Required: rawFollowup,
             Followup_Required_Label: (rawFollowup === 0) ? 'No' : 'Yes',
-            Color: item.Color || '#3b82f6'
+            Color: item.Color || '#3b82f6',
+            Deal_Type_Id: item.Deal_Type_Id || null,
+            Deal_Type_Name: item.Deal_Type_Name || ''
           };
         });
         
@@ -235,7 +258,8 @@ export class Lead_ConfigComponent implements OnInit {
       isGhosting: 0,
       Stage_Type: 0,
       Followup_Required: 1,
-      Color: '#3b82f6'
+      Color: '#3b82f6',
+      Deal_Type_Id: null
     };
     this.isModalOpen = true;
   }
@@ -252,7 +276,8 @@ export class Lead_ConfigComponent implements OnInit {
       isGhosting: item.isGhosting,
       Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 0,
       Followup_Required: item.Followup_Required !== undefined && item.Followup_Required !== null ? Number(item.Followup_Required) : 1,
-      Color: item.Color || '#3b82f6'
+      Color: item.Color || '#3b82f6',
+      Deal_Type_Id: item.Deal_Type_Id || null
     };
     this.isModalOpen = true;
   }
@@ -273,6 +298,12 @@ export class Lead_ConfigComponent implements OnInit {
     body[pk] = this.formData.id;
     body[nameField] = this.formData.name.trim();
     body.Description = this.formData.description;
+    
+    if (this.activeSubTab === 'Vertical') {
+      body.Deal_Type_Id = this.formData.Deal_Type_Id;
+      const selectedDealType = this.dealTypesList.find(dt => dt.id === this.formData.Deal_Type_Id);
+      body.Deal_Type_Name = selectedDealType ? selectedDealType.name : '';
+    }
     
     if (this.activeSubTab === 'Market System') {
       body.IsActive = this.formData.IsActive ? 1 : 0;
@@ -407,6 +438,13 @@ export class Lead_ConfigComponent implements OnInit {
         { key: 'name', label: 'Name' },
         { key: 'isGhosting', label: 'Status' }
       ];
+    } else if (tab === 'Vertical') {
+      this.columns = [
+        { key: 'name', label: 'Name' },
+        { key: 'Deal_Type_Name', label: 'Deal Type' },
+        { key: 'Description', label: 'Description' }
+      ];
+      this.loadDealTypes();
     } else if (this.hasDescription(tab)) {
       this.columns = [
         { key: 'name', label: 'Name' },
