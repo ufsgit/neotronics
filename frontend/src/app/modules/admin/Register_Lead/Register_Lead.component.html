@@ -59,6 +59,11 @@
               bindLabel="name" bindValue="id" placeholder="Select Vertical"
               (search)="onSearchDropdown('Vertical', $event)" (loadMore)="onLoadMoreDropdown('Vertical')">
             </app-searchable-dropdown>
+            <div *ngIf="Lead_.Vertical" style="margin-top: 5px; font-size: 13px; color: #1e293b; font-weight: 500; display: flex; align-items: center; gap: 4px;">
+              <i class="material-icons" style="font-size: 16px; color: #64748b;">label_important</i>
+              <span style="color: #64748b;">Deal Type:</span> 
+              <span style="color: #3b82f6;">{{ getDealTypeName(Lead_.Vertical) || 'None' }}</span>
+            </div>
           </div>
           <div class="ig-field">
             <label class="ig-label">Address</label>

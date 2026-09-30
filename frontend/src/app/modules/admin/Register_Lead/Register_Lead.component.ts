@@ -1338,6 +1338,14 @@ export class Register_LeadComponent implements OnInit {
     return v ? v.Vertical_Name : '';
   }
 
+  getDealTypeName(id: number): string {
+    if (!id) return '';
+    // Check in DropdownData first since it contains the mapped 'id' and 'Deal_Type_Name'
+    let list = this.DropdownData['Vertical'] || this.Vertical_Data || [];
+    const v = list.find((x: any) => Number(x.id || x.Vertical_Id) === Number(id));
+    return v && v.Deal_Type_Name ? v.Deal_Type_Name : '';
+  }
+
   onEnquiryForChange() {
     this.Lead_.Enquiry_For = this.Selected_Enquiry_For.join(',');
   }
@@ -1485,7 +1493,10 @@ export class Register_LeadComponent implements OnInit {
     (Lead_Copy as any).Workflow_Start_Status = (this.Lead_ as any).Workflow_Start_Status ? 1 : 0;
 
     // Map Name fields from IDs
-    Lead_Copy.Vertical_Name = this.DropdownData['Vertical'] ? (this.DropdownData['Vertical'].find(x => x.id == Lead_Copy.Vertical) || {}).name || '' : '';
+    const vertObj = this.DropdownData['Vertical'] ? this.DropdownData['Vertical'].find(x => x.id == Lead_Copy.Vertical) : null;
+    Lead_Copy.Vertical_Name = vertObj ? vertObj.name || '' : '';
+    (Lead_Copy as any).Deal_Type_Id = vertObj && vertObj.Deal_Type_Id ? vertObj.Deal_Type_Id : null;
+    (Lead_Copy as any).Deal_Type_Name = vertObj && vertObj.Deal_Type_Name ? vertObj.Deal_Type_Name : null;
     Lead_Copy.State_Name = this.DropdownData['State'] ? (this.DropdownData['State'].find(x => x.id == Lead_Copy.State) || {}).name || '' : '';
     Lead_Copy.District_Name = this.DropdownData['District'] ? (this.DropdownData['District'].find(x => x.id == Lead_Copy.District) || {}).name || '' : '';
     Lead_Copy.Company_Size_Name = this.DropdownData['CompanySize'] ? (this.DropdownData['CompanySize'].find(x => x.id == Lead_Copy.Company_Size_Id) || {}).name || '' : '';
@@ -1705,7 +1716,7 @@ export class Register_LeadComponent implements OnInit {
       });
     }
     // Pre-populate dropdown data so they can display the selected text without an API call
-    this.DropdownData['Vertical'] = this.Lead_.Vertical ? [{ id: this.Lead_.Vertical, name: this.Lead_.Vertical_Name }] : [];
+    this.DropdownData['Vertical'] = this.Lead_.Vertical ? [{ id: this.Lead_.Vertical, name: this.Lead_.Vertical_Name, Deal_Type_Id: (this.Lead_ as any).Deal_Type_Id, Deal_Type_Name: (this.Lead_ as any).Deal_Type_Name }] : [];
     this.DropdownData['State'] = this.Lead_.State ? [{ id: this.Lead_.State, name: this.Lead_.State_Name }] : [];
     if (this.Lead_.State) {
       if (this.Lead_.District) {
