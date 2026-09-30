@@ -3866,6 +3866,8 @@ BEGIN
         Lead_Type,
         Vertical,
         Vertical_Name,
+        Deal_Type_Id,
+        Deal_Type_Name,
         Address,
         State,
         State_Name,
@@ -7651,7 +7653,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Get`(
     IN p_Vertical_Id INT
 )
 BEGIN
-    SELECT Vertical_Id, Vertical_Name, Description
+    SELECT Vertical_Id, Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name
     FROM Vertical
     WHERE Vertical_Id = p_Vertical_Id
       AND IFNULL(DeleteStatus, 0) = 0;
@@ -7662,7 +7664,9 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Save`(
     IN p_Vertical_Id INT,
     IN p_Vertical_Name VARCHAR(255),
-    IN p_Description TEXT
+    IN p_Description TEXT,
+    IN p_Deal_Type_Id INT,
+    IN p_Deal_Type_Name VARCHAR(255)
 )
 BEGIN
     DECLARE v_Exists INT DEFAULT 0;
@@ -7681,14 +7685,16 @@ BEGIN
             -- Update existing record
             UPDATE Vertical
             SET Vertical_Name = p_Vertical_Name,
-                Description   = p_Description
+                Description   = p_Description,
+                Deal_Type_Id  = p_Deal_Type_Id,
+                Deal_Type_Name = p_Deal_Type_Name
             WHERE Vertical_Id = p_Vertical_Id;
 
             SELECT p_Vertical_Id AS Vertical_Id_, 'Saved Successfully' AS Message;
         ELSE
             -- Insert new record
-            INSERT INTO Vertical (Vertical_Name, Description, DeleteStatus)
-            VALUES (p_Vertical_Name, p_Description, 0);
+            INSERT INTO Vertical (Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name, DeleteStatus)
+            VALUES (p_Vertical_Name, p_Description, p_Deal_Type_Id, p_Deal_Type_Name, 0);
 
             SELECT LAST_INSERT_ID() AS Vertical_Id_, 'Saved Successfully' AS Message;
         END IF;
@@ -7702,13 +7708,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Search`(
 )
 BEGIN
     IF p_Search IS NULL OR p_Search = '' THEN
-        SELECT Vertical_Id, Vertical_Name, Description
+        SELECT Vertical_Id, Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name
         FROM Vertical
         WHERE IFNULL(DeleteStatus, 0) = 0
         ORDER BY Vertical_Name ASC
         LIMIT 20;
     ELSE
-        SELECT Vertical_Id, Vertical_Name, Description
+        SELECT Vertical_Id, Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name
         FROM Vertical
         WHERE Vertical_Name LIKE CONCAT('%', p_Search, '%')
           AND IFNULL(DeleteStatus, 0) = 0
@@ -15191,9 +15197,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     IN _Lead_Id INT,
     IN _Lead_Name VARCHAR(100),
     IN _Lead_Type INT,
-    IN _Vertical INT,
+	IN _Vertical INT,
     IN _Vertical_Name VARCHAR(100),
+    IN _Deal_Type_Id INT,           
+    IN _Deal_Type_Name VARCHAR(255),
     IN _Address VARCHAR(1000),
+
+  
     IN _State INT,
     IN _State_Name VARCHAR(100),
     IN _District INT,
@@ -15300,7 +15310,9 @@ BEGIN
     IF _Lead_Id = 0 THEN
 
         INSERT INTO `lead` (
-            Lead_Name, Lead_Type, Vertical, Vertical_Name, Address, State, State_Name, District, District_Name,
+             
+            Lead_Name, Lead_Type, Vertical, Vertical_Name, Deal_Type_Id, Deal_Type_Name, Address, State, State_Name, District, District_Name,
+
             Company_Size_Id, Company_Size_Name, Source, Source_Name, 
             POC_Full_Name, POC_Designation_Id, POC_Designation, POC_Direct_Mobile, POC_Email, 
             POC_State_Id, POC_State, POC_Location_Id, POC_Loc, POC_Work_Phone, POC_Office_Type,
@@ -15315,8 +15327,9 @@ BEGIN
             Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name, 
             Target_Stage_Id, Target_Stage_Name,
             Workflow_Id, Workflow, Workflow_Start_Status
-        ) VALUES (
-            _Lead_Name, _Calculated_Lead_Type, _Vertical, _Vertical_Name, _Address, _State, _State_Name, _District, _District_Name,
+        )          VALUES (
+            _Lead_Name, _Calculated_Lead_Type, _Vertical, _Vertical_Name, _Deal_Type_Id, _Deal_Type_Name, _Address, _State, _State_Name, _District, _District_Name,
+
             _Company_Size_Id, _Company_Size_Name, _Source, _Source_Name, 
             _POC_Full_Name, _POC_Designation_Id, _POC_Designation, _POC_Direct_Mobile, _POC_Email,
             _POC_State_Id, _POC_State, _POC_Location_Id, _POC_Loc, _POC_Work_Phone, _POC_Office_Type,
@@ -15400,10 +15413,12 @@ BEGIN
         
     ELSE
 
-        UPDATE `lead`
+               UPDATE `lead`
         SET 
             Lead_Name = _Lead_Name, Lead_Type = _Calculated_Lead_Type, Vertical = _Vertical, Vertical_Name = _Vertical_Name,
+            Deal_Type_Id = _Deal_Type_Id, Deal_Type_Name = _Deal_Type_Name,
             Address = _Address, State = _State, State_Name = _State_Name, District = _District, District_Name = _District_Name,
+
             Company_Size_Id = _Company_Size_Id, Company_Size_Name = _Company_Size_Name, Source = _Source, Source_Name = _Source_Name, 
             POC_Full_Name = _POC_Full_Name, POC_Designation_Id = _POC_Designation_Id, POC_Designation = _POC_Designation,
             POC_Direct_Mobile = _POC_Direct_Mobile, POC_Email = _POC_Email, POC_State_Id = _POC_State_Id, POC_State = _POC_State,
@@ -28970,11 +28985,16 @@ BEGIN
         ORDER BY District_Name 
         LIMIT v_Limit OFFSET v_Offset;
         
-    ELSEIF p_Type = 'Vertical' THEN
-        SELECT Vertical_Id AS id, Vertical_Name AS name FROM Vertical 
+       ELSEIF p_Type = 'Vertical' THEN
+        SELECT Vertical_Id AS id, 
+               Vertical_Name AS name,
+               Deal_Type_Id,
+               Deal_Type_Name
+        FROM Vertical 
         WHERE Vertical_Name LIKE p_Search 
         ORDER BY Vertical_Name 
         LIMIT v_Limit OFFSET v_Offset;
+
         
     ELSEIF p_Type = 'CompanySize' THEN
         SELECT Company_Size_Id AS id, Company_Size_Name AS name FROM Company_Size 
