@@ -6,17 +6,16 @@
 export const environment = {
 	production: false,
 
+	BasePath: "http://localhost:3502/",
+	FilePath: "http://localhost:3502/uploads/",
+
+	// BasePath: "https://neotronicsapi.trackbox.live/",
+	// FilePath: "https://neotronicsapi.trackbox.live/uploads/",
+
 	// BasePath: 'http://Localhost:3502/',
 	// BasePath:"https://a382-103-214-232-130.ngrok-free.app",
 	// // FilePath: "https://reserpapi.trackbox.in/uploads/",
-	BasePath: "http://localhost:3502/",
-	FilePath: "http://localhost:3502/uploads/",
-	// BasePath: "https://neotronicsapi.trackbox.live/",
-	
-	// FilePath: "https://neotronicsapi.trackbox.live/uploads/",
-	
 
- 
 	// 	BasePath: "https://perfecthillsapi.trackbox.net.in/",
 	// FilePath: "https://perfecthillsapi.trackbox.net.in/uploads/"
 

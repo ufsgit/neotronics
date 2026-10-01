@@ -1,11 +1,18 @@
 export const environment = {
 	production: true,
+
+	BasePath: "http://localhost:3502/",
+	FilePath: "http://localhost:3502/uploads/",
+
+	// BasePath: "https://neotronicsapi.trackbox.live/",
+	// FilePath: "https://neotronicsapi.trackbox.live/uploads/",
+
 	// BasePath: 'http://adatdemo7629api.trackbox.co.in:3532/'adatdemoapi.trackbox.co.in
 	// BasePath: "https://reserpapi.trackbox.in/",
 	// FilePath: "https://reserpapi.trackbox.in/uploads/",
-	BasePath: "http://localhost:3502/",
+	// BasePath: "http://localhost:3502/",
 	// BasePath: "https://neotronicsapi.trackbox.live/",
-	FilePath: "http://localhost:3502/uploads/",
+	// FilePath: "http://localhost:3502/uploads/",
 	// FilePath: "https://neotronicsapi.trackbox.live/uploads/",
 
 	// Cloudflare R2 / AWS S3 Configuration
