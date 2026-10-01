@@ -166,6 +166,7 @@ import { LeadDashboardV2Component } from './lead-dashboard-v2/lead-dashboard-v2.
 import { LeadDashboardV3Component } from './lead-dashboard-v3/lead-dashboard-v3.component';
 import { FollowUpCalendarComponent } from './follow-up-calendar/follow-up-calendar.component';
 import { Deal_TypeComponent } from './Deal_Type/Deal_Type.component';
+import { ActivityLogsComponent } from './activity-logs/activity-logs.component';
 
 @NgModule({
 	imports: [
@@ -324,6 +325,7 @@ import { Deal_TypeComponent } from './Deal_Type/Deal_Type.component';
 		LeadDashboardV2Component,
 		LeadDashboardV3Component,
 		FollowUpCalendarComponent,
+		ActivityLogsComponent,
 	],
 	providers: [ChatService, DecimalPipe],
 	bootstrap: [],

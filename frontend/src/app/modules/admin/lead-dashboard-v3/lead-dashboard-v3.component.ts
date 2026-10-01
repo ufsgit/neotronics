@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { DashboardV3_Service } from '../../../services/DashboardV3.Service';
 
 @Component({
@@ -71,7 +72,7 @@ export class LeadDashboardV3Component implements OnInit {
     }
   };
 
-  constructor(private dashboardService: DashboardV3_Service) { }
+  constructor(private dashboardService: DashboardV3_Service, private router: Router) { }
 
   ngOnInit(): void {
     this.fetchDashboardData();
@@ -145,6 +146,29 @@ export class LeadDashboardV3Component implements OnInit {
       },
       error: (err) => { console.error('Error loading Month Activity', err); this.loadingMonth = false; }
     });
+  }
+
+  goToLeadListing(stageId: number, stageName: string) {
+    if (stageId === undefined || stageId === null) return;
+    this.router.navigate(['/Lead'], { queryParams: { stageId: stageId, stage: stageName } });
+  }
+
+  onPipelineChartSelect(event: any) {
+    let rowIndex: number | undefined | null = null;
+    
+    // Check various google chart event payload structures depending on library version
+    if (event && typeof event.row === 'number') {
+      rowIndex = event.row;
+    } else if (event && event.selection && event.selection.length > 0) {
+      rowIndex = event.selection[0].row;
+    } else if (Array.isArray(event) && event.length > 0 && typeof event[0].row === 'number') {
+      rowIndex = event[0].row;
+    }
+
+    if (rowIndex !== undefined && rowIndex !== null && this.pipelineData[rowIndex]) {
+      const stage = this.pipelineData[rowIndex];
+      this.goToLeadListing(stage.Status_Id, stage.Stage);
+    }
   }
 
 }

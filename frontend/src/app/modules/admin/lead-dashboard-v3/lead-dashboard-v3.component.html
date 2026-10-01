@@ -82,7 +82,7 @@
                 <tr *ngIf="pipelineData.length === 0">
                   <td colspan="2" class="text-center text-muted">No Data Found</td>
                 </tr>
-                <tr *ngFor="let stage of pipelineData">
+                <tr *ngFor="let stage of pipelineData" (click)="goToLeadListing(stage.Status_Id, stage.Stage)" style="cursor: pointer;" class="pipeline-row">
                   <td>{{ stage.Stage }}</td>
                   <td class="text-end">{{ stage.Leads }}</td>
                 </tr>
@@ -98,7 +98,8 @@
               [type]="'PieChart'" 
               [data]="chartData.pipeline.data" 
               [options]="chartData.pipeline.options"
-              style="width: 100%; height: 100%;">
+              style="width: 100%; height: 100%; cursor: pointer;"
+              (select)="onPipelineChartSelect($event)">
             </google-chart>
           </ng-container>
         </div>

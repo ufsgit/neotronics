@@ -29,7 +29,7 @@ export class Lead_Service {
     return this.http.get(environment.BasePath + 'Lead/Get_Leads/', { params: { _t: Date.now().toString() } });
   }
 
-  Get_NewLeads(search: string = '', industry: number = 0, designation: number = 0, district: number = 0, priority: string = '', page: number = 1, limit: number = 20, lead_type: number = 0, pipeline_stage: number = 0): Observable<any> {
+  Get_NewLeads(search: string = '', industry: number = 0, designation: number = 0, district: number = 0, priority: string = '', page: number = 1, limit: number = 20, lead_type: number = 0, pipeline_stage: number = 0, pipeline_stage_name: string = ''): Observable<any> {
     return this.http.get(environment.BasePath + 'Lead/Get_NewLeads/', {
       params: {
         search,
@@ -41,6 +41,7 @@ export class Lead_Service {
         limit: limit.toString(),
         lead_type: lead_type.toString(),
         pipeline_stage: pipeline_stage.toString(),
+        pipeline_stage_name: pipeline_stage_name,
         _t: Date.now().toString()
       }
     });
@@ -192,7 +193,13 @@ export class Lead_Service {
     let params: any = { limit: limit.toString(), offset: offset.toString(), _t: Date.now().toString() };
     if (search) params.search = search;
     if (is_current !== null) params.is_current = is_current.toString();
-    
+
     return this.http.get(environment.BasePath + 'Ghosting/Get_Ghosting_Register/', { params });
+  }
+
+  Get_Activity_Logs_Summary(): Observable<any> {
+    return this.http.get(environment.BasePath + 'Lead/Get_Activity_Logs_Summary/', {
+      params: { _t: Date.now().toString() }
+    });
   }
 }

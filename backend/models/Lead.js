@@ -374,37 +374,37 @@ var Lead = {
         const intOrNull = v => (v === '' || v === null || v === undefined) ? null : (isNaN(Number(v)) ? null : Number(v));
         const strOrNull = v => (v === '' || v === null || v === undefined) ? null : v;
         const boolOrNull = v => (v === true || v === 1 || v === '1' || v === 'true') ? 1 : 0;
-        
+
         const params = [
             intOrNull(Lead_.Lead_Id), strOrNull(Lead_.Lead_Name), intOrNull(Lead_.Lead_Type), intOrNull(Lead_.Vertical), strOrNull(Lead_.Vertical_Name),
             intOrNull(Lead_.Deal_Type_Id), strOrNull(Lead_.Deal_Type_Name),
             strOrNull(Lead_.Address), intOrNull(Lead_.State), strOrNull(Lead_.State_Name), intOrNull(Lead_.District), strOrNull(Lead_.District_Name),
-            intOrNull(Lead_.Company_Size_Id), strOrNull(Lead_.Company_Size_Name), intOrNull(Lead_.Source), strOrNull(Lead_.Source_Name), 
-            
+            intOrNull(Lead_.Company_Size_Id), strOrNull(Lead_.Company_Size_Name), intOrNull(Lead_.Source), strOrNull(Lead_.Source_Name),
+
             strOrNull(Lead_.POC_Full_Name), intOrNull(Lead_.POC_Designation_Id), strOrNull(Lead_.POC_Designation), strOrNull(Lead_.POC_Direct_Mobile),
             strOrNull(Lead_.POC_Email), intOrNull(Lead_.POC_State_Id), strOrNull(Lead_.POC_State), intOrNull(Lead_.POC_Location_Id), strOrNull(Lead_.POC_Loc),
             strOrNull(Lead_.POC_Work_Phone), strOrNull(Lead_.POC_Office_Type), boolOrNull(Lead_.Name_Captured), boolOrNull(Lead_.Number_Captured), boolOrNull(Lead_.Email_Captured),
-            
+
             strOrNull(Lead_.Enquiry_For), strOrNull(Lead_.Enquiry_For_Note), strOrNull(Lead_.Next_FollowUp_Date), strOrNull(Lead_.Remarks),
             strOrNull(Lead_.Lead_Priority), intOrNull(Lead_.Current_PipelineStage_Id), strOrNull(Lead_.Current_Pipeline_Stage),
             intOrNull(Lead_.Stage_Type), boolOrNull(Lead_.Followup_Required), strOrNull(Lead_.Color),
-            intOrNull(Lead_.Pulse_Id), strOrNull(Lead_.Pulse), 
+            intOrNull(Lead_.Pulse_Id), strOrNull(Lead_.Pulse),
             boolOrNull(Lead_.isGhosting), boolOrNull(Lead_.was_Previously_Ghosting), intOrNull(Lead_.previous_Pulse_Id),
             intOrNull(Lead_.Branch_Id), strOrNull(Lead_.Branch_Name), intOrNull(Lead_.Department_Id), strOrNull(Lead_.Department_Name), intOrNull(Lead_.Staff_Id),
             strOrNull(Lead_.Staff_Name), intOrNull(Lead_.Target_Stage_Id), strOrNull(Lead_.Target_Stage_Name), intOrNull(Lead_.Workflow_Id), strOrNull(Lead_.Workflow), boolOrNull(Lead_.Workflow_Start_Status),
-            
+
             boolOrNull(Lead_.Is_FollowUp), intOrNull(Lead_.FollowUp_Branch_Id), strOrNull(Lead_.FollowUp_Branch_Name), intOrNull(Lead_.FollowUp_Department_Id), strOrNull(Lead_.FollowUp_Dept_Name),
             intOrNull(Lead_.FollowUp_Status_Id), strOrNull(Lead_.FollowUp_Status_Name), intOrNull(Lead_.FollowUp_Staff_Id), strOrNull(Lead_.FollowUp_Staff_Name),
             strOrNull(Lead_.FollowUp_Remark), intOrNull(Lead_.Login_User_Id),
-            
+
             strOrNull(Lead_.Contact_Person_Details),
-            
+
             strOrNull(Lead_.Market_Study_Systems),
             strOrNull(Lead_.Market_Study_Fields_JSON)
         ];
-        
+
         const placeholders = new Array(70).fill('?').join(',');
-        
+
         return db.query(`CALL Save_NewLead(${placeholders})`, params, (err, rows) => {
             if (err) return callback(err, rows);
             callback(null, rows);
@@ -416,7 +416,7 @@ var Lead = {
             enrichLeadsWithLatestFollowUp(rows, callback);
         });
     },
-    Get_NewLeads: function (search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage, callback) {
+    Get_NewLeads: function (search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage, pipeline_stage_name, callback) {
         if (!search) search = '';
         if (!industry) industry = 0;
         if (!designation) designation = 0;
@@ -426,8 +426,9 @@ var Lead = {
         if (!limit) limit = 20;
         if (!lead_type) lead_type = 0;
         if (!pipeline_stage) pipeline_stage = 0;
+        if (!pipeline_stage_name) pipeline_stage_name = '';
 
-        return db.query("CALL Get_NewLeads(?, ?, ?, ?, ?, ?, ?, ?, ?)", [search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage], (err, rows) => {
+        return db.query("CALL Get_NewLeads(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage, pipeline_stage_name], (err, rows) => {
             if (err) return callback(err, rows);
             enrichLeadsWithLatestFollowUp(rows, callback);
         });
@@ -650,6 +651,21 @@ var Lead = {
     },
     Check_Market_Study_Duplicate_Bulk: function (JsonChecks, LeadId, callback) {
         return db.query("CALL Check_Lead_Market_Study_Duplicate_Bulk(?)", [JsonChecks], callback);
+    },
+    Get_Activity_Logs_Summary: function (callback) {
+        const query = `
+            SELECT 
+                DATE(Activity_Date) as Date, 
+                Activity_Type, 
+                Department_Name,
+                Staff_Name,
+                Branch_Name,
+                COUNT(*) as Count 
+            FROM lead_activity_log 
+            GROUP BY DATE(Activity_Date), Activity_Type, Department_Name, Staff_Name, Branch_Name 
+            ORDER BY DATE(Activity_Date) DESC 
+            LIMIT 500`;
+        return db.query(query, callback);
     }
 };
 

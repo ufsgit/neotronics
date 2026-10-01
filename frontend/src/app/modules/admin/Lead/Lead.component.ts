@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
@@ -23,8 +23,9 @@ import { LeadFilterDropdownComponent } from '../../../components/lead-filter-dro
   templateUrl: './Lead.component.html',
   styleUrls: ['./Lead.component.css']
 })
-export class LeadComponent implements OnInit {
+export class LeadComponent implements OnInit, AfterViewInit {
   @ViewChildren(LeadFilterDropdownComponent) filterDropdowns!: QueryList<LeadFilterDropdownComponent>;
+  isFirstLoad: boolean = true;
   Lead_: Lead = new Lead();
   Lead_Data: Lead[] = [];
   Filtered_Lead_Data: Lead[] = [];
@@ -186,6 +187,7 @@ export class LeadComponent implements OnInit {
   Query_Status: string = null;
   Query_Assigned: string = null;
   Query_Followup: string = null;
+  Pipeline_Stage_Filter_Name: string = '';
   Page_Index: number = 1;
   Page_Size: number = 10;
   Page_Size_Options: number[] = [10, 25, 50, 100];
@@ -234,15 +236,27 @@ export class LeadComponent implements OnInit {
     this.Initialize_Contact_Form();
   }
 
+  On_PipelineStage_Dropdown_Change(event: any) {
+    this.Lead_Filter.PipelineStage = event ? event.id : null;
+    if (this.Pipeline_Stage_Filter_Name) {
+      this.Pipeline_Stage_Filter_Name = '';
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { stageId: null, stage: null },
+        queryParamsHandling: 'merge'
+      });
+    }
+  }
+
   ngOnInit() {
+    this.Load_Column_Preferences();
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.issLoading = true;
       this.Lead_Service_.Get_NewLeadByID(id).subscribe(data => {
         this.issLoading = false;
         if (data && data.length > 0 && data[0].length > 0) {
-           // data[0] is main lead, data[1] is contacts, data[2] is pipeline history
-           // Note: Edit_Lead and contact populating logic may need to be updated to use data[1] and data[2]
            this.Edit_Lead(data[0][0]);
         } else {
            this.snackBar.open("Record Not Found", "Close", { duration: 3000 });
@@ -252,20 +266,57 @@ export class LeadComponent implements OnInit {
          this.issLoading = false;
          this.snackBar.open("Error fetching lead", "Close", { duration: 3000 });
       });
-    } else {
-      this.Page_Load();
     }
 
     this.route.queryParams.subscribe(params => {
       this.Query_Status = params['status'] || null;
       this.Query_Assigned = params['assigned'] || null;
       this.Query_Followup = params['followup'] || null;
-      if (this.Lead_Data && this.Lead_Data.length > 0) {
+      
+      if (params['stageId']) {
+        this.Lead_Filter.PipelineStage = Number(params['stageId']);
+        this.Pipeline_Stage_Filter_Name = params['stage'] || '';
+        this.syncDropdown('PipelineStage', this.Pipeline_Stage_Filter_Name);
+      }
+
+      if (this.isFirstLoad) {
+        this.isFirstLoad = false;
+        if (!id) {
+          this.Get_Leads();
+        }
+      } else {
         this.Apply_Lead_Filters();
       }
     });
+  }
 
-    // Subscriptions to master data updates removed as they triggered unwanted API calls on the list page
+  ngAfterViewInit() {
+    // In case query parameters came in before the view was fully initialized
+    if (this.Pipeline_Stage_Filter_Name && this.Lead_Filter.PipelineStage) {
+      this.syncDropdown('PipelineStage', this.Pipeline_Stage_Filter_Name);
+    }
+  }
+
+  syncDropdown(type: string, name: string) {
+    if (this.filterDropdowns) {
+      const dropdown = this.filterDropdowns.find(d => d.type === type);
+      if (dropdown) {
+        dropdown.selectedOptionName = name;
+      } else {
+        setTimeout(() => {
+          const dropdownRetry = this.filterDropdowns.find(d => d.type === type);
+          if (dropdownRetry) dropdownRetry.selectedOptionName = name;
+        }, 500);
+      }
+    } else {
+      // In case ViewChildren is not ready yet
+      setTimeout(() => {
+        if (this.filterDropdowns) {
+           const dropdown = this.filterDropdowns.find(d => d.type === type);
+           if (dropdown) dropdown.selectedOptionName = name;
+        }
+      }, 500);
+    }
   }
 
   splitEnquiry(enquiry: string): string[] {
@@ -274,7 +325,6 @@ export class LeadComponent implements OnInit {
   }
 
   Page_Load() {
-    this.Load_Column_Preferences();
     this.Get_Leads();
   }
 
@@ -559,7 +609,8 @@ export class LeadComponent implements OnInit {
       this.Page_Index,
       this.Page_Size,
       leadTypeId,
-      this.Lead_Filter.PipelineStage || 0
+      this.Lead_Filter.PipelineStage || 0,
+      this.Pipeline_Stage_Filter_Name || ''
     ).subscribe(Rows => {
       const leadRows = (Rows && Array.isArray(Rows) && Rows.length > 0 && Array.isArray(Rows[0])) ? Rows[0] : (Array.isArray(Rows) ? Rows : []);
       const countRows = (Rows && Array.isArray(Rows) && Rows.length > 1 && Array.isArray(Rows[1])) ? Rows[1] : [];
@@ -636,6 +687,24 @@ export class LeadComponent implements OnInit {
 
   Clear_Lead_Filters() {
     this.Lead_Filter = { Industry: 0, Stage: 0, Priority: '', Date: '', Assigned_Staff: 0, District: 0, State: 0 };
+    this.Apply_Lead_Filters();
+  }
+
+  Clear_Pipeline_Stage_Filter() {
+    this.Lead_Filter.PipelineStage = 0;
+    this.Pipeline_Stage_Filter_Name = '';
+    if (this.filterDropdowns) {
+      const dropdown = this.filterDropdowns.find(d => d.type === 'PipelineStage');
+      if (dropdown) {
+        dropdown.selectedOptionName = '';
+      }
+    }
+    // Update URL to remove query params without reloading the component entirely
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { stageId: null, stage: null },
+      queryParamsHandling: 'merge'
+    });
     this.Apply_Lead_Filters();
   }
 

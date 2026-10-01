@@ -10,19 +10,19 @@ router.post('/Save_Lead/', function (req, res, next) {
                 console.error("SQL Error in Save_Lead:", err);
                 return res.status(500).json({ success: false, message: "Database error", error: err.message });
             }
-            
+
             console.log("Save_Lead success. Rows:", JSON.stringify(rows));
-            
+
             // Extract inserted ID or Key_Id
             let leadId = 0;
             if (rows && rows[0] && rows[0][0]) {
                 leadId = rows[0][0].Lead_Id || rows[0][0].Lead_Id_ || rows[0][0].Key_Id || 0;
             }
-            
+
             if (!leadId && req.body.Lead_Id) leadId = req.body.Lead_Id;
 
-            let staffIdToSave = (req.body.Is_FollowUp == 1 || req.body.Is_FollowUp == true || req.body.Is_FollowUp == "1") 
-                ? req.body.FollowUp_Staff_Id 
+            let staffIdToSave = (req.body.Is_FollowUp == 1 || req.body.Is_FollowUp == true || req.body.Is_FollowUp == "1")
+                ? req.body.FollowUp_Staff_Id
                 : req.body.Staff_Id;
 
             const finalizeResponse = (notified) => {
@@ -45,7 +45,7 @@ router.post('/Save_Lead/', function (req, res, next) {
             if (leadId > 0 && staffIdToSave > 0) {
                 Lead.Update_Staff_Name_Single(leadId, staffIdToSave, (err2) => {
                     if (err2) console.error("Error updating Staff Name post-save:", err2);
-                    
+
                     if (req.body.Is_FollowUp == 1 || req.body.Is_FollowUp == true || req.body.Is_FollowUp == "1") {
                         Lead.Update_Latest_FollowUp(leadId, staffIdToSave, (err3) => {
                             if (err3) console.error("Error updating Follow_up Staff:", err3);
@@ -108,8 +108,9 @@ router.get('/Get_NewLeads/', function (req, res, next) {
         const limit = Number(req.query.limit) || 20;
         const lead_type = Number(req.query.lead_type) || 0;
         const pipeline_stage = Number(req.query.pipeline_stage) || 0;
+        const pipeline_stage_name = req.query.pipeline_stage_name || '';
 
-        Lead.Get_NewLeads(search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage, function (err, rows) {
+        Lead.Get_NewLeads(search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage, pipeline_stage_name, function (err, rows) {
             if (err) {
                 res.json(err);
             }
@@ -158,27 +159,27 @@ router.get('/Get_NewLead/:Lead_Id', function (req, res, next) {
     }
 });
 
-    router.get('/Get_Dropdowns_Lead/', function (req, res, next) {
-        console.log("API: Get_Dropdowns_Lead called");
-        try {
-            Lead.Get_Dropdowns_Lead(function (err, rows) {
-                if (err) {
-                    console.error("API ERROR: Get_Dropdowns_Lead failed:", err);
-                    res.json(err);
+router.get('/Get_Dropdowns_Lead/', function (req, res, next) {
+    console.log("API: Get_Dropdowns_Lead called");
+    try {
+        Lead.Get_Dropdowns_Lead(function (err, rows) {
+            if (err) {
+                console.error("API ERROR: Get_Dropdowns_Lead failed:", err);
+                res.json(err);
+            }
+            else {
+                console.log("API SUCCESS: Get_Dropdowns_Lead returned " + (rows ? rows.length : 0) + " result sets");
+                if (rows && rows.length > 0) {
+                    rows.forEach((r, i) => console.log(`Set ${i}: ${r.length} rows`));
                 }
-                else {
-                    console.log("API SUCCESS: Get_Dropdowns_Lead returned " + (rows ? rows.length : 0) + " result sets");
-                    if (rows && rows.length > 0) {
-                        rows.forEach((r, i) => console.log(`Set ${i}: ${r.length} rows`));
-                    }
-                    res.json(rows);
-                }
-            });
-        }
-        catch (e) {
-            console.error("API EXCEPTION: Get_Dropdowns_Lead:", e);
-        }
-    });
+                res.json(rows);
+            }
+        });
+    }
+    catch (e) {
+        console.error("API EXCEPTION: Get_Dropdowns_Lead:", e);
+    }
+});
 
 router.get('/Delete_Lead/:Lead_Id', function (req, res, next) {
     try {
@@ -218,7 +219,7 @@ router.get('/Get_Pipeline_Pulse_History/:Lead_Id', function (req, res, next) {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
-        
+
         Lead.Get_Pipeline_Pulse_History(req.params.Lead_Id, limit, page, function (err, rows) {
             if (err) {
                 res.json(err);
@@ -375,7 +376,7 @@ router.post('/Check_Market_Study_Duplicate/', function (req, res, next) {
     try {
         const { checks, LeadId } = req.body; // Expecting an array of checks and optional LeadId
         console.log("Bulk Duplicate Check Payload received:", checks, "LeadId:", LeadId);
-        
+
         if (!checks || !Array.isArray(checks) || checks.length === 0) {
             return res.status(400).json({ success: false, message: "A valid array of checks is required." });
         }
@@ -394,6 +395,20 @@ router.post('/Check_Market_Study_Duplicate/', function (req, res, next) {
     } catch (e) {
         console.error("Exception in Check_Market_Study_Duplicate:", e);
         res.status(500).json({ success: false, error: e.message || String(e) });
+    }
+});
+
+router.get('/Get_Activity_Logs_Summary/', function (req, res, next) {
+    try {
+        Lead.Get_Activity_Logs_Summary(function (err, rows) {
+            if (err) {
+                res.json(err);
+            } else {
+                res.json(rows);
+            }
+        });
+    } catch (e) {
+        res.json(e);
     }
 });
 
