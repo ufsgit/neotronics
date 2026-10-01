@@ -197,9 +197,15 @@ export class Lead_Service {
     return this.http.get(environment.BasePath + 'Ghosting/Get_Ghosting_Register/', { params });
   }
 
-  Get_Activity_Logs_Summary(): Observable<any> {
+  Get_Activity_Logs_Summary(filters: any = {}): Observable<any> {
     return this.http.get(environment.BasePath + 'Activity_Logs/Get_Activity_Logs_Summary/', {
-      params: { _t: Date.now().toString() }
+      params: { ...filters, _t: Date.now().toString() }
+    });
+  }
+
+  Get_Activity_Logs_List(filters: any = {}): Observable<any> {
+    return this.http.get(environment.BasePath + 'Activity_Logs/Get_Activity_Logs_List/', {
+      params: { ...filters, _t: Date.now().toString() }
     });
   }
 }

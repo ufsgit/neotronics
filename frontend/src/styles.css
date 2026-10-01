@@ -388,3 +388,67 @@ table tr:last-child td:last-child,
   box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15) !important;
   border: 1px solid rgba(255, 255, 255, 0.8) !important;
 }
+
+/* --- 144Hz Smoothness & 3D Transitions --- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translateZ(0);
+  will-change: transform, scroll-position;
+}
+
+/* 2D & 3D Scroll Effects on all scrollable containers */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #818cf8, #4f46e5);
+  border-radius: 8px;
+  box-shadow: inset 0px 2px 4px rgba(255, 255, 255, 0.4), 
+              0px 1px 3px rgba(0,0,0,0.3);
+  border: 1px solid #4338ca;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #6366f1, #4338ca);
+}
+
+::-webkit-scrollbar-corner {
+  background: #f1f5f9;
+}
+
+/* 3D Page Transitions */
+router-outlet + *,
+.ig-page, 
+.main-content,
+.container-fluid {
+  animation: page3DEnter 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  transform-origin: center top;
+  display: block;
+}
+
+@keyframes page3DEnter {
+  0% {
+    opacity: 0;
+    transform: perspective(1200px) rotateX(15deg) translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1200px) rotateX(0deg) translateY(0) scale(1);
+  }
+}
