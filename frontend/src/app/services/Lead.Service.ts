@@ -198,7 +198,7 @@ export class Lead_Service {
   }
 
   Get_Activity_Logs_Summary(): Observable<any> {
-    return this.http.get(environment.BasePath + 'Lead/Get_Activity_Logs_Summary/', {
+    return this.http.get(environment.BasePath + 'Activity_Logs/Get_Activity_Logs_Summary/', {
       params: { _t: Date.now().toString() }
     });
   }

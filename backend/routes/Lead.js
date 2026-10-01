@@ -398,18 +398,6 @@ router.post('/Check_Market_Study_Duplicate/', function (req, res, next) {
     }
 });
 
-router.get('/Get_Activity_Logs_Summary/', function (req, res, next) {
-    try {
-        Lead.Get_Activity_Logs_Summary(function (err, rows) {
-            if (err) {
-                res.json(err);
-            } else {
-                res.json(rows);
-            }
-        });
-    } catch (e) {
-        res.json(e);
-    }
-});
+
 
 module.exports = router;

@@ -122,6 +122,7 @@ var FollowUp = require('./routes/FollowUp');
 var New_FollowUp = require('./routes/New_FollowUp');
 var Ghosting = require('./routes/Ghosting');
 var CalendarFollowUp = require('./routes/CalendarFollowUp');
+var Activity_Logs = require('./routes/Activity_Logs');
 
 var app = express();
 var server = http.Server(app);
@@ -256,6 +257,7 @@ app.use('/FollowUp', FollowUp);
 app.use('/New_FollowUp', New_FollowUp);
 app.use('/Ghosting', Ghosting);
 app.use('/CalendarFollowUp', CalendarFollowUp);
+app.use('/Activity_Logs', Activity_Logs);
 
 // ── Lead Config Modular Routes ──────────────────────────────────────────
 app.use('/Lead_Config/company_details/vertical', require('./routes/Lead_Config/company_details/vertical'));

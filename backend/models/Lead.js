@@ -651,21 +651,6 @@ var Lead = {
     },
     Check_Market_Study_Duplicate_Bulk: function (JsonChecks, LeadId, callback) {
         return db.query("CALL Check_Lead_Market_Study_Duplicate_Bulk(?)", [JsonChecks], callback);
-    },
-    Get_Activity_Logs_Summary: function (callback) {
-        const query = `
-            SELECT 
-                DATE(Activity_Date) as Date, 
-                Activity_Type, 
-                Department_Name,
-                Staff_Name,
-                Branch_Name,
-                COUNT(*) as Count 
-            FROM lead_activity_log 
-            GROUP BY DATE(Activity_Date), Activity_Type, Department_Name, Staff_Name, Branch_Name 
-            ORDER BY DATE(Activity_Date) DESC 
-            LIMIT 500`;
-        return db.query(query, callback);
     }
 };
 
