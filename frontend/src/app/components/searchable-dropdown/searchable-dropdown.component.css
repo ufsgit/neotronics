@@ -101,7 +101,33 @@
 .ig-dropdown-list {
   max-height: 250px;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 4px 0;
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 transparent;
+}
+
+/* Impressive 3D scrollbar styles */
+.ig-dropdown-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.ig-dropdown-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+
+.ig-dropdown-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #818cf8, #4f46e5);
+  border-radius: 8px;
+  box-shadow: inset 0px 2px 4px rgba(255, 255, 255, 0.4), 
+              0px 1px 3px rgba(0,0,0,0.3);
+  border: 1px solid #4338ca;
+}
+
+.ig-dropdown-list::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #6366f1, #4338ca);
 }
 
 .ig-dropdown-item {

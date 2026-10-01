@@ -111,12 +111,12 @@
 
               <!-- Follow-up Required Badge -->
               <span *ngIf="getSelectedStageObj()?.Followup_Required !== undefined && getSelectedStageObj()?.Followup_Required !== null" 
-                    [style.background]="getSelectedStageObj().Followup_Required == 1 ? '#eff6ff' : '#f8fafc'" 
-                    [style.color]="getSelectedStageObj().Followup_Required == 1 ? '#1d4ed8' : '#64748b'" 
-                    [style.border]="getSelectedStageObj().Followup_Required == 1 ? '1px solid #bfdbfe' : '1px solid #e2e8f0'" 
+                    [style.background]="getSelectedStageObj().Followup_Required == 1 ? '#eff6ff' : '#fef2f2'" 
+                    [style.color]="getSelectedStageObj().Followup_Required == 1 ? '#1d4ed8' : '#dc2626'" 
+                    [style.border]="getSelectedStageObj().Followup_Required == 1 ? '1px solid #bfdbfe' : '1px solid #fecaca'" 
                     style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 12px;">
                 <i class="material-icons" style="font-size: 12px;">{{ getSelectedStageObj().Followup_Required == 1 ? 'event_available' : 'event_busy' }}</i>
-                {{ getSelectedStageObj().Followup_Required == 1 ? 'Follow-up Required' : 'Follow-up Optional' }}
+                {{ getSelectedStageObj().Followup_Required == 1 ? 'Follow-up Required' : 'No Follow-up' }}
               </span>
             </div>
           </div>
@@ -138,93 +138,95 @@
         </div>
       </div>
       
-      <!-- ROW 1: Branch | Department | Assigned Owner -->
-      <div class="popup-grid-3">
+      <ng-container *ngIf="showFollowUpFields()">
+        <!-- ROW 1: Branch | Department | Assigned Owner -->
+        <div class="popup-grid-3">
 
-        <!-- Branch -->
-        <div class="mod-field">
-          <label class="mod-label"><i class="material-icons">domain</i> Branch <span class="req">*</span></label>
-          <div class="mod-input-group">
-            <div class="mod-icon-box"><i class="material-icons">domain</i></div>
-            <div class="mod-input-wrapper">
-              <app-searchable-dropdown name="Popup_FollowUp_Location_Id" [(ngModel)]="lead.FollowUp_Location_Id"
-                [data]="dropdownData['Branch']" bindLabel="name" bindValue="id" placeholder="Select Branch"
-                (search)="onSearchDropdown('Branch', $event)" (loadMore)="onLoadMoreDropdown('Branch')"
-                (itemSelected)="Location_Change()">
-              </app-searchable-dropdown>
+          <!-- Branch -->
+          <div class="mod-field">
+            <label class="mod-label"><i class="material-icons">domain</i> Branch <span class="req">*</span></label>
+            <div class="mod-input-group">
+              <div class="mod-icon-box"><i class="material-icons">domain</i></div>
+              <div class="mod-input-wrapper">
+                <app-searchable-dropdown name="Popup_FollowUp_Location_Id" [(ngModel)]="lead.FollowUp_Location_Id"
+                  [data]="dropdownData['Branch']" bindLabel="name" bindValue="id" placeholder="Select Branch"
+                  (search)="onSearchDropdown('Branch', $event)" (loadMore)="onLoadMoreDropdown('Branch')"
+                  (itemSelected)="Location_Change()">
+                </app-searchable-dropdown>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Department -->
-        <div class="mod-field">
-          <label class="mod-label"><i class="material-icons">account_tree</i> Department <span class="req">*</span></label>
-          <div class="mod-input-group">
-            <div class="mod-icon-box"><i class="material-icons">account_tree</i></div>
-            <div class="mod-input-wrapper">
-              <app-searchable-dropdown name="Popup_FollowUp_Department_Id" [(ngModel)]="lead.FollowUp_Department_Id"
-                [data]="dropdownData['Department_' + lead.FollowUp_Location_Id]" bindLabel="name" bindValue="id" placeholder="Select Department"
-                (search)="onSearchDropdown('Department', $event, lead.FollowUp_Location_Id)" (loadMore)="onLoadMoreDropdown('Department', lead.FollowUp_Location_Id)"
-                (itemSelected)="Department_Change()"
-                [disabled]="!lead.FollowUp_Location_Id || lead.FollowUp_Location_Id == 0">
-              </app-searchable-dropdown>
+          <!-- Department -->
+          <div class="mod-field">
+            <label class="mod-label"><i class="material-icons">account_tree</i> Department <span class="req">*</span></label>
+            <div class="mod-input-group">
+              <div class="mod-icon-box"><i class="material-icons">account_tree</i></div>
+              <div class="mod-input-wrapper">
+                <app-searchable-dropdown name="Popup_FollowUp_Department_Id" [(ngModel)]="lead.FollowUp_Department_Id"
+                  [data]="dropdownData['Department_' + lead.FollowUp_Location_Id]" bindLabel="name" bindValue="id" placeholder="Select Department"
+                  (search)="onSearchDropdown('Department', $event, lead.FollowUp_Location_Id)" (loadMore)="onLoadMoreDropdown('Department', lead.FollowUp_Location_Id)"
+                  (itemSelected)="Department_Change()"
+                  [disabled]="!lead.FollowUp_Location_Id || lead.FollowUp_Location_Id == 0">
+                </app-searchable-dropdown>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Assigned Owner -->
-        <div class="mod-field">
-          <label class="mod-label"><i class="material-icons">person_outline</i> Assigned Owner <span class="req">*</span></label>
-          <div class="mod-input-group">
-            <div class="mod-icon-box"><i class="material-icons">person_outline</i></div>
-            <div class="mod-input-wrapper">
-              <app-searchable-dropdown name="Popup_FollowUp_Staff_Id" [(ngModel)]="lead.FollowUp_Staff_Id"
-                [data]="dropdownData['Staff_' + lead.FollowUp_Department_Id]" bindLabel="name" bindValue="id" placeholder="Select Staff"
-                (search)="onSearchDropdown('Staff', $event, lead.FollowUp_Department_Id)" (loadMore)="onLoadMoreDropdown('Staff', lead.FollowUp_Department_Id)"
-                [disabled]="!lead.FollowUp_Location_Id || lead.FollowUp_Location_Id == 0 || !lead.FollowUp_Department_Id || lead.FollowUp_Department_Id == 0">
-              </app-searchable-dropdown>
+          <!-- Assigned Owner -->
+          <div class="mod-field">
+            <label class="mod-label"><i class="material-icons">person_outline</i> Assigned Owner <span class="req">*</span></label>
+            <div class="mod-input-group">
+              <div class="mod-icon-box"><i class="material-icons">person_outline</i></div>
+              <div class="mod-input-wrapper">
+                <app-searchable-dropdown name="Popup_FollowUp_Staff_Id" [(ngModel)]="lead.FollowUp_Staff_Id"
+                  [data]="dropdownData['Staff_' + lead.FollowUp_Department_Id]" bindLabel="name" bindValue="id" placeholder="Select Staff"
+                  (search)="onSearchDropdown('Staff', $event, lead.FollowUp_Department_Id)" (loadMore)="onLoadMoreDropdown('Staff', lead.FollowUp_Department_Id)"
+                  [disabled]="!lead.FollowUp_Location_Id || lead.FollowUp_Location_Id == 0 || !lead.FollowUp_Department_Id || lead.FollowUp_Department_Id == 0">
+                </app-searchable-dropdown>
+              </div>
             </div>
           </div>
+
         </div>
 
-      </div>
+        <!-- ROW 2: Target Stage | Next Follow-up Date | Remark -->
+        <div class="popup-grid-3" style="margin-top: 16px;">
 
-      <!-- ROW 2: Target Stage | Next Follow-up Date | Remark -->
-      <div class="popup-grid-3" style="margin-top: 16px;">
-
-        <!-- Target Stage -->
-        <div class="mod-field">
-          <label class="mod-label"><i class="material-icons">track_changes</i> Target Stage <span class="req">*</span></label>
-          <div class="mod-input-group">
-            <div class="mod-icon-box"><i class="material-icons">track_changes</i></div>
-            <div class="mod-input-wrapper">
-              <app-searchable-dropdown name="Popup_FollowUp_Status_Id" [(ngModel)]="lead.FollowUp_Status_Id"
-                [data]="dropdownData['TargetStage']" bindLabel="name" bindValue="id" placeholder="Select Stage"
-                (search)="onSearchDropdown('TargetStage', $event)" (loadMore)="onLoadMoreDropdown('TargetStage')"
-                [disabled]="!lead.FollowUp_Location_Id || lead.FollowUp_Location_Id == 0 || !lead.FollowUp_Department_Id || lead.FollowUp_Department_Id == 0 || !lead.FollowUp_Staff_Id || lead.FollowUp_Staff_Id == 0">
-              </app-searchable-dropdown>
+          <!-- Target Stage -->
+          <div class="mod-field">
+            <label class="mod-label"><i class="material-icons">track_changes</i> Target Stage <span class="req">*</span></label>
+            <div class="mod-input-group">
+              <div class="mod-icon-box"><i class="material-icons">track_changes</i></div>
+              <div class="mod-input-wrapper">
+                <app-searchable-dropdown name="Popup_FollowUp_Status_Id" [(ngModel)]="lead.FollowUp_Status_Id"
+                  [data]="dropdownData['TargetStage']" bindLabel="name" bindValue="id" placeholder="Select Stage"
+                  (search)="onSearchDropdown('TargetStage', $event)" (loadMore)="onLoadMoreDropdown('TargetStage')"
+                  [disabled]="!lead.FollowUp_Location_Id || lead.FollowUp_Location_Id == 0 || !lead.FollowUp_Department_Id || lead.FollowUp_Department_Id == 0 || !lead.FollowUp_Staff_Id || lead.FollowUp_Staff_Id == 0">
+                </app-searchable-dropdown>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Next Follow-up Date -->
-        <div class="mod-field">
-          <label class="mod-label"><i class="material-icons">calendar_today</i> Next Follow-up Date</label>
-          <div class="mod-input-group">
-            <div class="mod-icon-box"><i class="material-icons">calendar_today</i></div>
-            <div class="mod-input-wrapper">
-              <input type="date" class="mod-input" name="Popup_FollowUp_Next_Date" [(ngModel)]="lead.FollowUp_Next_Date" />
+          <!-- Next Follow-up Date -->
+          <div class="mod-field">
+            <label class="mod-label"><i class="material-icons">calendar_today</i> Next Follow-up Date</label>
+            <div class="mod-input-group">
+              <div class="mod-icon-box"><i class="material-icons">calendar_today</i></div>
+              <div class="mod-input-wrapper">
+                <input type="date" class="mod-input" name="Popup_FollowUp_Next_Date" [(ngModel)]="lead.FollowUp_Next_Date" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Remark -->
-        <div class="mod-field mod-field-remark">
-          <label class="mod-label"><i class="material-icons">description</i> Remark</label>
-          <textarea class="mod-textarea" name="Popup_FollowUp_Remark" [(ngModel)]="lead.FollowUp_Remark" placeholder="Enter remarks..."></textarea>
-        </div>
+          <!-- Remark -->
+          <div class="mod-field mod-field-remark">
+            <label class="mod-label"><i class="material-icons">description</i> Remark</label>
+            <textarea class="mod-textarea" name="Popup_FollowUp_Remark" [(ngModel)]="lead.FollowUp_Remark" placeholder="Enter remarks..."></textarea>
+          </div>
 
-      </div>
+        </div>
+      </ng-container>
 
     </div>
   </fieldset>

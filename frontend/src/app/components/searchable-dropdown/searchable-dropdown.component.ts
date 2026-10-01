@@ -39,16 +39,27 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
   onChange = (val: any) => {};
   onTouched = () => {};
 
+  scrollHandler = (event: any) => {
+    const dropdownList = this.elementRef.nativeElement.querySelector('.ig-dropdown-list');
+    if (event.target === dropdownList) return;
+    if (this.isOpen) {
+      this.isOpen = false;
+      this.clearSearch();
+    }
+  };
+
   constructor(private elementRef: ElementRef) {}
 
   ngOnInit() {
     this.searchSubject.pipe(debounceTime(1000)).subscribe((searchValue) => {
       this.search.emit(searchValue);
     });
+    window.addEventListener('scroll', this.scrollHandler, true);
   }
 
   ngOnDestroy() {
     this.searchSubject.complete();
+    window.removeEventListener('scroll', this.scrollHandler, true);
   }
 
   @HostListener('document:click', ['$event'])
@@ -104,11 +115,10 @@ export class SearchableDropdownComponent implements ControlValueAccessor, OnInit
     }
   }
 
-  @HostListener('window:scroll', ['$event'])
   @HostListener('window:resize', ['$event'])
   onWindowChange() {
     if (this.isOpen) {
-      // Recompute on scroll/resize to keep panel aligned
+      // Recompute on resize to keep panel aligned
       this.computeMenuPosition();
     }
   }

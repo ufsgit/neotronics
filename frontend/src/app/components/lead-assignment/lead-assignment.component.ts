@@ -172,4 +172,11 @@ export class LeadAssignmentComponent {
     if (!this.selectedPipelineStage || !this.dropdownData || !this.dropdownData['PipelineStage']) return null;
     return (this.dropdownData['PipelineStage'] || []).find((x: any) => x.name === this.selectedPipelineStage || x.id == this.selectedPipelineStage);
   }
+
+  showFollowUpFields(): boolean {
+    const stageObj = this.getSelectedStageObj();
+    if (!stageObj) return true; // Default to showing if no stage selected
+    // If explicitly marked as 0, hide the follow-up fields
+    return stageObj.Followup_Required !== 0;
+  }
 }
