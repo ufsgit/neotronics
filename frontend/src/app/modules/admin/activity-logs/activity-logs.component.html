@@ -1,19 +1,26 @@
 <div class="main-content ghosting-report-page pb-5 page-3d-intro">
   <div class="container-fluid px-3 px-md-4">
 
-    
+
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-3 pt-1">
       <div class="d-flex align-items-center">
         <h5 class="font-weight-800 text-gray-900 mb-0">Activity Logs Report</h5>
-        <span class="badge badge-subtle-primary ml-2 font-weight-bold">{{ displayTotalActivities }} Total Activities</span>
-
+        <span class="badge badge-subtle-primary ml-2 font-weight-bold">{{ displayTotalActivities }} Total
+          Activities</span>
+      </div>
+      <div class="d-flex align-items-center">
+        <input type="date" class="form-control form-control-sm border-0 shadow-sm mr-2" [(ngModel)]="startDate" style="border-radius: 8px;">
+        <input type="date" class="form-control form-control-sm border-0 shadow-sm mr-2" [(ngModel)]="endDate" style="border-radius: 8px;">
+        <button class="btn btn-sm btn-primary shadow-sm px-4" style="border-radius: 8px;" (click)="fetchActivityLogs()">
+          <i class="fa fa-filter mr-1"></i> Filter
+        </button>
       </div>
     </div>
 
     <!-- KPI Cards Row -->
     <div class="row mb-4">
-      
+
       <!-- Card 1: Total Activities -->
       <div class="col-xl-3 col-md-6 mb-3">
         <div class="card premium-kpi-card border-top-primary shadow-sm h-100" title="Total Logs Found">
@@ -65,7 +72,8 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <span class="kpi-label text-info font-weight-bold text-uppercase">Top Performer</span>
-                <div class="kpi-number font-weight-800 text-gray-900 mt-1 text-truncate" style="max-width: 150px;">{{ topStaffName }}</div>
+                <div class="kpi-number font-weight-800 text-gray-900 mt-1 text-truncate" style="max-width: 150px;">{{
+                  topStaffName }}</div>
               </div>
               <div class="kpi-icon-glow bg-gradient-info">
                 <i class="fa fa-user-circle-o text-white"></i>
@@ -86,7 +94,8 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <span class="kpi-label text-warning font-weight-bold text-uppercase">Top Department</span>
-                <div class="kpi-number font-weight-800 text-gray-900 mt-1 text-truncate" style="max-width: 150px;">{{ topDeptName }}</div>
+                <div class="kpi-number font-weight-800 text-gray-900 mt-1 text-truncate" style="max-width: 150px;">{{
+                  topDeptName }}</div>
               </div>
               <div class="kpi-icon-glow bg-gradient-warning">
                 <i class="fa fa-building text-white"></i>
@@ -111,20 +120,14 @@
             <h6 class="m-0 font-weight-bold text-gray-900">
               <i class="fa fa-pie-chart text-primary mr-2"></i> Activity Type
             </h6>
-            <button class="btn btn-sm btn-primary" 
-                    *ngIf="fullChartTypeData.length > 3" 
-                    (click)="openModal('All Activity Types', chartColumnsType, fullChartTypeData)">
+            <button class="btn btn-sm btn-primary" *ngIf="fullChartTypeData.length > 3"
+              (click)="openModal('All Activity Types', chartColumnsType, fullChartTypeData)">
               View All
             </button>
           </div>
           <div class="card-body">
-            <google-chart 
-              *ngIf="chartTypeData.length > 0"
-              [type]="'PieChart'" 
-              [data]="chartTypeData" 
-              [columnNames]="chartColumnsType" 
-              [options]="chartOptionsPie" 
-              style="width: 100%; height: 300px;">
+            <google-chart *ngIf="chartTypeData.length > 0" [type]="'PieChart'" [data]="chartTypeData"
+              [columnNames]="chartColumnsType" [options]="chartOptionsPie" style="width: 100%; height: 300px;">
             </google-chart>
             <div *ngIf="chartTypeData.length === 0" class="text-center py-5 text-muted">
               No data available.
@@ -140,20 +143,14 @@
             <h6 class="m-0 font-weight-bold text-gray-900">
               <i class="fa fa-bar-chart text-success mr-2"></i> Staff Activity
             </h6>
-            <button class="btn btn-sm btn-primary" 
-                    *ngIf="fullChartStaffData.length > 2" 
-                    (click)="openModal('All Staff Activities', chartColumnsStaff, fullChartStaffData)">
+            <button class="btn btn-sm btn-primary" *ngIf="fullChartStaffData.length > 2"
+              (click)="openModal('All Staff Activities', chartColumnsStaff, fullChartStaffData)">
               View All
             </button>
           </div>
           <div class="card-body">
-            <google-chart 
-              *ngIf="chartStaffData.length > 0"
-              [type]="'ColumnChart'" 
-              [data]="chartStaffData" 
-              [columnNames]="chartColumnsStaff" 
-              [options]="chartOptionsBar" 
-              style="width: 100%; height: 300px;">
+            <google-chart *ngIf="chartStaffData.length > 0" [type]="'ColumnChart'" [data]="chartStaffData"
+              [columnNames]="chartColumnsStaff" [options]="chartOptionsBar" style="width: 100%; height: 300px;">
             </google-chart>
             <div *ngIf="chartStaffData.length === 0" class="text-center py-5 text-muted">
               No data available.
@@ -169,23 +166,92 @@
             <h6 class="m-0 font-weight-bold text-gray-900">
               <i class="fa fa-pie-chart text-info mr-2"></i> Department Distribution
             </h6>
-            <button class="btn btn-sm btn-primary" 
-                    *ngIf="fullChartDeptData.length > 3" 
-                    (click)="openModal('All Department Activities', chartColumnsDept, fullChartDeptData)">
+            <button class="btn btn-sm btn-primary" *ngIf="fullChartDeptData.length > 3"
+              (click)="openModal('All Department Activities', chartColumnsDept, fullChartDeptData)">
               View All
             </button>
           </div>
           <div class="card-body">
-            <google-chart 
-              *ngIf="chartDeptData.length > 0"
-              [type]="'PieChart'" 
-              [data]="chartDeptData" 
-              [columnNames]="chartColumnsDept" 
-              [options]="chartOptionsPie" 
-              style="width: 100%; height: 300px;">
+            <google-chart *ngIf="chartDeptData.length > 0" [type]="'PieChart'" [data]="chartDeptData"
+              [columnNames]="chartColumnsDept" [options]="chartOptionsPie" style="width: 100%; height: 300px;">
             </google-chart>
             <div *ngIf="chartDeptData.length === 0" class="text-center py-5 text-muted">
               No data available.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity Table based on lead_activity_log schema (Hidden as requested) -->
+    <div class="row mt-4 d-none">
+      <div class="col-12">
+        <div class="card shadow-sm border-0 rounded-xl">
+          <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-gray-900">
+              <i class="fa fa-list-alt text-primary mr-2"></i> Recent Activity Log
+            </h6>
+            <span class="badge badge-primary badge-pill px-3 py-2">Last {{ activityLogsList.length }} Records</span>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-muted font-weight-bold text-uppercase text-xs" style="position: sticky; top: 0; z-index: 10;">
+                  <tr>
+                    <th class="border-top-0 pl-4 py-3">Date</th>
+                    <th class="border-top-0 py-3">Lead Name</th>
+                    <th class="border-top-0 py-3">Action Taken</th>
+                    <th class="border-top-0 py-3">Outcome</th>
+                    <th class="border-top-0 py-3">Next Follow-up</th>
+                    <th class="border-top-0 py-3">Staff / Dept</th>
+                    <th class="border-top-0 pr-4 py-3">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let log of activityLogsList">
+                    <td class="pl-4">
+                      <div class="text-sm font-weight-bold text-gray-800">{{ log.Activity_Date | date:'dd MMM, yyyy' }}</div>
+                      <div class="text-xs text-muted">{{ log.Activity_Date | date:'hh:mm a' }}</div>
+                    </td>
+                    <td>
+                      <div class="font-weight-600 text-primary">{{ log.Lead_Name || '-' }}</div>
+                      <div class="text-xs text-muted">{{ log.Deal_Type || '-' }}</div>
+                    </td>
+                    <td>
+                      <span class="badge badge-info badge-pill px-3 py-1 text-uppercase text-xs" style="background-color: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd;">
+                        {{ log.Action_Taken || 'N/A' }}
+                      </span>
+                      <div class="text-xs text-muted mt-1" *ngIf="log.Activity_Title" style="max-width: 150px; white-space: normal;">
+                        {{ log.Activity_Title }}
+                      </div>
+                    </td>
+                    <td>
+                      <span [ngClass]="log.Outcome ? 'text-success' : 'text-muted'" class="font-weight-600 text-sm">
+                        <i class="fa fa-info-circle mr-1"></i> {{ log.Outcome || 'Pending' }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="text-sm">{{ log.Next_Follow_Up ? (log.Next_Follow_Up | date:'dd MMM, yyyy') : '-' }}</div>
+                    </td>
+                    <td>
+                      <div class="font-weight-bold text-sm text-gray-800">{{ log.Staff_Name || '-' }}</div>
+                      <div class="text-xs text-muted">{{ log.Department_Name || '-' }} <span *ngIf="log.Branch_Name">({{ log.Branch_Name }})</span></div>
+                    </td>
+                    <td class="pr-4 text-sm text-muted" style="max-width: 250px;">
+                      <div class="text-truncate" [title]="log.Notes || log.New_Value || ''">
+                        {{ log.Notes || log.New_Value || '-' }}
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <!-- Empty State -->
+                  <tr *ngIf="activityLogsList.length === 0">
+                    <td colspan="7" class="text-center py-5 text-muted">
+                      No recent activities found for the selected date range.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

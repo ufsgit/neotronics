@@ -7,11 +7,31 @@ import { Subscription } from 'rxjs/Subscription';
 import PerfectScrollbar from 'perfect-scrollbar';
 import * as $ from "jquery";
 import { UserData } from '../../services/user-data';
+import { trigger, transition, style, query, animate } from '@angular/animations';
 
 @Component({
     selector: 'app-admin',
     templateUrl: './admin.component.html',
-    styleUrls: ['./admin.component.scss']
+    styleUrls: ['./admin.component.scss'],
+    animations: [
+      trigger('routeAnimations', [
+        transition('* <=> *', [
+          query(':enter', [
+            style({ 
+              opacity: 0, 
+              transform: 'translateY(20px) scale(0.98)',
+              transformOrigin: 'center top' 
+            })
+          ], { optional: true }),
+          query(':enter', [
+            animate('0.5s cubic-bezier(0.2, 0.8, 0.2, 1)', style({ 
+              opacity: 1, 
+              transform: 'translateY(0) scale(1)' 
+            }))
+          ], { optional: true })
+        ])
+      ])
+    ]
 })
 export class AdminComponent implements OnInit {
     private _router: Subscription;

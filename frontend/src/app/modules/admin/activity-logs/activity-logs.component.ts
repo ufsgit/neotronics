@@ -17,11 +17,12 @@ export class ActivityLogsComponent implements OnInit {
   chartColumnsDept: string[] = ['Department', 'Count'];
 
   chartOptionsPie = {
-    legend: { position: 'right' },
+    legend: { position: 'right', alignment: 'center' },
     colors: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'],
     animation: { duration: 1500, easing: 'out', startup: true },
     is3D: true,
-    pieHole: 0.4
+    pieHole: 0.4,
+    chartArea: { left: 20, top: 20, width: '100%', height: '85%' }
   };
   
   chartOptionsBar = {
@@ -81,8 +82,17 @@ export class ActivityLogsComponent implements OnInit {
     this.isModalOpen = false;
   }
 
+  // Filters
+  startDate: string = '';
+  endDate: string = '';
+  activityLogsList: any[] = [];
+
   fetchActivityLogs() {
-    this.leadService.Get_Activity_Logs_Summary().subscribe((res: any) => {
+    const filters: any = {};
+    if (this.startDate) filters.startDate = this.startDate;
+    if (this.endDate) filters.endDate = this.endDate;
+
+    this.leadService.Get_Activity_Logs_Summary(filters).subscribe((res: any) => {
       if (res && res.length > 0) {
         let total = 0;
         let today = 0;
@@ -148,9 +158,30 @@ export class ActivityLogsComponent implements OnInit {
 
         this.chartDeptData = this.fullChartDeptData.slice(0, 3);
 
+      } else {
+        // Reset if no data
+        this.displayTotalActivities = 0;
+        this.displayActivitiesToday = 0;
+        this.chartTypeData = [];
+        this.chartStaffData = [];
+        this.chartDeptData = [];
+        this.topActivityType = 'N/A';
+        this.topStaffName = 'N/A';
+        this.topDeptName = 'N/A';
       }
     }, error => {
-      console.error("Error fetching activity logs:", error);
+      console.error("Error fetching activity logs summary:", error);
+    });
+
+    // Fetch the detailed list
+    this.leadService.Get_Activity_Logs_List(filters).subscribe((res: any) => {
+      if (res && Array.isArray(res)) {
+        this.activityLogsList = res;
+      } else {
+        this.activityLogsList = [];
+      }
+    }, error => {
+      console.error("Error fetching activity logs list:", error);
     });
   }
 }
