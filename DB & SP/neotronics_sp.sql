@@ -3866,8 +3866,6 @@ BEGIN
         Lead_Type,
         Vertical,
         Vertical_Name,
-        Deal_Type_Id,
-        Deal_Type_Name,
         Address,
         State,
         State_Name,
@@ -3949,7 +3947,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_NewLeads`(
     IN p_Page INT,
     IN p_Limit INT,
     IN p_Lead_Type INT,
-    IN p_PipelineStageId INT
+    IN p_PipelineStageId INT,
+    IN p_PipelineStageName VARCHAR(100) -- New Parameter
 )
 BEGIN
     DECLARE v_Offset INT;
@@ -3966,7 +3965,7 @@ BEGIN
         l.POC_Direct_Mobile AS Contact_Number,
         l.Enquiry_For,
         l.Lead_Priority,
-        l.Remarks AS Remark, -- CHANGED THIS LINE TO PULL `Remarks`
+        l.Remarks AS Remark,
         l.Vertical,
         l.Vertical_Name,
         l.POC_Designation AS Designation,
@@ -3982,6 +3981,7 @@ BEGIN
       AND (p_Priority IS NULL OR p_Priority = '' OR l.Lead_Priority = p_Priority)
       AND (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
       AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId)
+      AND (p_PipelineStageName IS NULL OR p_PipelineStageName = '' OR l.Current_Pipeline_Stage = p_PipelineStageName)
     ORDER BY l.Lead_Id DESC
     LIMIT p_Limit OFFSET v_Offset;
     
@@ -3994,7 +3994,8 @@ BEGIN
       AND (p_DistrictId IS NULL OR p_DistrictId = 0 OR l.District = p_DistrictId)
       AND (p_Priority IS NULL OR p_Priority = '' OR l.Lead_Priority = p_Priority)
       AND (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
-      AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId);
+      AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId)
+      AND (p_PipelineStageName IS NULL OR p_PipelineStageName = '' OR l.Current_Pipeline_Stage = p_PipelineStageName);
 END$$
 DELIMITER ;
 
@@ -6532,115 +6533,6 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_DealType_Delete`(
-    IN p_Deal_Type_Id INT
-)
-BEGIN
-    UPDATE Deal_Type
-    SET    DeleteStatus = 1
-    WHERE  Deal_Type_Id = p_Deal_Type_Id;
-
-    SELECT ROW_COUNT() AS AffectedRows;
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_DealType_Get`(
-    IN p_Deal_Type_Id INT
-)
-BEGIN
-    SELECT Deal_Type_Id,
-           Deal_Type_Name
-    FROM   Deal_Type
-    WHERE  Deal_Type_Id = p_Deal_Type_Id
-      AND  IFNULL(DeleteStatus, 0) = 0;
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_DealType_Save`(
-    IN p_Deal_Type_Id   INT,
-    IN p_Deal_Type_Name VARCHAR(100)
-)
-BEGIN
-    DECLARE v_Exists INT DEFAULT 0;
-
-    -- Check for duplicate name (exclude current record on edit)
-    SELECT COUNT(*) INTO v_Exists
-    FROM   Deal_Type
-    WHERE  Deal_Type_Name = p_Deal_Type_Name
-      AND  IFNULL(DeleteStatus, 0) = 0
-      AND  (p_Deal_Type_Id IS NULL OR p_Deal_Type_Id = 0 OR Deal_Type_Id <> p_Deal_Type_Id);
-
-    IF v_Exists > 0 THEN
-        SELECT 0 AS Deal_Type_Id_, 'Name already exists' AS Message;
-    ELSE
-        IF p_Deal_Type_Id IS NULL OR p_Deal_Type_Id = 0 THEN
-            INSERT INTO Deal_Type (Deal_Type_Name, DeleteStatus)
-            VALUES (p_Deal_Type_Name, 0);
-            SELECT LAST_INSERT_ID() AS Deal_Type_Id_, 'Saved Successfully' AS Message;
-        ELSE
-            UPDATE Deal_Type
-            SET    Deal_Type_Name = p_Deal_Type_Name
-            WHERE  Deal_Type_Id   = p_Deal_Type_Id;
-            SELECT p_Deal_Type_Id AS Deal_Type_Id_, 'Updated Successfully' AS Message;
-        END IF;
-    END IF;
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_DealType_Search`(
-    IN p_Search   VARCHAR(100),
-    IN p_Page     INT,
-    IN p_PageSize INT
-)
-BEGIN
-    DECLARE v_Offset INT DEFAULT 0;
-    DECLARE v_Limit  INT DEFAULT 20;
-
-    -- Default page size
-    IF p_PageSize IS NULL OR p_PageSize = 0 THEN
-        SET v_Limit = 20;
-    ELSE
-        SET v_Limit = p_PageSize;
-    END IF;
-
-    -- Calculate offset
-    IF p_Page IS NULL OR p_Page <= 1 THEN
-        SET v_Offset = 0;
-    ELSE
-        SET v_Offset = (p_Page - 1) * v_Limit;
-    END IF;
-
-    -- Result set 1: data rows
-    IF p_Search IS NULL OR p_Search = '' THEN
-        SELECT Deal_Type_Id,
-               Deal_Type_Name
-        FROM   Deal_Type
-        WHERE  IFNULL(DeleteStatus, 0) = 0
-        ORDER BY Deal_Type_Name ASC
-        LIMIT  v_Limit OFFSET v_Offset;
-    ELSE
-        SELECT Deal_Type_Id,
-               Deal_Type_Name
-        FROM   Deal_Type
-        WHERE  IFNULL(DeleteStatus, 0) = 0
-          AND  Deal_Type_Name LIKE CONCAT('%', p_Search, '%')
-        ORDER BY Deal_Type_Name ASC
-        LIMIT  v_Limit OFFSET v_Offset;
-    END IF;
-
-    -- Result set 2: total count (for pagination UI)
-    SELECT COUNT(*) AS TotalCount
-    FROM   Deal_Type
-    WHERE  IFNULL(DeleteStatus, 0) = 0
-      AND  (p_Search IS NULL OR p_Search = ''
-            OR Deal_Type_Name LIKE CONCAT('%', p_Search, '%'));
-END$$
-DELIMITER ;
-
-DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Department_Delete`(
     IN p_Assignment_Id INT
 )
@@ -7653,7 +7545,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Get`(
     IN p_Vertical_Id INT
 )
 BEGIN
-    SELECT Vertical_Id, Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name
+    SELECT Vertical_Id, Vertical_Name, Description
     FROM Vertical
     WHERE Vertical_Id = p_Vertical_Id
       AND IFNULL(DeleteStatus, 0) = 0;
@@ -7664,9 +7556,7 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Save`(
     IN p_Vertical_Id INT,
     IN p_Vertical_Name VARCHAR(255),
-    IN p_Description TEXT,
-    IN p_Deal_Type_Id INT,
-    IN p_Deal_Type_Name VARCHAR(255)
+    IN p_Description TEXT
 )
 BEGIN
     DECLARE v_Exists INT DEFAULT 0;
@@ -7685,16 +7575,14 @@ BEGIN
             -- Update existing record
             UPDATE Vertical
             SET Vertical_Name = p_Vertical_Name,
-                Description   = p_Description,
-                Deal_Type_Id  = p_Deal_Type_Id,
-                Deal_Type_Name = p_Deal_Type_Name
+                Description   = p_Description
             WHERE Vertical_Id = p_Vertical_Id;
 
             SELECT p_Vertical_Id AS Vertical_Id_, 'Saved Successfully' AS Message;
         ELSE
             -- Insert new record
-            INSERT INTO Vertical (Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name, DeleteStatus)
-            VALUES (p_Vertical_Name, p_Description, p_Deal_Type_Id, p_Deal_Type_Name, 0);
+            INSERT INTO Vertical (Vertical_Name, Description, DeleteStatus)
+            VALUES (p_Vertical_Name, p_Description, 0);
 
             SELECT LAST_INSERT_ID() AS Vertical_Id_, 'Saved Successfully' AS Message;
         END IF;
@@ -7708,13 +7596,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Search`(
 )
 BEGIN
     IF p_Search IS NULL OR p_Search = '' THEN
-        SELECT Vertical_Id, Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name
+        SELECT Vertical_Id, Vertical_Name, Description
         FROM Vertical
         WHERE IFNULL(DeleteStatus, 0) = 0
         ORDER BY Vertical_Name ASC
         LIMIT 20;
     ELSE
-        SELECT Vertical_Id, Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name
+        SELECT Vertical_Id, Vertical_Name, Description
         FROM Vertical
         WHERE Vertical_Name LIKE CONCAT('%', p_Search, '%')
           AND IFNULL(DeleteStatus, 0) = 0
@@ -15001,6 +14889,12 @@ sp_label: BEGIN
     DECLARE v_prev_Pulse_Id          INT     DEFAULT NULL;
     DECLARE v_prev_Pulse             VARCHAR(100) DEFAULT NULL;
     DECLARE v_login_user_name        VARCHAR(255) DEFAULT NULL;
+    
+    -- --- NEW VARIABLES ADDED HERE ---
+    DECLARE v_prev_Next_FollowUp_Date DATE DEFAULT NULL;
+    DECLARE v_prev_Pipeline_Stage VARCHAR(255) DEFAULT NULL;
+    -- --------------------------------
+
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -15020,8 +14914,8 @@ sp_label: BEGIN
     START TRANSACTION;
 
         -- ── 2. Read current lead state (before update) ───────
-        SELECT PipelineStage_Id, Pulse_Id, Pulse
-        INTO   v_prev_PipelineStage_Id, v_prev_Pulse_Id, v_prev_Pulse
+        SELECT PipelineStage_Id, Current_Pipeline_Stage, Pulse_Id, Pulse, Next_FollowUp_Date
+        INTO   v_prev_PipelineStage_Id, v_prev_Pipeline_Stage, v_prev_Pulse_Id, v_prev_Pulse, v_prev_Next_FollowUp_Date
         FROM   `lead`
         WHERE  Lead_Id = p_Lead_Id
         LIMIT  1;
@@ -15152,37 +15046,31 @@ sp_label: BEGIN
         WHERE Lead_Id = p_Lead_Id;
 
         -- ── 7. Insert into lead_activity_log table ──────────────────────
-        INSERT INTO `lead_activity_log` (
-            Lead_Id,
-            Lead_Name,
-            Branch_Id,
-            Branch_Name,
-            Department_Id,
-            Department_Name,
-            Staff_Id,
-            Staff_Name,
-            Won_Lost_Status,
-            Activity_Type,
-            Activity_Title,
-            User_Id,
-            Remarks
-        )
-        SELECT
-            Lead_Id,
-            Lead_Name,
-            p_Branch_Id,
-            p_Branch_Name,
-            p_Department_Id,
-            p_Department_Name,
-            p_Staff_Id,
-            p_Staff_Name,
-            IFNULL(p_Stage_Type, 0),
-            'Follow Up',
-            'Follow Up Added',
-            p_Login_User_Id,
-            p_Remark
-        FROM `lead`
-        WHERE Lead_Id = p_Lead_Id;
+
+        -- 1. Stage Changed
+        IF v_prev_PipelineStage_Id <> p_PipelineStage_Id THEN
+            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
+            VALUES (p_Lead_Id, (SELECT Lead_Name FROM `lead` WHERE Lead_Id = p_Lead_Id), v_prev_Pipeline_Stage, p_Pipeline_Stage, 'Stage Updated', 'Pipeline Update', 'Updated via Follow-up', p_Login_User_Id);
+        END IF;
+
+        -- 2. Pulse Changed
+        IF IFNULL(v_prev_Pulse_Id, 0) <> IFNULL(p_Pulse_Id, 0) THEN
+            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
+            VALUES (p_Lead_Id, (SELECT Lead_Name FROM `lead` WHERE Lead_Id = p_Lead_Id), v_prev_Pulse, p_Pulse, 'Pulse Updated', 'Pulse Update', 'Updated via Follow-up', p_Login_User_Id);
+        END IF;
+
+        -- 3. Follow-up Date Changed
+        IF IFNULL(v_prev_Next_FollowUp_Date, '1900-01-01') <> IFNULL(p_Next_FollowUp_Date, '1900-01-01') THEN
+            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, Next_Follow_Up, User_Id)
+            VALUES (p_Lead_Id, (SELECT Lead_Name FROM `lead` WHERE Lead_Id = p_Lead_Id), v_prev_Next_FollowUp_Date, p_Next_FollowUp_Date, 'Follow-up Date Scheduled', 'Schedule Update', 'Updated via Follow-up', p_Next_FollowUp_Date, p_Login_User_Id);
+        END IF;
+
+        -- 4. Follow Up Notes Added
+        IF p_Remark IS NOT NULL AND p_Remark != '' THEN
+            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Action_Taken, Activity_Title, Outcome, Notes, User_Id)
+            VALUES (p_Lead_Id, (SELECT Lead_Name FROM `lead` WHERE Lead_Id = p_Lead_Id), 'Situation Notes Updated', 'Notes Update', 'Updated via Follow-up', p_Remark, p_Login_User_Id);
+        END IF;
+
 
         COMMIT;
 
@@ -15197,13 +15085,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     IN _Lead_Id INT,
     IN _Lead_Name VARCHAR(100),
     IN _Lead_Type INT,
-	IN _Vertical INT,
+    IN _Vertical INT,
     IN _Vertical_Name VARCHAR(100),
-    IN _Deal_Type_Id INT,           
-    IN _Deal_Type_Name VARCHAR(255),
+        -- --- ADD THESE TWO LINES ---
+    IN _Deal_Type_Id INT,
+    IN _Deal_Type_Name VARCHAR(100),
+    -- ---------------------------
     IN _Address VARCHAR(1000),
-
-  
     IN _State INT,
     IN _State_Name VARCHAR(100),
     IN _District INT,
@@ -15277,6 +15165,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
 BEGIN
     DECLARE _Generated_Lead_Id INT;
     DECLARE _Calculated_Lead_Type INT DEFAULT 0;
+    
+        -- --- old values LINES HERE ---
+    DECLARE v_old_Lead_Name VARCHAR(100);
+    DECLARE v_old_Lead_Type INT;
+    DECLARE v_old_POC_Full_Name VARCHAR(255);
+    DECLARE v_old_POC_Direct_Mobile VARCHAR(50);
+    DECLARE v_old_POC_Email VARCHAR(255);
+    DECLARE v_old_Lead_Priority VARCHAR(50);
+    -- -------------------------------------------------
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
@@ -15310,9 +15207,7 @@ BEGIN
     IF _Lead_Id = 0 THEN
 
         INSERT INTO `lead` (
-             
-            Lead_Name, Lead_Type, Vertical, Vertical_Name, Deal_Type_Id, Deal_Type_Name, Address, State, State_Name, District, District_Name,
-
+            Lead_Name, Lead_Type, Vertical, Vertical_Name, Address, State, State_Name, District, District_Name,
             Company_Size_Id, Company_Size_Name, Source, Source_Name, 
             POC_Full_Name, POC_Designation_Id, POC_Designation, POC_Direct_Mobile, POC_Email, 
             POC_State_Id, POC_State, POC_Location_Id, POC_Loc, POC_Work_Phone, POC_Office_Type,
@@ -15327,9 +15222,8 @@ BEGIN
             Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name, 
             Target_Stage_Id, Target_Stage_Name,
             Workflow_Id, Workflow, Workflow_Start_Status
-        )          VALUES (
-            _Lead_Name, _Calculated_Lead_Type, _Vertical, _Vertical_Name, _Deal_Type_Id, _Deal_Type_Name, _Address, _State, _State_Name, _District, _District_Name,
-
+        ) VALUES (
+            _Lead_Name, _Calculated_Lead_Type, _Vertical, _Vertical_Name, _Address, _State, _State_Name, _District, _District_Name,
             _Company_Size_Id, _Company_Size_Name, _Source, _Source_Name, 
             _POC_Full_Name, _POC_Designation_Id, _POC_Designation, _POC_Direct_Mobile, _POC_Email,
             _POC_State_Id, _POC_State, _POC_Location_Id, _POC_Loc, _POC_Work_Phone, _POC_Office_Type,
@@ -15356,15 +15250,20 @@ BEGIN
         
 		SET _Generated_Lead_Id = LAST_INSERT_ID();
                 
-                -- --- START ADDITION: Activity Log for NEW Lead ---
+        -- --- START ADDITION 2: Activity Log for NEW Lead ---
         INSERT INTO `lead_activity_log` (
-            Lead_Id, Lead_Name, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
-            Won_Lost_Status, Activity_Type, Activity_Title, User_Id
+            Lead_Id, Lead_Name, Deal_Type, 
+            Action_Taken, Activity_Title, Outcome, Notes,
+            Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
+            Won_Lost_Status, User_Id
         ) VALUES (
-            _Generated_Lead_Id, _Lead_Name, NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name,
-            IF(_Stage_Type IN (1, 2), _Stage_Type, 0), 'Lead Creation', 'New Lead Registered', _Login_User_Id
+            _Generated_Lead_Id, _Lead_Name, _Calculated_Lead_Type, 
+            'Lead Created', 'Lead Creation', 'Recorded automatically', 'Manually added',
+            NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name,
+            IF(_Stage_Type IN (1, 2), _Stage_Type, 0), _Login_User_Id
         );
-        -- --- END ADDITION ---
+        -- --- END ADDITION 2 ---
+
 
         
         IF (_Current_Pipeline_Stage IS NOT NULL AND _Current_Pipeline_Stage != '') OR (_Pulse IS NOT NULL AND _Pulse != '') THEN
@@ -15412,13 +15311,18 @@ BEGIN
         END IF;
         
     ELSE
+        -- --- START ADDITION 3A: Fetch Old Values before Update ---
+        SELECT Lead_Name, Lead_Type, POC_Full_Name, POC_Direct_Mobile, POC_Email, Lead_Priority
+        INTO v_old_Lead_Name, v_old_Lead_Type, v_old_POC_Full_Name, v_old_POC_Direct_Mobile, v_old_POC_Email, v_old_Lead_Priority
+        FROM `lead` 
+        WHERE Lead_Id = _Lead_Id;
+        -- --- END ADDITION 3A ---
+        
+        UPDATE `lead`
 
-               UPDATE `lead`
         SET 
             Lead_Name = _Lead_Name, Lead_Type = _Calculated_Lead_Type, Vertical = _Vertical, Vertical_Name = _Vertical_Name,
-            Deal_Type_Id = _Deal_Type_Id, Deal_Type_Name = _Deal_Type_Name,
             Address = _Address, State = _State, State_Name = _State_Name, District = _District, District_Name = _District_Name,
-
             Company_Size_Id = _Company_Size_Id, Company_Size_Name = _Company_Size_Name, Source = _Source, Source_Name = _Source_Name, 
             POC_Full_Name = _POC_Full_Name, POC_Designation_Id = _POC_Designation_Id, POC_Designation = _POC_Designation,
             POC_Direct_Mobile = _POC_Direct_Mobile, POC_Email = _POC_Email, POC_State_Id = _POC_State_Id, POC_State = _POC_State,
@@ -15437,17 +15341,44 @@ BEGIN
             Workflow_Id = _Workflow_Id, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
         WHERE Lead_Id = _Lead_Id;
         
-                -- --- START ADDITION: Activity Log for UPDATED Lead ---
-        INSERT INTO `lead_activity_log` (
-            Lead_Id, Lead_Name, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
-            Won_Lost_Status, Activity_Type, Activity_Title, User_Id
-        )
-        SELECT 
-            Lead_Id, Lead_Name, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
-            IFNULL(Stage_Type, 0), 'Lead Update', 'Lead Profile Updated', _Login_User_Id
-        FROM `lead`
-        WHERE Lead_Id = _Lead_Id;
-        -- --- END ADDITION ---
+        -- --- START ADDITION 3B: Log individual field changes ---
+        -- 1. Deal Type Changed
+        IF v_old_Lead_Type <> _Calculated_Lead_Type THEN
+            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
+            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_Lead_Type, _Calculated_Lead_Type, 'Deal Type Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+        END IF;
+
+        -- 2. Contact Person Changed 
+        IF IFNULL(v_old_POC_Full_Name, '') <> IFNULL(_POC_Full_Name, '') THEN
+            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
+            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_POC_Full_Name, _POC_Full_Name, 'Primary Contact Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+        END IF;
+
+        -- 3. Phone Changed
+        IF IFNULL(v_old_POC_Direct_Mobile, '') <> IFNULL(_POC_Direct_Mobile, '') THEN
+            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
+            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_POC_Direct_Mobile, _POC_Direct_Mobile, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+        END IF;
+
+        -- 4. Email Changed
+        IF IFNULL(v_old_POC_Email, '') <> IFNULL(_POC_Email, '') THEN
+            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
+            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_POC_Email, _POC_Email, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+        END IF;
+
+        -- 5. Priority Changed
+        IF IFNULL(v_old_Lead_Priority, '') <> IFNULL(_Lead_Priority, '') THEN
+            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
+            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_Lead_Priority, _Lead_Priority, 'Priority Level Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+        END IF;
+
+        -- 6. Lead Name Changed 
+        IF IFNULL(v_old_Lead_Name, '') <> IFNULL(_Lead_Name, '') THEN
+            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
+            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_Lead_Name, _Lead_Name, 'Lead Name Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+        END IF;
+        -- --- END ADDITION 3B ---
+
 
         
         SET _Generated_Lead_Id = _Lead_Id;
@@ -28985,16 +28916,11 @@ BEGIN
         ORDER BY District_Name 
         LIMIT v_Limit OFFSET v_Offset;
         
-       ELSEIF p_Type = 'Vertical' THEN
-        SELECT Vertical_Id AS id, 
-               Vertical_Name AS name,
-               Deal_Type_Id,
-               Deal_Type_Name
-        FROM Vertical 
+    ELSEIF p_Type = 'Vertical' THEN
+        SELECT Vertical_Id AS id, Vertical_Name AS name FROM Vertical 
         WHERE Vertical_Name LIKE p_Search 
         ORDER BY Vertical_Name 
         LIMIT v_Limit OFFSET v_Offset;
-
         
     ELSEIF p_Type = 'CompanySize' THEN
         SELECT Company_Size_Id AS id, Company_Size_Name AS name FROM Company_Size 
