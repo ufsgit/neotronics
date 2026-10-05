@@ -92,96 +92,49 @@ export class ActivityLogsComponent implements OnInit {
     if (this.startDate) filters.startDate = this.startDate;
     if (this.endDate) filters.endDate = this.endDate;
 
-    this.leadService.Get_Activity_Logs_Summary(filters).subscribe((res: any) => {
-      if (res && res.length > 0) {
-        let total = 0;
-        let today = 0;
-        
-        const typeGroups: any = {};
-        const staffGroups: any = {};
-        const deptGroups: any = {};
-        
-        const todayStr = new Date().toISOString().split('T')[0];
+    // Call 1: Activity_Logs_KPIs() — KPI cards
+    this.leadService.Activity_Logs_KPIs().subscribe((kpis: any) => {
+      if (kpis) {
+        this.animateValue('displayTotalActivities', 0, kpis.TotalActivities || 0, 1500);
+        this.animateValue('displayActivitiesToday', 0, kpis.ActivitiesToday || 0, 1500);
+        this.topStaffName = kpis.TopStaff || 'N/A';
+        this.topDeptName = kpis.TopDept || 'N/A';
+      }
+    }, err => console.error('KPIs error:', err));
 
-        res.forEach((item: any) => {
-          total += item.Count;
-          
-          let dateStr = new Date(item.Date).toISOString().split('T')[0];
-          if (dateStr === todayStr) {
-            today += item.Count;
-          }
-
-          let type = item.Activity_Type || 'Unknown';
-          if (!typeGroups[type]) typeGroups[type] = 0;
-          typeGroups[type] += item.Count;
-
-          let staff = item.Staff_Name || 'System/Unassigned';
-          if (!staffGroups[staff]) staffGroups[staff] = 0;
-          staffGroups[staff] += item.Count;
-
-          let dept = item.Department_Name || 'Unassigned';
-          if (!deptGroups[dept]) deptGroups[dept] = 0;
-          deptGroups[dept] += item.Count;
-        });
-
-        this.animateValue('displayTotalActivities', 0, total, 1500);
-        this.animateValue('displayActivitiesToday', 0, today, 1500);
-
-        // Process Type Chart
-        this.fullChartTypeData = Object.keys(typeGroups)
-          .map(k => [k, typeGroups[k]])
-          .sort((a, b) => b[1] - a[1]);
+    // Call 2: Activity_Logs_Type_Chart(startDate, endDate)
+    this.leadService.Activity_Logs_Type_Chart(filters).subscribe((data: any[]) => {
+      if (data && data.length > 0) {
+        this.topActivityType = data[0].Activity_Type || 'N/A';
+        this.fullChartTypeData = data.map(x => [x.Activity_Type, x.Count]);
         this.chartTypeData = this.fullChartTypeData.slice(0, 3);
-        if(this.fullChartTypeData.length > 0) this.topActivityType = this.fullChartTypeData[0][0];
-        
-        // Process Staff Chart & Top Staff
-        let maxStaffCount = 0;
-        this.fullChartStaffData = Object.keys(staffGroups).map(k => {
-          if (staffGroups[k] > maxStaffCount && k !== 'System/Unassigned') {
-            maxStaffCount = staffGroups[k];
-            this.topStaffName = k;
-          }
-          return [k, staffGroups[k]];
-        }).sort((a, b) => b[1] - a[1]); 
-
-        this.chartStaffData = this.fullChartStaffData.slice(0, 2);
-
-        // Process Dept Chart & Top Dept
-        let maxDeptCount = 0;
-        this.fullChartDeptData = Object.keys(deptGroups).map(k => {
-          if (deptGroups[k] > maxDeptCount && k !== 'Unassigned') {
-            maxDeptCount = deptGroups[k];
-            this.topDeptName = k;
-          }
-          return [k, deptGroups[k]];
-        }).sort((a, b) => b[1] - a[1]);
-
-        this.chartDeptData = this.fullChartDeptData.slice(0, 3);
-
       } else {
-        // Reset if no data
-        this.displayTotalActivities = 0;
-        this.displayActivitiesToday = 0;
-        this.chartTypeData = [];
-        this.chartStaffData = [];
-        this.chartDeptData = [];
         this.topActivityType = 'N/A';
-        this.topStaffName = 'N/A';
-        this.topDeptName = 'N/A';
+        this.fullChartTypeData = [];
+        this.chartTypeData = [];
       }
-    }, error => {
-      console.error("Error fetching activity logs summary:", error);
-    });
+    }, err => console.error('TypeChart error:', err));
 
-    // Fetch the detailed list
-    this.leadService.Get_Activity_Logs_List(filters).subscribe((res: any) => {
-      if (res && Array.isArray(res)) {
-        this.activityLogsList = res;
+    // Call 3: Activity_Logs_Dept_Chart(startDate, endDate)
+    this.leadService.Activity_Logs_Dept_Chart(filters).subscribe((data: any[]) => {
+      if (data && data.length > 0) {
+        this.fullChartDeptData = data.map(x => [x.Department, x.Count]);
+        this.chartDeptData = this.fullChartDeptData.slice(0, 3);
       } else {
-        this.activityLogsList = [];
+        this.fullChartDeptData = [];
+        this.chartDeptData = [];
       }
-    }, error => {
-      console.error("Error fetching activity logs list:", error);
-    });
+    }, err => console.error('DeptChart error:', err));
+
+    // Call 4: Activity_Logs_Staff_Chart(startDate, endDate)
+    this.leadService.Activity_Logs_Staff_Chart(filters).subscribe((data: any[]) => {
+      if (data && data.length > 0) {
+        this.fullChartStaffData = data.map(x => [x.Staff, x.Count]);
+        this.chartStaffData = this.fullChartStaffData.slice(0, 5);
+      } else {
+        this.fullChartStaffData = [];
+        this.chartStaffData = [];
+      }
+    }, err => console.error('StaffChart error:', err));
   }
 }

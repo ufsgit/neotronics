@@ -197,14 +197,37 @@ export class Lead_Service {
     return this.http.get(environment.BasePath + 'Ghosting/Get_Ghosting_Register/', { params });
   }
 
-  Get_Activity_Logs_Summary(filters: any = {}): Observable<any> {
-    return this.http.get(environment.BasePath + 'Activity_Logs/Get_Activity_Logs_Summary/', {
+  // SP: Activity_Logs_KPIs()
+  Activity_Logs_KPIs(): Observable<any> {
+    return this.http.get(environment.BasePath + 'Activity_Logs/Activity_Logs_KPIs/', {
+      params: { _t: Date.now().toString() }
+    });
+  }
+
+  // SP: Activity_Logs_Type_Chart(startDate, endDate)
+  Activity_Logs_Type_Chart(filters: any = {}): Observable<any> {
+    return this.http.get(environment.BasePath + 'Activity_Logs/Activity_Logs_Type_Chart/', {
       params: { ...filters, _t: Date.now().toString() }
     });
   }
 
-  Get_Activity_Logs_List(filters: any = {}): Observable<any> {
-    return this.http.get(environment.BasePath + 'Activity_Logs/Get_Activity_Logs_List/', {
+  // SP: Activity_Logs_Dept_Chart(startDate, endDate)
+  Activity_Logs_Dept_Chart(filters: any = {}): Observable<any> {
+    return this.http.get(environment.BasePath + 'Activity_Logs/Activity_Logs_Dept_Chart/', {
+      params: { ...filters, _t: Date.now().toString() }
+    });
+  }
+
+  // SP: Activity_Logs_Staff_Chart(startDate, endDate)
+  Activity_Logs_Staff_Chart(filters: any = {}): Observable<any> {
+    return this.http.get(environment.BasePath + 'Activity_Logs/Activity_Logs_Staff_Chart/', {
+      params: { ...filters, _t: Date.now().toString() }
+    });
+  }
+
+  // SP: Activity_Logs_List_Paginated(startDate, endDate, page, limit)
+  Activity_Logs_List_Paginated(filters: any = {}): Observable<any> {
+    return this.http.get(environment.BasePath + 'Activity_Logs/Activity_Logs_List_Paginated/', {
       params: { ...filters, _t: Date.now().toString() }
     });
   }
