@@ -82,10 +82,48 @@ export class ActivityLogsComponent implements OnInit {
     this.isModalOpen = false;
   }
 
-  // Filters
+  // Filters and Table State
   startDate: string = '';
   endDate: string = '';
   activityLogsList: any[] = [];
+  
+  staffViewMode: 'graph' | 'table' = 'graph';
+  listCurrentPage: number = 1;
+  listLimit: number = 10;
+
+  toggleStaffView() {
+    this.staffViewMode = this.staffViewMode === 'graph' ? 'table' : 'graph';
+    if (this.staffViewMode === 'table') {
+      this.fetchListLogs();
+    }
+  }
+  
+  fetchListLogs() {
+    const filters: any = {
+      page: this.listCurrentPage,
+      limit: this.listLimit
+    };
+    if (this.startDate) filters.startDate = this.startDate;
+    if (this.endDate) filters.endDate = this.endDate;
+
+    this.leadService.Activity_Logs_List_Paginated(filters).subscribe((data: any[]) => {
+      this.activityLogsList = data || [];
+    }, err => console.error('List error:', err));
+  }
+  
+  nextPage() {
+    if (this.activityLogsList.length === this.listLimit) {
+      this.listCurrentPage++;
+      this.fetchListLogs();
+    }
+  }
+  
+  prevPage() {
+    if(this.listCurrentPage > 1) {
+      this.listCurrentPage--;
+      this.fetchListLogs();
+    }
+  }
 
   fetchActivityLogs() {
     const filters: any = {};
@@ -136,5 +174,11 @@ export class ActivityLogsComponent implements OnInit {
         this.chartStaffData = [];
       }
     }, err => console.error('StaffChart error:', err));
+    
+    // Refresh table too if it is active
+    if (this.staffViewMode === 'table') {
+      this.listCurrentPage = 1;
+      this.fetchListLogs();
+    }
   }
 }
