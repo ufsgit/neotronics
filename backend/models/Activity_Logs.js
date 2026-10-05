@@ -1,56 +1,48 @@
 const db = require('../dbconnection');
 
 const ActivityLogs = {
-    Get_Activity_Logs_Summary: function (startDate, endDate, callback) {
-        let query = `
-            SELECT 
-                DATE(Activity_Date) as Date, 
-                Activity_Title as Activity_Type, 
-                Department_Name,
-                Staff_Name,
-                Branch_Name,
-                COUNT(*) as Count 
-            FROM lead_activity_log 
-            WHERE 1=1 `;
-            
-        const params = [];
-        if (startDate) {
-            query += ` AND DATE(Activity_Date) >= ?`;
-            params.push(startDate);
-        }
-        if (endDate) {
-            query += ` AND DATE(Activity_Date) <= ?`;
-            params.push(endDate);
-        }
 
-        query += `
-            GROUP BY DATE(Activity_Date), Activity_Title, Department_Name, Staff_Name, Branch_Name 
-            ORDER BY DATE(Activity_Date) DESC 
-            LIMIT 500`;
-            
-        return db.query(query, params, callback);
+    // SP: Activity_Logs_KPIs()
+    Activity_Logs_KPIs: function (callback) {
+        db.query(`CALL Activity_Logs_KPIs()`, (err, rows) => {
+            if (err) return callback(err, null);
+            callback(null, rows[0][0] || { TotalActivities: 0, ActivitiesToday: 0, TopStaff: 'N/A', TopDept: 'N/A' });
+        });
     },
-    Get_Activity_Logs_List: function (startDate, endDate, callback) {
-        let query = `
-            SELECT 
-                LeadActivityLog_Id, Activity_Date, Lead_Id, Lead_Name, Deal_Type,
-                Old_Value, New_Value, Action_Taken, Activity_Title, Outcome,
-                Next_Follow_Up, Notes, Branch_Name, Department_Name, Staff_Name
-            FROM lead_activity_log 
-            WHERE 1=1 
-        `;
-        const params = [];
-        if (startDate) {
-            query += ` AND DATE(Activity_Date) >= ?`;
-            params.push(startDate);
-        }
-        if (endDate) {
-            query += ` AND DATE(Activity_Date) <= ?`;
-            params.push(endDate);
-        }
-        query += ` ORDER BY Activity_Date DESC LIMIT 500`;
-        return db.query(query, params, callback);
+
+    // SP: Activity_Logs_Type_Chart(startDate, endDate)
+    Activity_Logs_Type_Chart: function (startDate, endDate, callback) {
+        db.query(`CALL Activity_Logs_Type_Chart(?, ?)`, [startDate || null, endDate || null], (err, rows) => {
+            if (err) return callback(err, null);
+            callback(null, rows[0] || []);
+        });
+    },
+
+    // SP: Activity_Logs_Dept_Chart(startDate, endDate)
+    Activity_Logs_Dept_Chart: function (startDate, endDate, callback) {
+        db.query(`CALL Activity_Logs_Dept_Chart(?, ?)`, [startDate || null, endDate || null], (err, rows) => {
+            if (err) return callback(err, null);
+            callback(null, rows[0] || []);
+        });
+    },
+
+    // SP: Activity_Logs_Staff_Chart(startDate, endDate)
+    Activity_Logs_Staff_Chart: function (startDate, endDate, callback) {
+        db.query(`CALL Activity_Logs_Staff_Chart(?, ?)`, [startDate || null, endDate || null], (err, rows) => {
+            if (err) return callback(err, null);
+            callback(null, rows[0] || []);
+        });
+    },
+
+    // SP: Activity_Logs_List_Paginated(startDate, endDate, page, limit)
+    Activity_Logs_List_Paginated: function (startDate, endDate, page, limit, callback) {
+        const p = [startDate || null, endDate || null, page || 1, limit || 20];
+        db.query(`CALL Activity_Logs_List_Paginated(?, ?, ?, ?)`, p, (err, rows) => {
+            if (err) return callback(err, null);
+            callback(null, rows[0] || []);
+        });
     }
+
 };
 
 module.exports = ActivityLogs;
