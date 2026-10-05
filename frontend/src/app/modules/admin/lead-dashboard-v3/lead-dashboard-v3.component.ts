@@ -12,6 +12,14 @@ export class LeadDashboardV3Component implements OnInit {
   showPipelineGraph = true;
   activityChartMode: 'daily' | 'weekly' | 'monthly' = 'daily';
 
+  filterMode: 'Year' | 'Custom Date' = 'Year';
+  selectedYear: number = new Date().getFullYear();
+  customFromDate: string = '';
+  customToDate: string = '';
+
+  dayWiseMonth: string | number = new Date().getMonth() + 1;
+  weekWiseMonth: string | number = new Date().getMonth() + 1;
+
   kpiData: any = {};
   followUpData: any = {};
   pipelineData: any[] = [];
@@ -78,6 +86,19 @@ export class LeadDashboardV3Component implements OnInit {
     this.fetchDashboardData();
   }
 
+  get isCurrentYear(): boolean {
+    return this.selectedYear === new Date().getFullYear();
+  }
+
+  changeYear(delta: number) {
+    this.selectedYear += delta;
+    this.fetchActivityData();
+  }
+
+  onFilterModeChange() {
+    this.fetchActivityData();
+  }
+
   fetchDashboardData() {
     this.dashboardService.getKPI().subscribe({
       next: (res: any) => {
@@ -108,7 +129,52 @@ export class LeadDashboardV3Component implements OnInit {
       error: (err) => { console.error('Error loading FollowUp', err); this.loadingFollowUp = false; }
     });
 
-    this.dashboardService.getActivityDay().subscribe({
+
+    this.fetchActivityData();
+  }
+
+  formatDate(date: Date): string {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    const year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
+
+  fetchActivityData() {
+    this.fetchDayWise();
+    this.fetchWeekWise();
+    this.fetchMonthWise();
+  }
+
+  getMonthRange(year: number, month: string | number): { from: string, to: string } {
+    if (month === 'All') {
+      return { from: `${year}-01-01`, to: `${year}-12-31` };
+    }
+    const m = parseInt(month.toString(), 10) - 1;
+    const start = new Date(year, m, 1);
+    const end = new Date(year, m + 1, 0);
+    return { from: this.formatDate(start), to: this.formatDate(end) };
+  }
+
+  fetchDayWise() {
+    this.loadingDay = true;
+    let fromDay: string | undefined, toDay: string | undefined;
+
+    if (this.filterMode === 'Year') {
+      const range = this.getMonthRange(this.selectedYear, this.dayWiseMonth);
+      fromDay = range.from;
+      toDay = range.to;
+    } else {
+      fromDay = this.customFromDate || undefined;
+      toDay = this.customToDate || undefined;
+    }
+
+    this.dashboardService.getActivityDay(fromDay, toDay).subscribe({
       next: (res: any) => {
         try {
           this.dayWiseActivity = Array.isArray(res) ? res : [];
@@ -120,8 +186,22 @@ export class LeadDashboardV3Component implements OnInit {
       },
       error: (err) => { console.error('Error loading Day Activity', err); this.loadingDay = false; }
     });
+  }
 
-    this.dashboardService.getActivityWeek().subscribe({
+  fetchWeekWise() {
+    this.loadingWeek = true;
+    let fromWeek: string | undefined, toWeek: string | undefined;
+
+    if (this.filterMode === 'Year') {
+      const range = this.getMonthRange(this.selectedYear, this.weekWiseMonth);
+      fromWeek = range.from;
+      toWeek = range.to;
+    } else {
+      fromWeek = this.customFromDate || undefined;
+      toWeek = this.customToDate || undefined;
+    }
+
+    this.dashboardService.getActivityWeek(fromWeek, toWeek).subscribe({
       next: (res: any) => {
         try {
           this.weekWiseActivity = Array.isArray(res) ? res : [];
@@ -133,8 +213,21 @@ export class LeadDashboardV3Component implements OnInit {
       },
       error: (err) => { console.error('Error loading Week Activity', err); this.loadingWeek = false; }
     });
+  }
 
-    this.dashboardService.getActivityMonth().subscribe({
+  fetchMonthWise() {
+    this.loadingMonth = true;
+    let fromMonth: string | undefined, toMonth: string | undefined;
+
+    if (this.filterMode === 'Year') {
+      fromMonth = `${this.selectedYear}-01-01`;
+      toMonth = `${this.selectedYear}-12-31`;
+    } else {
+      fromMonth = this.customFromDate || undefined;
+      toMonth = this.customToDate || undefined;
+    }
+
+    this.dashboardService.getActivityMonth(fromMonth, toMonth).subscribe({
       next: (res: any) => {
         try {
           this.monthWiseActivity = Array.isArray(res) ? res : [];

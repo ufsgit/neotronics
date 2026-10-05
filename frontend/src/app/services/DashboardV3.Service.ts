@@ -25,15 +25,24 @@ export class DashboardV3_Service {
     return this.http.get(environment.BasePath + 'DashboardV3/FollowUpSummary');
   }
 
-  getActivityDay(): Observable<any> {
-    return this.http.get(environment.BasePath + 'DashboardV3/ActivityDay');
+  getActivityDay(fromDate?: string, toDate?: string): Observable<any> {
+    let params: any = {};
+    if (fromDate) params.fromDate = fromDate;
+    if (toDate) params.toDate = toDate;
+    return this.http.get(environment.BasePath + 'DashboardV3/ActivityDay', { params });
   }
 
-  getActivityWeek(): Observable<any> {
-    return this.http.get(environment.BasePath + 'DashboardV3/ActivityWeek');
+  getActivityWeek(fromDate?: string, toDate?: string): Observable<any> {
+    let params: any = {};
+    if (fromDate) params.fromDate = fromDate;
+    if (toDate) params.toDate = toDate;
+    return this.http.get(environment.BasePath + 'DashboardV3/ActivityWeek', { params });
   }
 
-  getActivityMonth(): Observable<any> {
-    return this.http.get(environment.BasePath + 'DashboardV3/ActivityMonth');
+  getActivityMonth(fromDate?: string, toDate?: string): Observable<any> {
+    let params: any = {};
+    if (fromDate) params.fromDate = fromDate;
+    if (toDate) params.toDate = toDate;
+    return this.http.get(environment.BasePath + 'DashboardV3/ActivityMonth', { params });
   }
 }

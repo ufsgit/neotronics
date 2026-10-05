@@ -43,7 +43,9 @@ router.get('/FollowUpSummary', function(req, res, next) {
 
 router.get('/ActivityDay', function(req, res, next) { 
     try {
-        DashboardV3.getActivityDay(function (err, rows) {
+        const fromDate = req.query.fromDate || null;
+        const toDate = req.query.toDate || null;
+        DashboardV3.getActivityDay(fromDate, toDate, function (err, rows) {
             if (err) res.json(err); else res.json(rows);
         });
     } catch (e) { res.status(500).json({ error: e.message }); }
@@ -51,7 +53,9 @@ router.get('/ActivityDay', function(req, res, next) {
 
 router.get('/ActivityWeek', function(req, res, next) { 
     try {
-        DashboardV3.getActivityWeek(function (err, rows) {
+        const fromDate = req.query.fromDate || null;
+        const toDate = req.query.toDate || null;
+        DashboardV3.getActivityWeek(fromDate, toDate, function (err, rows) {
             if (err) res.json(err); else res.json(rows);
         });
     } catch (e) { res.status(500).json({ error: e.message }); }
@@ -59,7 +63,9 @@ router.get('/ActivityWeek', function(req, res, next) {
 
 router.get('/ActivityMonth', function(req, res, next) { 
     try {
-        DashboardV3.getActivityMonth(function (err, rows) {
+        const fromDate = req.query.fromDate || null;
+        const toDate = req.query.toDate || null;
+        DashboardV3.getActivityMonth(fromDate, toDate, function (err, rows) {
             if (err) res.json(err); else res.json(rows);
         });
     } catch (e) { res.status(500).json({ error: e.message }); }

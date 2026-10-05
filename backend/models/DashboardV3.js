@@ -19,32 +19,32 @@ var DashboardV3 = {
                 });
             }),
             new Promise((resolve, reject) => {
-                db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Day')", [], (err, rows) => {
+                db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Day', NULL, NULL)", [], (err, rows) => {
                     if (err) reject(err); else resolve(rows[0] || []);
                 });
             }),
             new Promise((resolve, reject) => {
-                db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Week')", [], (err, rows) => {
+                db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Week', NULL, NULL)", [], (err, rows) => {
                     if (err) reject(err); else resolve(rows[0] || []);
                 });
             }),
             new Promise((resolve, reject) => {
-                db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Month')", [], (err, rows) => {
+                db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Month', NULL, NULL)", [], (err, rows) => {
                     if (err) reject(err); else resolve(rows[0] || []);
                 });
             }),
             new Promise((resolve, reject) => {
-                db.query("CALL Get_Lead_Dashboard_V3_Activity_Chart('Day')", [], (err, rows) => {
+                db.query("CALL Get_Lead_Dashboard_V3_Activity_Chart('Day', NULL, NULL)", [], (err, rows) => {
                     if (err) reject(err); else resolve(rows[0] || []);
                 });
             }),
             new Promise((resolve, reject) => {
-                db.query("CALL Get_Lead_Dashboard_V3_Activity_Chart('Week')", [], (err, rows) => {
+                db.query("CALL Get_Lead_Dashboard_V3_Activity_Chart('Week', NULL, NULL)", [], (err, rows) => {
                     if (err) reject(err); else resolve(rows[0] || []);
                 });
             }),
             new Promise((resolve, reject) => {
-                db.query("CALL Get_Lead_Dashboard_V3_Activity_Chart('Month')", [], (err, rows) => {
+                db.query("CALL Get_Lead_Dashboard_V3_Activity_Chart('Month', NULL, NULL)", [], (err, rows) => {
                     if (err) reject(err); else resolve(rows[0] || []);
                 });
             })
@@ -84,18 +84,18 @@ var DashboardV3 = {
             if (err) callback(err, null); else callback(null, rows[0] ? rows[0][0] : {});
         });
     },
-    getActivityDay: function(callback) {
-        db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Day')", [], (err, rows) => {
+    getActivityDay: function(fromDate, toDate, callback) {
+        db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Day', ?, ?)", [fromDate, toDate], (err, rows) => {
             if (err) callback(err, null); else callback(null, rows[0] || []);
         });
     },
-    getActivityWeek: function(callback) {
-        db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Week')", [], (err, rows) => {
+    getActivityWeek: function(fromDate, toDate, callback) {
+        db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Week', ?, ?)", [fromDate, toDate], (err, rows) => {
             if (err) callback(err, null); else callback(null, rows[0] || []);
         });
     },
-    getActivityMonth: function(callback) {
-        db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Month')", [], (err, rows) => {
+    getActivityMonth: function(fromDate, toDate, callback) {
+        db.query("CALL Get_Lead_Dashboard_V3_Activity_Table('Month', ?, ?)", [fromDate, toDate], (err, rows) => {
             if (err) callback(err, null); else callback(null, rows[0] || []);
         });
     }

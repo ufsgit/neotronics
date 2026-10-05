@@ -89,6 +89,100 @@ End$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_Dept_Chart`(IN p_startDate DATE, IN p_endDate DATE)
+BEGIN
+    SELECT IFNULL(Department_Name, 'Unassigned') as Department, COUNT(*) as Count
+    FROM lead_activity_log
+    WHERE (p_startDate IS NULL OR DATE(Activity_Date) >= p_startDate)
+      AND (p_endDate IS NULL OR DATE(Activity_Date) <= p_endDate)
+    GROUP BY Department_Name
+    ORDER BY Count DESC;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_KPIs`()
+BEGIN
+    DECLARE total_act INT DEFAULT 0;
+    DECLARE today_act INT DEFAULT 0;
+    DECLARE top_staff VARCHAR(255) DEFAULT 'N/A';
+    DECLARE top_dept VARCHAR(255) DEFAULT 'N/A';
+
+    SELECT COUNT(*) INTO total_act
+    FROM lead_activity_log;
+
+    SELECT COUNT(*) INTO today_act
+    FROM lead_activity_log
+    WHERE DATE(Activity_Date) = CURDATE();
+
+    SELECT IFNULL(Staff_Name, 'System/Unassigned') INTO top_staff
+    FROM lead_activity_log
+    WHERE Staff_Name IS NOT NULL AND Staff_Name != 'System/Unassigned' AND Staff_Name != ''
+    GROUP BY Staff_Name
+    ORDER BY COUNT(*) DESC
+    LIMIT 1;
+
+    SELECT IFNULL(Department_Name, 'Unassigned') INTO top_dept
+    FROM lead_activity_log
+    WHERE Department_Name IS NOT NULL AND Department_Name != 'Unassigned' AND Department_Name != ''
+    GROUP BY Department_Name
+    ORDER BY COUNT(*) DESC
+    LIMIT 1;
+
+    SELECT total_act as TotalActivities, today_act as ActivitiesToday, IFNULL(top_staff, 'N/A') as TopStaff, IFNULL(top_dept, 'N/A') as TopDept;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_List_Paginated`(
+    IN p_startDate DATE,
+    IN p_endDate DATE,
+    IN p_page INT,
+    IN p_limit INT
+)
+BEGIN
+    DECLARE v_offset INT;
+    IF p_page IS NULL OR p_page < 1 THEN SET p_page = 1; END IF;
+    IF p_limit IS NULL OR p_limit < 1 THEN SET p_limit = 20; END IF;
+    SET v_offset = (p_page - 1) * p_limit;
+
+    SELECT
+        LeadActivityLog_Id, Activity_Date, Lead_Id, Lead_Name, Deal_Type,
+        Old_Value, New_Value, Action_Taken, Activity_Title, Outcome,
+        Next_Follow_Up, Notes, Branch_Name, Department_Name, Staff_Name
+    FROM lead_activity_log
+    WHERE (p_startDate IS NULL OR DATE(Activity_Date) >= p_startDate)
+      AND (p_endDate IS NULL OR DATE(Activity_Date) <= p_endDate)
+    ORDER BY Activity_Date DESC
+    LIMIT p_limit OFFSET v_offset;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_Staff_Chart`(IN p_startDate DATE, IN p_endDate DATE)
+BEGIN
+    SELECT IFNULL(Staff_Name, 'System/Unassigned') as Staff, COUNT(*) as Count
+    FROM lead_activity_log
+    WHERE (p_startDate IS NULL OR DATE(Activity_Date) >= p_startDate)
+      AND (p_endDate IS NULL OR DATE(Activity_Date) <= p_endDate)
+    GROUP BY Staff_Name
+    ORDER BY Count DESC;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_Type_Chart`(IN p_startDate DATE, IN p_endDate DATE)
+BEGIN
+    SELECT IFNULL(Activity_Title, 'Unknown') as Activity_Type, COUNT(*) as Count
+    FROM lead_activity_log
+    WHERE (p_startDate IS NULL OR DATE(Activity_Date) >= p_startDate)
+      AND (p_endDate IS NULL OR DATE(Activity_Date) <= p_endDate)
+    GROUP BY Activity_Title
+    ORDER BY Count DESC;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Check_Lead_Market_Study_Duplicate_Bulk`(
     IN p_JsonChecks JSON
 )
@@ -3581,7 +3675,9 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Dashboard_V3_Activity_Chart`(
-    IN _Type VARCHAR(50)
+    IN _Type VARCHAR(50),
+    IN _FromDate DATE,
+    IN _ToDate DATE
 )
 BEGIN
     IF _Type = 'Day' THEN
@@ -3589,6 +3685,8 @@ BEGIN
             DATE_FORMAT(MAX(Activity_Date), '%d-%b') AS Date_Label,
             COUNT(LeadActivityLog_Id) AS Activities
         FROM `lead_activity_log`
+        WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
+          AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
         GROUP BY DATE(Activity_Date)
         ORDER BY DATE(Activity_Date) ASC;
         
@@ -3597,6 +3695,8 @@ BEGIN
             DATE_FORMAT(MAX(DATE_SUB(Activity_Date, INTERVAL WEEKDAY(Activity_Date) DAY)), '%d-%b') AS Date_Label,
             COUNT(LeadActivityLog_Id) AS Activities
         FROM `lead_activity_log`
+        WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
+          AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
         GROUP BY YEARWEEK(Activity_Date, 1)
         ORDER BY YEARWEEK(Activity_Date, 1) ASC;
         
@@ -3605,6 +3705,8 @@ BEGIN
             DATE_FORMAT(MAX(Activity_Date), '%b %y') AS Date_Label,
             COUNT(LeadActivityLog_Id) AS Activities
         FROM `lead_activity_log`
+        WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
+          AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
         GROUP BY DATE_FORMAT(Activity_Date, '%Y-%m')
         ORDER BY MAX(Activity_Date) ASC;
     END IF;
@@ -3613,7 +3715,9 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Dashboard_V3_Activity_Table`(
-    IN _Type VARCHAR(50)
+    IN _Type VARCHAR(50),
+    IN _FromDate DATE,
+    IN _ToDate DATE
 )
 BEGIN
     IF _Type = 'Day' THEN
@@ -3622,6 +3726,8 @@ BEGIN
             COUNT(LeadActivityLog_Id) AS Activities,
             SUM(IF(Won_Lost_Status = 1, 1, 0)) AS Won
         FROM `lead_activity_log`
+        WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
+          AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
         GROUP BY DATE(Activity_Date)
         ORDER BY DATE(Activity_Date) DESC;
         
@@ -3631,6 +3737,8 @@ BEGIN
             COUNT(LeadActivityLog_Id) AS Activities,
             SUM(IF(Won_Lost_Status = 1, 1, 0)) AS Won
         FROM `lead_activity_log`
+        WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
+          AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
         GROUP BY YEARWEEK(Activity_Date, 1)
         ORDER BY YEARWEEK(Activity_Date, 1) DESC;
         
@@ -3640,6 +3748,8 @@ BEGIN
             COUNT(LeadActivityLog_Id) AS Activities,
             SUM(IF(Won_Lost_Status = 1, 1, 0)) AS Won
         FROM `lead_activity_log`
+        WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
+          AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
         GROUP BY DATE_FORMAT(Activity_Date, '%Y-%m')
         ORDER BY MAX(Activity_Date) DESC;
     END IF;
