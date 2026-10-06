@@ -94,6 +94,7 @@ import { Lead_ConfigComponent } from './Lead_Config/Lead_Config.component';
 import { MarketStudyFieldsComponent } from './Lead_Config/Market_Study/MarketStudyFields/market-study-fields.component';
 import { Register_LeadComponent } from "./Register_Lead/Register_Lead.component";
 import { Deal_TypeComponent } from './Deal_Type/Deal_Type.component';
+import { FallbackComponent } from './fallback/fallback.component';
 
 export const AdminRoutes: Routes = [
 	{
@@ -101,6 +102,7 @@ export const AdminRoutes: Routes = [
 		component: AdminComponent,
 		children: [
 			{ path: "", redirectTo: "/Lead", pathMatch: "full" },
+			{ path: "Fallback", component: FallbackComponent },
 			{ path: "Account_Group", component: Account_GroupComponent },
 			{ path: "Account_Years", component: Account_YearsComponent },
 			{ path: "Customer", component: CustomerComponent },

@@ -8,14 +8,15 @@
 				/>
 			</div>
 			<div
-				class="navbar-wrapper ml-2 pl-2"
-				
+				class="navbar-wrapper ml-2 pl-2 flex-shrink-1"
+				style="min-width: 0; overflow: hidden;"
 				*ngIf="isDesktopMenu()"
 			>
 				<a
-					class="navbar-brand"
+					class="navbar-brand text-truncate"
 					href="javascript:void(0)"
-					style="pointer-events: none"
+					style="pointer-events: none; max-width: 100%; display: inline-block !important;"
+					title="{{ getTitle() }}"
 					>{{ getTitle() }}</a
 				>
 			</div>
@@ -44,7 +45,7 @@
 
 		<div class="d-flex align-items-center flex-grow-1" *ngIf="isDesktopMenu()">
 			<ul class="navbar-nav flex-grow-1 d-flex flex-row align-items-center justify-content-end">
-			<li class="nav-item dropdown">
+			<li class="nav-item dropdown" *ngIf="hasMasterPermission()">
 				<a
 					class="nav-link"
 					href="javascript:void(0)"
@@ -215,22 +216,22 @@
 						>{{ [menuItems[menuArray[93]].title] }}</a
 					>
 					-->
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Model']">Model</a>
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Terms_And_Condition']">Terms & Condition</a>
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Vertical']">Industry</a>
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Designation']">Designation</a>
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Company_Size']">Company Size</a>
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/User_Role']">User Role</a>
-				<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/General_Settings']">General Settings</a>
-				<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Custom_Field']">Custom Field</a>
+					<a class="dropdown-item" *ngIf="menuArray[122] > -1" href="javascript:void(0)" [routerLink]="['/Model']">Model</a>
+					<a class="dropdown-item" *ngIf="menuArray[123] > -1" href="javascript:void(0)" [routerLink]="['/Terms_And_Condition']">Terms & Condition</a>
+					<a class="dropdown-item" *ngIf="menuArray[124] > -1" href="javascript:void(0)" [routerLink]="['/Vertical']">Industry</a>
+					<a class="dropdown-item" *ngIf="menuArray[125] > -1" href="javascript:void(0)" [routerLink]="['/Designation']">Designation</a>
+					<a class="dropdown-item" *ngIf="menuArray[126] > -1" href="javascript:void(0)" [routerLink]="['/Company_Size']">Company Size</a>
+					<a class="dropdown-item" *ngIf="menuArray[127] > -1" href="javascript:void(0)" [routerLink]="['/User_Role']">User Role</a>
+				<a class="dropdown-item" *ngIf="menuArray[128] > -1" href="javascript:void(0)" [routerLink]="['/General_Settings']">General Settings</a>
+				<a class="dropdown-item" *ngIf="menuArray[129] > -1" href="javascript:void(0)" [routerLink]="['/Custom_Field']">Custom Field</a>
 				<a class="dropdown-item" *ngIf="menuArray[119] > -1" href="javascript:void(0)" [routerLink]="['/Lead_Config']">Lead Config</a>
 					
 					<!-- Users Submenu -->
-					<div class="dropdown-submenu">
-						<!-- <a class="dropdown-item dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown">Users</a> -->
+					<div class="dropdown-submenu" *ngIf="menuArray[130] > -1 || menuArray[131] > -1">
+						<a class="dropdown-item dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown">Users</a>
 						<div class="dropdown-menu">
-							<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/User_Type']">User Type</a>
-							<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Working_Status']">Working Status</a>
+							<a class="dropdown-item" *ngIf="menuArray[130] > -1" href="javascript:void(0)" [routerLink]="['/User_Type']">User Type</a>
+							<a class="dropdown-item" *ngIf="menuArray[131] > -1" href="javascript:void(0)" [routerLink]="['/Working_Status']">Working Status</a>
 						</div>
 					</div>
 					<a
@@ -257,7 +258,7 @@
 							class="fa fa-dashboard"></i> Lead Dashboard</a>
 			</li>
 
-			<li class="nav-item">
+			<li class="nav-item" *ngIf="menuArray[132] > -1">
 				<a class="nav-link" [routerLink]="['/OperationsDashboard']">
 					 <i
 							class="fa fa-dashboard"></i> Operations Dashboard</a>
@@ -269,7 +270,7 @@
 							class="fa fa-bullhorn"></i> Lead</a>
 			</li>
 
-			<li class="nav-item dropdown">
+			<li class="nav-item dropdown" *ngIf="hasTransactionsPermission()">
 				<a
 					class="nav-link"
 					href="javascript:void(0)"
@@ -285,10 +286,10 @@
 					class="dropdown-menu"
 					aria-labelledby="navbarDropdownMenuLink"
 				>
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Requirement']">Requirement</a>
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/PriceRequest']">Price Request</a>
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/PriceResponse']">Price Response</a>
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Quotation_Confirmation']">Quotation Confirmation</a>
+
+					<a class="dropdown-item" *ngIf="menuArray[133] > -1" href="javascript:void(0)" [routerLink]="['/PriceRequest']">Price Request</a>
+					<a class="dropdown-item" *ngIf="menuArray[134] > -1" href="javascript:void(0)" [routerLink]="['/PriceResponse']">Price Response</a>
+					<a class="dropdown-item" *ngIf="menuArray[135] > -1" href="javascript:void(0)" [routerLink]="['/Quotation_Confirmation']">Quotation Confirmation</a>
 
 					<a
 						class="dropdown-item"
@@ -693,7 +694,7 @@ href="javascript:void(0)"
 				</div>
 			</li> -->
 
-			<li class="nav-item dropdown">
+			<li class="nav-item dropdown" *ngIf="hasReportPermission()">
 				<a
 					class="nav-link"
 					href="javascript:void(0)"
@@ -927,7 +928,7 @@ href="javascript:void(0)"
 				</div>
 			</li> -->
 			</ul>
-			<div class="right-section ml-auto">
+			<div class="right-section ml-auto flex-shrink-0 d-flex align-items-center">
 				<button
 					mat-icon-button
 					class="notification-btn"

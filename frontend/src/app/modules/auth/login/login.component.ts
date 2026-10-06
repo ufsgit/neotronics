@@ -1605,6 +1605,188 @@ export class LoginComponent implements OnInit {
 														Delete: Menus[i].Menu_Delete,
 														Menu_Type: Menus[i].Menu_Type,
 		});
+		else if (Menus[i].Menu_Id == 123)
+					this.Push_Menu({
+														path: "/Model",
+														title: "Model",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 124)
+					this.Push_Menu({
+														path: "/Terms_And_Condition",
+														title: "Terms & Condition",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 125)
+					this.Push_Menu({
+														path: "/Vertical",
+														title: "Industry",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 126)
+					this.Push_Menu({
+														path: "/Designation",
+														title: "Designation",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 127)
+					this.Push_Menu({
+														path: "/Company_Size",
+														title: "Company Size",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 128)
+					this.Push_Menu({
+														path: "/User_Role",
+														title: "User Role",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 129)
+					this.Push_Menu({
+														path: "/General_Settings",
+														title: "General Settings",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 130)
+					this.Push_Menu({
+														path: "/Custom_Field",
+														title: "Custom Field",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 131)
+					this.Push_Menu({
+														path: "/User_Type",
+														title: "User Type",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 132)
+					this.Push_Menu({
+														path: "/Working_Status",
+														title: "Working Status",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 133)
+					this.Push_Menu({
+														path: "/OperationsDashboard",
+														title: "Operations Dashboard",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 134)
+					this.Push_Menu({
+														path: "/PriceRequest",
+														title: "Price Request",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 135)
+					this.Push_Menu({
+														path: "/PriceResponse",
+														title: "Price Response",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 136)
+					this.Push_Menu({
+														path: "/Quotation_Confirmation",
+														title: "Quotation Confirmation",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
 
 						
 							}
@@ -1640,7 +1822,12 @@ export class LoginComponent implements OnInit {
 							this.ngZone.run(() => {
 								this.issLoading = false;
 								this.cdr.detectChanges();
-								this.router.navigateByUrl("/Lead");
+								
+								if (Pointer_Table[120] > -1) {
+									this.router.navigateByUrl("/Lead");
+								} else {
+									this.router.navigateByUrl("/Fallback");
+								}
 							});
 						} else {
 							this.issLoading = false;

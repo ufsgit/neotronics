@@ -1,0 +1,46 @@
+<div class="main-content d-flex align-items-center justify-content-center" style="min-height: calc(100vh - 150px);">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="card shadow-lg border-0 rounded-lg text-center p-5">
+          <div class="card-body">
+            
+            <div class="mb-4">
+              <i class="fa fa-{{ hasPermissions ? 'home text-primary' : 'lock text-muted' }}" style="font-size: 4rem; opacity: 0.5;"></i>
+            </div>
+            
+            <h3 class="font-weight-bold text-dark mb-1">Welcome, {{ userName }}</h3>
+            <p class="text-uppercase text-secondary font-weight-bold mb-4" style="letter-spacing: 1px; font-size: 0.85rem;">
+              {{ role }} &bull; {{ department }}
+            </p>
+            
+            <hr class="my-4 mx-auto" style="width: 50px; border-width: 2px;">
+            
+            <!-- If the user has absolutely ZERO permissions -->
+            <div class="alert alert-light border shadow-sm p-4 text-left" role="alert" style="border-radius: 12px;" *ngIf="!hasPermissions">
+              <div class="d-flex align-items-center mb-2">
+                <i class="fa fa-exclamation-circle text-warning mr-2" style="font-size: 1.2rem;"></i>
+                <h5 class="alert-heading font-weight-bold mb-0 text-dark">Access Restricted</h5>
+              </div>
+              <p class="mb-0 text-muted" style="font-size: 0.95rem;">
+                You currently do not have any modules or menus assigned to your account. Please contact your system administrator to configure your access permissions.
+              </p>
+            </div>
+
+            <!-- If the user has SOME permissions (just not the Lead list) -->
+            <div class="alert alert-light border shadow-sm p-4 text-left" role="alert" style="border-radius: 12px;" *ngIf="hasPermissions">
+              <div class="d-flex align-items-center mb-2">
+                <i class="fa fa-info-circle text-info mr-2" style="font-size: 1.2rem;"></i>
+                <h5 class="alert-heading font-weight-bold mb-0 text-dark">Dashboard Ready</h5>
+              </div>
+              <p class="mb-0 text-muted" style="font-size: 0.95rem;">
+                You do not have access to the primary Lead list. Please use the navigation menu at the top of the screen to select the modules you are authorized to view.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

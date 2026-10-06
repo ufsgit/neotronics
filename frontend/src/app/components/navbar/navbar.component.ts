@@ -354,6 +354,24 @@ const navbar: HTMLElement = this.element.nativeElement;
         }
         return 'Dashboard';
     }
+    hasMasterPermission(): boolean {
+        if (!this.menuArray) return false;
+        const masterIndices = [88, 5, 4, 2, 1, 6, 75, 25, 39, 8, 7, 36, 34, 12, 83, 79, 81, 90, 91, 92, 93, 122, 123, 124, 125, 126, 127, 128, 129, 119, 130, 131, 112];
+        return masterIndices.some(index => this.menuArray[index] > -1);
+    }
+
+    hasTransactionsPermission(): boolean {
+        if (!this.menuArray) return false;
+        const transactionIndices = [115, 133, 134, 135, 116, 94, 95];
+        return transactionIndices.some(index => this.menuArray[index] > -1);
+    }
+
+    hasReportPermission(): boolean {
+        if (!this.menuArray) return false;
+        const reportIndices = [117, 118, 10, 111, 23, 52, 108, 109, 110];
+        return reportIndices.some(index => this.menuArray[index] > -1);
+    }
+
     getTitle() {
        // return ("hai");
         var titlee = this.location.prepareExternalUrl(this.location.path());
