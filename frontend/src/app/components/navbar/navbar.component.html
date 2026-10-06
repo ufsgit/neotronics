@@ -223,7 +223,7 @@
 					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/User_Role']">User Role</a>
 				<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/General_Settings']">General Settings</a>
 				<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Custom_Field']">Custom Field</a>
-				<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Lead_Config']">Lead Config</a>
+				<a class="dropdown-item" *ngIf="menuArray[119] > -1" href="javascript:void(0)" [routerLink]="['/Lead_Config']">Lead Config</a>
 					
 					<!-- Users Submenu -->
 					<div class="dropdown-submenu">
@@ -251,7 +251,7 @@
 				</a>				
 			</li> -->
 
-			<li class="nav-item">
+			<li class="nav-item" *ngIf="menuArray[121] > -1">
 				<a class="nav-link" [routerLink]="['/LeadDashboard']">
 					 <i
 							class="fa fa-dashboard"></i> Lead Dashboard</a>
@@ -263,7 +263,7 @@
 							class="fa fa-dashboard"></i> Operations Dashboard</a>
 			</li>
 
-			<li class="nav-item">
+			<li class="nav-item" *ngIf="menuArray[120] > -1">
 				<a class="nav-link" [routerLink]="['/Lead']">
 					 <i
 							class="fa fa-bullhorn"></i> Lead</a>
@@ -488,7 +488,7 @@ href="javascript:void(0)"
 				</div>
 			</li>
 
-			<li class="nav-item dropdown">
+			<li class="nav-item dropdown" *ngIf="menuArray[19] > -1 || menuArray[105] > -1 || menuArray[106] > -1 || menuArray[17] > -1">
 				<a
 					class="nav-link"
 					href="javascript:void(0)"
@@ -709,8 +709,8 @@ href="javascript:void(0)"
 					class="dropdown-menu"
 					aria-labelledby="navbarDropdownMenuLink"
 				>
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Ghosting_Lead_Report']">Ghosting Lead Report</a>
-					<a class="dropdown-item" href="javascript:void(0)" [routerLink]="['/Activity_Logs']">Activity Logs</a>
+					<a class="dropdown-item" *ngIf="menuArray[117] > -1" href="javascript:void(0)" [routerLink]="['/Ghosting_Lead_Report']">Ghosting Lead Report</a>
+					<a class="dropdown-item" *ngIf="menuArray[118] > -1" href="javascript:void(0)" [routerLink]="['/Activity_Logs']">Activity Logs</a>
 					<!-- <a
 						class="dropdown-item"
 						href="javascript:void(0)"

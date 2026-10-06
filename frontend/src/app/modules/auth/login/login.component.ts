@@ -1540,6 +1540,71 @@ export class LoginComponent implements OnInit {
 														Delete: Menus[i].Menu_Delete,
 														Menu_Type: Menus[i].Menu_Type,
 		});
+		else if (Menus[i].Menu_Id == 118)
+					this.Push_Menu({
+														path: "/Ghosting_Lead_Report",
+														title: "Ghosting Lead Report",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 119)
+					this.Push_Menu({
+														path: "/Activity_Logs",
+														title: "Activity Logs",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 120)
+					this.Push_Menu({
+														path: "/Lead_Config",
+														title: "Lead Config",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 121)
+					this.Push_Menu({
+														path: "/Lead",
+														title: "Lead",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
+		else if (Menus[i].Menu_Id == 122)
+					this.Push_Menu({
+														path: "/LeadDashboard",
+														title: "Lead Dashboard",
+														icon: "unarchive",
+														class: "",
+														Menu_Id: Menus[i].Menu_Id,
+														View: Menus[i].VIew_All,
+														Save: Menus[i].Menu_Save,
+														Edit: Menus[i].Menu_Edit,
+														Delete: Menus[i].Menu_Delete,
+														Menu_Type: Menus[i].Menu_Type,
+		});
 
 						
 							}

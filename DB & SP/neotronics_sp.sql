@@ -22598,6 +22598,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_User_Details`(
   IN Role_Id_ BIGINT,
   IN Department_Id_ INT,
   IN Branch_Id_ INT,
+  IN Branch_Name_ VARCHAR(250), 
   IN Email_ VARCHAR(250),
   IN Mobile_ VARCHAR(250)
 )
@@ -22620,6 +22621,8 @@ BEGIN
         Working_Status_Id = Working_Status_Id_,
         Role_Id           = Role_Id_,
         Department_Id     = Department_Id_,
+        Branch_Id         = Branch_Id_,       -- Add this line!
+        Branch_Name       = Branch_Name_,
         Email             = Email_,
         Mobile            = Mobile_
     WHERE User_Details_Id = User_Details_Id_;
@@ -22627,11 +22630,11 @@ BEGIN
     SET User_Details_Id_ = (SELECT COALESCE(MAX(User_Details_Id), 0) + 1 FROM User_Details);
     INSERT INTO User_Details (
       User_Details_Id, User_Details_Name, Password, User_Type, DeleteStatus,
-      Working_Status, Working_Status_Id, Role_Id, Department_Id, Email, Mobile
+      Working_Status, Working_Status_Id, Role_Id, Department_Id, Branch_Id, Branch_Name, Email, Mobile
     )
     VALUES (
       User_Details_Id_, User_Details_Name_, Password_, User_Type_, FALSE,
-      Working_Status_, Working_Status_Id_, Role_Id_, Department_Id_, Email_, Mobile_
+      Working_Status_, Working_Status_Id_, Role_Id_, Department_Id_, Branch_Id_, Branch_Name_, Email_, Mobile_
     );
   END IF;
 

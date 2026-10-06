@@ -12,11 +12,14 @@
           var connection = await pool.getConnection();
          await connection.beginTransaction();
          var User_Menu_Selection_ = User_Details_.User_Menu_Selection_Data;
+         if (typeof User_Menu_Selection_ === 'object') {
+             User_Menu_Selection_ = JSON.stringify(User_Menu_Selection_);
+         }
           console.log(User_Menu_Selection_)
           try
            {
             const result1 = await(new storedProcedure('Save_User_Details',[User_Details_.User_Details_Id,User_Details_.User_Details_Name,User_Details_.Password,
-            User_Details_.User_Type,User_Menu_Selection_,User_Details_.Working_Status_Id,User_Details_.Working_Status, User_Details_.Role_Id, User_Details_.Department_Id, User_Details_.Branch_Id, User_Details_.Email, User_Details_.Mobile], connection)).result();
+            User_Details_.User_Type,User_Menu_Selection_,User_Details_.Working_Status_Id,User_Details_.Working_Status, User_Details_.Role_Id, User_Details_.Department_Id, User_Details_.Branch_Id, User_Details_.Branch_Name, User_Details_.Email, User_Details_.Mobile], connection)).result();
             console.log(result1)
               await connection.commit();
               connection.release();
@@ -74,8 +77,17 @@
     const User_Menu_Selection = await db.promise().query("CALL Search_User_Menu_Selection()").then(res => res[0][0]);
     const Working_Status = await db.promise().query("CALL Get_Working_Status()").then(res => res[0][0]);
     const User_Role = await db.promise().query("SELECT * FROM user_role WHERE DeleteStatus = 0 ORDER BY User_Role_Name").then(res => res[0]);
-    const Department = await db.promise().query("SELECT * FROM department ORDER BY Department_Name").then(res => res[0]);
-    return {User_Type,User_Menu_Selection,Working_Status, User_Role, Department};    
+    return {User_Type,User_Menu_Selection,Working_Status, User_Role};    
+   },
+   
+   Load_Branch_Data: async function () {
+    const Branch = await db.promise().query("SELECT * FROM branch_master WHERE IFNULL(DeleteStatus, 0) = 0 ORDER BY Branch_Name ASC").then(res => res[0]);
+    return { Branch };
+   },
+
+   Load_Department_Data: async function (Branch_Id_) {
+    const Department = await db.promise().query("SELECT * FROM department WHERE Branch_Id = ? ORDER BY Department_Name", [Branch_Id_]).then(res => res[0]);
+    return { Department };
    },
 
 

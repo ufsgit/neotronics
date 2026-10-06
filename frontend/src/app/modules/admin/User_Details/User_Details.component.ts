@@ -64,7 +64,11 @@ User_Role_: any;
 User_Role_Temp: any = { User_Role_Id: 0, User_Role_Name: 'Select' };
 
 Department_Data: any[] = [];
+Filtered_Department_Data: any[] = [];
 Department_: any;
+
+Branch_Data: any[] = [];
+Branch_: any;
 
 constructor(
     public User_Details_Service_:User_Details_Service, 
@@ -193,6 +197,9 @@ else
     this.User_Details_.Department_Id = 0;
 }
 
+this.Branch_ = null;
+this.User_Details_.Branch_Id = 0;
+
 this.ToAccount_ = new Client_Accounts();
 this.ToAccount_.Client_Accounts_Id = 0;
 this.ToAccount_.Client_Accounts_Name = "";
@@ -271,18 +278,16 @@ Load_Dropdowns()
    this.User_Type_Data = Rows.User_Type;
    this.User_Menu_Selection_Data =  Rows.User_Menu_Selection; 
    this.Working_Status_Data =  Rows.Working_Status; 
-   this.Department_Data = Rows.Department;
-
-   console.log('Dropdown Rows:', Rows);
    
    if (Rows.User_Role) {
        this.User_Role_Data = Rows.User_Role;
-       console.log('User_Role_Data loaded:', this.User_Role_Data.length, 'items');
    } else {
-       console.error('User_Role data missing in response');
        this.User_Role_Data = [];
    }
-   console.log('Final User_Role_Data:', this.User_Role_Data);
+   
+   this.User_Details_Service_.Load_Branch_Data().subscribe(BranchRows => {
+       this.Branch_Data = BranchRows.Branch;
+   });
    
     },
   Rows => { 
@@ -323,6 +328,23 @@ Change_Page(step: number) {
   if (this.Page_Index < 1) this.Page_Index = 1;
   if (this.Page_Index > this.Total_Pages) this.Page_Index = this.Total_Pages;
   this.Update_Pagination();
+}
+
+Branch_Change() {
+    if (this.Branch_ && this.Branch_.Branch_Id) {
+        this.issLoading = true;
+        this.User_Details_Service_.Load_Department_Data(this.Branch_.Branch_Id).subscribe(DeptRows => {
+            this.Filtered_Department_Data = DeptRows.Department;
+            this.issLoading = false;
+            
+            if (this.Department_ && !this.Filtered_Department_Data.some(d => d.Department_Id === this.Department_.Department_Id)) {
+                this.Department_ = null;
+            }
+        });
+    } else {
+        this.Filtered_Department_Data = [];
+        this.Department_ = null;
+    }
 }
 
 
@@ -424,6 +446,9 @@ Save_User_Details()
     else if (this.Department_ == undefined || this.Department_ == null || this.Department_.Department_Id == undefined || this.Department_.Department_Id==0) {
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Department', Type: "3" } });
         }
+    else if (this.Branch_ == undefined || this.Branch_ == null || this.Branch_.Branch_Id == undefined || this.Branch_.Branch_Id==0) {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Branch', Type: "3" } });
+        }
     else if (this.Menu_Permission_Selected == true && Menu_Status==false)
     {
    const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Atleast One Menu', Type: "3" } });
@@ -439,8 +464,8 @@ Save_User_Details()
         this.User_Details_.Working_Status = this.Working_Status_.Working_Status_Name;
 
         this.User_Details_.Employee_Id=0;
-        this.User_Details_.Branch_Id = 0;
-		this.User_Details_.Branch_Name = "";
+        this.User_Details_.Branch_Id = this.Branch_.Branch_Id;
+		this.User_Details_.Branch_Name = this.Branch_.Branch_Name;
         this.User_Menu_Selection_Data_Temp=[]; 
         if (this.Menu_Permission_Selected == true) {
         for (var i = 0; i< this.User_Menu_Selection_Data.length; i++) {
@@ -552,12 +577,27 @@ for (var i = 0; i < this.User_Role_Data.length; i++) {
     this.User_Role_=this.User_Role_Data[i];
 }
 
-if (this.Department_Data != null && this.Department_Data.length > 0) {
-    for (var i = 0; i < this.Department_Data.length; i++) {
-        if (this.User_Details_.Department_Id == this.Department_Data[i].Department_Id) {
-            this.Department_ = this.Department_Data[i];
+if (this.Branch_Data != null && this.Branch_Data.length > 0) {
+    for (var i = 0; i < this.Branch_Data.length; i++) {
+        if (this.User_Details_.Branch_Id == this.Branch_Data[i].Branch_Id) {
+            this.Branch_ = this.Branch_Data[i];
         }
     }
+}
+
+this.Filtered_Department_Data = [];
+if (this.Branch_ && this.Branch_.Branch_Id) {
+    this.User_Details_Service_.Load_Department_Data(this.Branch_.Branch_Id).subscribe(DeptRows => {
+        this.Filtered_Department_Data = DeptRows.Department;
+        
+        if (this.Filtered_Department_Data != null && this.Filtered_Department_Data.length > 0) {
+            for (var i = 0; i < this.Filtered_Department_Data.length; i++) {
+                if (this.User_Details_.Department_Id == this.Filtered_Department_Data[i].Department_Id) {
+                    this.Department_ = this.Filtered_Department_Data[i];
+                }
+            }
+        }
+    });
 }
 
 this.ToAccount_ = new Client_Accounts();

@@ -39,6 +39,16 @@ Get_Users_Load_Data():Observable<any>
 return this.http.get(environment.BasePath +'User_Details/Get_Users_Load_Data/');
 }
 
+Load_Branch_Data():Observable<any>
+{
+return this.http.get(environment.BasePath +'User_Details/Load_Branch_Data/');
+}
+
+Load_Department_Data(Branch_Id):Observable<any>
+{
+return this.http.get(environment.BasePath +'User_Details/Load_Department_Data/'+Branch_Id);
+}
+
 Load_Company():Observable<any>
 {
 return this.http.get(environment.BasePath +'User_Details/Search_Company/');

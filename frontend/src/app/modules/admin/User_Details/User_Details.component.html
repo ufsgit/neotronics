@@ -155,10 +155,18 @@
           </div>
 
           <div class="ig-field">
+            <label class="ig-label">Branch <span class="ig-req">*</span></label>
+            <select class="ig-select" [(ngModel)]="Branch_" name="Branch_" (change)="Branch_Change()">
+              <option [ngValue]="null">Select Branch</option>
+              <option *ngFor="let b of Branch_Data" [ngValue]="b">{{ b.Branch_Name }}</option>
+            </select>
+          </div>
+
+          <div class="ig-field">
             <label class="ig-label">Department <span class="ig-req">*</span></label>
             <select class="ig-select" [(ngModel)]="Department_" name="Department_">
               <option [ngValue]="null">Select Department</option>
-              <option *ngFor="let d of Department_Data" [ngValue]="d">{{ d.Department_Name }}</option>
+              <option *ngFor="let d of Filtered_Department_Data" [ngValue]="d">{{ d.Department_Name }}</option>
             </select>
           </div>
 

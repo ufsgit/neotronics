@@ -211,17 +211,38 @@ router.get('/Get_Menu_Permission/:User_Id_?',function(req,res,next)
         try
         {
         const result = await User_Details.Get_Users_Load_Data();
-                    //console.log('result', result);
         res.json(result);
         } 
         catch (e) 
         {
-                      // console.log(e)
         res.send(e);
         } 
-        finally 
+        });
+
+    router.get("/Load_Branch_Data",async (req, res, next) =>
         {
-        }
+        try
+        {
+        const result = await User_Details.Load_Branch_Data();
+        res.json(result);
+        } 
+        catch (e) 
+        {
+        res.send(e);
+        } 
+        });
+
+    router.get("/Load_Department_Data/:Branch_Id_?",async (req, res, next) =>
+        {
+        try
+        {
+        const result = await User_Details.Load_Department_Data(req.params.Branch_Id_ || 0);
+        res.json(result);
+        } 
+        catch (e) 
+        {
+        res.send(e);
+        } 
         });
 
 
