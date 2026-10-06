@@ -10,6 +10,10 @@ var New_FollowUp = {
         );
     },
 
+    Get_LeadFollowUpDetails: function(Lead_Id, callback) {
+        return db.query("CALL Get_LeadFollowUpDetails(?)", [Lead_Id], callback);
+    },
+
     Save_NewFollowUp: function (data, callback) {
         const n = v => (v === '' || v === null || v === undefined) ? null : (isNaN(Number(v)) ? null : Number(v));
         const s = v => (v === '' || v === null || v === undefined) ? null : String(v);

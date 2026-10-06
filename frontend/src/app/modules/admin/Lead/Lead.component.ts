@@ -429,43 +429,52 @@ export class LeadComponent implements OnInit, AfterViewInit {
   }
 
   Open_FollowUp(lead: Lead) {
-    this.Selected_Lead_For_FollowUp = Object.assign({}, lead);
-    this.Selected_Lead_For_FollowUp.Is_FollowUp = true;
-    this.Selected_Pipeline_Stage = '';
-    this.Selected_Pulse = '';
-    
-    if (this.Selected_Lead_For_FollowUp.Branch_Id > 0) {
-      this.Selected_Lead_For_FollowUp.FollowUp_Location_Id = this.Selected_Lead_For_FollowUp.Branch_Id;
-      this.DropdownData['Branch'] = [{ id: this.Selected_Lead_For_FollowUp.Branch_Id, name: this.Selected_Lead_For_FollowUp.Branch_Name }];
-    }
-    if (this.Selected_Lead_For_FollowUp.Department_Id > 0) {
-      this.Selected_Lead_For_FollowUp.FollowUp_Department_Id = this.Selected_Lead_For_FollowUp.Department_Id;
-      this.DropdownData['Department_' + this.Selected_Lead_For_FollowUp.Branch_Id] = [{ id: this.Selected_Lead_For_FollowUp.Department_Id, name: this.Selected_Lead_For_FollowUp.Department_Name }];
-    }
-    if (this.Selected_Lead_For_FollowUp.Staff_Id > 0) {
-      this.Selected_Lead_For_FollowUp.FollowUp_Staff_Id = this.Selected_Lead_For_FollowUp.Staff_Id;
-      this.DropdownData['Staff_' + this.Selected_Lead_For_FollowUp.Department_Id] = [{ id: this.Selected_Lead_For_FollowUp.Staff_Id, name: this.Selected_Lead_For_FollowUp.Staff_Name }];
-    }
-    if (this.Selected_Lead_For_FollowUp.Status_Id > 0) {
-      this.Selected_Lead_For_FollowUp.FollowUp_Status_Id = this.Selected_Lead_For_FollowUp.Status_Id;
-      this.DropdownData['TargetStage'] = [{ id: this.Selected_Lead_For_FollowUp.Status_Id, name: this.Selected_Lead_For_FollowUp.Status_Name }];
-    }
+    this.Lead_Service_.Get_LeadFollowUpDetails(lead.Lead_Id).subscribe((res: any) => {
+      let fetchedLead = res[0] && res[0][0] ? res[0][0] : {};
+      this.Selected_Lead_For_FollowUp = Object.assign({}, lead, fetchedLead);
+      this.Selected_Lead_For_FollowUp.Is_FollowUp = true;
+      this.Selected_Pipeline_Stage = '';
+      this.Selected_Pulse = '';
+      
+      if (this.Selected_Lead_For_FollowUp.Branch_Id > 0) {
+        this.Selected_Lead_For_FollowUp.FollowUp_Location_Id = this.Selected_Lead_For_FollowUp.Branch_Id;
+        this.DropdownData['Branch'] = [{ id: this.Selected_Lead_For_FollowUp.Branch_Id, name: this.Selected_Lead_For_FollowUp.Branch_Name }];
+      }
+      if (this.Selected_Lead_For_FollowUp.Department_Id > 0) {
+        this.Selected_Lead_For_FollowUp.FollowUp_Department_Id = this.Selected_Lead_For_FollowUp.Department_Id;
+        this.DropdownData['Department_' + this.Selected_Lead_For_FollowUp.Branch_Id] = [{ id: this.Selected_Lead_For_FollowUp.Department_Id, name: this.Selected_Lead_For_FollowUp.Department_Name }];
+      }
+      if (this.Selected_Lead_For_FollowUp.Staff_Id > 0) {
+        this.Selected_Lead_For_FollowUp.FollowUp_Staff_Id = this.Selected_Lead_For_FollowUp.Staff_Id;
+        this.DropdownData['Staff_' + this.Selected_Lead_For_FollowUp.Department_Id] = [{ id: this.Selected_Lead_For_FollowUp.Staff_Id, name: this.Selected_Lead_For_FollowUp.Staff_Name }];
+      }
+      if (this.Selected_Lead_For_FollowUp.Status_Id > 0) {
+        this.Selected_Lead_For_FollowUp.FollowUp_Status_Id = this.Selected_Lead_For_FollowUp.Status_Id;
+        this.DropdownData['TargetStage'] = [{ id: this.Selected_Lead_For_FollowUp.Status_Id, name: this.Selected_Lead_For_FollowUp.Status_Name }];
+      }
 
-    // Load all follow-up dropdowns using only Search_Lead_Dropdowns API
-    if (!this.DropdownData['Branch'] || this.DropdownData['Branch'].length === 0) {
-      this.loadDropdownData('Branch', false, 0);
-    }
-    if (!this.DropdownData['TargetStage'] || this.DropdownData['TargetStage'].length === 0) {
-      this.loadDropdownData('TargetStage', false, 0);
-    }
-    if (!this.DropdownData['PipelineStage'] || this.DropdownData['PipelineStage'].length === 0) {
-      this.loadDropdownData('PipelineStage', false, 0);
-    }
-    if (!this.DropdownData['Pulse'] || this.DropdownData['Pulse'].length === 0) {
-      this.loadDropdownData('Pulse', false, 0);
-    }
+      // Load all follow-up dropdowns using only Search_Lead_Dropdowns API
+      if (!this.DropdownData['Branch'] || this.DropdownData['Branch'].length === 0) {
+        this.loadDropdownData('Branch', false, 0);
+      }
+      if (!this.DropdownData['TargetStage'] || this.DropdownData['TargetStage'].length === 0) {
+        this.loadDropdownData('TargetStage', false, 0);
+      }
+      if (!this.DropdownData['PipelineStage'] || this.DropdownData['PipelineStage'].length === 0) {
+        this.loadDropdownData('PipelineStage', false, 0);
+      }
+      if (!this.DropdownData['Pulse'] || this.DropdownData['Pulse'].length === 0) {
+        this.loadDropdownData('Pulse', false, 0);
+      }
 
-    this.FollowUp_Popup_Open = true;
+      this.FollowUp_Popup_Open = true;
+    }, err => {
+      console.error('Error fetching follow-up details', err);
+      // Fallback
+      this.Selected_Lead_For_FollowUp = Object.assign({}, lead);
+      this.Selected_Lead_For_FollowUp.Is_FollowUp = true;
+      this.FollowUp_Popup_Open = true;
+    });
   }
 
   onCompanyNameChange(value: string) {
@@ -1041,6 +1050,14 @@ export class LeadComponent implements OnInit, AfterViewInit {
     const lead = this.Selected_Lead_For_FollowUp;
 
     // --- Frontend Validation ---
+    if (!this.Selected_Pipeline_Stage) {
+      this.snackBar.open('Please select a Pipeline Stage.', 'Close', { duration: 3500 });
+      return;
+    }
+    if (!this.Selected_Pulse) {
+      this.snackBar.open('Please select a Pulse.', 'Close', { duration: 3500 });
+      return;
+    }
     if (!lead.FollowUp_Location_Id || lead.FollowUp_Location_Id === 0) {
       this.snackBar.open('Please select a Branch.', 'Close', { duration: 3500 });
       return;
@@ -1055,6 +1072,10 @@ export class LeadComponent implements OnInit, AfterViewInit {
     }
     if (!lead.FollowUp_Status_Id || lead.FollowUp_Status_Id === 0) {
       this.snackBar.open('Please select a Target Stage.', 'Close', { duration: 3500 });
+      return;
+    }
+    if (!(lead as any).FollowUp_Next_Date) {
+      this.snackBar.open('Please select a Next Follow-up Date.', 'Close', { duration: 3500 });
       return;
     }
 

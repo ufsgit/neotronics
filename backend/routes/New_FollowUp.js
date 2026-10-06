@@ -9,6 +9,16 @@ router.post('/Save_NewFollowUp/', function (req, res, next) {
     });
 });
 
+router.get('/Get_LeadFollowUpDetails/:Lead_Id', function (req, res, next) {
+    New_FollowUp.Get_LeadFollowUpDetails(req.params.Lead_Id, function (err, rows) {
+        if (err) {
+            res.json(err);
+        } else {
+            res.json(rows);
+        }
+    });
+});
+
 router.get('/GetLeadInteractionHistory/:Lead_Id_?', function (req, res, next) {
     try {
         var page = parseInt(req.query.page) || 1;
