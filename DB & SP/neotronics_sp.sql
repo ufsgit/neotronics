@@ -3638,6 +3638,36 @@ User_Id From Journal_Entry where Journal_Entry_Id =Journal_Entry_Id_ and DeleteS
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_LeadFollowUpDetails`(
+    IN p_LeadId INT
+)
+BEGIN
+    -- Fetch only the fields relevant to the Follow Up popup
+    SELECT 
+        Lead_Id,
+        Lead_Name,  
+        Deal_Type_Name,  -- Displayed at the top of the modal
+        Current_Pipeline_Stage,
+        Pulse,
+        Branch_Id,
+        Branch_Name,
+        Department_Id,
+        Department_Name,
+        Staff_Id,                  -- Assigned Owner
+        Staff_Name,
+        Target_Stage_Id,
+        Target_Stage_Name,
+        Next_FollowUp_Date,
+        Remarks
+    FROM 
+        `lead` 
+    WHERE 
+        Lead_Id = p_LeadId;
+
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Leads`()
 BEGIN
     SELECT 
@@ -15367,7 +15397,7 @@ BEGIN
             Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
             Won_Lost_Status, User_Id
         ) VALUES (
-            _Generated_Lead_Id, _Lead_Name, _Calculated_Lead_Type, 
+            _Generated_Lead_Id, _Lead_Name, _Deal_Type_Name, 
             'Lead Created', 'Lead Creation', 'Recorded automatically', 'Manually added',
             NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name,
             IF(_Stage_Type IN (1, 2), _Stage_Type, 0), _Login_User_Id
@@ -15455,37 +15485,37 @@ BEGIN
         -- 1. Deal Type Changed
         IF v_old_Lead_Type <> _Calculated_Lead_Type THEN
             INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_Lead_Type, _Calculated_Lead_Type, 'Deal Type Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Lead_Type, _Calculated_Lead_Type, 'Deal Type Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
         END IF;
 
         -- 2. Contact Person Changed 
         IF IFNULL(v_old_POC_Full_Name, '') <> IFNULL(_POC_Full_Name, '') THEN
             INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_POC_Full_Name, _POC_Full_Name, 'Primary Contact Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Full_Name, _POC_Full_Name, 'Primary Contact Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
         END IF;
 
         -- 3. Phone Changed
         IF IFNULL(v_old_POC_Direct_Mobile, '') <> IFNULL(_POC_Direct_Mobile, '') THEN
             INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_POC_Direct_Mobile, _POC_Direct_Mobile, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Direct_Mobile, _POC_Direct_Mobile, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
         END IF;
 
         -- 4. Email Changed
         IF IFNULL(v_old_POC_Email, '') <> IFNULL(_POC_Email, '') THEN
             INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_POC_Email, _POC_Email, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Email, _POC_Email, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
         END IF;
 
         -- 5. Priority Changed
         IF IFNULL(v_old_Lead_Priority, '') <> IFNULL(_Lead_Priority, '') THEN
             INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_Lead_Priority, _Lead_Priority, 'Priority Level Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Lead_Priority, _Lead_Priority, 'Priority Level Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
         END IF;
 
         -- 6. Lead Name Changed 
         IF IFNULL(v_old_Lead_Name, '') <> IFNULL(_Lead_Name, '') THEN
             INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Calculated_Lead_Type, v_old_Lead_Name, _Lead_Name, 'Lead Name Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
+            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Lead_Name, _Lead_Name, 'Lead Name Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
         END IF;
         -- --- END ADDITION 3B ---
 
