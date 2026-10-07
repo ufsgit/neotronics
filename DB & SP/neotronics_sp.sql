@@ -89,19 +89,28 @@ End$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_Dept_Chart`(IN p_startDate DATE, IN p_endDate DATE)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_Dept_Chart`(
+    IN p_startDate DATE, 
+    IN p_endDate DATE,
+    IN p_UserId INT,
+    IN p_UserTypeId INT
+)
 BEGIN
     SELECT IFNULL(Department_Name, 'Unassigned') as Department, COUNT(*) as Count
     FROM lead_activity_log
     WHERE (p_startDate IS NULL OR DATE(Activity_Date) >= p_startDate)
       AND (p_endDate IS NULL OR DATE(Activity_Date) <= p_endDate)
+      AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
     GROUP BY Department_Name
     ORDER BY Count DESC;
 END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_KPIs`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_KPIs`(
+    IN p_UserId INT,
+    IN p_UserTypeId INT
+)
 BEGIN
     DECLARE total_act INT DEFAULT 0;
     DECLARE today_act INT DEFAULT 0;
@@ -109,15 +118,18 @@ BEGIN
     DECLARE top_dept VARCHAR(255) DEFAULT 'N/A';
 
     SELECT COUNT(*) INTO total_act
-    FROM lead_activity_log;
+    FROM lead_activity_log
+    WHERE (p_UserTypeId != 2 OR Staff_Id = p_UserId);
 
     SELECT COUNT(*) INTO today_act
     FROM lead_activity_log
-    WHERE DATE(Activity_Date) = CURDATE();
+    WHERE DATE(Activity_Date) = CURDATE()
+      AND (p_UserTypeId != 2 OR Staff_Id = p_UserId);
 
     SELECT IFNULL(Staff_Name, 'System/Unassigned') INTO top_staff
     FROM lead_activity_log
     WHERE Staff_Name IS NOT NULL AND Staff_Name != 'System/Unassigned' AND Staff_Name != ''
+      AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
     GROUP BY Staff_Name
     ORDER BY COUNT(*) DESC
     LIMIT 1;
@@ -125,6 +137,7 @@ BEGIN
     SELECT IFNULL(Department_Name, 'Unassigned') INTO top_dept
     FROM lead_activity_log
     WHERE Department_Name IS NOT NULL AND Department_Name != 'Unassigned' AND Department_Name != ''
+      AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
     GROUP BY Department_Name
     ORDER BY COUNT(*) DESC
     LIMIT 1;
@@ -138,7 +151,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_List_Paginated`(
     IN p_startDate DATE,
     IN p_endDate DATE,
     IN p_page INT,
-    IN p_limit INT
+    IN p_limit INT,
+    IN p_UserId INT,
+    IN p_UserTypeId INT
 )
 BEGIN
     DECLARE v_offset INT;
@@ -147,36 +162,50 @@ BEGIN
     SET v_offset = (p_page - 1) * p_limit;
 
     SELECT
-        LeadActivityLog_Id, Activity_Date, Lead_Id, Lead_Name, Deal_Type,
-        Old_Value, New_Value, Action_Taken, Activity_Title, Outcome,
-        Next_Follow_Up, Notes, Branch_Name, Department_Name, Staff_Name
+        LeadActivityLog_Id, Activity_Date, Lead_Id, Lead_Name, Deal_Type, 
+        Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, 
+        Next_Follow_Up, Notes, Branch_Id, Branch_Name, Department_Id, 
+        Department_Name, Staff_Id, Staff_Name, User_Id, Won_Lost_Status
     FROM lead_activity_log
     WHERE (p_startDate IS NULL OR DATE(Activity_Date) >= p_startDate)
       AND (p_endDate IS NULL OR DATE(Activity_Date) <= p_endDate)
+      AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
     ORDER BY Activity_Date DESC
     LIMIT p_limit OFFSET v_offset;
 END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_Staff_Chart`(IN p_startDate DATE, IN p_endDate DATE)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_Staff_Chart`(
+    IN p_startDate DATE, 
+    IN p_endDate DATE,
+    IN p_UserId INT,
+    IN p_UserTypeId INT
+)
 BEGIN
     SELECT IFNULL(Staff_Name, 'System/Unassigned') as Staff, COUNT(*) as Count
     FROM lead_activity_log
     WHERE (p_startDate IS NULL OR DATE(Activity_Date) >= p_startDate)
       AND (p_endDate IS NULL OR DATE(Activity_Date) <= p_endDate)
+      AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
     GROUP BY Staff_Name
     ORDER BY Count DESC;
 END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_Type_Chart`(IN p_startDate DATE, IN p_endDate DATE)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Activity_Logs_Type_Chart`(
+    IN p_startDate DATE, 
+    IN p_endDate DATE,
+    IN p_UserId INT,
+    IN p_UserTypeId INT
+)
 BEGIN
     SELECT IFNULL(Activity_Title, 'Unknown') as Activity_Type, COUNT(*) as Count
     FROM lead_activity_log
     WHERE (p_startDate IS NULL OR DATE(Activity_Date) >= p_startDate)
       AND (p_endDate IS NULL OR DATE(Activity_Date) <= p_endDate)
+      AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
     GROUP BY Activity_Title
     ORDER BY Count DESC;
 END$$
@@ -3044,12 +3073,17 @@ Payment_Voucher_No From General_Settings where General_Settings_Id =General_Sett
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Ghosting_Charts_Data`(IN p_report_type VARCHAR(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Ghosting_Charts_Data`(
+    IN p_report_type VARCHAR(50),
+    IN p_UserId INT,
+    IN p_UserTypeId INT
+)
 BEGIN
     IF p_report_type = 'stage_leakage' THEN
         SELECT Pipeline_Stage AS Label, COUNT(Lead_Id) as Count
         FROM lead_ghosting_history
         WHERE Pipeline_Stage IS NOT NULL AND Pipeline_Stage != ''
+          AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
         GROUP BY Pipeline_Stage
         ORDER BY Count DESC;
         
@@ -3057,6 +3091,7 @@ BEGIN
         SELECT Department_Name AS Label, COUNT(Lead_Id) as Count
         FROM lead_ghosting_history
         WHERE Department_Name IS NOT NULL AND Department_Name != ''
+          AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
         GROUP BY Department_Name
         ORDER BY Count DESC;
         
@@ -3064,6 +3099,7 @@ BEGIN
         SELECT Staff_Name AS Label, COUNT(Lead_Id) as Count
         FROM lead_ghosting_history
         WHERE Staff_Name IS NOT NULL AND Staff_Name != ''
+          AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
         GROUP BY Staff_Name
         ORDER BY Count DESC
         LIMIT 5;
@@ -3072,6 +3108,7 @@ BEGIN
         SELECT Staff_Name AS Label, COUNT(Lead_Id) as Count
         FROM lead_ghosting_history
         WHERE Staff_Name IS NOT NULL AND Staff_Name != ''
+          AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
         GROUP BY Staff_Name
         ORDER BY Count DESC;
 
@@ -3080,19 +3117,21 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Ghosting_KPI`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Ghosting_KPI`(
+    IN p_UserId INT,
+    IN p_UserTypeId INT
+)
 BEGIN
     DECLARE v_total_ghosted INT DEFAULT 0;
     DECLARE v_resolved INT DEFAULT 0;
     DECLARE v_active INT DEFAULT 0;
 
-    -- Get Totals
-    SELECT COUNT(*) INTO v_total_ghosted FROM lead_ghosting_history;
-	SELECT COUNT(*) INTO v_active FROM lead_ghosting_history WHERE Current_Status = '1';
-	SELECT COUNT(*) INTO v_resolved FROM lead_ghosting_history WHERE Current_Status = '0';
+    -- Get Totals (Filtered by Staff_Id if Staff)
+    SELECT COUNT(*) INTO v_total_ghosted FROM lead_ghosting_history WHERE (p_UserTypeId != 2 OR Staff_Id = p_UserId);
+	SELECT COUNT(*) INTO v_active FROM lead_ghosting_history WHERE Current_Status = '1' AND (p_UserTypeId != 2 OR Staff_Id = p_UserId);
+	SELECT COUNT(*) INTO v_resolved FROM lead_ghosting_history WHERE Current_Status = '0' AND (p_UserTypeId != 2 OR Staff_Id = p_UserId);
 
     -- Result 1: Total Ghosted Leads with Pipeline Scope
-    -- Assuming Pipeline Scope is 100% of the ghosted table for this global query
     SELECT v_total_ghosted AS count,
            IF(v_total_ghosted > 0, 100, 0) AS Pipeline_Scope;
 
@@ -3108,6 +3147,7 @@ BEGIN
            COUNT(*) AS count,
            IF(v_total_ghosted > 0, ROUND((COUNT(*) / v_total_ghosted) * 100), 0) AS Leakage_Percentage
     FROM lead_ghosting_history
+    WHERE (p_UserTypeId != 2 OR Staff_Id = p_UserId)
     GROUP BY Pipeline_Stage
     ORDER BY count DESC
     LIMIT 1;
@@ -3120,7 +3160,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Ghosting_Register`(
     IN p_limit INT,
     IN p_offset INT,
     IN p_search VARCHAR(255),
-    IN p_is_current INT
+    IN p_is_current INT,
+    IN p_UserId INT,
+    IN p_UserTypeId INT
 )
 BEGIN
     -- Handle default pagination values if null
@@ -3146,7 +3188,8 @@ BEGIN
     WHERE (p_search IS NULL OR p_search = ''
        OR Lead_Name LIKE CONCAT(p_search, '%')
        OR Staff_Name LIKE CONCAT(p_search, '%'))
-  AND (p_is_current IS NULL OR Current_Status = p_is_current)
+      AND (p_is_current IS NULL OR Current_Status = p_is_current)
+      AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
     ORDER BY Entry_Date DESC
     LIMIT p_limit OFFSET p_offset;
 
@@ -3157,7 +3200,8 @@ BEGIN
     WHERE (p_search IS NULL OR p_search = ''
        OR Lead_Name LIKE CONCAT(p_search, '%')
        OR Staff_Name LIKE CONCAT(p_search, '%'))
-  AND (p_is_current IS NULL OR Current_Status = p_is_current);
+      AND (p_is_current IS NULL OR Current_Status = p_is_current)
+      AND (p_UserTypeId != 2 OR Staff_Id = p_UserId);
 
 END$$
 DELIMITER ;
@@ -3165,14 +3209,16 @@ DELIMITER ;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Ghosting_Stage_Summary`(
     IN p_limit INT,
-    IN p_offset INT
+    IN p_offset INT,
+    IN p_UserId INT,
+    IN p_UserTypeId INT
 )
 BEGIN
-    -- If p_limit is NULL or 0, we can provide a default, but assuming they are passed correctly.
     SELECT 
         Pipeline_Stage AS stage, 
         COUNT(*) AS count
     FROM lead_ghosting_history
+    WHERE (p_UserTypeId != 2 OR Staff_Id = p_UserId)
     GROUP BY Pipeline_Stage
     HAVING count >= 1
     ORDER BY count DESC
@@ -3707,7 +3753,9 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Dashboard_V3_Activity_Chart`(
     IN _Type VARCHAR(50),
     IN _FromDate DATE,
-    IN _ToDate DATE
+    IN _ToDate DATE,
+    IN p_UserId INT,
+    IN p_UserTypeId INT
 )
 BEGIN
     IF _Type = 'Day' THEN
@@ -3717,6 +3765,7 @@ BEGIN
         FROM `lead_activity_log`
         WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
           AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
+          AND (p_UserTypeId != 2 OR User_Id = p_UserId)
         GROUP BY DATE(Activity_Date)
         ORDER BY DATE(Activity_Date) ASC;
         
@@ -3727,6 +3776,7 @@ BEGIN
         FROM `lead_activity_log`
         WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
           AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
+          AND (p_UserTypeId != 2 OR User_Id = p_UserId)
         GROUP BY YEARWEEK(Activity_Date, 1)
         ORDER BY YEARWEEK(Activity_Date, 1) ASC;
         
@@ -3737,6 +3787,7 @@ BEGIN
         FROM `lead_activity_log`
         WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
           AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
+          AND (p_UserTypeId != 2 OR User_Id = p_UserId)
         GROUP BY DATE_FORMAT(Activity_Date, '%Y-%m')
         ORDER BY MAX(Activity_Date) ASC;
     END IF;
@@ -3747,7 +3798,9 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Dashboard_V3_Activity_Table`(
     IN _Type VARCHAR(50),
     IN _FromDate DATE,
-    IN _ToDate DATE
+    IN _ToDate DATE,
+    IN p_UserId INT,
+    IN p_UserTypeId INT
 )
 BEGIN
     IF _Type = 'Day' THEN
@@ -3758,6 +3811,7 @@ BEGIN
         FROM `lead_activity_log`
         WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
           AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
+          AND (p_UserTypeId != 2 OR User_Id = p_UserId)
         GROUP BY DATE(Activity_Date)
         ORDER BY DATE(Activity_Date) DESC;
         
@@ -3769,6 +3823,7 @@ BEGIN
         FROM `lead_activity_log`
         WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
           AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
+          AND (p_UserTypeId != 2 OR User_Id = p_UserId)
         GROUP BY YEARWEEK(Activity_Date, 1)
         ORDER BY YEARWEEK(Activity_Date, 1) DESC;
         
@@ -3780,6 +3835,7 @@ BEGIN
         FROM `lead_activity_log`
         WHERE (_FromDate IS NULL OR DATE(Activity_Date) >= _FromDate)
           AND (_ToDate IS NULL OR DATE(Activity_Date) <= _ToDate)
+          AND (p_UserTypeId != 2 OR User_Id = p_UserId)
         GROUP BY DATE_FORMAT(Activity_Date, '%Y-%m')
         ORDER BY MAX(Activity_Date) DESC;
     END IF;
@@ -3787,7 +3843,10 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Dashboard_V3_KPIs`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Dashboard_V3_KPIs`(
+    IN p_UserId INT,
+    IN p_UserTypeId INT
+)
 BEGIN
     SELECT 
         -- Top Header (Follow-Ups)
@@ -3801,13 +3860,16 @@ BEGIN
         SUM(IF(Current_Pipeline_Stage = 'Quotation Sent', 1, 0)) AS Quotation,
         SUM(IFNULL(isGhosting, 0)) AS Ghosting,
         SUM(IFNULL(sale_won, 0)) AS Won
-    FROM `lead`;
+    FROM `lead`
+    WHERE (p_UserTypeId != 2 OR Staff_Id = p_UserId);
 END$$
 DELIMITER ;
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_Lead_Dashboard_V3_Pipeline_FollowUp`(
-    IN _Type VARCHAR(50)
+    IN _Type VARCHAR(50),
+    IN p_UserId INT,
+    IN p_UserTypeId INT
 )
 BEGIN
     IF _Type = 'Pipeline' THEN
@@ -3817,6 +3879,7 @@ BEGIN
             COUNT(Lead_Id) AS Leads
         FROM `lead`
         WHERE Current_Pipeline_Stage IS NOT NULL AND Current_Pipeline_Stage != ''
+          AND (p_UserTypeId != 2 OR Staff_Id = p_UserId)
         GROUP BY Current_Pipeline_Stage;
         
     ELSEIF _Type = 'FollowUp' THEN
@@ -3826,7 +3889,8 @@ BEGIN
             SUM(IF(YEARWEEK(Next_FollowUp_Date, 1) = YEARWEEK(CURRENT_DATE, 1), 1, 0)) AS This_Week,
             SUM(IF(MONTH(Next_FollowUp_Date) = MONTH(CURRENT_DATE) AND YEAR(Next_FollowUp_Date) = YEAR(CURRENT_DATE), 1, 0)) AS This_Month,
             SUM(IF(Next_FollowUp_Date < CURRENT_DATE, 1, 0)) AS Overdue
-        FROM `lead`;
+        FROM `lead`
+        WHERE (p_UserTypeId != 2 OR Staff_Id = p_UserId);
     END IF;
 END$$
 DELIMITER ;
@@ -4090,7 +4154,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_NewLeads`(
     IN p_Limit INT,
     IN p_Lead_Type INT,
     IN p_PipelineStageId INT,
-    IN p_PipelineStageName VARCHAR(100) -- New Parameter
+    IN p_PipelineStageName VARCHAR(100),
+    IN p_UserId INT,
+    IN p_UserTypeId INT
 )
 BEGIN
     DECLARE v_Offset INT;
@@ -4121,9 +4187,15 @@ BEGIN
       AND (p_DesignationId IS NULL OR p_DesignationId = 0 OR l.POC_Designation_Id = p_DesignationId)
       AND (p_DistrictId IS NULL OR p_DistrictId = 0 OR l.District = p_DistrictId)
       AND (p_Priority IS NULL OR p_Priority = '' OR l.Lead_Priority = p_Priority)
-      AND (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
+      AND (
+         CASE 
+            WHEN p_Lead_Type = 5 THEN l.Market_Study_Systems != ''
+            ELSE (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
+         END
+      )
       AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId)
       AND (p_PipelineStageName IS NULL OR p_PipelineStageName = '' OR l.Current_Pipeline_Stage = p_PipelineStageName)
+      AND (p_UserTypeId != 2 OR l.Staff_Id = p_UserId)
     ORDER BY l.Lead_Id DESC
     LIMIT p_Limit OFFSET v_Offset;
     
@@ -4135,9 +4207,15 @@ BEGIN
       AND (p_DesignationId IS NULL OR p_DesignationId = 0 OR l.POC_Designation_Id = p_DesignationId)
       AND (p_DistrictId IS NULL OR p_DistrictId = 0 OR l.District = p_DistrictId)
       AND (p_Priority IS NULL OR p_Priority = '' OR l.Lead_Priority = p_Priority)
-      AND (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
+      AND (
+         CASE 
+            WHEN p_Lead_Type = 5 THEN l.Market_Study_Systems != ''
+            ELSE (p_Lead_Type IS NULL OR p_Lead_Type = 0 OR l.Lead_Type = p_Lead_Type)
+         END
+      )
       AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId)
-      AND (p_PipelineStageName IS NULL OR p_PipelineStageName = '' OR l.Current_Pipeline_Stage = p_PipelineStageName);
+      AND (p_PipelineStageName IS NULL OR p_PipelineStageName = '' OR l.Current_Pipeline_Stage = p_PipelineStageName)
+      AND (p_UserTypeId != 2 OR l.Staff_Id = p_UserId);
 END$$
 DELIMITER ;
 
@@ -15102,10 +15180,10 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewFollowUp`(
-    -- Lead identifier
+    -- Lead identifier (1)
     IN  p_Lead_Id               INT,
 
-    -- Assignment
+    -- Assignment (6)
     IN  p_Branch_Id             INT,
     IN  p_Branch_Name           VARCHAR(255),
     IN  p_Department_Id         INT,
@@ -15113,12 +15191,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewFollowUp`(
     IN  p_Staff_Id              INT,
     IN  p_Staff_Name            VARCHAR(255),
 
-    -- Follow-up fields
+    -- Follow-up fields (3)
     IN  p_Next_FollowUp_Date    DATE,
     IN  p_Remark                TEXT,
     IN  p_Followup_Required     TINYINT,        -- 1 = yes, 0 = no
 
-    -- Pipeline / Pulse
+    -- Pipeline / Pulse (7)
     IN  p_PipelineStage_Id      INT,
     IN  p_Pipeline_Stage        VARCHAR(255),
     IN  p_Stage_Type            TINYINT,
@@ -15126,14 +15204,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewFollowUp`(
     IN  p_Pulse_Id              INT,
     IN  p_Pulse                 VARCHAR(100),
     IN  p_isGhosting            TINYINT,
-    -- Status / Target stage
+    
+    -- Status / Target stage (2)
     IN  p_Status_Id             INT,
     IN  p_Status_Name           VARCHAR(255),
 
-    -- Audit
+    -- Audit (1)
     IN  p_Login_User_Id         INT,
 
-    -- Output
+    -- Output (2)
     OUT p_Success               TINYINT,
     OUT p_Message               VARCHAR(255)
 )
@@ -15148,6 +15227,7 @@ sp_label: BEGIN
     -- --- NEW VARIABLES ADDED HERE ---
     DECLARE v_prev_Next_FollowUp_Date DATE DEFAULT NULL;
     DECLARE v_prev_Pipeline_Stage VARCHAR(255) DEFAULT NULL;
+    DECLARE v_Deal_Type_Name VARCHAR(255) DEFAULT NULL; -- To hold the Deal Type fetched from the DB
     -- --------------------------------
 
 
@@ -15169,8 +15249,9 @@ sp_label: BEGIN
     START TRANSACTION;
 
         -- ── 2. Read current lead state (before update) ───────
-        SELECT PipelineStage_Id, Current_Pipeline_Stage, Pulse_Id, Pulse, Next_FollowUp_Date
-        INTO   v_prev_PipelineStage_Id, v_prev_Pipeline_Stage, v_prev_Pulse_Id, v_prev_Pulse, v_prev_Next_FollowUp_Date
+        -- Fetch the Deal_Type_Name directly from the database!
+        SELECT PipelineStage_Id, Current_Pipeline_Stage, Pulse_Id, Pulse, Next_FollowUp_Date, Deal_Type_Name
+        INTO   v_prev_PipelineStage_Id, v_prev_Pipeline_Stage, v_prev_Pulse_Id, v_prev_Pulse, v_prev_Next_FollowUp_Date, v_Deal_Type_Name
         FROM   `lead`
         WHERE  Lead_Id = p_Lead_Id
         LIMIT  1;
@@ -15184,6 +15265,7 @@ sp_label: BEGIN
             Department_Name        = p_Department_Name,
             Staff_Id               = p_Staff_Id,
             Staff_Name             = p_Staff_Name,
+            
             Next_FollowUp_Date     = p_Next_FollowUp_Date,
             Remarks                = p_Remark,
             PipelineStage_Id       = p_PipelineStage_Id,
@@ -15302,28 +15384,32 @@ sp_label: BEGIN
 
         -- ── 7. Insert into lead_activity_log table ──────────────────────
 
-        -- 1. Stage Changed
-        IF v_prev_PipelineStage_Id <> p_PipelineStage_Id THEN
-            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (p_Lead_Id, (SELECT Lead_Name FROM `lead` WHERE Lead_Id = p_Lead_Id), v_prev_Pipeline_Stage, p_Pipeline_Stage, 'Stage Updated', 'Pipeline Update', 'Updated via Follow-up', p_Login_User_Id);
-        END IF;
-
-        -- 2. Pulse Changed
-        IF IFNULL(v_prev_Pulse_Id, 0) <> IFNULL(p_Pulse_Id, 0) THEN
-            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (p_Lead_Id, (SELECT Lead_Name FROM `lead` WHERE Lead_Id = p_Lead_Id), v_prev_Pulse, p_Pulse, 'Pulse Updated', 'Pulse Update', 'Updated via Follow-up', p_Login_User_Id);
-        END IF;
-
-        -- 3. Follow-up Date Changed
-        IF IFNULL(v_prev_Next_FollowUp_Date, '1900-01-01') <> IFNULL(p_Next_FollowUp_Date, '1900-01-01') THEN
-            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, Next_Follow_Up, User_Id)
-            VALUES (p_Lead_Id, (SELECT Lead_Name FROM `lead` WHERE Lead_Id = p_Lead_Id), v_prev_Next_FollowUp_Date, p_Next_FollowUp_Date, 'Follow-up Date Scheduled', 'Schedule Update', 'Updated via Follow-up', p_Next_FollowUp_Date, p_Login_User_Id);
-        END IF;
-
-        -- 4. Follow Up Notes Added
-        IF p_Remark IS NOT NULL AND p_Remark != '' THEN
-            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Action_Taken, Activity_Title, Outcome, Notes, User_Id)
-            VALUES (p_Lead_Id, (SELECT Lead_Name FROM `lead` WHERE Lead_Id = p_Lead_Id), 'Situation Notes Updated', 'Notes Update', 'Updated via Follow-up', p_Remark, p_Login_User_Id);
+        -- 1. ONLY log when the Stage goes from one stage to another
+        IF IFNULL(v_prev_PipelineStage_Id, 0) <> IFNULL(p_PipelineStage_Id, 0) THEN
+            INSERT INTO `lead_activity_log` (
+                Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, 
+                Activity_Title, Outcome, Next_Follow_Up, Branch_Id, Branch_Name, 
+                Department_Id, Department_Name, Staff_Id, Staff_Name, User_Id, Won_Lost_Status 
+            )
+            VALUES (
+                p_Lead_Id, 
+                (SELECT Lead_Name FROM `lead` WHERE Lead_Id = p_Lead_Id), 
+                v_Deal_Type_Name,     -- Using the Deal Type we automatically fetched from the database above!
+                v_prev_Pipeline_Stage, 
+                p_Pipeline_Stage, 
+                'Stage changed', 
+                'Stage Update', 
+                'Updated via Follow-up', 
+                p_Next_FollowUp_Date, 
+                p_Branch_Id, 
+                p_Branch_Name, 
+                p_Department_Id, 
+                p_Department_Name, 
+                p_Staff_Id, 
+                p_Staff_Name, 
+                p_Login_User_Id, 
+                p_Stage_Type
+            );
         END IF;
 
 
@@ -15342,10 +15428,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     IN _Lead_Type INT,
     IN _Vertical INT,
     IN _Vertical_Name VARCHAR(100),
-        -- --- ADD THESE TWO LINES ---
     IN _Deal_Type_Id INT,
     IN _Deal_Type_Name VARCHAR(100),
-    -- ---------------------------
     IN _Address VARCHAR(1000),
     IN _State INT,
     IN _State_Name VARCHAR(100),
@@ -15421,20 +15505,37 @@ BEGIN
     DECLARE _Generated_Lead_Id INT;
     DECLARE _Calculated_Lead_Type INT DEFAULT 0;
     
-        -- --- old values LINES HERE ---
     DECLARE v_old_Lead_Name VARCHAR(100);
     DECLARE v_old_Lead_Type INT;
     DECLARE v_old_POC_Full_Name VARCHAR(255);
     DECLARE v_old_POC_Direct_Mobile VARCHAR(50);
     DECLARE v_old_POC_Email VARCHAR(255);
     DECLARE v_old_Lead_Priority VARCHAR(50);
-    -- -------------------------------------------------
+    
+	DECLARE v_Branch_Id INT;
+    DECLARE v_Branch_Name VARCHAR(100);
+    DECLARE v_Department_Id INT;
+    DECLARE v_Department_Name VARCHAR(100);
+    DECLARE v_Staff_Id INT;
+    DECLARE v_Staff_Name VARCHAR(100);
+    
+	DECLARE v_old_Deal_Type_Id INT;
+    DECLARE v_old_Deal_Type_Name VARCHAR(100);
+
+
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
         ROLLBACK;
         RESIGNAL;
     END;
+    
+    -- --- AUTO-RESOLVE DISTRICT NAME ---
+    -- If the frontend sent a district ID but failed to send the name, we look it up ourselves!
+    IF _District > 0 AND (_District_Name IS NULL OR _District_Name = '') THEN
+        SELECT District_Name INTO _District_Name FROM `district` WHERE District_Id = _District LIMIT 1;
+    END IF;
+    -- ----------------------------------
 
     IF (_POC_Full_Name IS NOT NULL AND _POC_Full_Name != '' AND 
         _POC_Designation_Id > 0 AND 
@@ -15462,7 +15563,7 @@ BEGIN
     IF _Lead_Id = 0 THEN
 
         INSERT INTO `lead` (
-            Lead_Name, Lead_Type, Vertical, Vertical_Name, Address, State, State_Name, District, District_Name,
+            Lead_Name, Lead_Type, Vertical, Vertical_Name, Deal_Type_Id, Deal_Type_Name, Address, State, State_Name, District, District_Name,
             Company_Size_Id, Company_Size_Name, Source, Source_Name, 
             POC_Full_Name, POC_Designation_Id, POC_Designation, POC_Direct_Mobile, POC_Email, 
             POC_State_Id, POC_State, POC_Location_Id, POC_Loc, POC_Work_Phone, POC_Office_Type,
@@ -15478,7 +15579,7 @@ BEGIN
             Target_Stage_Id, Target_Stage_Name,
             Workflow_Id, Workflow, Workflow_Start_Status
         ) VALUES (
-            _Lead_Name, _Calculated_Lead_Type, _Vertical, _Vertical_Name, _Address, _State, _State_Name, _District, _District_Name,
+            _Lead_Name, _Calculated_Lead_Type, _Vertical, _Vertical_Name, _Deal_Type_Id, _Deal_Type_Name, _Address, _State, _State_Name, _District, _District_Name,
             _Company_Size_Id, _Company_Size_Name, _Source, _Source_Name, 
             _POC_Full_Name, _POC_Designation_Id, _POC_Designation, _POC_Direct_Mobile, _POC_Email,
             _POC_State_Id, _POC_State, _POC_Location_Id, _POC_Loc, _POC_Work_Phone, _POC_Office_Type,
@@ -15488,16 +15589,12 @@ BEGIN
             _Current_PipelineStage_Id, _Current_Pipeline_Stage,
             IFNULL(_Stage_Type, 0), IFNULL(_Followup_Required, 1), IFNULL(_Color, '#3b82f6'),
             _Pulse_Id, _Pulse, IFNULL(_isGhosting, 0),
-             -- WON LOGIC
             IF(_Stage_Type = 1, 1, 0), 
             IF(_Stage_Type = 1, CURRENT_TIMESTAMP, NULL), 
             IF(_Stage_Type = 1, _Staff_Id, NULL),
-            
-            -- LOST LOGIC
             IF(_Stage_Type = 2, 1, 0), 
             IF(_Stage_Type = 2, CURRENT_TIMESTAMP, NULL), 
             IF(_Stage_Type = 2, _Staff_Id, NULL),
-            
             NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name,
              _Target_Stage_Id, _Target_Stage_Name,
             _Workflow_Id, _Workflow, _Workflow_Start_Status
@@ -15505,21 +15602,17 @@ BEGIN
         
 		SET _Generated_Lead_Id = LAST_INSERT_ID();
                 
-        -- --- START ADDITION 2: Activity Log for NEW Lead ---
         INSERT INTO `lead_activity_log` (
-            Lead_Id, Lead_Name, Deal_Type, 
+            Lead_Id, Lead_Name, Deal_Type, New_Value,
             Action_Taken, Activity_Title, Outcome, Notes,
             Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
             Won_Lost_Status, User_Id
         ) VALUES (
-            _Generated_Lead_Id, _Lead_Name, _Deal_Type_Name, 
+            _Generated_Lead_Id, _Lead_Name, _Deal_Type_Name, _Current_Pipeline_Stage,
             'Lead Created', 'Lead Creation', 'Recorded automatically', 'Manually added',
             NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name,
             IF(_Stage_Type IN (1, 2), _Stage_Type, 0), _Login_User_Id
         );
-        -- --- END ADDITION 2 ---
-
-
         
         IF (_Current_Pipeline_Stage IS NOT NULL AND _Current_Pipeline_Stage != '') OR (_Pulse IS NOT NULL AND _Pulse != '') THEN
             INSERT INTO `lead_pipeline_pulse_history` (
@@ -15566,17 +15659,22 @@ BEGIN
         END IF;
         
     ELSE
-        -- --- START ADDITION 3A: Fetch Old Values before Update ---
-        SELECT Lead_Name, Lead_Type, POC_Full_Name, POC_Direct_Mobile, POC_Email, Lead_Priority
-        INTO v_old_Lead_Name, v_old_Lead_Type, v_old_POC_Full_Name, v_old_POC_Direct_Mobile, v_old_POC_Email, v_old_Lead_Priority
+    
+		SELECT Lead_Name, Lead_Type, POC_Full_Name, POC_Direct_Mobile, POC_Email, Lead_Priority,
+               Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name,
+               Deal_Type_Id, Deal_Type_Name
+        INTO v_old_Lead_Name, v_old_Lead_Type, v_old_POC_Full_Name, v_old_POC_Direct_Mobile, v_old_POC_Email, v_old_Lead_Priority,
+             v_Branch_Id, v_Branch_Name, v_Department_Id, v_Department_Name, v_Staff_Id, v_Staff_Name,
+             v_old_Deal_Type_Id, v_old_Deal_Type_Name
         FROM `lead` 
         WHERE Lead_Id = _Lead_Id;
-        -- --- END ADDITION 3A ---
+
+
+
         
         UPDATE `lead`
-
         SET 
-            Lead_Name = _Lead_Name, Lead_Type = _Calculated_Lead_Type, Vertical = _Vertical, Vertical_Name = _Vertical_Name,
+            Lead_Name = _Lead_Name, Lead_Type = _Calculated_Lead_Type, Vertical = _Vertical, Vertical_Name = _Vertical_Name,Deal_Type_Id =_Deal_Type_Id,Deal_Type_Name =_Deal_Type_Name,
             Address = _Address, State = _State, State_Name = _State_Name, District = _District, District_Name = _District_Name,
             Company_Size_Id = _Company_Size_Id, Company_Size_Name = _Company_Size_Name, Source = _Source, Source_Name = _Source_Name, 
             POC_Full_Name = _POC_Full_Name, POC_Designation_Id = _POC_Designation_Id, POC_Designation = _POC_Designation,
@@ -15595,50 +15693,124 @@ BEGIN
             isGhosting             = IFNULL(_isGhosting, 0),
             Workflow_Id = _Workflow_Id, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
         WHERE Lead_Id = _Lead_Id;
-        
-        -- --- START ADDITION 3B: Log individual field changes ---
-        -- 1. Deal Type Changed
-        IF v_old_Lead_Type <> _Calculated_Lead_Type THEN
-            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Lead_Type, _Calculated_Lead_Type, 'Deal Type Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
-        END IF;
 
-        -- 2. Contact Person Changed 
+/*
         IF IFNULL(v_old_POC_Full_Name, '') <> IFNULL(_POC_Full_Name, '') THEN
             INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
             VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Full_Name, _POC_Full_Name, 'Primary Contact Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
         END IF;
 
-        -- 3. Phone Changed
         IF IFNULL(v_old_POC_Direct_Mobile, '') <> IFNULL(_POC_Direct_Mobile, '') THEN
             INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
             VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Direct_Mobile, _POC_Direct_Mobile, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
         END IF;
 
-        -- 4. Email Changed
         IF IFNULL(v_old_POC_Email, '') <> IFNULL(_POC_Email, '') THEN
             INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
             VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Email, _POC_Email, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
         END IF;
 
-        -- 5. Priority Changed
         IF IFNULL(v_old_Lead_Priority, '') <> IFNULL(_Lead_Priority, '') THEN
             INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
             VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Lead_Priority, _Lead_Priority, 'Priority Level Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
         END IF;
 
-        -- 6. Lead Name Changed 
         IF IFNULL(v_old_Lead_Name, '') <> IFNULL(_Lead_Name, '') THEN
             INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
             VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Lead_Name, _Lead_Name, 'Lead Name Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
         END IF;
-        -- --- END ADDITION 3B ---
+  */
+  
+  
+        -- 1A. Lead Type Changed
+        IF v_old_Lead_Type <> _Calculated_Lead_Type THEN
+            INSERT INTO `lead_activity_log` (
+                Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id,
+                Notes, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name
+            )
+            VALUES (
+                _Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Lead_Type, _Calculated_Lead_Type, 'Lead Type Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id,
+                'Manually updated', NULLIF(v_Branch_Id, 0), v_Branch_Name, NULLIF(v_Department_Id, 0), v_Department_Name, NULLIF(v_Staff_Id, 0), v_Staff_Name
+            );
+        END IF;
+
+        -- 1B. Deal Type Changed
+        IF IFNULL(v_old_Deal_Type_Id, 0) <> IFNULL(_Deal_Type_Id, 0) THEN
+            INSERT INTO `lead_activity_log` (
+                Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id,
+                Notes, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name
+            )
+            VALUES (
+                _Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Deal_Type_Name, _Deal_Type_Name, 'Deal Type Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id,
+                'Manually updated', NULLIF(v_Branch_Id, 0), v_Branch_Name, NULLIF(v_Department_Id, 0), v_Department_Name, NULLIF(v_Staff_Id, 0), v_Staff_Name
+            );
+        END IF;
 
 
+        -- 2. Contact Person Changed 
+        IF IFNULL(v_old_POC_Full_Name, '') <> IFNULL(_POC_Full_Name, '') THEN
+            INSERT INTO `lead_activity_log` (
+                Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id,
+                Notes, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name
+            )
+            VALUES (
+                _Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Full_Name, _POC_Full_Name, 'Primary Contact Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id,
+                'Manually updated', NULLIF(v_Branch_Id, 0), v_Branch_Name, NULLIF(v_Department_Id, 0), v_Department_Name, NULLIF(v_Staff_Id, 0), v_Staff_Name
+            );
+        END IF;
+
+        -- 3. Phone Changed
+        IF IFNULL(v_old_POC_Direct_Mobile, '') <> IFNULL(_POC_Direct_Mobile, '') THEN
+            INSERT INTO `lead_activity_log` (
+                Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id,
+                Notes, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name
+            )
+            VALUES (
+                _Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Direct_Mobile, _POC_Direct_Mobile, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id,
+                'Manually updated', NULLIF(v_Branch_Id, 0), v_Branch_Name, NULLIF(v_Department_Id, 0), v_Department_Name, NULLIF(v_Staff_Id, 0), v_Staff_Name
+            );
+        END IF;
+
+        -- 4. Email Changed
+        IF IFNULL(v_old_POC_Email, '') <> IFNULL(_POC_Email, '') THEN
+            INSERT INTO `lead_activity_log` (
+                Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id,
+                Notes, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name
+            )
+            VALUES (
+                _Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Email, _POC_Email, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id,
+                'Manually updated', NULLIF(v_Branch_Id, 0), v_Branch_Name, NULLIF(v_Department_Id, 0), v_Department_Name, NULLIF(v_Staff_Id, 0), v_Staff_Name
+            );
+        END IF;
+
+        -- 5. Priority Changed
+        IF IFNULL(v_old_Lead_Priority, '') <> IFNULL(_Lead_Priority, '') THEN
+            INSERT INTO `lead_activity_log` (
+                Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id,
+                Notes, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name
+            )
+            VALUES (
+                _Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Lead_Priority, _Lead_Priority, 'Priority Level Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id,
+                'Manually updated', NULLIF(v_Branch_Id, 0), v_Branch_Name, NULLIF(v_Department_Id, 0), v_Department_Name, NULLIF(v_Staff_Id, 0), v_Staff_Name
+            );
+        END IF;
+
+        -- 6. Lead Name Changed 
+        IF IFNULL(v_old_Lead_Name, '') <> IFNULL(_Lead_Name, '') THEN
+            INSERT INTO `lead_activity_log` (
+                Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id,
+                Notes, Branch_Id, Branch_Name, Department_Id, Department_Name, Staff_Id, Staff_Name
+            )
+            VALUES (
+                _Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Lead_Name, _Lead_Name, 'Lead Name Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id,
+                'Manually updated', NULLIF(v_Branch_Id, 0), v_Branch_Name, NULLIF(v_Department_Id, 0), v_Department_Name, NULLIF(v_Staff_Id, 0), v_Staff_Name
+            );
+        END IF;
+
+
+        
         
         SET _Generated_Lead_Id = _Lead_Id;
-
-        
         DELETE FROM `lead_contact` WHERE Lead_Id = _Generated_Lead_Id;
 
     END IF;
@@ -22731,12 +22903,13 @@ BEGIN
     UPDATE User_Details
     SET User_Details_Name = User_Details_Name_,
         Password          = Password_,
-        User_Type         = User_Type_,
+        User_Type_Id      = User_Type_,
+        User_Type         = CASE WHEN User_Type_ = 1 THEN 'Admin' ELSE 'User' END,
         Working_Status    = Working_Status_,
         Working_Status_Id = Working_Status_Id_,
         Role_Id           = Role_Id_,
         Department_Id     = Department_Id_,
-        Branch_Id         = Branch_Id_,       -- Add this line!
+        Branch_Id         = Branch_Id_,
         Branch_Name       = Branch_Name_,
         Email             = Email_,
         Mobile            = Mobile_
@@ -22744,14 +22917,15 @@ BEGIN
   ELSE
     SET User_Details_Id_ = (SELECT COALESCE(MAX(User_Details_Id), 0) + 1 FROM User_Details);
     INSERT INTO User_Details (
-      User_Details_Id, User_Details_Name, Password, User_Type, DeleteStatus,
+      User_Details_Id, User_Details_Name, Password, User_Type_Id, User_Type, DeleteStatus,
       Working_Status, Working_Status_Id, Role_Id, Department_Id, Branch_Id, Branch_Name, Email, Mobile
     )
     VALUES (
-      User_Details_Id_, User_Details_Name_, Password_, User_Type_, FALSE,
+      User_Details_Id_, User_Details_Name_, Password_, User_Type_, CASE WHEN User_Type_ = 1 THEN 'Admin' ELSE 'User' END, FALSE,
       Working_Status_, Working_Status_Id_, Role_Id_, Department_Id_, Branch_Id_, Branch_Name_, Email_, Mobile_
     );
   END IF;
+
 
   WHILE i < JSON_LENGTH(User_Menu_Selection) DO
     SELECT JSON_UNQUOTE(JSON_EXTRACT(User_Menu_Selection, CONCAT('$[', i, '].Menu_Id')))   INTO Menu_Id_;
