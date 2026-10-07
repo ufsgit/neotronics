@@ -5,7 +5,11 @@
       <span>{{ getDisplayValue() }}</span>
     </span>
     <span class="ig-dropdown-placeholder" *ngIf="value == null || value === 0 || value === '' || !getDisplayValue()">{{ placeholder }}</span>
-    <i class="material-icons ig-dropdown-caret">arrow_drop_down</i>
+    <i class="material-icons ig-dropdown-caret" *ngIf="!loading">arrow_drop_down</i>
+    <svg *ngIf="loading" class="ig-dropdown-caret" style="width: 18px; height: 18px; animation: ig-spin 1s linear infinite;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"></circle>
+      <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"></path>
+    </svg>
   </div>
 
   <div class="ig-dropdown-menu" *ngIf="isOpen" [ngStyle]="menuStyle">
@@ -15,8 +19,11 @@
     </div>
     
     <div class="ig-dropdown-list" (scroll)="onScroll($event)">
-      <div class="ig-dropdown-item" *ngIf="!data || data.length === 0" style="color: #94a3b8; font-style: italic;" (click)="$event.stopPropagation()">
+      <div class="ig-dropdown-item" *ngIf="(!data || data.length === 0) && !loading" style="color: #94a3b8; font-style: italic;" (click)="$event.stopPropagation()">
         No options available
+      </div>
+      <div class="ig-dropdown-item" *ngIf="(!data || data.length === 0) && loading" style="color: #3b82f6; font-style: italic;" (click)="$event.stopPropagation()">
+        Loading options...
       </div>
       
       <div class="ig-dropdown-item" *ngFor="let item of data" (click)="selectItem(item, $event)" [class.selected]="value === item[bindValue]" style="display: flex; align-items: center; justify-content: space-between;">

@@ -161,3 +161,5 @@
   cursor: not-allowed;
   pointer-events: none;
 }
+
+@keyframes ig-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
