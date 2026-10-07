@@ -67,7 +67,7 @@ export class LeadComponent implements OnInit, AfterViewInit {
   Selected_Lead_Type: string = 'All';
 
   Requirement_Note: string = '';
-  
+
   Available_Interests: string[] = ['Web Development', 'Mobile App Development', 'SEO Optimization', 'Digital Marketing', 'Cloud Hosting', 'UI/UX Design', 'IT Consulting'];
   Selected_Interest: string = '';
   Added_Interests: string[] = [];
@@ -79,7 +79,7 @@ export class LeadComponent implements OnInit, AfterViewInit {
 
   Available_Pipeline_Stages: string[] = ['New', 'Need to call', 'In Progress', 'Negotiation', 'Closed Won', 'Closed Lost'];
   Selected_Pipeline_Stage: string = '';
-  
+
   Available_Pulses: string[] = ['Interested', 'Not interested', 'Very excited', 'Ghosting'];
   Selected_Pulse: string = '';
 
@@ -232,7 +232,7 @@ export class LeadComponent implements OnInit, AfterViewInit {
     private Master_Refresh_Service_: Master_Refresh_Service,
     private snackBar: MatSnackBar,
     private notificationService: NotificationService
-  ) { 
+  ) {
     this.Initialize_Contact_Form();
   }
 
@@ -257,14 +257,14 @@ export class LeadComponent implements OnInit, AfterViewInit {
       this.Lead_Service_.Get_NewLeadByID(id).subscribe(data => {
         this.issLoading = false;
         if (data && data.length > 0 && data[0].length > 0) {
-           this.Edit_Lead(data[0][0]);
+          this.Edit_Lead(data[0][0]);
         } else {
-           this.snackBar.open("Record Not Found", "Close", { duration: 3000 });
-           this.router.navigate(['/LeadDashboard']);
+          this.snackBar.open("Record Not Found", "Close", { duration: 3000 });
+          this.router.navigate(['/LeadDashboard']);
         }
       }, err => {
-         this.issLoading = false;
-         this.snackBar.open("Error fetching lead", "Close", { duration: 3000 });
+        this.issLoading = false;
+        this.snackBar.open("Error fetching lead", "Close", { duration: 3000 });
       });
     }
 
@@ -272,9 +272,11 @@ export class LeadComponent implements OnInit, AfterViewInit {
       this.Query_Status = params['status'] || null;
       this.Query_Assigned = params['assigned'] || null;
       this.Query_Followup = params['followup'] || null;
-      
-      if (params['stageId']) {
-        this.Lead_Filter.PipelineStage = Number(params['stageId']);
+
+      if (params['stageId'] || params['stage']) {
+        if (params['stageId']) {
+          this.Lead_Filter.PipelineStage = Number(params['stageId']);
+        }
         this.Pipeline_Stage_Filter_Name = params['stage'] || '';
         this.syncDropdown('PipelineStage', this.Pipeline_Stage_Filter_Name);
       }
@@ -312,8 +314,8 @@ export class LeadComponent implements OnInit, AfterViewInit {
       // In case ViewChildren is not ready yet
       setTimeout(() => {
         if (this.filterDropdowns) {
-           const dropdown = this.filterDropdowns.find(d => d.type === type);
-           if (dropdown) dropdown.selectedOptionName = name;
+          const dropdown = this.filterDropdowns.find(d => d.type === type);
+          if (dropdown) dropdown.selectedOptionName = name;
         }
       }, 500);
     }
@@ -330,12 +332,12 @@ export class LeadComponent implements OnInit, AfterViewInit {
 
   loadDropdownData(type: string, append: boolean = false, filterId: number = 0) {
     const cacheKey = ((type === 'District' || type === 'Department' || type === 'Staff') && filterId) ? `${type}_${filterId}` : type;
-    
+
     if (this.DropdownLoading[cacheKey]) return;
     if (append && this.DropdownEnd[cacheKey]) return;
-    
+
     const search = this.DropdownSearch[cacheKey] || '';
-    
+
     if (!append && search === '' && this.DropdownOriginalData[cacheKey]) {
       this.DropdownData[cacheKey] = [...this.DropdownOriginalData[cacheKey]];
       return;
@@ -343,7 +345,7 @@ export class LeadComponent implements OnInit, AfterViewInit {
 
     this.DropdownLoading[cacheKey] = true;
     const page = this.DropdownPage[cacheKey] || 1;
-    
+
     this.Lead_Service_.Search_Lead_Dropdowns(type, search, page, filterId).subscribe(Rows => {
       this.DropdownLoading[cacheKey] = false;
       const data = Array.isArray(Rows) ? Rows : [];
@@ -373,7 +375,7 @@ export class LeadComponent implements OnInit, AfterViewInit {
 
   onSearchDropdown(type: string, searchText: string, filterId: number = 0) {
     const cacheKey = ((type === 'District' || type === 'Department' || type === 'Staff') && filterId) ? `${type}_${filterId}` : type;
-    
+
     this.DropdownSearch[cacheKey] = searchText;
     this.DropdownEnd[cacheKey] = false;
 
@@ -435,7 +437,7 @@ export class LeadComponent implements OnInit, AfterViewInit {
       this.Selected_Lead_For_FollowUp.Is_FollowUp = true;
       this.Selected_Pipeline_Stage = '';
       this.Selected_Pulse = '';
-      
+
       if (this.Selected_Lead_For_FollowUp.Branch_Id > 0) {
         this.Selected_Lead_For_FollowUp.FollowUp_Location_Id = this.Selected_Lead_For_FollowUp.Branch_Id;
         this.DropdownData['Branch'] = [{ id: this.Selected_Lead_For_FollowUp.Branch_Id, name: this.Selected_Lead_For_FollowUp.Branch_Name }];
@@ -530,8 +532,8 @@ export class LeadComponent implements OnInit, AfterViewInit {
   }
 
   ParseFieldList(fieldList: string): string[] {
-      if (!fieldList || String(fieldList).trim() === '') return [];
-      return String(fieldList).split(',').map(s => s.trim()).filter(s => s);
+    if (!fieldList || String(fieldList).trim() === '') return [];
+    return String(fieldList).split(',').map(s => s.trim()).filter(s => s);
   }
 
   isCheckboxChecked(fieldId: number, option: string): boolean {
@@ -553,22 +555,22 @@ export class LeadComponent implements OnInit, AfterViewInit {
   }
 
   onDynamicFileUpload(event: Event, customFieldId: number) {
-      const file = (event.target as HTMLInputElement).files[0];
-      if (file) {
-          if (file.size > 5 * 1024 * 1024) {
-              this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'File size exceeds 5 MB. Please select a smaller file.', Type: "3" } });
-              return;
-          }
-          this.issLoading = true;
-          this.Lead_Custom_Value_Service_.uploadFile(file).then(res => {
-              this.Dynamic_Field_Values[customFieldId] = res['Location'] || '';
-              this.issLoading = false;
-              this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'File Uploaded Successfully', Type: "false" } });
-          }).catch(err => {
-              this.issLoading = false;
-              this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'File upload failed.', Type: "3" } });
-          });
+    const file = (event.target as HTMLInputElement).files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'File size exceeds 5 MB. Please select a smaller file.', Type: "3" } });
+        return;
       }
+      this.issLoading = true;
+      this.Lead_Custom_Value_Service_.uploadFile(file).then(res => {
+        this.Dynamic_Field_Values[customFieldId] = res['Location'] || '';
+        this.issLoading = false;
+        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'File Uploaded Successfully', Type: "false" } });
+      }).catch(err => {
+        this.issLoading = false;
+        this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'File upload failed.', Type: "3" } });
+      });
+    }
   }
 
   Get_Company_Sizes() {
@@ -601,7 +603,7 @@ export class LeadComponent implements OnInit, AfterViewInit {
 
   Get_Leads() {
     this.issLoading = true;
-    
+
     let leadTypeId = 0;
     if (this.Selected_Lead_Type === 'Quick Lead') leadTypeId = 1;
     else if (this.Selected_Lead_Type === 'Raw lead') leadTypeId = 2;
@@ -624,7 +626,7 @@ export class LeadComponent implements OnInit, AfterViewInit {
       const leadRows = (Rows && Array.isArray(Rows) && Rows.length > 0 && Array.isArray(Rows[0])) ? Rows[0] : (Array.isArray(Rows) ? Rows : []);
       const countRows = (Rows && Array.isArray(Rows) && Rows.length > 1 && Array.isArray(Rows[1])) ? Rows[1] : [];
       let totalCount = countRows.length > 0 && countRows[0].Total_Count !== undefined ? countRows[0].Total_Count : leadRows.length;
-      
+
       this.Total_Pages = Math.max(1, Math.ceil(totalCount / this.Page_Size));
 
       if (Array.isArray(leadRows)) {
@@ -817,7 +819,7 @@ export class LeadComponent implements OnInit, AfterViewInit {
       District: 0,
       State: 0
     };
-    
+
     // Clear dropdown UI components
     if (this.filterDropdowns) {
       this.filterDropdowns.forEach(dropdown => dropdown.clear());
@@ -1018,6 +1020,24 @@ export class LeadComponent implements OnInit, AfterViewInit {
     const loginUser = localStorage.getItem('Login_User');
     if (loginUser) Lead_Copy.Login_User_Id = Number(loginUser);
     if (Lead_Copy.FollowUp_Date) Lead_Copy.FollowUp_Date = Lead_Copy.FollowUp_Date.replace('T', ' ');
+
+    // --- Add Resolution for Names ---
+    const stateObj = (this.DropdownData['State'] || []).find((x: any) => x.id == Lead_Copy.State);
+    if (stateObj) Lead_Copy.State_Name = stateObj.name;
+
+    const districtCacheKey = 'District_' + Lead_Copy.State;
+    const districtObj = (this.DropdownData[districtCacheKey] || this.DropdownData['District'] || []).find((x: any) => x.id == Lead_Copy.District);
+    if (districtObj) Lead_Copy.District_Name = districtObj.name;
+    
+    const sourceObj = (this.DropdownData['Source'] || []).find((x: any) => x.id == Lead_Copy.Source);
+    if (sourceObj) Lead_Copy.Source_Name = sourceObj.name;
+
+    const companySizeObj = (this.DropdownData['CompanySize'] || []).find((x: any) => x.id == Lead_Copy.Company_Size_Id);
+    if (companySizeObj) Lead_Copy.Company_Size_Name = companySizeObj.name;
+    
+    const verticalObj = (this.DropdownData['Vertical'] || []).find((x: any) => x.id == Lead_Copy.Vertical);
+    if (verticalObj) Lead_Copy.Vertical_Name = verticalObj.name;
+    // --------------------------------
     this.issLoading = true;
     this.Lead_Service_.Save_Lead(Lead_Copy).pipe(finalize(() => this.issLoading = false)).subscribe({
       next: (res: any) => {
@@ -1028,11 +1048,11 @@ export class LeadComponent implements OnInit, AfterViewInit {
           }
           let leadId = res.data.Key_Id || this.Lead_.Lead_Id;
           if (leadId && leadId > 0) {
-              this.Save_Dynamic_Fields(leadId);
+            this.Save_Dynamic_Fields(leadId);
           } else {
-              this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
-              this.Close_Click();
-              this.Get_Leads();
+            this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
+            this.Close_Click();
+            this.Get_Leads();
           }
         } else {
           this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: (res && res.message) || 'Error Occurred during Save', Type: "2" } });
@@ -1148,39 +1168,39 @@ export class LeadComponent implements OnInit, AfterViewInit {
 
   Get_Lead_Dynamic_Fields(Lead_Id: number) {
     this.Lead_Custom_Value_Service_.Get_Lead_Custom_Values(Lead_Id).subscribe(Rows => {
-        const values = (Rows && Rows[0]) ? Rows[0] : [];
-        this.Dynamic_Field_Values = {};
-        values.forEach(val => {
-            this.Dynamic_Field_Values[val.Custom_Field_Id] = val.Field_Value;
-        });
+      const values = (Rows && Rows[0]) ? Rows[0] : [];
+      this.Dynamic_Field_Values = {};
+      values.forEach(val => {
+        this.Dynamic_Field_Values[val.Custom_Field_Id] = val.Field_Value;
+      });
     });
   }
 
   Save_Dynamic_Fields(Lead_Id: number) {
-      const finish = () => {
-          this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
-          this.Close_Click();
-          this.Get_Leads();
-      };
+    const finish = () => {
+      this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Saved Successfully', Type: "false" } });
+      this.Close_Click();
+      this.Get_Leads();
+    };
 
-      const keys = Object.keys(this.Dynamic_Field_Values);
-      if (keys.length === 0) {
-          finish();
-          return;
-      }
-      
-      let pending = keys.length;
-      keys.forEach(key => {
-          const valueObj = {
-              Lead_Id: Lead_Id,
-              Custom_Field_Id: Number(key),
-              Field_Value: this.Dynamic_Field_Values[key]
-          };
-          this.Lead_Custom_Value_Service_.Save_Lead_Custom_Value(valueObj).subscribe({
-              next: () => { if (--pending === 0) finish(); },
-              error: () => { if (--pending === 0) finish(); }
-          });
+    const keys = Object.keys(this.Dynamic_Field_Values);
+    if (keys.length === 0) {
+      finish();
+      return;
+    }
+
+    let pending = keys.length;
+    keys.forEach(key => {
+      const valueObj = {
+        Lead_Id: Lead_Id,
+        Custom_Field_Id: Number(key),
+        Field_Value: this.Dynamic_Field_Values[key]
+      };
+      this.Lead_Custom_Value_Service_.Save_Lead_Custom_Value(valueObj).subscribe({
+        next: () => { if (--pending === 0) finish(); },
+        error: () => { if (--pending === 0) finish(); }
       });
+    });
   }
 
   Get_Lead_FollowUp_History(Lead_Id) {

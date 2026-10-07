@@ -10,7 +10,7 @@ var New_FollowUp = {
         );
     },
 
-    Get_LeadFollowUpDetails: function(Lead_Id, callback) {
+    Get_LeadFollowUpDetails: function (Lead_Id, callback) {
         return db.query("CALL Get_LeadFollowUpDetails(?)", [Lead_Id], callback);
     },
 
@@ -24,18 +24,18 @@ var New_FollowUp = {
 
         const params = [
             n(data.Lead_Id),
-            n(data.Branch_Id),          s(data.Branch_Name),
-            n(data.Department_Id),      s(data.Department_Name),
-            n(data.Staff_Id),           s(data.Staff_Name),
+            n(data.Branch_Id), s(data.Branch_Name),
+            n(data.Department_Id), s(data.Department_Name),
+            n(data.Staff_Id), s(data.Staff_Name),
             s(data.Next_FollowUp_Date) || null,
             s(data.Remark),
             n(data.Followup_Required) !== null ? n(data.Followup_Required) : 1,
-            n(data.Pipeline_Stage_Id),  s(data.Pipeline_Stage),
+            n(data.Pipeline_Stage_Id), s(data.Pipeline_Stage),
             n(data.Stage_Type) || 0,
             s(data.Color) || '#3b82f6',
-            n(data.Pulse_Id),           s(data.Pulse),
+            n(data.Pulse_Id), s(data.Pulse),
             n(data.isGhosting) || 0,
-            n(data.Target_Stage_Id),    s(data.Target_Stage_Name),
+            n(data.Target_Stage_Id), s(data.Target_Stage_Name),
             n(data.Login_User_Id)
         ];
 
