@@ -156,29 +156,36 @@
       <!-- Top Staff Chart & Recent Activity List (Toggle View) -->
       <div class="col-12 mb-4">
         <div class="card shadow-sm border-0 rounded-xl h-100">
-          <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center">
+          <div
+            class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-gray-900 mb-2 mb-md-0">
-              <i class="fa" [ngClass]="staffViewMode === 'graph' ? 'fa-bar-chart text-success' : 'fa-list-alt text-primary'" class="mr-2"></i> 
+              <i class="fa"
+                [ngClass]="staffViewMode === 'graph' ? 'fa-bar-chart text-success' : 'fa-list-alt text-primary'"
+                class="mr-2"></i>
               {{ staffViewMode === 'graph' ? 'Staff Activity' : 'Activity Logs List' }}
             </h6>
-            
+
             <div class="d-flex align-items-center">
-              <!-- Date Filters (Only in Table View) -->
-              <ng-container *ngIf="staffViewMode === 'table'">
-                <input type="date" class="form-control form-control-sm border-0 shadow-sm mr-2" [(ngModel)]="startDate" style="border-radius: 8px;">
-                <input type="date" class="form-control form-control-sm border-0 shadow-sm mr-2" [(ngModel)]="endDate" style="border-radius: 8px;">
-                <button class="btn btn-sm btn-info shadow-sm px-3 mr-3" style="border-radius: 8px;" (click)="fetchListLogs()">
+              <!-- Date Filters (Always visible) -->
+              <ng-container>
+                <input type="date" class="form-control form-control-sm border-0 shadow-sm mr-2" [(ngModel)]="startDate"
+                  style="border-radius: 8px;">
+                <input type="date" class="form-control form-control-sm border-0 shadow-sm mr-2" [(ngModel)]="endDate"
+                  style="border-radius: 8px;">
+                <button class="btn btn-sm btn-info shadow-sm px-3 mr-3" style="border-radius: 8px;"
+                  (click)="fetchActivityLogs()">
                   <i class="fa fa-filter mr-1"></i> Filter
                 </button>
               </ng-container>
 
-              <button class="btn btn-sm btn-outline-primary font-weight-bold shadow-sm" (click)="toggleStaffView()" style="border-radius: 8px; width: 100px;">
-                <i class="fa" [ngClass]="staffViewMode === 'graph' ? 'fa-table' : 'fa-bar-chart'"></i> 
+              <button class="btn btn-sm btn-outline-primary font-weight-bold shadow-sm" (click)="toggleStaffView()"
+                style="border-radius: 8px; width: 100px;">
+                <i class="fa" [ngClass]="staffViewMode === 'graph' ? 'fa-table' : 'fa-bar-chart'"></i>
                 {{ staffViewMode === 'graph' ? 'Table' : 'Graph' }}
               </button>
             </div>
           </div>
-          
+
           <div class="card-body p-0">
             <!-- GRAPH VIEW -->
             <div class="p-4" *ngIf="staffViewMode === 'graph'">
@@ -194,71 +201,88 @@
             <div *ngIf="staffViewMode === 'table'">
               <div class="table-responsive" style="min-height: 300px; max-height: 500px; overflow-y: auto;">
                 <table class="table table-hover align-middle mb-0">
-                  <thead class="bg-light text-muted font-weight-bold text-uppercase text-xs" style="position: sticky; top: 0; z-index: 10;">
+                  <thead class="bg-light text-muted font-weight-bold text-uppercase text-xs"
+                    style="position: sticky; top: 0; z-index: 10;">
                     <tr>
                       <th class="border-top-0 pl-4 py-3">Date</th>
-                      <th class="border-top-0 py-3">Lead Name</th>
+                      <th class="border-top-0 py-3">Customer / Lead</th>
+                      <th class="border-top-0 py-3">Deal Type</th>
+                      <th class="border-top-0 py-3">Previous Value</th>
+                      <th class="border-top-0 py-3">New Value</th>
                       <th class="border-top-0 py-3">Action Taken</th>
                       <th class="border-top-0 py-3">Outcome</th>
                       <th class="border-top-0 py-3">Next Follow-up</th>
-                      <th class="border-top-0 py-3">Staff / Dept</th>
+                      <th class="border-top-0 py-3">Branch</th>
+                      <th class="border-top-0 py-3">Department</th>
+                      <th class="border-top-0 py-3">Staff</th>
                       <th class="border-top-0 pr-4 py-3">Notes</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let log of activityLogsList">
                       <td class="pl-4">
-                        <div class="text-sm font-weight-bold text-gray-800">{{ log.Activity_Date | date:'dd MMM, yyyy' }}</div>
-                        <div class="text-xs text-muted">{{ log.Activity_Date | date:'hh:mm a' }}</div>
+                        <div class="text-sm font-weight-bold text-gray-800">{{ log.Activity_Date | date:'dd-MMM-yyyy
+                          HH:mm' }}</div>
                       </td>
                       <td>
                         <div class="font-weight-600 text-primary">{{ log.Lead_Name || '-' }}</div>
-                        <div class="text-xs text-muted">{{ log.Deal_Type || '-' }}</div>
                       </td>
                       <td>
-                        <span class="badge badge-info badge-pill px-3 py-1 text-uppercase text-xs" style="background-color: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd;">
-                          {{ log.Action_Taken || 'N/A' }}
-                        </span>
-                        <div class="text-xs text-muted mt-1" *ngIf="log.Activity_Title" style="max-width: 150px; white-space: normal;">
-                          {{ log.Activity_Title }}
+                        <div class="text-sm text-gray-800">{{ log.Deal_Type || '-' }}</div>
+                      </td>
+                      <td>
+                        <div class="text-sm text-gray-800">{{ log.Old_Value || '-' }}</div>
+                      </td>
+                      <td>
+                        <div class="text-sm text-gray-800">{{ log.New_Value || '-' }}</div>
+                      </td>
+                      <td>
+                        <div class="text-sm text-gray-800">{{ log.Action_Taken || log.Activity_Title || 'N/A' }}</div>
+                      </td>
+                      <td>
+                        <div class="text-sm" [ngClass]="log.Outcome ? 'text-success' : 'text-muted'">
+                          {{ log.Outcome || 'Pending' }}
                         </div>
                       </td>
                       <td>
-                        <span [ngClass]="log.Outcome ? 'text-success' : 'text-muted'" class="font-weight-600 text-sm">
-                          <i class="fa fa-info-circle mr-1"></i> {{ log.Outcome || 'Pending' }}
-                        </span>
+                        <div class="text-sm">{{ log.Next_Follow_Up ? (log.Next_Follow_Up | date:'dd-MMM-yyyy') : '-' }}
+                        </div>
                       </td>
                       <td>
-                        <div class="text-sm">{{ log.Next_Follow_Up ? (log.Next_Follow_Up | date:'dd MMM, yyyy') : '-' }}</div>
+                        <div class="text-sm text-gray-800">{{ log.Branch_Name || '-' }}</div>
                       </td>
                       <td>
-                        <div class="font-weight-bold text-sm text-gray-800">{{ log.Staff_Name || '-' }}</div>
-                        <div class="text-xs text-muted">{{ log.Department_Name || '-' }} <span *ngIf="log.Branch_Name">({{ log.Branch_Name }})</span></div>
+                        <div class="text-sm text-gray-800">{{ log.Department_Name || '-' }}</div>
+                      </td>
+                      <td>
+                        <div class="text-sm text-gray-800">{{ log.Staff_Name || '-' }}</div>
                       </td>
                       <td class="pr-4 text-sm text-muted" style="max-width: 250px;">
-                        <div class="text-truncate" [title]="log.Notes || log.New_Value || ''">
-                          {{ log.Notes || log.New_Value || '-' }}
+                        <div class="text-truncate" [title]="log.Notes || ''">
+                          {{ log.Notes || '-' }}
                         </div>
                       </td>
                     </tr>
                     <!-- Empty State -->
                     <tr *ngIf="activityLogsList.length === 0">
-                      <td colspan="7" class="text-center py-5 text-muted">
+                      <td colspan="12" class="text-center py-5 text-muted">
                         No logs found.
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              
+
               <!-- Pagination Controls -->
               <div class="card-footer bg-white d-flex justify-content-between align-items-center border-top">
                 <span class="text-muted text-sm font-weight-bold">Page {{ listCurrentPage }}</span>
                 <div>
-                  <button class="btn btn-sm btn-light mr-2 shadow-sm font-weight-bold" [disabled]="listCurrentPage === 1" (click)="prevPage()">
+                  <button class="btn btn-sm btn-light mr-2 shadow-sm font-weight-bold"
+                    [disabled]="listCurrentPage === 1" (click)="prevPage()">
                     <i class="fa fa-chevron-left mr-1"></i> Prev
                   </button>
-                  <button class="btn btn-sm btn-light shadow-sm font-weight-bold" [disabled]="activityLogsList.length < listLimit" (click)="nextPage()">
+                  <button class="btn btn-sm btn-light shadow-sm font-weight-bold"
+                    [disabled]="activityLogsList.length < listLimit" (click)="nextPage()">
                     Next <i class="fa fa-chevron-right ml-1"></i>
                   </button>
                 </div>
