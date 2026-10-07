@@ -110,7 +110,24 @@ router.get('/Get_NewLeads/', function (req, res, next) {
         const pipeline_stage = Number(req.query.pipeline_stage) || 0;
         const pipeline_stage_name = req.query.pipeline_stage_name || '';
 
-        Lead.Get_NewLeads(search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage, pipeline_stage_name, function (err, rows) {
+        let userId = 0;
+        let userTypeId = 0;
+        if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+            const token = req.headers.authorization.split(' ')[1];
+            try {
+                const config = require('../config.json');
+                const jwt = require('jsonwebtoken');
+                const decoded = jwt.verify(token, config.secret);
+                if (decoded && decoded.sub) {
+                    userId = decoded.sub.User_Details_Id || 0;
+                    userTypeId = decoded.sub.User_Type_Id || 0;
+                }
+            } catch (err) {
+                console.error("JWT verification failed in Get_NewLeads:", err.message);
+            }
+        }
+
+        Lead.Get_NewLeads(search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage, pipeline_stage_name, userId, userTypeId, function (err, rows) {
             if (err) {
                 res.json(err);
             }

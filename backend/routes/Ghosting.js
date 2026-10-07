@@ -2,9 +2,28 @@ var express = require('express');
 var router = express.Router();
 var Ghosting = require('../models/Ghosting');
 
+function getUserInfo(req) {
+    let userId = 0, userTypeId = 0;
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+        const token = req.headers.authorization.split(' ')[1];
+        try {
+            const config = require('../config.json');
+            const jwt = require('jsonwebtoken');
+            const decoded = jwt.verify(token, config.secret);
+            if (decoded && decoded.sub) {
+                userId = decoded.sub.User_Details_Id || 0;
+                userTypeId = decoded.sub.User_Type_Id || 0;
+            }
+        } catch (err) { }
+    }
+    return { userId, userTypeId };
+}
+
+
 router.get('/Get_Ghosting_KPI/', function (req, res, next) {
     try {
-        Ghosting.Get_Ghosting_KPI(function (err, rows) {
+        const { userId, userTypeId } = getUserInfo(req);
+        Ghosting.Get_Ghosting_KPI(userId, userTypeId, function (err, rows) {
             if (err) {
                 res.status(500).json({ error: err.message || String(err) });
             } else {
@@ -21,8 +40,9 @@ router.get('/Get_Ghosting_Stage_Summary/', function (req, res, next) {
     try {
         const limit = req.query.limit || 100;
         const offset = req.query.offset || 0;
+        const { userId, userTypeId } = getUserInfo(req);
         
-        Ghosting.Get_Ghosting_Stage_Summary(limit, offset, function (err, rows) {
+        Ghosting.Get_Ghosting_Stage_Summary(limit, offset, userId, userTypeId, function (err, rows) {
             if (err) {
                 res.status(500).json({ error: err.message || String(err) });
             } else {
@@ -39,7 +59,8 @@ router.get('/Get_Ghosting_Stage_Summary/', function (req, res, next) {
 router.get('/Get_Ghosting_Charts_Data/', function (req, res, next) {
     try {
         const type = req.query.type;
-        Ghosting.Get_Ghosting_Charts_Data(type, function (err, rows) {
+        const { userId, userTypeId } = getUserInfo(req);
+        Ghosting.Get_Ghosting_Charts_Data(type, userId, userTypeId, function (err, rows) {
             if (err) {
                 res.status(500).json({ error: err.message || String(err) });
             } else {
@@ -58,8 +79,9 @@ router.get('/Get_Ghosting_Register/', function (req, res, next) {
         const offset = parseInt(req.query.offset, 10) || 0;
         const search = req.query.search || null;
         const is_current = req.query.is_current !== undefined && req.query.is_current !== 'null' ? parseInt(req.query.is_current, 10) : null;
+        const { userId, userTypeId } = getUserInfo(req);
 
-        Ghosting.Get_Ghosting_Register(limit, offset, search, is_current, function (err, rows) {
+        Ghosting.Get_Ghosting_Register(limit, offset, search, is_current, userId, userTypeId, function (err, rows) {
             if (err) {
                 res.status(500).json({ error: err.message || String(err) });
             } else {

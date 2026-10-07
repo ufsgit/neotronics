@@ -17,8 +17,7 @@ export class LeadDashboardV3Component implements OnInit {
   customFromDate: string = '';
   customToDate: string = '';
 
-  dayWiseMonth: string | number = new Date().getMonth() + 1;
-  weekWiseMonth: string | number = new Date().getMonth() + 1;
+  globalMonth: string | number = new Date().getMonth() + 1;
 
   kpiData: any = {};
   followUpData: any = {};
@@ -166,7 +165,7 @@ export class LeadDashboardV3Component implements OnInit {
     let fromDay: string | undefined, toDay: string | undefined;
 
     if (this.filterMode === 'Year') {
-      const range = this.getMonthRange(this.selectedYear, this.dayWiseMonth);
+      const range = this.getMonthRange(this.selectedYear, this.globalMonth);
       fromDay = range.from;
       toDay = range.to;
     } else {
@@ -193,7 +192,7 @@ export class LeadDashboardV3Component implements OnInit {
     let fromWeek: string | undefined, toWeek: string | undefined;
 
     if (this.filterMode === 'Year') {
-      const range = this.getMonthRange(this.selectedYear, this.weekWiseMonth);
+      const range = this.getMonthRange(this.selectedYear, this.globalMonth);
       fromWeek = range.from;
       toWeek = range.to;
     } else {
@@ -220,8 +219,9 @@ export class LeadDashboardV3Component implements OnInit {
     let fromMonth: string | undefined, toMonth: string | undefined;
 
     if (this.filterMode === 'Year') {
-      fromMonth = `${this.selectedYear}-01-01`;
-      toMonth = `${this.selectedYear}-12-31`;
+      const range = this.getMonthRange(this.selectedYear, this.globalMonth);
+      fromMonth = range.from;
+      toMonth = range.to;
     } else {
       fromMonth = this.customFromDate || undefined;
       toMonth = this.customToDate || undefined;
