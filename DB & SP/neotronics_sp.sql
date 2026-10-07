@@ -4006,6 +4006,8 @@ BEGIN
         Lead_Type,
         Vertical,
         Vertical_Name,
+        Deal_Type_Id,
+        Deal_Type_Name,
         Address,
         State,
         State_Name,
@@ -6673,6 +6675,115 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_DealType_Delete`(
+    IN p_Deal_Type_Id INT
+)
+BEGIN
+    UPDATE Deal_Type
+    SET    DeleteStatus = 1
+    WHERE  Deal_Type_Id = p_Deal_Type_Id;
+
+    SELECT ROW_COUNT() AS AffectedRows;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_DealType_Get`(
+    IN p_Deal_Type_Id INT
+)
+BEGIN
+    SELECT Deal_Type_Id,
+           Deal_Type_Name
+    FROM   Deal_Type
+    WHERE  Deal_Type_Id = p_Deal_Type_Id
+      AND  IFNULL(DeleteStatus, 0) = 0;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_DealType_Save`(
+    IN p_Deal_Type_Id   INT,
+    IN p_Deal_Type_Name VARCHAR(100)
+)
+BEGIN
+    DECLARE v_Exists INT DEFAULT 0;
+
+    -- Check for duplicate name (exclude current record on edit)
+    SELECT COUNT(*) INTO v_Exists
+    FROM   Deal_Type
+    WHERE  Deal_Type_Name = p_Deal_Type_Name
+      AND  IFNULL(DeleteStatus, 0) = 0
+      AND  (p_Deal_Type_Id IS NULL OR p_Deal_Type_Id = 0 OR Deal_Type_Id <> p_Deal_Type_Id);
+
+    IF v_Exists > 0 THEN
+        SELECT 0 AS Deal_Type_Id_, 'Name already exists' AS Message;
+    ELSE
+        IF p_Deal_Type_Id IS NULL OR p_Deal_Type_Id = 0 THEN
+            INSERT INTO Deal_Type (Deal_Type_Name, DeleteStatus)
+            VALUES (p_Deal_Type_Name, 0);
+            SELECT LAST_INSERT_ID() AS Deal_Type_Id_, 'Saved Successfully' AS Message;
+        ELSE
+            UPDATE Deal_Type
+            SET    Deal_Type_Name = p_Deal_Type_Name
+            WHERE  Deal_Type_Id   = p_Deal_Type_Id;
+            SELECT p_Deal_Type_Id AS Deal_Type_Id_, 'Updated Successfully' AS Message;
+        END IF;
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_DealType_Search`(
+    IN p_Search   VARCHAR(100),
+    IN p_Page     INT,
+    IN p_PageSize INT
+)
+BEGIN
+    DECLARE v_Offset INT DEFAULT 0;
+    DECLARE v_Limit  INT DEFAULT 20;
+
+    -- Default page size
+    IF p_PageSize IS NULL OR p_PageSize = 0 THEN
+        SET v_Limit = 20;
+    ELSE
+        SET v_Limit = p_PageSize;
+    END IF;
+
+    -- Calculate offset
+    IF p_Page IS NULL OR p_Page <= 1 THEN
+        SET v_Offset = 0;
+    ELSE
+        SET v_Offset = (p_Page - 1) * v_Limit;
+    END IF;
+
+    -- Result set 1: data rows
+    IF p_Search IS NULL OR p_Search = '' THEN
+        SELECT Deal_Type_Id,
+               Deal_Type_Name
+        FROM   Deal_Type
+        WHERE  IFNULL(DeleteStatus, 0) = 0
+        ORDER BY Deal_Type_Name ASC
+        LIMIT  v_Limit OFFSET v_Offset;
+    ELSE
+        SELECT Deal_Type_Id,
+               Deal_Type_Name
+        FROM   Deal_Type
+        WHERE  IFNULL(DeleteStatus, 0) = 0
+          AND  Deal_Type_Name LIKE CONCAT('%', p_Search, '%')
+        ORDER BY Deal_Type_Name ASC
+        LIMIT  v_Limit OFFSET v_Offset;
+    END IF;
+
+    -- Result set 2: total count (for pagination UI)
+    SELECT COUNT(*) AS TotalCount
+    FROM   Deal_Type
+    WHERE  IFNULL(DeleteStatus, 0) = 0
+      AND  (p_Search IS NULL OR p_Search = ''
+            OR Deal_Type_Name LIKE CONCAT('%', p_Search, '%'));
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Department_Delete`(
     IN p_Assignment_Id INT
 )
@@ -7685,7 +7796,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Get`(
     IN p_Vertical_Id INT
 )
 BEGIN
-    SELECT Vertical_Id, Vertical_Name, Description
+    SELECT Vertical_Id, Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name
     FROM Vertical
     WHERE Vertical_Id = p_Vertical_Id
       AND IFNULL(DeleteStatus, 0) = 0;
@@ -7696,7 +7807,9 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Save`(
     IN p_Vertical_Id INT,
     IN p_Vertical_Name VARCHAR(255),
-    IN p_Description TEXT
+    IN p_Description TEXT,
+    IN p_Deal_Type_Id INT,
+    IN p_Deal_Type_Name VARCHAR(255)
 )
 BEGIN
     DECLARE v_Exists INT DEFAULT 0;
@@ -7715,14 +7828,16 @@ BEGIN
             -- Update existing record
             UPDATE Vertical
             SET Vertical_Name = p_Vertical_Name,
-                Description   = p_Description
+                Description   = p_Description,
+                Deal_Type_Id  = p_Deal_Type_Id,
+                Deal_Type_Name = p_Deal_Type_Name
             WHERE Vertical_Id = p_Vertical_Id;
 
             SELECT p_Vertical_Id AS Vertical_Id_, 'Saved Successfully' AS Message;
         ELSE
             -- Insert new record
-            INSERT INTO Vertical (Vertical_Name, Description, DeleteStatus)
-            VALUES (p_Vertical_Name, p_Description, 0);
+            INSERT INTO Vertical (Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name, DeleteStatus)
+            VALUES (p_Vertical_Name, p_Description, p_Deal_Type_Id, p_Deal_Type_Name, 0);
 
             SELECT LAST_INSERT_ID() AS Vertical_Id_, 'Saved Successfully' AS Message;
         END IF;
@@ -7736,13 +7851,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Vertical_Search`(
 )
 BEGIN
     IF p_Search IS NULL OR p_Search = '' THEN
-        SELECT Vertical_Id, Vertical_Name, Description
+        SELECT Vertical_Id, Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name
         FROM Vertical
         WHERE IFNULL(DeleteStatus, 0) = 0
         ORDER BY Vertical_Name ASC
         LIMIT 20;
     ELSE
-        SELECT Vertical_Id, Vertical_Name, Description
+        SELECT Vertical_Id, Vertical_Name, Description, Deal_Type_Id, Deal_Type_Name
         FROM Vertical
         WHERE Vertical_Name LIKE CONCAT('%', p_Search, '%')
           AND IFNULL(DeleteStatus, 0) = 0
@@ -29059,8 +29174,12 @@ BEGIN
         ORDER BY District_Name 
         LIMIT v_Limit OFFSET v_Offset;
         
-    ELSEIF p_Type = 'Vertical' THEN
-        SELECT Vertical_Id AS id, Vertical_Name AS name FROM Vertical 
+	ELSEIF p_Type = 'Vertical' THEN
+        SELECT Vertical_Id AS id, 
+               Vertical_Name AS name,
+               Deal_Type_Id,
+               Deal_Type_Name
+        FROM Vertical 
         WHERE Vertical_Name LIKE p_Search 
         ORDER BY Vertical_Name 
         LIMIT v_Limit OFFSET v_Offset;
