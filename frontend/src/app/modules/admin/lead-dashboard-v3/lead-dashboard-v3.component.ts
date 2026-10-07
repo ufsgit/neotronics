@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DashboardV3_Service } from '../../../services/DashboardV3.Service';
+import { Lead_Service } from '../../../services/Lead.Service';
 
 @Component({
   selector: 'app-lead-dashboard-v3',
@@ -72,14 +73,36 @@ export class LeadDashboardV3Component implements OnInit {
     pipeline: {
       data: [],
       options: {
-        legend: { position: 'right' },
-        pieHole: 0.4,
-        chartArea: { width: '90%', height: '80%' }
+        legend: { 
+          position: 'right', 
+          alignment: 'center',
+          textStyle: { color: '#2C3E50', fontSize: 13, bold: true }
+        },
+        is3D: true, // Modern 3D Effect
+        pieSliceText: 'percentage', // Show percentage inside slices cleanly
+        pieSliceTextStyle: { color: 'white', bold: true, fontSize: 12 },
+        colors: [
+          '#00d2ff', '#3a7bd5', '#f12711', '#f5af19', 
+          '#8E2DE2', '#4A00E0', '#00c6ff', '#0072ff', '#11998e'
+        ], // Vibrant, modern gradient-like solid colors
+        slices: {
+          0: { offset: 0.05 },
+          1: { offset: 0.05 },
+          2: { offset: 0.05 },
+          3: { offset: 0.05 },
+          4: { offset: 0.05 }
+        }, // "Exploded" pie effect for a premium look
+        chartArea: { left: 10, top: 15, width: '95%', height: '90%' },
+        tooltip: { 
+          textStyle: { fontSize: 13, color: '#333' },
+          showColorCode: true
+        },
+        backgroundColor: 'transparent'
       }
     }
   };
 
-  constructor(private dashboardService: DashboardV3_Service, private router: Router) { }
+  constructor(private dashboardService: DashboardV3_Service, private leadService: Lead_Service, private router: Router) { }
 
   ngOnInit(): void {
     this.fetchDashboardData();
@@ -241,14 +264,23 @@ export class LeadDashboardV3Component implements OnInit {
     });
   }
 
-  goToLeadListing(stageId: number, stageName: string) {
-    if (stageId === undefined || stageId === null) return;
-    this.router.navigate(['/Lead'], { queryParams: { stageId: stageId, stage: stageName } });
+  goToLeadListing(stage: any) {
+    let stageName = stage.Stage || stage.Stage_Name || stage.Pipeline_Stage_Name || stage.Name;
+
+    if (!stageName) {
+      alert("Cannot navigate: Stage name is missing! Data: " + JSON.stringify(stage));
+      return;
+    }
+    // Navigate with stage name instead of ID
+    this.router.navigate(['/Lead'], { queryParams: { stage: stageName } });
   }
 
   onPipelineChartSelect(event: any) {
     let rowIndex: number | undefined | null = null;
     
+    // DEBUG: Alert the event structure so we can see what it actually is!
+    // alert(JSON.stringify(event));
+
     // Check various google chart event payload structures depending on library version
     if (event && typeof event.row === 'number') {
       rowIndex = event.row;
@@ -256,11 +288,21 @@ export class LeadDashboardV3Component implements OnInit {
       rowIndex = event.selection[0].row;
     } else if (Array.isArray(event) && event.length > 0 && typeof event[0].row === 'number') {
       rowIndex = event[0].row;
+    } else if (event && event.length > 0 && event[0].row !== undefined) {
+      rowIndex = event[0].row;
+    } else if (event && typeof event[0] === 'object' && event[0].row !== undefined) {
+      rowIndex = event[0].row;
+    } else {
+      // Fallback: dump all keys in event to see what we have
+      let keys = Object.keys(event).join(', ');
+      alert('Event structure is different. Keys: ' + keys + '\nValue: ' + JSON.stringify(event));
     }
 
     if (rowIndex !== undefined && rowIndex !== null && this.pipelineData[rowIndex]) {
       const stage = this.pipelineData[rowIndex];
-      this.goToLeadListing(stage.Status_Id, stage.Stage);
+      this.goToLeadListing(stage);
+    } else {
+      alert('Could not resolve rowIndex! event: ' + JSON.stringify(event));
     }
   }
 
