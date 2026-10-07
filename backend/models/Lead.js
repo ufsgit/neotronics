@@ -640,10 +640,10 @@ var Lead = {
 
         return db.query("CALL Get_Lead_Filter_Dropdown(?, ?, ?)", [type, search, page], callback);
     },
-    Search_Lead_Dropdowns: function (type, search, page, filterId, callback) {
+    Search_Lead_Dropdowns: function (type, search, page, filterId, userId, userTypeId, callback) {
         if (!search) search = '';
         if (!page || isNaN(page)) page = 1;
-        return db.query("CALL sp_Search_Lead_Dropdowns(?, ?, ?, ?)", [type, search, page, filterId], callback);
+        return db.query("CALL sp_Search_Lead_Dropdowns(?, ?, ?, ?, ?, ?)", [type, search, page, filterId, userId, userTypeId], callback);
     },
     Get_Pipeline_Pulse_History: function (Lead_Id, limit, page, callback) {
         let offset = (page - 1) * limit;

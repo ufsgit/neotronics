@@ -377,7 +377,22 @@ router.get('/Search_Lead_Dropdowns/', function (req, res, next) {
             return res.status(400).json({ error: "type is required" });
         }
 
-        Lead.Search_Lead_Dropdowns(type, search, page, filterId, function (err, rows) {
+        let userId = 0;
+        let userTypeId = 0;
+        if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+            const token = req.headers.authorization.split(' ')[1];
+            try {
+                const config = require('../config.json');
+                const jwt = require('jsonwebtoken');
+                const decoded = jwt.verify(token, config.secret);
+                if (decoded && decoded.sub) {
+                    userId = decoded.sub.User_Details_Id || 0;
+                    userTypeId = decoded.sub.User_Type_Id || 0;
+                }
+            } catch (err) { }
+        }
+
+        Lead.Search_Lead_Dropdowns(type, search, page, filterId, userId, userTypeId, function (err, rows) {
             if (err) {
                 res.json(err);
             } else {
