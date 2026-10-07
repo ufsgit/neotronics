@@ -29322,7 +29322,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Search_Lead_Dropdowns`(
     IN p_Type VARCHAR(100),
     IN p_Search VARCHAR(255),
     IN p_Page INT,
-    IN p_Filter_Id INT
+    IN p_Filter_Id INT,
+    
+	IN p_UserId INT,
+    IN p_UserTypeId INT 
 )
 BEGIN
     DECLARE v_Limit INT DEFAULT 20;
@@ -29421,27 +29424,34 @@ BEGIN
         ORDER BY workflow_name 
         LIMIT v_Limit OFFSET v_Offset;
         
-	    ELSEIF p_Type = 'Branch' THEN
-        SELECT Branch_Id AS id, Branch_Name AS name FROM branch_master 
-        WHERE Branch_Name LIKE p_Search 
-        AND DeleteStatus = 0
-        ORDER BY Branch_Name 
+    ELSEIF p_Type = 'Branch' THEN
+        SELECT b.Branch_Id AS id, b.Branch_Name AS name 
+        FROM branch_master b
+        WHERE b.Branch_Name LIKE p_Search 
+        AND b.DeleteStatus = 0
+        AND (p_UserTypeId != 2 OR b.Branch_Id = (SELECT Branch_Id FROM user_details WHERE User_Details_Id = p_UserId LIMIT 1))
+        ORDER BY b.Branch_Name 
         LIMIT v_Limit OFFSET v_Offset;
         
     ELSEIF p_Type = 'Department' THEN
-        SELECT Department_Id AS id, Department_Name AS name FROM department 
-        WHERE Department_Name LIKE p_Search 
-        AND (p_Filter_Id = 0 OR p_Filter_Id IS NULL OR Branch_Id = p_Filter_Id)
-        ORDER BY Department_Name 
+        SELECT d.Department_Id AS id, d.Department_Name AS name 
+        FROM department d
+        WHERE d.Department_Name LIKE p_Search 
+        AND (p_Filter_Id = 0 OR p_Filter_Id IS NULL OR d.Branch_Id = p_Filter_Id)
+        AND (p_UserTypeId != 2 OR d.Department_Id = (SELECT Department_Id FROM user_details WHERE User_Details_Id = p_UserId LIMIT 1))
+        ORDER BY d.Department_Name 
         LIMIT v_Limit OFFSET v_Offset;
         
     ELSEIF p_Type = 'Staff' THEN
-        SELECT User_Details_Id AS id, User_Details_Name AS name FROM user_details 
+        SELECT User_Details_Id AS id, User_Details_Name AS name 
+        FROM user_details 
         WHERE User_Details_Name LIKE p_Search 
         AND (DeleteStatus = 0 OR DeleteStatus IS NULL)
         AND (p_Filter_Id = 0 OR p_Filter_Id IS NULL OR Department_Id = p_Filter_Id)
+        AND (p_UserTypeId != 2 OR User_Details_Id = p_UserId)
         ORDER BY User_Details_Name 
         LIMIT v_Limit OFFSET v_Offset;
+
         
 	    -- Market Study Category
     ELSEIF p_Type = 'MarketStudyCategory' THEN
