@@ -180,6 +180,8 @@ export class LeadComponent implements OnInit, AfterViewInit {
     PipelineStage: 0,
     Priority: '',
     Date: '',
+    FromDate: '',
+    ToDate: '',
     Assigned_Staff: 0,
     District: 0,
     State: 0
@@ -621,7 +623,9 @@ export class LeadComponent implements OnInit, AfterViewInit {
       this.Page_Size,
       leadTypeId,
       this.Lead_Filter.PipelineStage || 0,
-      this.Pipeline_Stage_Filter_Name || ''
+      this.Pipeline_Stage_Filter_Name || '',
+      this.Lead_Filter.FromDate || '',
+      this.Lead_Filter.ToDate || ''
     ).subscribe(Rows => {
       const leadRows = (Rows && Array.isArray(Rows) && Rows.length > 0 && Array.isArray(Rows[0])) ? Rows[0] : (Array.isArray(Rows) ? Rows : []);
       const countRows = (Rows && Array.isArray(Rows) && Rows.length > 1 && Array.isArray(Rows[1])) ? Rows[1] : [];
@@ -697,7 +701,7 @@ export class LeadComponent implements OnInit, AfterViewInit {
   }
 
   Clear_Lead_Filters() {
-    this.Lead_Filter = { Industry: 0, Stage: 0, Priority: '', Date: '', Assigned_Staff: 0, District: 0, State: 0 };
+    this.Lead_Filter = { Industry: 0, Stage: 0, Priority: '', Date: '', FromDate: '', ToDate: '', Assigned_Staff: 0, District: 0, State: 0 };
     this.Apply_Lead_Filters();
   }
 
@@ -815,6 +819,8 @@ export class LeadComponent implements OnInit, AfterViewInit {
       Stage: 0,
       Priority: '',
       Date: '',
+      FromDate: '',
+      ToDate: '',
       Assigned_Staff: 0,
       District: 0,
       State: 0

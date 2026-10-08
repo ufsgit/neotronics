@@ -90,17 +90,32 @@
 
       <hr style="border: 0; border-top: 1px solid #2d3239; margin: 15px 0;">
 
-      <p class="ig-form-label">Manage Visible Columns</p>
-      <div class="ig-customizer-grid" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
-        <mat-checkbox *ngFor="let column of Lead_List_Columns" [(ngModel)]="column.visible" [name]="'col_' + column.key"
-          class="ig-checkbox">
-          {{column.label}}
-        </mat-checkbox>
-      </div>
-      <div class="ig-customizer-footer" style="display: flex; gap: 10px;">
-        <button mat-button type="button" class="ig-btn-cancel" (click)="Reset_Column_Preferences()">Reset</button>
-        <button mat-button type="button" class="ig-btn-save"
-          (click)="Save_Column_Preferences(); Apply_Lead_Filters()">Apply</button>
+      <div style="display: flex; gap: 30px; align-items: stretch;">
+        <div style="display: flex; flex-direction: column;">
+          <p class="ig-form-label">Manage Visible Columns</p>
+          <div class="ig-customizer-grid" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+            <mat-checkbox *ngFor="let column of Lead_List_Columns" [(ngModel)]="column.visible" [name]="'col_' + column.key"
+              class="ig-checkbox">
+              {{column.label}}
+            </mat-checkbox>
+          </div>
+          
+          <div class="ig-customizer-footer" style="display: flex; gap: 10px; margin-top: auto;">
+            <button mat-button type="button" class="ig-btn-cancel" (click)="Reset_Column_Preferences()">Reset</button>
+            <button mat-button type="button" class="ig-btn-save"
+              (click)="Save_Column_Preferences(); Apply_Lead_Filters()">Apply</button>
+          </div>
+        </div>
+
+        <div style="width: 1px; background-color: #e0e0e0;"></div>
+
+        <div style="flex: 1; min-width: 350px;">
+          <p class="ig-form-label">Filter by Lead Entry Date</p>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <input type="date" [(ngModel)]="Lead_Filter.FromDate" title="From Date" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background-color: transparent; color: #555;">
+            <input type="date" [(ngModel)]="Lead_Filter.ToDate" title="To Date" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background-color: transparent; color: #555;">
+          </div>
+        </div>
       </div>
     </div>
 

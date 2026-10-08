@@ -109,6 +109,8 @@ router.get('/Get_NewLeads/', function (req, res, next) {
         const lead_type = Number(req.query.lead_type) || 0;
         const pipeline_stage = Number(req.query.pipeline_stage) || 0;
         const pipeline_stage_name = req.query.pipeline_stage_name || '';
+        const fromDate = req.query.fromDate || null;
+        const toDate = req.query.toDate || null;
 
         let userId = 0;
         let userTypeId = 0;
@@ -127,7 +129,7 @@ router.get('/Get_NewLeads/', function (req, res, next) {
             }
         }
 
-        Lead.Get_NewLeads(search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage, pipeline_stage_name, userId, userTypeId, function (err, rows) {
+        Lead.Get_NewLeads(search, industry, designation, district, priority, page, limit, lead_type, pipeline_stage, pipeline_stage_name, userId, userTypeId, fromDate, toDate, function (err, rows) {
             if (err) {
                 res.json(err);
             }
