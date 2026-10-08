@@ -447,11 +447,11 @@ Save_User_Details()
     else if (this.User_Role_ == undefined || this.User_Role_ == null || this.User_Role_.User_Role_Id == undefined || this.User_Role_.User_Role_Id==0) {
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select User Role', Type: "3" } });
         }
-    else if (this.Department_ == undefined || this.Department_ == null || this.Department_.Department_Id == undefined || this.Department_.Department_Id==0) {
-        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Department', Type: "3" } });
-        }
     else if (this.Branch_ == undefined || this.Branch_ == null || this.Branch_.Branch_Id == undefined || this.Branch_.Branch_Id==0) {
         const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Branch', Type: "3" } });
+        }
+    else if (this.Department_ == undefined || this.Department_ == null || this.Department_.Department_Id == undefined || this.Department_.Department_Id==0) {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Select Department', Type: "3" } });
         }
     else if (this.Menu_Permission_Selected == true && Menu_Status==false)
     {
@@ -505,6 +505,7 @@ if (
 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
 this.Search_User_Details();
 this.Clr_User_Details();
+this.Entry_View = false;
 this.Master_Refresh_Service_.refreshMaster('Users');
 }
 else{
