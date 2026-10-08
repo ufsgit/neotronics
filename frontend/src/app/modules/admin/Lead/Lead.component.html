@@ -62,7 +62,7 @@
         </div>
 
 
-        <button mat-button type="button" class="ig-btn-new-lead" (click)="Create_New()">
+        <button *ngIf="Save_Permission" mat-button type="button" class="ig-btn-new-lead" (click)="Create_New()">
           <i class="material-icons">add</i> New Lead
         </button>
       </div>
@@ -179,10 +179,10 @@
                   <button class="ig-icon-btn ig-action-blue" (click)="Open_Requirement(lead)" title="Details">
                     <i class="material-icons">description</i>
                   </button>
-                  <button class="ig-icon-btn ig-edit" (click)="Edit_Lead(lead)" title="Edit Profile">
+                  <button *ngIf="Edit_Permission" class="ig-icon-btn ig-edit" (click)="Edit_Lead(lead)" title="Edit Profile">
                     <i class="material-icons">edit_note</i>
                   </button>
-                  <button class="ig-icon-btn ig-delete" (click)="Delete_Lead(lead.Lead_Id, i)" title="Archive Lead">
+                  <button *ngIf="Delete_Permission" class="ig-icon-btn ig-delete" (click)="Delete_Lead(lead.Lead_Id, i)" title="Archive Lead">
                     <i class="material-icons">delete_outline</i>
                   </button>
                 </div>

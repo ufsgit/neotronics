@@ -45,8 +45,8 @@ export function clear_Route()
 }
 
 export function Get_Page_Permission(Menu_Id) {
-  if (!Pointer_Table || !ROUTES || !Pointer_Table[Menu_Id - 1]) {
-    return { 'View': 'true', 'Save': 'true', 'Edit': 'true', 'Delete': 'true' };
+  if (!Pointer_Table || !ROUTES || Pointer_Table[Menu_Id - 1] === undefined || Pointer_Table[Menu_Id - 1] === -1) {
+    return { 'View': 'false', 'Save': 'false', 'Edit': 'false', 'Delete': 'false' };
   }
   var RootIndex_Value = Pointer_Table[Menu_Id - 1];
   if (RootIndex_Value != undefined && ROUTES[RootIndex_Value]) {
@@ -57,7 +57,7 @@ export function Get_Page_Permission(Menu_Id) {
       'Delete': ROUTES[RootIndex_Value].Delete
     };
   }
-  return { 'View': 'true', 'Save': 'true', 'Edit': 'true', 'Delete': 'true' };
+  return { 'View': 'false', 'Save': 'false', 'Edit': 'false', 'Delete': 'false' };
 }
 
 @Component({

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Router } from '@angular/router';
 import { Working_Status } from '../../../models/Working_Status';
 import { User_RoleService } from '../../../services/User_Role.Service';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +12,10 @@ import { DialogBox_Component } from '../DialogBox/DialogBox.component';
     styleUrls: ['./Working_Status.component.css']
 })
 export class Working_StatusComponent implements OnInit {
+    Permissions: any;
+    Edit_Permission: boolean = true;
+    Save_Permission: boolean = true;
+    Delete_Permission: boolean = true;
     Working_Status_: Working_Status = new Working_Status();
     Working_Status_Data: Working_Status[] = [];
     
@@ -23,9 +29,19 @@ export class Working_StatusComponent implements OnInit {
     mode = 'indeterminate';
     value = 50;
 
-    constructor(public User_Role_Service_: User_RoleService, public dialogBox: MatDialog) { }
+    constructor(public User_Role_Service_: User_RoleService, public dialogBox: MatDialog, private router: Router) { }
 
     ngOnInit() {
+        this.Permissions = Get_Page_Permission(132);
+        if (this.Permissions !== undefined && this.Permissions !== null) {
+            this.Edit_Permission = this.Permissions.Edit === 'true' || this.Permissions.Edit === true;
+            this.Save_Permission = this.Permissions.Save === 'true' || this.Permissions.Save === true;
+            this.Delete_Permission = this.Permissions.Delete === 'true' || this.Permissions.Delete === true;
+        }
+        if (this.Permissions === undefined || this.Permissions === null || this.Permissions.View === 'false' || this.Permissions.View === false) {
+            this.router.navigate(['/Fallback'], { queryParams: { page: 'Working Status' } });
+            return;
+        }
         this.Search_Working_Status();
     }
 

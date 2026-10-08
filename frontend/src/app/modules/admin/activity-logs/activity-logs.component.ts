@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
+import { Router } from '@angular/router';
 import { Lead_Service } from '../../../services/Lead.Service';
 
 @Component({
@@ -7,6 +9,10 @@ import { Lead_Service } from '../../../services/Lead.Service';
   styleUrls: ['./activity-logs.component.scss']
 })
 export class ActivityLogsComponent implements OnInit {
+  Permissions: any;
+  Edit_Permission: boolean = true;
+  Save_Permission: boolean = true;
+  Delete_Permission: boolean = true;
 
   chartTypeData: any[] = [];
   chartStaffData: any[] = [];
@@ -38,9 +44,19 @@ export class ActivityLogsComponent implements OnInit {
   topStaffName: string = 'N/A';
   topDeptName: string = 'N/A';
 
-  constructor(private leadService: Lead_Service) { }
+  constructor(private leadService: Lead_Service, private router: Router) { }
 
   ngOnInit() {
+    this.Permissions = Get_Page_Permission(119);
+    if (this.Permissions !== undefined && this.Permissions !== null) {
+      this.Edit_Permission = this.Permissions.Edit === 'true' || this.Permissions.Edit === true;
+      this.Save_Permission = this.Permissions.Save === 'true' || this.Permissions.Save === true;
+      this.Delete_Permission = this.Permissions.Delete === 'true' || this.Permissions.Delete === true;
+    }
+    if (this.Permissions === undefined || this.Permissions === null || this.Permissions.View === 'false' || this.Permissions.View === false) {
+      this.router.navigate(['/Fallback'], { queryParams: { page: 'Activity Logs' } });
+      return;
+    }
     this.fetchActivityLogs();
   }
 

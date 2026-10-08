@@ -19,7 +19,7 @@
           try
            {
             const result1 = await(new storedProcedure('Save_User_Details',[User_Details_.User_Details_Id,User_Details_.User_Details_Name,User_Details_.Password,
-            User_Details_.User_Type,User_Menu_Selection_,User_Details_.Working_Status_Id,User_Details_.Working_Status, User_Details_.Role_Id, User_Details_.Department_Id, User_Details_.Branch_Id, User_Details_.Branch_Name, User_Details_.Email, User_Details_.Mobile], connection)).result();
+            User_Details_.User_Type,User_Menu_Selection_,User_Details_.Working_Status_Id,User_Details_.Working_Status, User_Details_.Role_Id, User_Details_.Department_Id, User_Details_.Department_Name, User_Details_.Branch_Id, User_Details_.Branch_Name, User_Details_.Email, User_Details_.Mobile], connection)).result();
             console.log(result1)
               await connection.commit();
               connection.release();

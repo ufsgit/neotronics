@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-fallback',
@@ -10,10 +11,16 @@ export class FallbackComponent implements OnInit {
   role: string = '';
   department: string = '';
   hasPermissions: boolean = false;
+  requestedPage: string = 'the requested page';
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params['page']) {
+        this.requestedPage = 'the ' + params['page'] + ' page';
+      }
+    });
     this.userName = localStorage.getItem('Login_User_Name') || 'User';
     this.role = localStorage.getItem('Role_Name') || 'No Role Assigned';
     this.department = localStorage.getItem('Department_Name') || 'N/A';

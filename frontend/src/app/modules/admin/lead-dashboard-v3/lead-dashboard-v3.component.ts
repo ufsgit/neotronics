@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { Router } from '@angular/router';
 import { DashboardV3_Service } from '../../../services/DashboardV3.Service';
 import { Lead_Service } from '../../../services/Lead.Service';
@@ -9,6 +10,10 @@ import { Lead_Service } from '../../../services/Lead.Service';
   styleUrls: ['./lead-dashboard-v3.component.scss']
 })
 export class LeadDashboardV3Component implements OnInit {
+  Permissions: any;
+  Edit_Permission: boolean = true;
+  Save_Permission: boolean = true;
+  Delete_Permission: boolean = true;
 
   showPipelineGraph = true;
   activityChartMode: 'daily' | 'weekly' | 'monthly' = 'daily';
@@ -105,6 +110,16 @@ export class LeadDashboardV3Component implements OnInit {
   constructor(private dashboardService: DashboardV3_Service, private leadService: Lead_Service, private router: Router) { }
 
   ngOnInit(): void {
+    this.Permissions = Get_Page_Permission(122);
+    if (this.Permissions !== undefined && this.Permissions !== null) {
+      this.Edit_Permission = this.Permissions.Edit === 'true' || this.Permissions.Edit === true;
+      this.Save_Permission = this.Permissions.Save === 'true' || this.Permissions.Save === true;
+      this.Delete_Permission = this.Permissions.Delete === 'true' || this.Permissions.Delete === true;
+    }
+    if (this.Permissions === undefined || this.Permissions === null || this.Permissions.View === 'false' || this.Permissions.View === false) {
+      this.router.navigate(['/Fallback'], { queryParams: { page: 'Lead Dashboard' } });
+      return;
+    }
     this.fetchDashboardData();
   }
 

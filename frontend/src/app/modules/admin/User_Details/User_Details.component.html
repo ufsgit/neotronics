@@ -43,7 +43,7 @@
             <tr *ngFor="let user of Paged_User_Details_Data; let i = index" class="ig-tr">
               <td class="ig-td ig-td-no">{{ (Page_Index - 1) * Page_Size + i + 1 }}</td>
               <td class="ig-td ig-td-name">{{ user['User_Details_Name'] }}</td>
-              <td class="ig-td">{{ user['User_Type_Name'] }}</td>
+              <td class="ig-td">{{ user['User_Type_Id'] == 1 ? 'Admin' : (user['User_Type_Id'] == 2 ? 'Staff' : user['User_Type_Name']) }}</td>
               <td class="ig-td">{{ user['User_Role_Name'] }}</td>
               <td class="ig-td ig-td-actions">
                 <button class="ig-icon-btn ig-edit" [hidden]="User_Details_Edit == false"

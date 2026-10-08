@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -9,6 +10,10 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./Lead_Config.component.css']
 })
 export class Lead_ConfigComponent implements OnInit {
+  Permissions: any;
+  Edit_Permission: boolean = true;
+  Save_Permission: boolean = true;
+  Delete_Permission: boolean = true;
   activeSection: string = sessionStorage.getItem('leadConfigSection') || 'Company Details';
   activeSubTab: string = sessionStorage.getItem('leadConfigSubTab') || 'Vertical';
   expandedSection: string = sessionStorage.getItem('leadConfigSection') || 'Company Details';
@@ -86,6 +91,16 @@ export class Lead_ConfigComponent implements OnInit {
   constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
+    this.Permissions = Get_Page_Permission(120);
+    if (this.Permissions !== undefined && this.Permissions !== null) {
+      this.Edit_Permission = this.Permissions.Edit === 'true' || this.Permissions.Edit === true;
+      this.Save_Permission = this.Permissions.Save === 'true' || this.Permissions.Save === true;
+      this.Delete_Permission = this.Permissions.Delete === 'true' || this.Permissions.Delete === true;
+    }
+    if (this.Permissions === undefined || this.Permissions === null || this.Permissions.View === 'false' || this.Permissions.View === false) {
+      this.router.navigate(['/Fallback'], { queryParams: { page: 'Lead Config' } });
+      return;
+    }
     this.selectSubTab(this.activeSubTab);
   }
 

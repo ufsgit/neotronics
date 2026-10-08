@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { Router } from '@angular/router';
 import { OperationsDashboard_Service } from '../../../services/OperationsDashboard.Service';
 import { Subscription } from 'rxjs';
@@ -12,6 +13,10 @@ import * as moment from 'moment';
   styleUrls: ['./operations-dashboard.component.scss']
 })
 export class OperationsDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
+  Permissions: any;
+  Edit_Permission: boolean = true;
+  Save_Permission: boolean = true;
+  Delete_Permission: boolean = true;
   public loading = false;
   
   public filterDateRange: string = 'All Time';
@@ -138,6 +143,16 @@ export class OperationsDashboardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   ngOnInit() {
+    this.Permissions = Get_Page_Permission(133);
+    if (this.Permissions !== undefined && this.Permissions !== null) {
+      this.Edit_Permission = this.Permissions.Edit === 'true' || this.Permissions.Edit === true;
+      this.Save_Permission = this.Permissions.Save === 'true' || this.Permissions.Save === true;
+      this.Delete_Permission = this.Permissions.Delete === 'true' || this.Permissions.Delete === true;
+    }
+    if (this.Permissions === undefined || this.Permissions === null || this.Permissions.View === 'false' || this.Permissions.View === false) {
+      this.router.navigate(['/Fallback'], { queryParams: { page: 'Operations Dashboard' } });
+      return;
+    }
     this.fetchData();
   }
 

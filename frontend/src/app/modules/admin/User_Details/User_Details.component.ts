@@ -151,7 +151,7 @@ this.User_Details_.Mobile="";
 this.User_Details_.Email="";
 this.Employee_=null;
 if(this.User_Type_Data!=null && this.User_Type_Data != undefined && this.User_Type_Data.length > 0)
-this.User_Type_=this.User_Type_Data[0];
+this.User_Type_=null;
 
 if(this.Working_Status_Data!=null && this.Working_Status_Data.length > 0)
 {
@@ -166,8 +166,8 @@ else
 
 if(this.User_Role_Data!=null && this.User_Role_Data.length > 0)
 {
-    this.User_Role_ = this.User_Role_Data[0];
-    this.User_Details_.Role_Id = this.User_Role_Data[0].User_Role_Id;
+    this.User_Role_ = null;
+    this.User_Details_.Role_Id = 0;
 }
 else
 {
@@ -177,8 +177,8 @@ else
 
 if(this.User_Type_Data!=null && this.User_Type_Data.length > 0)
 {
-    this.User_Type_ = this.User_Type_Data[0];
-    this.User_Details_.User_Type = this.User_Type_Data[0].User_Type_Id;
+    this.User_Type_ = null;
+    this.User_Details_.User_Type = 0;
 }
 else
 {
@@ -415,6 +415,10 @@ Employee_Typeahead(event: any)
 }
 Save_User_Details()
 {
+    if (this.User_Details_.User_Details_Name) this.User_Details_.User_Details_Name = this.User_Details_.User_Details_Name.trim();
+    if (this.User_Details_.Password) this.User_Details_.Password = this.User_Details_.Password.trim();
+    if (this.User_Details_.Email) this.User_Details_.Email = this.User_Details_.Email.trim();
+    if (this.User_Details_.Mobile) this.User_Details_.Mobile = this.User_Details_.Mobile.trim();
       
     var Menu_Status=false;
     for (var i = 0; i < this.User_Menu_Selection_Data.length; i++)
@@ -460,6 +464,7 @@ Save_User_Details()
         this.User_Details_.Working_Status_Id = this.Working_Status_.Working_Status_Id;
         this.User_Details_.Role_Id = this.User_Role_.User_Role_Id;
         this.User_Details_.Department_Id = this.Department_.Department_Id;
+        this.User_Details_.Department_Name = this.Department_.Department_Name;
         
         this.User_Details_.Working_Status = this.Working_Status_.Working_Status_Name;
 
@@ -563,8 +568,9 @@ this.User_Details_=Object.assign({},User_Details_e);
 this.Get_User_Details_Edit(this.User_Details_.User_Details_Id);
 
 for (var i = 0; i < this.User_Type_Data.length; i++) {
-    if (this.User_Details_.User_Type == this.User_Type_Data[i].User_Type_Id)
-    this.User_Type_=this.User_Type_Data[i];
+    if (this.User_Details_['User_Type_Id'] == this.User_Type_Data[i].User_Type_Id) {
+        this.User_Type_ = this.User_Type_Data[i];
+    }
 }
 
 for (var i = 0; i < this.Working_Status_Data.length; i++) {

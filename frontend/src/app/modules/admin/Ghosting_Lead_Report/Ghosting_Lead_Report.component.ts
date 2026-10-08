@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { Router } from '@angular/router';
 import { Lead_Service } from '../../../services/Lead.Service';
 import { forkJoin } from 'rxjs';
@@ -27,6 +28,10 @@ export interface GhostingLeadRecord {
   styleUrls: ['./Ghosting_Lead_Report.component.css']
 })
 export class Ghosting_Lead_ReportComponent implements OnInit {
+  Permissions: any;
+  Edit_Permission: boolean = true;
+  Save_Permission: boolean = true;
+  Delete_Permission: boolean = true;
 
   // Primary dataset
   public allGhostingData: GhostingLeadRecord[] = [];
@@ -167,6 +172,16 @@ export class Ghosting_Lead_ReportComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.Permissions = Get_Page_Permission(118);
+    if (this.Permissions !== undefined && this.Permissions !== null) {
+      this.Edit_Permission = this.Permissions.Edit === 'true' || this.Permissions.Edit === true;
+      this.Save_Permission = this.Permissions.Save === 'true' || this.Permissions.Save === true;
+      this.Delete_Permission = this.Permissions.Delete === 'true' || this.Permissions.Delete === true;
+    }
+    if (this.Permissions === undefined || this.Permissions === null || this.Permissions.View === 'false' || this.Permissions.View === false) {
+      this.router.navigate(['/Fallback'], { queryParams: { page: 'Ghosting Lead Report' } });
+      return;
+    }
     this.loadGhostingData();
   }
 

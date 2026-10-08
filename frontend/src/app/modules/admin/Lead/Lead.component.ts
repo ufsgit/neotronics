@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
+import { Get_Page_Permission } from '../../../components/sidebar/sidebar.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
@@ -24,6 +25,10 @@ import { LeadFilterDropdownComponent } from '../../../components/lead-filter-dro
   styleUrls: ['./Lead.component.css']
 })
 export class LeadComponent implements OnInit, AfterViewInit {
+  Permissions: any;
+  Edit_Permission: boolean = true;
+  Save_Permission: boolean = true;
+  Delete_Permission: boolean = true;
   @ViewChildren(LeadFilterDropdownComponent) filterDropdowns!: QueryList<LeadFilterDropdownComponent>;
   isFirstLoad: boolean = true;
   Lead_: Lead = new Lead();
@@ -251,6 +256,16 @@ export class LeadComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.Permissions = Get_Page_Permission(121);
+    if (this.Permissions !== undefined && this.Permissions !== null) {
+      this.Edit_Permission = this.Permissions.Edit === 'true' || this.Permissions.Edit === true;
+      this.Save_Permission = this.Permissions.Save === 'true' || this.Permissions.Save === true;
+      this.Delete_Permission = this.Permissions.Delete === 'true' || this.Permissions.Delete === true;
+    }
+    if (this.Permissions === undefined || this.Permissions === null || this.Permissions.View === 'false' || this.Permissions.View === false) {
+      this.router.navigate(['/Fallback'], { queryParams: { page: 'Lead' } });
+      return;
+    }
     this.Load_Column_Preferences();
 
     const id = this.route.snapshot.paramMap.get('id');
