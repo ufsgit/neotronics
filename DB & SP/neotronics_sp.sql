@@ -4156,7 +4156,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_NewLeads`(
     IN p_PipelineStageId INT,
     IN p_PipelineStageName VARCHAR(100),
     IN p_UserId INT,
-    IN p_UserTypeId INT
+    IN p_UserTypeId INT,
+    IN p_FromDate DATE,
+    IN p_ToDate DATE
+
 )
 BEGIN
     DECLARE v_Offset INT;
@@ -4196,6 +4199,7 @@ BEGIN
       AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId)
       AND (p_PipelineStageName IS NULL OR p_PipelineStageName = '' OR l.Current_Pipeline_Stage = p_PipelineStageName)
       AND (p_UserTypeId != 2 OR l.Staff_Id = p_UserId)
+	  AND (p_FromDate IS NULL OR p_ToDate IS NULL OR DATE(l.Entry_Date) BETWEEN p_FromDate AND p_ToDate)
     ORDER BY l.Lead_Id DESC
     LIMIT p_Limit OFFSET v_Offset;
     
@@ -4215,7 +4219,8 @@ BEGIN
       )
       AND (p_PipelineStageId IS NULL OR p_PipelineStageId = 0 OR l.PipelineStage_Id = p_PipelineStageId)
       AND (p_PipelineStageName IS NULL OR p_PipelineStageName = '' OR l.Current_Pipeline_Stage = p_PipelineStageName)
-      AND (p_UserTypeId != 2 OR l.Staff_Id = p_UserId);
+      AND (p_UserTypeId != 2 OR l.Staff_Id = p_UserId)
+      AND (p_FromDate IS NULL OR p_ToDate IS NULL OR DATE(l.Entry_Date) BETWEEN p_FromDate AND p_ToDate);
 END$$
 DELIMITER ;
 
@@ -22884,6 +22889,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_User_Details`(
   IN Working_Status_ VARCHAR(100),
   IN Role_Id_ BIGINT,
   IN Department_Id_ INT,
+  IN Department_Name_ VARCHAR(250),
   IN Branch_Id_ INT,
   IN Branch_Name_ VARCHAR(250), 
   IN Email_ VARCHAR(250),
@@ -22897,6 +22903,12 @@ BEGIN
   DECLARE IsView_ VARCHAR(25);
   DECLARE Menu_Status_ VARCHAR(25);
   DECLARE i INT DEFAULT 0;
+  
+    -- Trim the string variables
+  SET User_Details_Name_ = TRIM(User_Details_Name_);
+  SET Password_ = TRIM(Password_);
+  SET Email_ = TRIM(Email_);
+  SET Mobile_ = TRIM(Mobile_);
 
   IF User_Details_Id_ > 0 THEN
     DELETE FROM User_Menu_Selection WHERE User_Id = User_Details_Id_;
@@ -22909,6 +22921,7 @@ BEGIN
         Working_Status_Id = Working_Status_Id_,
         Role_Id           = Role_Id_,
         Department_Id     = Department_Id_,
+        Department_Name   = Department_Name_,
         Branch_Id         = Branch_Id_,
         Branch_Name       = Branch_Name_,
         Email             = Email_,
@@ -22918,11 +22931,11 @@ BEGIN
     SET User_Details_Id_ = (SELECT COALESCE(MAX(User_Details_Id), 0) + 1 FROM User_Details);
     INSERT INTO User_Details (
       User_Details_Id, User_Details_Name, Password, User_Type_Id, User_Type, DeleteStatus,
-      Working_Status, Working_Status_Id, Role_Id, Department_Id, Branch_Id, Branch_Name, Email, Mobile
+      Working_Status, Working_Status_Id, Role_Id, Department_Id, Department_Name, Branch_Id, Branch_Name, Email, Mobile
     )
     VALUES (
       User_Details_Id_, User_Details_Name_, Password_, User_Type_, CASE WHEN User_Type_ = 1 THEN 'Admin' ELSE 'User' END, FALSE,
-      Working_Status_, Working_Status_Id_, Role_Id_, Department_Id_, Branch_Id_, Branch_Name_, Email_, Mobile_
+      Working_Status_, Working_Status_Id_, Role_Id_, Department_Id_, Department_Name_, Branch_Id_, Branch_Name_, Email_, Mobile_
     );
   END IF;
 
@@ -29045,6 +29058,7 @@ BEGIN
             UD.User_Details_Name, 
             UD.Password, 
             UD.Working_Status, 
+            UD.User_Type_Id,
             UD.User_Type, 
             UD.Role_Id, 
             UD.Address1, 
@@ -29065,7 +29079,7 @@ BEGIN
         FROM User_Details UD
         LEFT JOIN Department D ON UD.Department_Id = D.Department_Id
         LEFT JOIN branch_master BM ON UD.Branch_Id = BM.Branch_Id
-        LEFT JOIN User_Type UT ON UD.User_Type = UT.User_Type_Id
+        LEFT JOIN User_Type UT ON UD.User_Type_Id = UT.User_Type_Id
         LEFT JOIN User_Role UR ON UD.Role_Id = UR.User_Role_Id
         WHERE IFNULL(UD.DeleteStatus, 0) = 0
         ", SearchbyName_Value);
