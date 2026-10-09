@@ -258,9 +258,9 @@ export class LeadComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.Permissions = Get_Page_Permission(121);
     if (this.Permissions !== undefined && this.Permissions !== null) {
-      this.Edit_Permission = this.Permissions.Edit === 'true' || this.Permissions.Edit === true;
-      this.Save_Permission = this.Permissions.Save === 'true' || this.Permissions.Save === true;
-      this.Delete_Permission = this.Permissions.Delete === 'true' || this.Permissions.Delete === true;
+      this.Edit_Permission = this.Permissions.Edit === 'true' || this.Permissions.Edit === true || this.Permissions.Edit === 1 || this.Permissions.Edit === '1';
+      this.Save_Permission = this.Permissions.Save === 'true' || this.Permissions.Save === true || this.Permissions.Save === 1 || this.Permissions.Save === '1';
+      this.Delete_Permission = this.Permissions.Delete === 'true' || this.Permissions.Delete === true || this.Permissions.Delete === 1 || this.Permissions.Delete === '1';
     }
     if (this.Permissions === undefined || this.Permissions === null || this.Permissions.View === 'false' || this.Permissions.View === false) {
       this.router.navigate(['/Fallback'], { queryParams: { page: 'Lead' } });

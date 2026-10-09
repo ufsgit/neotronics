@@ -508,8 +508,14 @@ this.Clr_User_Details();
 this.Entry_View = false;
 this.Master_Refresh_Service_.refreshMaster('Users');
 }
-else{
-    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error: ' + JSON.stringify(Save_status),Type:"2"}});
+else {
+    let errorMessage = 'Error: ' + JSON.stringify(Save_status);
+    if (Array.isArray(Save_status) && Save_status.length > 0 && Save_status[0].sqlMessage) {
+        errorMessage = Save_status[0].sqlMessage;
+    } else if (Save_status && Save_status.sqlMessage) {
+        errorMessage = Save_status.sqlMessage;
+    }
+    const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message: errorMessage, Type:"2"}});
 }
 this.issLoading=false;
  },

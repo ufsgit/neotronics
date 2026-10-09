@@ -34,8 +34,11 @@
             <tr>
               <th class="ig-th ig-th-no" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">#</th>
               <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">User Name</th>
+              <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Branch Name</th>
+              <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Department Name</th>
               <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">User Type</th>
               <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">User Role</th>
+              <th class="ig-th" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Working Status</th>
               <th class="ig-th ig-th-actions" style="background: #2c3b52; color: #ffffff; text-transform: capitalize;">Actions</th>
             </tr>
           </thead>
@@ -43,8 +46,15 @@
             <tr *ngFor="let user of Paged_User_Details_Data; let i = index" class="ig-tr">
               <td class="ig-td ig-td-no">{{ (Page_Index - 1) * Page_Size + i + 1 }}</td>
               <td class="ig-td ig-td-name">{{ user['User_Details_Name'] }}</td>
+              <td class="ig-td">{{ user['Branch_Name'] }}</td>
+              <td class="ig-td">{{ user['Department_Name'] }}</td>
               <td class="ig-td">{{ user['User_Type_Id'] == 1 ? 'Admin' : (user['User_Type_Id'] == 2 ? 'Staff' : user['User_Type_Name']) }}</td>
               <td class="ig-td">{{ user['User_Role_Name'] }}</td>
+              <td class="ig-td">
+                <span [ngStyle]="{'color': user['Working_Status_Id'] == 1 ? '#10b981' : (user['Working_Status_Id'] == 2 ? '#ef4444' : (user['Working_Status_Id'] == 3 ? '#f59e0b' : 'inherit')), 'font-weight': '500'}">
+                  {{ user['Working_Status_Id'] == 1 ? 'Working' : (user['Working_Status_Id'] == 2 ? 'Resigned' : (user['Working_Status_Id'] == 3 ? 'Leave' : '')) }}
+                </span>
+              </td>
               <td class="ig-td ig-td-actions">
                 <button class="ig-icon-btn ig-edit" [hidden]="User_Details_Edit == false"
                   (click)="Edit_User_Details(user, i)" title="Edit">
@@ -57,7 +67,7 @@
               </td>
             </tr>
             <tr *ngIf="User_Details_Data?.length === 0">
-              <td colspan="5" class="ig-empty">No users found</td>
+              <td colspan="8" class="ig-empty">No users found</td>
             </tr>
           </tbody>
         </table>

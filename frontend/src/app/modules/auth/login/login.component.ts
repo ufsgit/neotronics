@@ -1843,9 +1843,10 @@ export class LoginComponent implements OnInit {
 				this.ngZone.run(() => {
 					this.issLoading = false;
 					this.cdr.detectChanges();
+					const errorMessage = typeof success === 'string' ? success : "Invalid User Name/Password";
 					const dialogRef = this.dialogBox.open(DialogBox_Component, {
 						panelClass: "Dialogbox-Class",
-						data: { Message: "Invalid User Name/Password", Type: "3" },
+						data: { Message: errorMessage, Type: "3" },
 					});
 				});
 			}
