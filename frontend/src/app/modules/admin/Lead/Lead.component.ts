@@ -1099,25 +1099,31 @@ export class LeadComponent implements OnInit, AfterViewInit {
       this.snackBar.open('Please select a Pulse.', 'Close', { duration: 3500 });
       return;
     }
-    if (!lead.FollowUp_Location_Id || lead.FollowUp_Location_Id === 0) {
-      this.snackBar.open('Please select a Branch.', 'Close', { duration: 3500 });
-      return;
-    }
-    if (!lead.FollowUp_Department_Id || lead.FollowUp_Department_Id === 0) {
-      this.snackBar.open('Please select Department Responsibility.', 'Close', { duration: 3500 });
-      return;
-    }
-    if (!lead.FollowUp_Staff_Id || lead.FollowUp_Staff_Id === 0) {
-      this.snackBar.open('Please select an Assigned Owner (Staff).', 'Close', { duration: 3500 });
-      return;
-    }
-    if (!lead.FollowUp_Status_Id || lead.FollowUp_Status_Id === 0) {
-      this.snackBar.open('Please select a Target Stage.', 'Close', { duration: 3500 });
-      return;
-    }
-    if (!(lead as any).FollowUp_Next_Date) {
-      this.snackBar.open('Please select a Next Follow-up Date.', 'Close', { duration: 3500 });
-      return;
+
+    const pipelineObj = (this.DropdownData['PipelineStage'] || []).find((x: any) => x.name === this.Selected_Pipeline_Stage || x.id == this.Selected_Pipeline_Stage);
+    const isFollowupRequired = pipelineObj ? pipelineObj.Followup_Required !== 0 : true;
+
+    if (isFollowupRequired) {
+      if (!lead.FollowUp_Location_Id || lead.FollowUp_Location_Id === 0) {
+        this.snackBar.open('Please select a Branch.', 'Close', { duration: 3500 });
+        return;
+      }
+      if (!lead.FollowUp_Department_Id || lead.FollowUp_Department_Id === 0) {
+        this.snackBar.open('Please select Department Responsibility.', 'Close', { duration: 3500 });
+        return;
+      }
+      if (!lead.FollowUp_Staff_Id || lead.FollowUp_Staff_Id === 0) {
+        this.snackBar.open('Please select an Assigned Owner (Staff).', 'Close', { duration: 3500 });
+        return;
+      }
+      if (!lead.FollowUp_Status_Id || lead.FollowUp_Status_Id === 0) {
+        this.snackBar.open('Please select a Target Stage.', 'Close', { duration: 3500 });
+        return;
+      }
+      if (!(lead as any).FollowUp_Next_Date) {
+        this.snackBar.open('Please select a Next Follow-up Date.', 'Close', { duration: 3500 });
+        return;
+      }
     }
 
     // --- Prevent duplicate submission ---
@@ -1132,23 +1138,22 @@ export class LeadComponent implements OnInit, AfterViewInit {
     const deptObj = (this.DropdownData[deptKey] || []).find((x: any) => x.id == lead.FollowUp_Department_Id);
     const staffObj = (this.DropdownData[staffKey] || []).find((x: any) => x.id == lead.FollowUp_Staff_Id);
     const targetStageObj = (this.DropdownData['TargetStage'] || []).find((x: any) => x.id == lead.FollowUp_Status_Id);
-    const pipelineObj = (this.DropdownData['PipelineStage'] || []).find((x: any) => x.name === this.Selected_Pipeline_Stage || x.id == this.Selected_Pipeline_Stage);
     const pulseObj = (this.DropdownData['Pulse'] || []).find((x: any) => x.name === this.Selected_Pulse || x.id == this.Selected_Pulse);
 
     // --- Build payload with exact follow_up table field names ---
     const followUpPayload = {
       Lead_Id: lead.Lead_Id,
       Lead_Type: lead.Lead_Type,
-      Branch_Id: lead.FollowUp_Location_Id,
-      Branch_Name: branchObj ? branchObj.name : (lead.Branch_Name || ''),
-      Department_Id: lead.FollowUp_Department_Id,
-      Department_Name: deptObj ? deptObj.name : (lead.Department_Name || ''),
-      Staff_Id: lead.FollowUp_Staff_Id,
-      Staff_Name: staffObj ? staffObj.name : (lead.Staff_Name || ''),
-      Target_Stage_Id: lead.FollowUp_Status_Id,
-      Target_Stage_Name: targetStageObj ? targetStageObj.name : (lead.Status_Name || ''),
+      Branch_Id: isFollowupRequired ? lead.FollowUp_Location_Id : (lead.Branch_Id || null),
+      Branch_Name: isFollowupRequired ? (branchObj ? branchObj.name : (lead.Branch_Name || '')) : (lead.Branch_Name || ''),
+      Department_Id: isFollowupRequired ? lead.FollowUp_Department_Id : (lead.Department_Id || null),
+      Department_Name: isFollowupRequired ? (deptObj ? deptObj.name : (lead.Department_Name || '')) : (lead.Department_Name || ''),
+      Staff_Id: isFollowupRequired ? lead.FollowUp_Staff_Id : (lead.Staff_Id || null),
+      Staff_Name: isFollowupRequired ? (staffObj ? staffObj.name : (lead.Staff_Name || '')) : (lead.Staff_Name || ''),
+      Target_Stage_Id: isFollowupRequired ? lead.FollowUp_Status_Id : (lead.Target_Stage_Id || null),
+      Target_Stage_Name: isFollowupRequired ? (targetStageObj ? targetStageObj.name : (lead.Target_Stage_Name || '')) : (lead.Target_Stage_Name || ''),
       Remark: (lead as any).FollowUp_Remark || '',
-      Next_FollowUp_Date: (lead as any).FollowUp_Next_Date || null,
+      Next_FollowUp_Date: isFollowupRequired ? ((lead as any).FollowUp_Next_Date || null) : null,
       Pipeline_Stage_Id: pipelineObj ? pipelineObj.id : null,
       Pipeline_Stage: pipelineObj ? pipelineObj.name : (this.Selected_Pipeline_Stage || null),
       Stage_Type: pipelineObj && pipelineObj.Stage_Type !== undefined ? Number(pipelineObj.Stage_Type) : 0,
@@ -1156,6 +1161,7 @@ export class LeadComponent implements OnInit, AfterViewInit {
       Color: pipelineObj && pipelineObj.Color ? pipelineObj.Color : '#3b82f6',
       Pulse_Id: pulseObj ? pulseObj.id : null,
       Pulse: pulseObj ? pulseObj.name : (this.Selected_Pulse || null),
+      isGhosting: pulseObj ? (pulseObj.isGhosting == 1 || pulseObj.ghosting == 1 ? 1 : 0) : ((this.Selected_Pulse && this.Selected_Pulse.toLowerCase().includes('ghost')) ? 1 : 0),
       Login_User_Id: Number(localStorage.getItem('Login_User') || 0)
     };
 

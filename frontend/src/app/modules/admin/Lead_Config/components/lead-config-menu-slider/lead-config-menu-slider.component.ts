@@ -18,7 +18,7 @@ export class LeadConfigMenuSliderComponent implements OnInit {
   sections = [
     { name: 'Company Details', icon: 'business' },
     { name: 'Contacts', icon: 'people' },
-    { name: 'Requirement Profile', icon: 'assignment' },
+    // { name: 'Requirement Profile', icon: 'assignment' },
     { name: 'Market Study', icon: 'storefront' },
     { name: 'Pipeline Stage & Pulse', icon: 'timeline' },
     { name: 'Assignment', icon: 'event_available' },
@@ -28,7 +28,7 @@ export class LeadConfigMenuSliderComponent implements OnInit {
   subTabs: { [key: string]: string[] } = {
     'Company Details': ['Deal Type', 'Vertical', 'State', 'District', 'Company Size', 'Source'],
     'Contacts': ['Designation'],
-    'Requirement Profile': ['Service/Product'],
+    // 'Requirement Profile': ['Service/Product'],
     'Market Study': ['Market System'],
     'Pipeline Stage & Pulse': ['Pipeline Stage', 'Pulse', 'Target Stage'],
     'Assignment': ['Branch', 'Department'],

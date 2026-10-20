@@ -131,7 +131,7 @@ export class Lead_ConfigComponent implements OnInit {
       'Source': 'Lead_Config/company_details/source',
       'Deal Type': 'Lead_Config/company_details/deal_type',
       'Designation': 'Lead_Config/contacts/designation',
-      'Service/Product': 'Lead_Config/requirement_profile/service_product',
+      // 'Service/Product': 'Lead_Config/requirement_profile/service_product',
       'Market System': 'Lead_Config/market_study/market_system',
       'Pipeline Stage': 'Lead_Config/pipeline_stage_pulse/pipeline_stage',
       'Pulse': 'Lead_Config/pipeline_stage_pulse/pulse',

@@ -173,6 +173,26 @@ export class LeadAssignmentComponent {
     return (this.dropdownData['PipelineStage'] || []).find((x: any) => x.name === this.selectedPipelineStage || x.id == this.selectedPipelineStage);
   }
 
+  getSelectedPulseObj(): any {
+    if (!this.selectedPulse || !this.dropdownData || !this.dropdownData['Pulse']) return null;
+    const pulseStr = String(this.selectedPulse || '').trim().toLowerCase();
+    const list = this.dropdownData['Pulse'] || [];
+    let found = list.find((x: any) => 
+      String(x.name || '').trim().toLowerCase() === pulseStr || 
+      String(x.id) === String(this.selectedPulse)
+    );
+    if (found) return found;
+
+    if (this.lead && ((this.lead as any).isGhosting !== undefined || (this.lead as any).isGhosting === 1)) {
+      return {
+        id: (this.lead as any).Pulse_Id || 0,
+        name: (this.lead as any).Pulse || this.selectedPulse,
+        isGhosting: (this.lead as any).isGhosting
+      };
+    }
+    return null;
+  }
+
   showFollowUpFields(): boolean {
     const stageObj = this.getSelectedStageObj();
     if (!stageObj) return true; // Default to showing if no stage selected

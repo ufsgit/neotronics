@@ -246,17 +246,14 @@
               </span>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start;">
-              <app-searchable-dropdown [loading]="DropdownLoading['ServiceInterest']" name="Selected_Interest" [(ngModel)]="Selected_Interest"
-                [data]="DropdownData['ServiceInterest']" bindLabel="name" bindValue="name"
-                placeholder="Select an interest..." (search)="onSearchDropdown('ServiceInterest', $event)"
-                (loadMore)="onLoadMoreDropdown('ServiceInterest')" (ngModelChange)="Interest_Already_Exists = false">
+            <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start; width: 100%;">
+              <app-searchable-dropdown [loading]="DropdownLoading['Item']" name="Selected_Interest" [(ngModel)]="Selected_Interest"
+                [data]="DropdownData['Item']" bindLabel="name" bindValue="name"
+                placeholder="Select an item..." (search)="onSearchDropdown('Item', $event)"
+                (loadMore)="onLoadMoreDropdown('Item')"
+                (itemSelected)="Add_Interest($event)">
               </app-searchable-dropdown>
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <button mat-button type="button" class="ig-btn-outline" style="white-space: nowrap;"
-                  (click)="Add_Interest()">
-                  + Add as interest
-                </button>
+              <div *ngIf="Added_Interests.length > 0 || Interest_Already_Exists" style="display: flex; align-items: center; gap: 10px;">
                 <button *ngIf="Added_Interests.length > 0" mat-button type="button" class="ig-btn-outline"
                   style="white-space: nowrap; color: #ef4444; border-color: #ef4444;"
                   (click)="Clear_Interests_Popup_Open = true">
@@ -758,6 +755,33 @@
         
         <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
           <button mat-button type="button" class="ig-btn-cancel" (click)="Duplicate_Popup_Open = false">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       CLEAR INTERESTS POPUP
+  ══════════════════════════════════════════ -->
+  <div class="ig-cf-overlay" *ngIf="Clear_Interests_Popup_Open" (click)="Clear_Interests_Popup_Open = false">
+    <div class="ig-cf-popup" style="max-width: 400px;" (click)="$event.stopPropagation()">
+      <div class="ig-cf-popup-header">
+        <div>
+          <p class="ig-cf-popup-lead">Clear All Interests</p>
+          <p class="ig-cf-popup-sub">Confirmation</p>
+        </div>
+        <button class="ig-cf-close" (click)="Clear_Interests_Popup_Open = false">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+
+      <div class="ig-cf-popup-body" style="padding: 20px;">
+        <p style="font-size: 14px; margin-bottom: 20px;">Are you sure you want to remove all added items?</p>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="ig-btn-outline" (click)="Clear_Interests_Popup_Open = false">Cancel</button>
+          <button type="button" class="ig-btn-solid"
+            style="background-color: #ef4444; border-color: #ef4444; color: white;"
+            (click)="Clear_All_Interests()">Clear All</button>
         </div>
       </div>
     </div>

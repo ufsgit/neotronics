@@ -395,7 +395,13 @@ var Lead = {
 
             boolOrNull(Lead_.Is_FollowUp), intOrNull(Lead_.FollowUp_Branch_Id), strOrNull(Lead_.FollowUp_Branch_Name), intOrNull(Lead_.FollowUp_Department_Id), strOrNull(Lead_.FollowUp_Dept_Name),
             intOrNull(Lead_.FollowUp_Status_Id), strOrNull(Lead_.FollowUp_Status_Name), intOrNull(Lead_.FollowUp_Staff_Id), strOrNull(Lead_.FollowUp_Staff_Name),
-            strOrNull(Lead_.FollowUp_Remark), intOrNull(Lead_.Login_User_Id),
+            strOrNull(Lead_.FollowUp_Remark),
+            intOrNull(Lead_.Login_User_Id),
+            strOrNull(Lead_.Login_User_Name),
+            intOrNull(Lead_.Login_Branch_Id),
+            strOrNull(Lead_.Login_Branch_Name),
+            intOrNull(Lead_.Login_Department_Id),
+            strOrNull(Lead_.Login_Department_Name),
 
             strOrNull(Lead_.Contact_Person_Details),
 
@@ -403,7 +409,7 @@ var Lead = {
             strOrNull(Lead_.Market_Study_Fields_JSON)
         ];
 
-        const placeholders = new Array(70).fill('?').join(',');
+        const placeholders = new Array(75).fill('?').join(',');
 
         return db.query(`CALL Save_NewLead(${placeholders})`, params, (err, rows) => {
             if (err) return callback(err, rows);

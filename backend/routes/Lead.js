@@ -67,6 +67,29 @@ router.post('/Save_Lead/', function (req, res, next) {
 
 router.post('/Save_NewLead/', function (req, res, next) {
     try {
+        if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+            const token = req.headers.authorization.split(' ')[1];
+            try {
+                const config = require('../config.json');
+                const jwt = require('jsonwebtoken');
+                const decoded = jwt.verify(token, config.secret);
+
+                if (decoded && decoded.sub) {
+                    const currentUser = decoded.sub;
+
+                    // Dedicated Login user parameters from token
+                    req.body.Login_User_Id = currentUser.User_Details_Id || 0;
+                    req.body.Login_User_Name = currentUser.User_Details_Name || '';
+                    req.body.Login_Branch_Id = currentUser.Branch_Id || 0;
+                    req.body.Login_Branch_Name = currentUser.Branch_Name || '';
+                    req.body.Login_Department_Id = currentUser.Department_Id || 0;
+                    req.body.Login_Department_Name = currentUser.Department_Name || '';
+                }
+            } catch (jwtErr) {
+                console.error("JWT verification failed in Save_NewLead:", jwtErr.message);
+            }
+        }
+
         Lead.Save_NewLead(req.body, function (err, rows) {
             if (err) {
                 console.error("SQL Error in Save_NewLead:", err);

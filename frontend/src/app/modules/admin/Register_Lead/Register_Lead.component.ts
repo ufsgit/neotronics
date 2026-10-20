@@ -355,17 +355,24 @@ export class Register_LeadComponent implements OnInit {
     this.Added_Interests = [];
     this.Interest_Already_Exists = false;
     this.Clear_Interests_Popup_Open = false;
+    this.Selected_Interest = null;
+    setTimeout(() => {
+      this.Selected_Interest = null;
+    });
   }
 
-  Add_Interest() {
-    if (this.Selected_Interest) {
-      if (this.Added_Interests.includes(this.Selected_Interest)) {
+  Add_Interest(item?: any) {
+    const val = (item && item.name) ? item.name : (this.Selected_Interest || '');
+    if (val) {
+      if (this.Added_Interests.includes(val)) {
         this.Interest_Already_Exists = true;
       } else {
-        this.Added_Interests.push(this.Selected_Interest);
-        this.Selected_Interest = '';
+        this.Added_Interests.push(val);
         this.Interest_Already_Exists = false;
       }
+      setTimeout(() => {
+        this.Selected_Interest = null;
+      });
     }
   }
 
@@ -571,7 +578,7 @@ export class Register_LeadComponent implements OnInit {
     this.Entry_View = true;
 
     if (!id) {
-      ['Vertical', 'State', 'CompanySize', 'Source', 'Designation', 'ServiceInterest', 'LeadPriority', 'PipelineStage', 'Pulse', 'TargetStage'].forEach(type => {
+      ['Vertical', 'State', 'CompanySize', 'Source', 'Designation', 'Item', 'LeadPriority', 'PipelineStage', 'Pulse', 'TargetStage'].forEach(type => {
         this.DropdownPage[type] = 1;
         this.DropdownSearch[type] = '';
         this.DropdownEnd[type] = false;

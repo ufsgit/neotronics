@@ -12054,6 +12054,29 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Login_Check`(
   IN Password_ VARCHAR(50)
 )
 BEGIN
+
+  DECLARE Found_User INT DEFAULT 0;
+  DECLARE User_DeleteStatus INT DEFAULT 0;
+  DECLARE User_Working_Status INT DEFAULT 0;
+  
+  SET User_Details_Name_ = TRIM(User_Details_Name_);
+  SET Password_ = TRIM(Password_);
+
+
+  SELECT 1, DeleteStatus, Working_Status_Id 
+  INTO Found_User, User_DeleteStatus, User_Working_Status
+  FROM User_Details 
+  WHERE User_Details_Name = User_Details_Name_ 
+    AND Password = Password_
+  LIMIT 1;
+
+  IF Found_User = 1 THEN
+    IF User_DeleteStatus = 1 OR User_Working_Status != 1 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Inactive user';
+    END IF;
+  END IF;
+
+
   SELECT 
     1 as tp,
     U.User_Details_Id,
@@ -12061,7 +12084,10 @@ BEGIN
     U.User_Type,
     U.User_Type_Id,
     U.Working_Status_Id,
-    U.Department_Id,
+    IFNULL(U.Branch_Id, 0) as Branch_Id,
+    IFNULL(U.Branch_Name, '') as Branch_Name,
+    IFNULL(U.Department_Id, 0) as Department_Id,
+    IFNULL(U.Department_Name, '') as Department_Name,
     U.Mobile,
     U.Email,
     U.Employee_Id,
@@ -12083,7 +12109,10 @@ BEGIN
     'user' as User_Type,
     2 as User_Type_Id,
     0 as Working_Status_Id,
+    0 as Branch_Id,
+    '' as Branch_Name,
     0 as Department_Id,
+    '' as Department_Name,
     '' as Mobile,
     '' as Email,
     0 as Employee_Id,
@@ -12093,6 +12122,7 @@ BEGIN
   WHERE
     client_accounts.User_Details_Name = User_Details_Name_
     AND client_accounts.Password = Password_;
+
 END$$
 DELIMITER ;
 
@@ -15500,7 +15530,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Save_NewLead`(
     IN _FollowUp_Staff_Id INT,
     IN _FollowUp_Staff_Name VARCHAR(100),
     IN _FollowUp_Remark VARCHAR(1000),
-    IN _Login_User_Id INT,
+    
+	IN _Login_User_Id INT,
+    IN _Login_User_Name VARCHAR(100),
+    IN _Login_Branch_Id INT,
+    IN _Login_Branch_Name VARCHAR(100),
+    IN _Login_Department_Id INT,
+    IN _Login_Department_Name VARCHAR(100),
+
     
     IN _Contact_Person_Details_JSON TEXT,
     IN _Market_Study_Systems TEXT,
@@ -15566,6 +15603,16 @@ BEGIN
     START TRANSACTION;
 
     IF _Lead_Id = 0 THEN
+    
+        IF IFNULL(_Staff_Id, 0) = 0 THEN
+			SET _Staff_Id = _Login_User_Id;
+			SET _Staff_Name = _Login_User_Name;
+			SET _Branch_Id = _Login_Branch_Id;
+			SET _Branch_Name = _Login_Branch_Name;
+			SET _Department_Id = _Login_Department_Id;
+			SET _Department_Name = _Login_Department_Name;
+		END IF;
+
 
         INSERT INTO `lead` (
             Lead_Name, Lead_Type, Vertical, Vertical_Name, Deal_Type_Id, Deal_Type_Name, Address, State, State_Name, District, District_Name,
@@ -15645,7 +15692,7 @@ BEGIN
                 _Current_PipelineStage_Id, _Current_Pipeline_Stage,
                 IFNULL(_Stage_Type, 0), IFNULL(_Followup_Required, 1), IFNULL(_Color, '#3b82f6'),
                 _Pulse_Id, _Pulse, '1',
-                _Login_User_Id, (SELECT User_Details_Name FROM User_Details WHERE User_Details_Id = _Login_User_Id LIMIT 1),
+                _Login_User_Id, _Login_User_Name,
                 NULLIF(_Branch_Id, 0), _Branch_Name, NULLIF(_Department_Id, 0), _Department_Name, NULLIF(_Staff_Id, 0), _Staff_Name,
                 NULLIF(_Source, 0), _Source_Name, 1
             );
@@ -15698,33 +15745,6 @@ BEGIN
             isGhosting             = IFNULL(_isGhosting, 0),
             Workflow_Id = _Workflow_Id, Workflow = _Workflow, Workflow_Start_Status = _Workflow_Start_Status
         WHERE Lead_Id = _Lead_Id;
-
-/*
-        IF IFNULL(v_old_POC_Full_Name, '') <> IFNULL(_POC_Full_Name, '') THEN
-            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Full_Name, _POC_Full_Name, 'Primary Contact Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
-        END IF;
-
-        IF IFNULL(v_old_POC_Direct_Mobile, '') <> IFNULL(_POC_Direct_Mobile, '') THEN
-            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Direct_Mobile, _POC_Direct_Mobile, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
-        END IF;
-
-        IF IFNULL(v_old_POC_Email, '') <> IFNULL(_POC_Email, '') THEN
-            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_POC_Email, _POC_Email, 'Contact Details Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
-        END IF;
-
-        IF IFNULL(v_old_Lead_Priority, '') <> IFNULL(_Lead_Priority, '') THEN
-            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Lead_Priority, _Lead_Priority, 'Priority Level Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
-        END IF;
-
-        IF IFNULL(v_old_Lead_Name, '') <> IFNULL(_Lead_Name, '') THEN
-            INSERT INTO `lead_activity_log` (Lead_Id, Lead_Name, Deal_Type, Old_Value, New_Value, Action_Taken, Activity_Title, Outcome, User_Id)
-            VALUES (_Lead_Id, _Lead_Name, _Deal_Type_Name, v_old_Lead_Name, _Lead_Name, 'Lead Name Updated', 'Profile Update', 'Recorded automatically', _Login_User_Id);
-        END IF;
-  */
   
   
         -- 1A. Lead Type Changed
@@ -22903,12 +22923,27 @@ BEGIN
   DECLARE IsView_ VARCHAR(25);
   DECLARE Menu_Status_ VARCHAR(25);
   DECLARE i INT DEFAULT 0;
-  
-    -- Trim the string variables
+  DECLARE Username_Exists INT DEFAULT 0;
+
+  -- Trim the string variables
   SET User_Details_Name_ = TRIM(User_Details_Name_);
   SET Password_ = TRIM(Password_);
   SET Email_ = TRIM(Email_);
   SET Mobile_ = TRIM(Mobile_);
+
+  -- ==========================================
+  -- ADDED: Check for existing username (Fast Check)
+  -- ==========================================
+  SELECT 1 INTO Username_Exists 
+  FROM User_Details 
+  WHERE User_Details_Name = User_Details_Name_ 
+    AND (User_Details_Id_ = 0 OR User_Details_Id != User_Details_Id_)
+  LIMIT 1;
+
+  IF Username_Exists = 1 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Username already exists.';
+  END IF;
+  -- ==========================================
 
   IF User_Details_Id_ > 0 THEN
     DELETE FROM User_Menu_Selection WHERE User_Id = User_Details_Id_;
@@ -29490,6 +29525,25 @@ BEGIN
         AND IFNULL(DeleteStatus, 0) = 0 
         ORDER BY Field_Id ASC 
         LIMIT v_Limit OFFSET v_Offset;
+        
+	ELSEIF p_Type = 'Item' THEN
+        SELECT 
+            Item_Id AS id, 
+            Item_Name AS name,
+            Item_Code,
+            Group_Id,
+            Group_Name,
+            Saleunit_Id,
+            Saleunit_Name,
+            b2b_rate,
+            b2c_rate,
+            gst
+        FROM item 
+        WHERE Item_Name LIKE p_Search 
+          AND IFNULL(DeleteStatus, 0) = 0 
+        ORDER BY Item_Name 
+        LIMIT v_Limit OFFSET v_Offset;
+
 
 
         
