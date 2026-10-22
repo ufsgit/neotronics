@@ -3,8 +3,8 @@ var db = require('../../../dbconnection');
 var Branch = {
 
     Save_Branch: function (body, callback) {
-        var id          = Number(body.Branch_Id || 0);
-        var name        = (body.Branch_Name || '').trim();
+        var id          = Number(body.Branch_Id || body.Assignment_Id || 0);
+        var name        = (body.Branch_Name || body.Assignment_Name || '').trim();
         var description = body.Description || '';
 
         return db.query(

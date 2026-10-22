@@ -92,12 +92,18 @@
         </div>
 
         <!-- Graph View -->
-        <div *ngIf="showPipelineGraph" class="p-3 border-top" style="height: 240px;">
+        <div *ngIf="showPipelineGraph" class="p-3 border-top d-flex align-items-center justify-content-center" style="height: 240px;">
           <ng-container *ngIf="!loadingPipeline; else flashLoader">
+            <div *ngIf="pipelineData.length === 0" class="text-center text-muted w-100 py-4">
+              <i class="material-icons" style="font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 8px;">pie_chart</i>
+              <span style="font-size: 14px; font-weight: 500;">No Data Found</span>
+            </div>
             <google-chart 
+              *ngIf="pipelineData.length > 0"
               class="premium-chart-shadow"
               [type]="'PieChart'" 
               [data]="chartData.pipeline.data" 
+              [columnNames]="['Stage', 'Leads']"
               [options]="chartData.pipeline.options"
               style="width: 100%; height: 100%; cursor: pointer; filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.15));"
               (select)="onPipelineChartSelect($event)">
@@ -292,21 +298,24 @@
             (activityChartMode === 'daily' && !loadingDay) ||
             (activityChartMode === 'weekly' && !loadingWeek) ||
             (activityChartMode === 'monthly' && !loadingMonth); else flashLoader">
-            <google-chart [hidden]="activityChartMode !== 'daily'"
+            <google-chart *ngIf="activityChartMode === 'daily'"
               [type]="'LineChart'" 
               [data]="chartData.daily.data" 
+              [columnNames]="['Date', 'Activities']"
               [options]="chartData.daily.options"
               style="width: 100%; height: 100%;">
             </google-chart>
-            <google-chart [hidden]="activityChartMode !== 'weekly'"
+            <google-chart *ngIf="activityChartMode === 'weekly'"
               [type]="'LineChart'" 
               [data]="chartData.weekly.data" 
+              [columnNames]="['Week', 'Activities']"
               [options]="chartData.weekly.options"
               style="width: 100%; height: 100%;">
             </google-chart>
-            <google-chart [hidden]="activityChartMode !== 'monthly'"
+            <google-chart *ngIf="activityChartMode === 'monthly'"
               [type]="'LineChart'" 
               [data]="chartData.monthly.data" 
+              [columnNames]="['Month', 'Activities']"
               [options]="chartData.monthly.options"
               style="width: 100%; height: 100%;">
             </google-chart>

@@ -3,8 +3,8 @@ var db = require('../../../dbconnection');
 var Workflow = {
 
     Save_Workflow: function (body, callback) {
-        var id          = Number(body.Workflow_Id || 0);
-        var name        = (body.Workflow_Name || '').trim();
+        var id          = Number(body.Workflow_Id || body.Followup_Automation_Id || 0);
+        var name        = (body.Workflow_Name || body.Followup_Automation_Name || '').trim();
         var description = body.Description || '';
 
         return db.query(

@@ -148,10 +148,15 @@ export class LeadDashboardV3Component implements OnInit {
     this.dashboardService.getPipeline().subscribe({
       next: (res: any) => {
         try {
-          this.pipelineData = Array.isArray(res) ? res : [];
-          this.chartData.pipeline.data = this.pipelineData.length > 0 ? this.pipelineData.map(p => [p.Stage, p.Leads]) : [['No Data', 0]];
+          const raw = Array.isArray(res) ? res : [];
+          this.pipelineData = raw.filter((p: any) => p && p.Leads > 0);
+          this.chartData.pipeline.data = this.pipelineData.length > 0 
+            ? this.pipelineData.map(p => [p.Stage || 'Unassigned', Number(p.Leads)]) 
+            : [];
         } catch (e) {
           console.warn('Pipeline chart data mapping error:', e);
+          this.pipelineData = [];
+          this.chartData.pipeline.data = [];
         }
         this.loadingPipeline = false;
       },
@@ -215,7 +220,10 @@ export class LeadDashboardV3Component implements OnInit {
       next: (res: any) => {
         try {
           this.dayWiseActivity = Array.isArray(res) ? res : [];
-          this.chartData.daily.data = this.dayWiseActivity.length > 0 ? this.dayWiseActivity.map((d: any) => [d.Date_Label, d.Activities]) : [['No Data', 0]];
+          const chartRows = [...this.dayWiseActivity].reverse();
+          this.chartData.daily.data = chartRows.length > 0 
+            ? chartRows.map((d: any) => [d.Date_Label || '', Number(d.Activities || 0)]) 
+            : [['No Data', 0]];
         } catch (e) {
           console.warn('Daily chart data mapping error:', e);
         }
@@ -242,7 +250,11 @@ export class LeadDashboardV3Component implements OnInit {
       next: (res: any) => {
         try {
           this.weekWiseActivity = Array.isArray(res) ? res : [];
-          this.chartData.weekly.data = this.weekWiseActivity.length > 0 ? this.weekWiseActivity.map((w: any) => [w.Date_Label, w.Activities]) : [['No Data', 0]];
+          // Reverse so chronological order (earliest to latest) is plotted left to right
+          const chartRows = [...this.weekWiseActivity].reverse();
+          this.chartData.weekly.data = chartRows.length > 0 
+            ? chartRows.map((w: any) => [w.Week_Starting || w.Date_Label || '', Number(w.Activities || 0)]) 
+            : [['No Data', 0]];
         } catch (e) {
           console.warn('Weekly chart data mapping error:', e);
         }
@@ -269,7 +281,11 @@ export class LeadDashboardV3Component implements OnInit {
       next: (res: any) => {
         try {
           this.monthWiseActivity = Array.isArray(res) ? res : [];
-          this.chartData.monthly.data = this.monthWiseActivity.length > 0 ? this.monthWiseActivity.map((m: any) => [m.Date_Label, m.Activities]) : [['No Data', 0]];
+          // Reverse so chronological order is plotted left to right
+          const chartRows = [...this.monthWiseActivity].reverse();
+          this.chartData.monthly.data = chartRows.length > 0 
+            ? chartRows.map((m: any) => [m.Month_Label || m.Date_Label || '', Number(m.Activities || 0)]) 
+            : [['No Data', 0]];
         } catch (e) {
           console.warn('Monthly chart data mapping error:', e);
         }

@@ -21,6 +21,8 @@ export class Lead_ConfigComponent implements OnInit {
   issLoading: boolean = false;
   Dropdown_Data: any[] = [];
   dealTypesList: any[] = [];
+  statesList: any[] = [];
+  branchesList: any[] = [];
   
   pageIndex: number = 1;
   pageSize: number = 10;
@@ -51,6 +53,8 @@ export class Lead_ConfigComponent implements OnInit {
     Followup_Required?: number;
     Color?: string;
     Deal_Type_Id?: number;
+    State_Id?: number;
+    Branch_Id?: number;
   } = {
     id: 0,
     name: '',
@@ -60,7 +64,9 @@ export class Lead_ConfigComponent implements OnInit {
     Stage_Type: 0,
     Followup_Required: 1,
     Color: '#3b82f6',
-    Deal_Type_Id: null
+    Deal_Type_Id: null,
+    State_Id: null,
+    Branch_Id: null
   };
   
   columns = [
@@ -122,6 +128,60 @@ export class Lead_ConfigComponent implements OnInit {
     );
   }
 
+  loadStates() {
+    const url = environment.BasePath + 'Lead_Config/company_details/state/Search';
+    const options: any = { params: { search: '' }, ...this.getAuthHeaders() };
+    this.http.get(url, options).subscribe(
+      (res: any) => {
+        let list: any[] = [];
+        if (res && Array.isArray(res)) list = res;
+        else if (res && Array.isArray(res[0])) list = res[0];
+        
+        this.statesList = list.map(item => ({
+          id: item.State_Id || item.id,
+          name: item.State_Name || item.name
+        }));
+        // Re-map Dropdown_Data State_Name if data is already loaded
+        if (this.activeSubTab === 'District' && this.Dropdown_Data.length > 0) {
+          this.Dropdown_Data.forEach(item => {
+            if (item.State_Id && !item.State_Name) {
+              const matchedState = this.statesList.find(s => s.id === item.State_Id);
+              if (matchedState) item.State_Name = matchedState.name;
+            }
+          });
+        }
+      },
+      (error) => console.error('Error fetching states:', error)
+    );
+  }
+
+  loadBranches() {
+    const url = environment.BasePath + 'Lead_Config/assignment/branch/Search';
+    const options: any = { params: { search: '' }, ...this.getAuthHeaders() };
+    this.http.get(url, options).subscribe(
+      (res: any) => {
+        let list: any[] = [];
+        if (res && Array.isArray(res)) list = res;
+        else if (res && Array.isArray(res[0])) list = res[0];
+        
+        this.branchesList = list.map(item => ({
+          id: item.Assignment_Id || item.Branch_Id || item.id,
+          name: item.Assignment_Name || item.Branch_Name || item.name
+        }));
+        // Re-map Dropdown_Data Branch_Name if data is already loaded
+        if (this.activeSubTab === 'Department' && this.Dropdown_Data.length > 0) {
+          this.Dropdown_Data.forEach(item => {
+            if (item.Branch_Id && !item.Branch_Name) {
+              const matchedBranch = this.branchesList.find(b => b.id === item.Branch_Id);
+              if (matchedBranch) item.Branch_Name = matchedBranch.name;
+            }
+          });
+        }
+      },
+      (error) => console.error('Error fetching branches:', error)
+    );
+  }
+
   getRoutePathForSubTab(tab: string): string {
     const map: { [key: string]: string } = {
       'Vertical': 'Lead_Config/company_details/vertical',
@@ -157,7 +217,7 @@ export class Lead_ConfigComponent implements OnInit {
       'Pipeline Stage': 'PipelineStage_Id',
       'Pulse': 'Pulse_Id',
       'Target Stage': 'Target_Stage_Id',
-      'Branch': 'Assignment_Id',
+      'Branch': 'Branch_Id',
       'Department': 'Assignment_Id',
       'Workflow': 'Followup_Automation_Id'
     };
@@ -178,7 +238,7 @@ export class Lead_ConfigComponent implements OnInit {
       'Pipeline Stage': 'PipelineStage_Name',
       'Pulse': 'Pulse_Name',
       'Target Stage': 'Target_Stage_Name',
-      'Branch': 'Assignment_Name',
+      'Branch': 'Branch_Name',
       'Department': 'Assignment_Name',
       'Workflow': 'Followup_Automation_Name'
     };
@@ -224,10 +284,16 @@ export class Lead_ConfigComponent implements OnInit {
             ? (item.Followup_Required && typeof item.Followup_Required === 'object' && item.Followup_Required.data ? item.Followup_Required.data[0] : Number(item.Followup_Required))
             : 1;
 
+          const matchedState = item.State_Id ? this.statesList.find(s => s.id === item.State_Id) : null;
+          const stateName = item.State_Name || (matchedState ? matchedState.name : '');
+
+          const matchedBranch = item.Branch_Id ? this.branchesList.find(b => b.id === item.Branch_Id) : null;
+          const branchName = item.Branch_Name || (matchedBranch ? matchedBranch.name : '');
+
           return {
             ...item,
-            id: item[pk] || item.id || 0,
-            name: item[nameField] || item.name || item.Vertical_Name || item.Name || '',
+            id: item[pk] || item.Workflow_Id || item.Assignment_Id || item.id || 0,
+            name: item[nameField] || item.Workflow_Name || item.Assignment_Name || item.name || item.Vertical_Name || item.Name || '',
             Description: item.Description || item.description || '',
             IsActive: item.IsActive && typeof item.IsActive === 'object' && item.IsActive.data ? item.IsActive.data[0] : (item.IsActive ? 1 : 0),
             isGhosting: item.isGhosting && typeof item.isGhosting === 'object' && item.isGhosting.data ? item.isGhosting.data[0] : (item.isGhosting ? 1 : 0),
@@ -237,7 +303,11 @@ export class Lead_ConfigComponent implements OnInit {
             Followup_Required_Label: (rawFollowup === 0) ? 'No' : 'Yes',
             Color: item.Color || '#3b82f6',
             Deal_Type_Id: item.Deal_Type_Id || null,
-            Deal_Type_Name: item.Deal_Type_Name || ''
+            Deal_Type_Name: item.Deal_Type_Name || '',
+            State_Id: item.State_Id || null,
+            State_Name: stateName,
+            Branch_Id: item.Branch_Id || null,
+            Branch_Name: branchName
           };
         });
         
@@ -274,7 +344,9 @@ export class Lead_ConfigComponent implements OnInit {
       Stage_Type: 0,
       Followup_Required: 1,
       Color: '#3b82f6',
-      Deal_Type_Id: null
+      Deal_Type_Id: null,
+      State_Id: null,
+      Branch_Id: null
     };
     this.isModalOpen = true;
   }
@@ -292,7 +364,9 @@ export class Lead_ConfigComponent implements OnInit {
       Stage_Type: item.Stage_Type !== undefined && item.Stage_Type !== null ? Number(item.Stage_Type) : 0,
       Followup_Required: item.Followup_Required !== undefined && item.Followup_Required !== null ? Number(item.Followup_Required) : 1,
       Color: item.Color || '#3b82f6',
-      Deal_Type_Id: item.Deal_Type_Id || null
+      Deal_Type_Id: item.Deal_Type_Id || null,
+      State_Id: item.State_Id || null,
+      Branch_Id: item.Branch_Id || null
     };
     this.isModalOpen = true;
   }
@@ -318,6 +392,14 @@ export class Lead_ConfigComponent implements OnInit {
       body.Deal_Type_Id = this.formData.Deal_Type_Id;
       const selectedDealType = this.dealTypesList.find(dt => dt.id === this.formData.Deal_Type_Id);
       body.Deal_Type_Name = selectedDealType ? selectedDealType.name : '';
+    }
+
+    if (this.activeSubTab === 'District') {
+      body.State_Id = this.formData.State_Id;
+    }
+
+    if (this.activeSubTab === 'Department') {
+      body.Branch_Id = this.formData.Branch_Id;
     }
     
     if (this.activeSubTab === 'Market System') {
@@ -460,6 +542,19 @@ export class Lead_ConfigComponent implements OnInit {
         { key: 'Description', label: 'Description' }
       ];
       this.loadDealTypes();
+    } else if (tab === 'District') {
+      this.columns = [
+        { key: 'name', label: 'Name' },
+        { key: 'State_Name', label: 'State' }
+      ];
+      this.loadStates();
+    } else if (tab === 'Department') {
+      this.columns = [
+        { key: 'name', label: 'Name' },
+        { key: 'Branch_Name', label: 'Branch' },
+        { key: 'Description', label: 'Description' }
+      ];
+      this.loadBranches();
     } else if (this.hasDescription(tab)) {
       this.columns = [
         { key: 'name', label: 'Name' },

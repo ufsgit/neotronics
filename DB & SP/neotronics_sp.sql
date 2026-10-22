@@ -6884,10 +6884,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Department_Get`(
     IN p_Assignment_Id INT
 )
 BEGIN
-    SELECT Department_Id AS Assignment_Id, Department_Name AS Assignment_Name, Description
-    FROM department
-    WHERE Department_Id = p_Assignment_Id
-      AND IFNULL(DeleteStatus, 0) = 0;
+    SELECT 
+        d.Department_Id AS Assignment_Id, 
+        d.Department_Name AS Assignment_Name, 
+        d.Description,
+        d.Branch_Id,
+        b.Branch_Name
+    FROM department d
+    LEFT JOIN branch_master b ON d.Branch_Id = b.Branch_Id
+    WHERE d.Department_Id = p_Assignment_Id
+      AND IFNULL(d.DeleteStatus, 0) = 0;
 END$$
 DELIMITER ;
 
@@ -6895,7 +6901,8 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Department_Save`(
     IN p_Assignment_Id INT,
     IN p_Assignment_Name VARCHAR(255),
-    IN p_Description TEXT
+    IN p_Description TEXT,
+    IN p_Branch_Id INT
 )
 BEGIN
     DECLARE v_Exists INT DEFAULT 0;
@@ -6903,20 +6910,23 @@ BEGIN
     SELECT COUNT(*) INTO v_Exists
     FROM department
     WHERE Department_Name = p_Assignment_Name
+      AND (p_Branch_Id IS NULL OR p_Branch_Id = 0 OR Branch_Id = p_Branch_Id)
       AND IFNULL(DeleteStatus, 0) = 0
       AND (p_Assignment_Id IS NULL OR p_Assignment_Id = 0 OR Department_Id <> p_Assignment_Id);
 
     IF v_Exists > 0 THEN
-        SELECT 0 AS Assignment_Id_, 'Name already exists' AS Message;
+        SELECT 0 AS Assignment_Id_, 'Name already exists in this Branch' AS Message;
     ELSE
         IF p_Assignment_Id IS NULL OR p_Assignment_Id = 0 THEN
-            INSERT INTO department (Department_Name, Description, DeleteStatus)
-            VALUES (p_Assignment_Name, p_Description, 0);
+            INSERT INTO department (Department_Name, Description, Branch_Id, DeleteStatus)
+            VALUES (p_Assignment_Name, p_Description, p_Branch_Id, 0);
 
             SELECT LAST_INSERT_ID() AS Assignment_Id_, 'Saved Successfully' AS Message;
         ELSE
             UPDATE department
-            SET Department_Name = p_Assignment_Name, Description = p_Description
+            SET Department_Name = p_Assignment_Name,
+                Description     = p_Description,
+                Branch_Id       = p_Branch_Id
             WHERE Department_Id = p_Assignment_Id;
 
             SELECT p_Assignment_Id AS Assignment_Id_, 'Updated Successfully' AS Message;
@@ -6931,17 +6941,29 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LC_Department_Search`(
 )
 BEGIN
     IF p_Search IS NULL OR p_Search = '' THEN
-        SELECT Department_Id AS Assignment_Id, Department_Name AS Assignment_Name, Description
-        FROM department
-        WHERE IFNULL(DeleteStatus, 0) = 0
-        ORDER BY Department_Name ASC
-        LIMIT 20;
+        SELECT 
+            d.Department_Id AS Assignment_Id, 
+            d.Department_Name AS Assignment_Name, 
+            d.Description,
+            d.Branch_Id,
+            b.Branch_Name
+        FROM department d
+        LEFT JOIN branch_master b ON d.Branch_Id = b.Branch_Id
+        WHERE IFNULL(d.DeleteStatus, 0) = 0
+        ORDER BY d.Department_Name ASC
+        LIMIT 50;
     ELSE
-        SELECT Department_Id AS Assignment_Id, Department_Name AS Assignment_Name, Description
-        FROM department
-        WHERE Department_Name LIKE CONCAT('%', p_Search, '%')
-          AND IFNULL(DeleteStatus, 0) = 0
-        ORDER BY Department_Name ASC;
+        SELECT 
+            d.Department_Id AS Assignment_Id, 
+            d.Department_Name AS Assignment_Name, 
+            d.Description,
+            d.Branch_Id,
+            b.Branch_Name
+        FROM department d
+        LEFT JOIN branch_master b ON d.Branch_Id = b.Branch_Id
+        WHERE (d.Department_Name LIKE CONCAT('%', p_Search, '%') OR b.Branch_Name LIKE CONCAT('%', p_Search, '%'))
+          AND IFNULL(d.DeleteStatus, 0) = 0
+        ORDER BY d.Department_Name ASC;
     END IF;
 END$$
 DELIMITER ;
@@ -8019,7 +8041,7 @@ BEGIN
         FROM workflow_master
         WHERE IFNULL(DeleteStatus, 0) = 0
         ORDER BY Workflow_Name ASC
-        LIMIT 20;
+        LIMIT 50;
     ELSE
         SELECT Workflow_Id AS Followup_Automation_Id, Workflow_Name AS Followup_Automation_Name, NULL AS Description
         FROM workflow_master
